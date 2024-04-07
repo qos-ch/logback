@@ -19,6 +19,10 @@ import ch.qos.logback.core.joran.spi.NoAutoStart;
 import ch.qos.logback.core.rolling.helper.TimeBasedArchiveRemover;
 
 /**
+ * Default implementation of {@link TimeBasedFileNamingAndTriggeringPolicy}
+ * interface extending {@link TimeBasedFileNamingAndTriggeringPolicyBase}. This class is intended to be nested
+ * within a {@link TimeBasedRollingPolicy}.
+ *
  *
  * @author Ceki G&uuml;lc&uuml;
  *

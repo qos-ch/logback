@@ -29,14 +29,21 @@ import ch.qos.logback.core.util.DefaultInvocationGate;
 import ch.qos.logback.core.util.InvocationGate;
 import ch.qos.logback.core.util.SimpleInvocationGate;
 
+/**
+ * This class implement {@link TimeBasedFileNamingAndTriggeringPolicy}
+ * interface extending {@link TimeBasedFileNamingAndTriggeringPolicyBase}. This class is intended to be nested
+ * within a {@link SizeAndTimeBasedFNATP} instance.  However, it can also be instantiated directly for testing purposes.
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ *
+ * @param <E>
+ */
 @NoAutoStart
 public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
     enum Usage {
         EMBEDDED, DIRECT
     }
-
-    ;
 
     volatile int currentPeriodsCounter = 0;
     FileSize maxFileSize;

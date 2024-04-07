@@ -18,41 +18,46 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.filter.ThresholdFilter;
-import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.tyler.TylerConfiguratorBase;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.util.StatusPrinter2;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.time.Instant;
+import org.slf4j.spi.MDCAdapter;
 
 public class LOGBACK_1393_Test extends TylerConfiguratorBase {
 
-    LoggerContext loggerCoontext = new LoggerContext();
+    LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter mdcAdapter = new LogbackMDCAdapter();
+    StatusPrinter2 statusPrinter2 = new StatusPrinter2();
 
+
+    @BeforeEach
+    public void setup() {
+        loggerContext.setMDCAdapter(mdcAdapter);
+    }
     public void configure(LoggerContext loggerCoontext) {
         setContext(loggerCoontext);
-        propertyModelHandlerHelper.handlePropertyModel(this, "LOG_HOME", "log", "", "", "");
+        addOnConsoleStatusListener();
         Appender appenderFILE = setupAppenderFILE();
-        Logger logger_com_mindsphere_china_poc_connectivity = setupLogger("com.mindsphere.china.poc.connectivity",
-                "DEBUG", Boolean.FALSE);
-        logger_com_mindsphere_china_poc_connectivity.addAppender(appenderFILE);
-        Logger logger_ROOT = setupLogger("ROOT", "ERROR", null);
+        Logger logger_ROOT = setupLogger("ROOT", "DEBUG", null);
         logger_ROOT.addAppender(appenderFILE);
     }
 
     Appender setupAppenderFILE() {
         RollingFileAppender appenderFILE = new RollingFileAppender();
-        appenderFILE.setContext(loggerCoontext);
+        appenderFILE.setContext(loggerContext);
         appenderFILE.setName("FILE");
 
+        appenderFILE.setImmediateFlush(true);
         // Configure component of type TimeBasedRollingPolicy
         TimeBasedRollingPolicy timeBasedRollingPolicy = new TimeBasedRollingPolicy();
-        timeBasedRollingPolicy.setContext(loggerCoontext);
-        timeBasedRollingPolicy.setFileNamePattern(subst("${LOG_HOME}/connectivi.log.%d{yyyy-MM-dd}.log"));
+        timeBasedRollingPolicy.setContext(loggerContext);
+        timeBasedRollingPolicy.setFileNamePattern(subst("/tmp/log/lb1393.%d{yyyy-MM-dd}.log"));
         timeBasedRollingPolicy.setMaxHistory(6);
         timeBasedRollingPolicy.setParent(appenderFILE);
         timeBasedRollingPolicy.start();
@@ -63,7 +68,7 @@ public class LOGBACK_1393_Test extends TylerConfiguratorBase {
         PatternLayoutEncoder patternLayoutEncoder = new PatternLayoutEncoder();
         patternLayoutEncoder.setContext(context);
         patternLayoutEncoder.setPattern("%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n");
-        patternLayoutEncoder.setImmediateFlush(true);
+
         patternLayoutEncoder.setParent(appenderFILE);
         patternLayoutEncoder.start();
         // Inject component of type PatternLayoutEncoder into parent
@@ -71,8 +76,8 @@ public class LOGBACK_1393_Test extends TylerConfiguratorBase {
 
         // Configure component of type SizeBasedTriggeringPolicy
         SizeBasedTriggeringPolicy sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy();
-        sizeBasedTriggeringPolicy.setContext(loggerCoontext);
-        sizeBasedTriggeringPolicy.setMaxFileSize(ch.qos.logback.core.util.FileSize.valueOf("10MB"));
+        sizeBasedTriggeringPolicy.setContext(loggerContext);
+        sizeBasedTriggeringPolicy.setMaxFileSize(ch.qos.logback.core.util.FileSize.valueOf("1000"));
         // ===========no parent setter
         sizeBasedTriggeringPolicy.start();
         // Inject component of type SizeBasedTriggeringPolicy into parent
@@ -80,7 +85,7 @@ public class LOGBACK_1393_Test extends TylerConfiguratorBase {
 
         // Configure component of type ThresholdFilter
         ThresholdFilter thresholdFilter = new ThresholdFilter();
-        thresholdFilter.setContext(loggerCoontext);
+        thresholdFilter.setContext(loggerContext);
         thresholdFilter.setLevel("TRACE");
         // ===========no parent setter
         thresholdFilter.start();
@@ -93,10 +98,21 @@ public class LOGBACK_1393_Test extends TylerConfiguratorBase {
 
     @Test
     void smoke() {
+        configure(loggerContext);
+        Logger logger = loggerContext.getLogger(this.getClass());
+        for(int i = 0; i < 100; i++) {
+            logger.atInfo().addKeyValue("i", i).log("hello world xxasdaasfasf asdfasfdsfd");
+            delay(100);
+        }
+        //statusPrinter2.print(loggerContext);
+    }
 
-        FileNamePattern fnp = new FileNamePattern("/log/connectivi.log.%d{yyyy-MM-dd}.log", context);
-        Instant now = Instant.now();
-        fnp.toRegexForFixedDate(now);
+    private void delay(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

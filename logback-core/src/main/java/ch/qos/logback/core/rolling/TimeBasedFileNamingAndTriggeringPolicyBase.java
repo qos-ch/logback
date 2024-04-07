@@ -28,6 +28,16 @@ import ch.qos.logback.core.rolling.helper.DateTokenConverter;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
+/**
+ * Base implementation of {@link TimeBasedFileNamingAndTriggeringPolicy}.
+ *
+ * <p>See also derived classes {@link DefaultTimeBasedFileNamingAndTriggeringPolicy} and
+ * {@link SizeAndTimeBasedFNATP}.
+ *
+ * </p>
+ *
+ * @param <E>
+ */
 abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends ContextAwareBase
         implements TimeBasedFileNamingAndTriggeringPolicy<E> {
 
