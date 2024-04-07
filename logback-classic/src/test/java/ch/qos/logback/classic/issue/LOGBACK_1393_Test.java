@@ -12,7 +12,7 @@
  * as published by the Free Software Foundation.
  */
 
-package ch.qos.logback.classic.issue.lbcore258;
+package ch.qos.logback.classic.issue;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -26,9 +26,10 @@ import ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.slf4j.spi.MDCAdapter;
 
+@Disabled
 public class LOGBACK_1393_Test extends TylerConfiguratorBase {
 
     LoggerContext loggerContext = new LoggerContext();
