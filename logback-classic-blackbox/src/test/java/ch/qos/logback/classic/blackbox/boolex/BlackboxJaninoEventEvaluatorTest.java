@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.blackbox.boolex;
 
 import java.io.IOException;
+import java.util.List;
 
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
+import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -121,10 +123,10 @@ public class BlackboxJaninoEventEvaluatorTest {
         logbackMDCAdapter.remove(k);
     }
 
-    @Disabled
     @Test
-    public void marker() throws Exception {
-        jee.setExpression("markerList.stream().anyMatch( m -> m.contains(\"BLUE\"))");
+    public void markerList() throws Exception {
+
+        jee.setExpression("markerList.contains(\"BLUE\")");
         jee.start();
 
         LoggingEvent event = makeLoggingEvent(null);
@@ -133,10 +135,22 @@ public class BlackboxJaninoEventEvaluatorTest {
         assertTrue(jee.evaluate(event));
     }
 
-    @Disabled
     @Test
-    public void withNullMarker_LBCORE_118() throws Exception {
-        jee.setExpression("markerList.contains(\"BLUE\")");
+    public void marker() throws Exception {
+
+        jee.setExpression("marker.contains(\"BLUE\")");
+        jee.start();
+
+        LoggingEvent event = makeLoggingEvent(null);
+        event.addMarker(MarkerFactory.getMarker("BLUE"));
+        StatusPrinter.print(loggerContext);
+        assertTrue(jee.evaluate(event));
+    }
+
+    // LBCORE_118
+    @Test
+    public void withNullMarker_LOGBACK_63() throws Exception {
+        jee.setExpression("marker.contains(\"BLUE\")");
         jee.start();
 
         ILoggingEvent event = makeLoggingEvent(null);
