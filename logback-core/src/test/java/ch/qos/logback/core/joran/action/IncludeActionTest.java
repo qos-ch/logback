@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.function.Supplier;
 
+import ch.qos.logback.core.model.processor.IncludeModelHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +50,10 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
-@Disabled
+import static ch.qos.logback.core.joran.JoranConstants.CONFIGURATION_TAG;
+import static ch.qos.logback.core.joran.JoranConstants.INCLUDED_TAG;
+
+
 public class IncludeActionTest {
 
     final static String INCLUDE_KEY = "includeKey";
@@ -96,27 +100,32 @@ public class IncludeActionTest {
     public void setUp() throws Exception {
         FileTestUtil.makeTestOutputDir();
         HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
-        rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
-        rulesMap.put(new ElementSelector("x/include"), () -> new IncludeAction());
-        rulesMap.put(new ElementSelector("x/stack"), () -> new StackAction());
+        rulesMap.put(new ElementSelector(CONFIGURATION_TAG), () -> new TopElementAction());
+        rulesMap.put(new ElementSelector(CONFIGURATION_TAG+"/include"), () -> new IncludeAction());
+        rulesMap.put(new ElementSelector(CONFIGURATION_TAG+"/stack"), () -> new StackAction());
 
         tc = new TrivialConfigurator(rulesMap) {
-            
-            
+
             @Override
             protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
-                defaultProcessor.addHandler(IncludeModel.class, NOPModelHandler::makeInstance);
+                defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
                 defaultProcessor.addHandler(StackModel.class, StackModelHandler::makeInstance);
+            }
+
+            public void buildModelInterpretationContext() {
+                super.buildModelInterpretationContext();
+                this.modelInterpretationContext.setConfiguratorSupplier(  () -> this.makeAnotherInstance() );
             }
         };
 
         tc.setContext(context);
+        tc.getRuleStore().addPathPathMapping(INCLUDED_TAG, CONFIGURATION_TAG);
     }
 
     @AfterEach
     public void tearDown() throws Exception {
-        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+        //StatusPrinter.printInCaseOfErrorsOrWarnings(context);
         context = null;
         System.clearProperty(INCLUDE_KEY);
         System.clearProperty(SECOND_FILE_KEY);
@@ -128,7 +137,7 @@ public class IncludeActionTest {
     public void basicFile() throws JoranException {
         System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
         tc.doConfigure(TOP_BY_FILE);
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         verifyConfig(new String[] { "IA", "IB" });
     }
 
@@ -136,14 +145,14 @@ public class IncludeActionTest {
     public void optionalFile() throws JoranException {
         tc.doConfigure(TOP_OPTIONAL);
         verifyConfig(new String[] { "IA", "IB" });
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
     }
 
     @Test
     public void optionalResource() throws JoranException {
         tc.doConfigure(TOP_OPTIONAL_RESOURCE);
         verifyConfig(new String[] { "IA", "IB" });
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         Assertions.assertEquals(Status.INFO, statusChecker.getHighestLevel(0));
     }
 
@@ -158,7 +167,7 @@ public class IncludeActionTest {
     public void basicURL() throws JoranException {
         System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
         tc.doConfigure(TOP_BY_URL);
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         verifyConfig(new String[] { "IA", "IB" });
     }
 
@@ -175,7 +184,7 @@ public class IncludeActionTest {
         System.setProperty(INCLUDE_KEY, tmpOut);
         tc.doConfigure(TOP_BY_FILE);
         Assertions.assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         Assertions.assertTrue(statusChecker.containsException(SAXParseException.class));
 
         // we like to erase the temp file in order to see

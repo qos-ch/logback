@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE x>
+<!DOCTYPE configuration>
 
-<x>
+<configuration>
 
   <include resource="${includeKey}" />
 
-</x>
+</configuration>

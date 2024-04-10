@@ -71,6 +71,11 @@ public class IncludeModelHandler extends ModelHandlerBase {
         }
 
         InputStream in = getInputStream(mic, includeModel);
+        if(in == null) {
+            inError = true;
+            return;
+        }
+
         SaxEventRecorder recorder = null;
 
         try {
