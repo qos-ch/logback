@@ -877,7 +877,7 @@ ch.qos.logback.core.joran.action.ext.HelloAction
 ch.qos.logback.core.joran.action.ext.IncAction
 ch.qos.logback.core.joran.action.ext.StackAction
 ch.qos.logback.core.joran.action.ext.TouchAction
-ch.qos.logback.core.joran.action.IncludeActionTest
+ch.qos.logback.core.joran.action.IncludeModelHandlerTest
 ch.qos.logback.core.joran.action.PropertyActionTest
 ch.qos.logback.core.joran.action.TopElementAction
 ch.qos.logback.core.blackbox.joran.conditional.PropertyEvalScriptBuilderTest

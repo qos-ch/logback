@@ -27,7 +27,6 @@ import ch.qos.logback.core.model.processor.IncludeModelHandler;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
 
@@ -48,13 +47,12 @@ import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.FileTestUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
 
 import static ch.qos.logback.core.joran.JoranConstants.CONFIGURATION_TAG;
 import static ch.qos.logback.core.joran.JoranConstants.INCLUDED_TAG;
 
 
-public class IncludeActionTest {
+public class IncludeModelHandlerTest {
 
     final static String INCLUDE_KEY = "includeKey";
     final static String SUB_FILE_KEY = "subFileKey";
