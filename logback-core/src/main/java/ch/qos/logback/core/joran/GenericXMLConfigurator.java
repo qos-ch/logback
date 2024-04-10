@@ -51,6 +51,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     public ModelInterpretationContext getModelInterpretationContext() {
         return this.modelInterpretationContext;
     }
+    private RuleStore ruleStore;
 
     public final void doConfigure(URL url) throws JoranException {
         InputStream in = null;
@@ -135,12 +136,19 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     }
 
     protected void buildSaxEventInterpreter(List<SaxEvent> saxEvents) {
-        RuleStore rs = new SimpleRuleStore(context);
+        RuleStore rs = getRuleStore();
         addElementSelectorAndActionAssociations(rs);
         this.saxEventInterpreter = new SaxEventInterpreter(context, rs, initialElementPath(), saxEvents);
         SaxEventInterpretationContext interpretationContext = saxEventInterpreter.getSaxEventInterpretationContext();
         interpretationContext.setContext(context);
         setImplicitRuleSupplier(saxEventInterpreter);
+    }
+
+    public RuleStore getRuleStore() {
+        if(this.ruleStore == null) {
+            this.ruleStore = new SimpleRuleStore(context);
+        }
+        return this.ruleStore;
     }
 
     protected void buildModelInterpretationContext() {

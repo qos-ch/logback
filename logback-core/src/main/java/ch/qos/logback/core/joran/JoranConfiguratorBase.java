@@ -138,7 +138,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
 
         defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler::makeInstance);
         defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
-        defaultProcessor.addHandler(IncludeModel.class, NOPModelHandler::makeInstance);
+        defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
 
         
         defaultProcessor.addHandler(ParamModel.class, ParamModelHandler::makeInstance);

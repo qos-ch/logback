@@ -45,7 +45,7 @@ public interface RuleStore {
      * Add a new rule, given by a pattern and an action instance.
      *
      * @param elementSelector
-     * @param action
+     * @param actionSupplier
      */
     void addRule(ElementSelector elementSelector, Supplier<Action> actionSupplier);
 
@@ -58,4 +58,7 @@ public interface RuleStore {
     Supplier<Action> matchActions(ElementPath elementPath);
     
     void addTransparentPathPart(String pathPart);
-}
+
+    public void addPathPathMapping(String originalName, String modifiedName);
+
+    }

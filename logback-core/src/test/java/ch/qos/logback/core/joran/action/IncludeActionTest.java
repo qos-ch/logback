@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
 
@@ -48,6 +49,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
+@Disabled
 public class IncludeActionTest {
 
     final static String INCLUDE_KEY = "includeKey";

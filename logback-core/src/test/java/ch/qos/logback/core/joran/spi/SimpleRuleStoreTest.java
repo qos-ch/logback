@@ -1,15 +1,13 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015, QOS.ch. All rights
+ * reserved.
  *
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v1.0 as published by
- * the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under either the terms of the Eclipse Public License
+ * v1.0 as published by the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.joran.spi;
 
@@ -30,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test SimpleRuleStore for various explicit rule combinations.
- * 
+ *
  * We also test that explicit patterns are case-sensitive.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class SimpleRuleStoreTest {
@@ -175,7 +173,7 @@ public class SimpleRuleStoreTest {
             assertNotNull(r);
 
             Action ra = r.get();
-            
+
             assertTrue(ra instanceof XAction);
             XAction xaction = (XAction) ra;
             assertEquals(3, xaction.id);
@@ -197,12 +195,6 @@ public class SimpleRuleStoreTest {
 
     @Test
     public void withTransparentParts() throws Exception {
-//        srs.addRule(new ElementSelector("x"), new TopElementAction());
-//        srs.addRule(new ElementSelector("x/stack"), new StackAction());
-//        srs.addRule(new ElementSelector("x/property"), new PropertyAction());
-//        srs.addRule(new ElementSelector("*/if"), new IfAction());
-//        srs.addRule(new ElementSelector("*/if/then"), new ThenAction());
-//        srs.addRule(new ElementSelector("*/if/else"), new ElseAction());
 
         srs.addTransparentPathPart("if");
         srs.addTransparentPathPart("then");
@@ -211,28 +203,39 @@ public class SimpleRuleStoreTest {
         {
             ElementPath ep = new ElementPath("x/if/then/if");
             ElementPath witness = new ElementPath("x/");
-            
+
             ElementPath cleanedEP = srs.removeTransparentPathParts(ep);
             assertEquals(witness, cleanedEP);
         }
-        
+
         {
             ElementPath ep = new ElementPath("x/if/then/stack");
             ElementPath witness = new ElementPath("x/stack");
-            
+
             ElementPath cleanedEP = srs.removeTransparentPathParts(ep);
             assertEquals(witness, cleanedEP);
         }
-        
+
         {
             ElementPath ep = new ElementPath("x/if/then/if/else/stack");
             ElementPath witness = new ElementPath("x/stack");
-            
+
             ElementPath cleanedEP = srs.removeTransparentPathParts(ep);
             assertEquals(witness, cleanedEP);
         }
-        
+    }
 
+    @Test
+    public void withRenamedParts() throws Exception {
+        srs.addPathPathMapping("included", "configure");
+
+        {
+            ElementPath ep = new ElementPath("included/a/b");
+            ElementPath witness = new ElementPath("configure/a/b");
+
+            ElementPath renamedEP = srs.renamePathParts(ep);
+            assertEquals(witness, renamedEP);
+        }
     }
 
     class XAction extends Action {

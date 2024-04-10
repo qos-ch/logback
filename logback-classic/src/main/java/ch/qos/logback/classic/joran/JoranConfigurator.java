@@ -26,6 +26,7 @@ import ch.qos.logback.classic.joran.sanity.IfNestedWithinSecondPhaseElementSC;
 import ch.qos.logback.classic.model.processor.ConfigurationModelHandlerFull;
 import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.joran.GenericXMLConfigurator;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
@@ -34,6 +35,7 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
@@ -41,6 +43,8 @@ import ch.qos.logback.core.model.processor.DefaultProcessor;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
+
+
 
     @Override
     public void addElementSelectorAndActionAssociations(RuleStore rs) {
@@ -79,6 +83,17 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
     @Override
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
         LogbackClassicDefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
+    }
+
+    private JoranConfigurator makeAnotherInstance() {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(context);
+        return jc;
+    }
+
+    public void buildModelInterpretationContext() {
+        super.buildModelInterpretationContext();
+        this.modelInterpretationContext.setConfiguratorSupplier(  () -> this.makeAnotherInstance() );
     }
 
     @Override

@@ -27,24 +27,28 @@ import org.junit.jupiter.api.Timeout;
 public class LoggerContextDeadlockTest {
 
     LoggerContext loggerContext = new LoggerContext();
-    JoranConfigurator jc = new JoranConfigurator();
+
     GetLoggerThread getLoggerThread = new GetLoggerThread(loggerContext);
 
     @BeforeEach
     public void setUp() throws Exception {
-        jc.setContext(loggerContext);
+
     }
 
     @AfterEach
     public void tearDown() throws Exception {
     }
 
+    // LBCLASSIC_81
+    // LOGBACK-394
     @Test
     @Timeout(value = 20, unit= TimeUnit.SECONDS)
-    public void testLBCLASSIC_81() throws JoranException {
+    public void test_LOGBACK_394() throws JoranException {
 
         getLoggerThread.start();
         for (int i = 0; i < 500; i++) {
+            JoranConfigurator jc = new JoranConfigurator();
+            jc.setContext(loggerContext);
             ByteArrayInputStream baos = new ByteArrayInputStream(
                     "<configuration><root level=\"DEBUG\"/></configuration>".getBytes());
             jc.doConfigure(baos);

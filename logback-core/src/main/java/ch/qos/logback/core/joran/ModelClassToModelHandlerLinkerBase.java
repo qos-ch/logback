@@ -36,6 +36,7 @@ import ch.qos.logback.core.model.processor.DefineModelHandler;
 import ch.qos.logback.core.model.processor.EventEvaluatorModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.ImportModelHandler;
+import ch.qos.logback.core.model.processor.IncludeModelHandler;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.SequenceNumberGeneratorModelHandler;
@@ -74,7 +75,7 @@ public class ModelClassToModelHandlerLinkerBase {
 
         defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler::makeInstance);
         defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
-        defaultProcessor.addHandler(IncludeModel.class, NOPModelHandler::makeInstance);
+        defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
 
 
         defaultProcessor.addHandler(ParamModel.class, ParamModelHandler::makeInstance);

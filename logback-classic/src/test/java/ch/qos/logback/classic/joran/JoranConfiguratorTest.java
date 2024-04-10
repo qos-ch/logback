@@ -46,6 +46,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.StatusPrinter;
+import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
@@ -73,6 +74,7 @@ public class JoranConfiguratorTest {
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    StatusPrinter2 statusPrinter2 = new StatusPrinter2();
     StatusChecker checker = new StatusChecker(loggerContext);
     int diff = RandomUtil.getPositiveInt();
 
@@ -669,7 +671,16 @@ public class JoranConfiguratorTest {
         assertTrue(slAppender.strList.get(2).contains("null=\"" + kvpNullKey.value + "\" " + msg));
         assertTrue(slAppender.strList.get(3).contains(kvpNullValue.key + "=\"null\" " + msg));
     }
- 
+
+
+    @Test
+    public void inclusionWithVariables() throws JoranException  {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "include/topLevel0.xml");
+
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        statusPrinter2.print(loggerContext);
+        assertEquals(Level.ERROR, root.getLevel());
+    }
     
     // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46697
     @Test

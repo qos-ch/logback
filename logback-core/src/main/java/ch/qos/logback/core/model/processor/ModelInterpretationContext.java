@@ -20,9 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.GenericXMLConfigurator;
+import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
@@ -37,6 +40,16 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
 
     Stack<Object> objectStack;
     Stack<Model> modelStack;
+
+    /**
+     * A supplier of JoranConfigurator instances.
+     *
+     * May be null.
+     *
+     * @since 1.5.5
+     */
+    Supplier<? extends GenericXMLConfigurator> configuratorSupplier;
+
 
     Map<String, Object> objectMap;
     protected VariableSubstitutionsHelper variableSubstitutionsHelper;
@@ -264,5 +277,22 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
             return stem;
         else
             return result;
+    }
+
+    /**
+     * Returns a supplier of {@link GenericXMLConfigurator} instance. The returned value may be null.
+     *
+     * @return a supplier of {@link GenericXMLConfigurator} instance, may be null
+     */
+    public Supplier<? extends GenericXMLConfigurator> getConfiguratorSupplier() {
+        return this.configuratorSupplier;
+    }
+
+    /**
+     *
+     * @param configuratorSupplier
+     */
+    public void setConfiguratorSupplier(Supplier<? extends GenericXMLConfigurator> configuratorSupplier) {
+        this.configuratorSupplier = configuratorSupplier;
     }
 }
