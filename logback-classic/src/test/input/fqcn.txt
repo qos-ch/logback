@@ -342,15 +342,15 @@ ch.qos.logback.classic.issue.lbcore26.Main
 ch.qos.logback.classic.issue.LBCORE63
 ch.qos.logback.classic.issue.lbcore_155.Main
 ch.qos.logback.classic.issue.lbcore_155.OThread
-ch.qos.logback.classic.issue.logback1159.LogbackListener
+ch.qos.logback.classic.util.LogbackListener1159
 ch.qos.logback.classic.issue.logback1159.LogbackListenerTest
 ch.qos.logback.classic.issue.logback1159.LoggingError
-ch.qos.logback.classic.issue.logback474.LoggingAppender
+ch.qos.logback.classic.LoggingAppender474
 ch.qos.logback.classic.issue.logback_1162.Main
 ch.qos.logback.classic.issue.logback_1277.Main
 ch.qos.logback.classic.issue.logback_1361.Main
 ch.qos.logback.classic.jmx.JMXConfiguratorTest
-ch.qos.logback.classic.joran.conditional.ConditionalTest
+ch.qos.logback.classic.blackbox.joran.conditional.ConditionalTest
 ch.qos.logback.classic.joran.EvaluatorJoranTest
 ch.qos.logback.classic.joran.JoranConfiguratorTest
 ch.qos.logback.classic.joran.ReconfigureOnChangeTaskTest
@@ -373,7 +373,7 @@ ch.qos.logback.classic.multiJVM.FileAppenderPerf
 ch.qos.logback.classic.multiJVM.LoggingThread
 ch.qos.logback.classic.multiJVM.SafeModeFileAppender
 ch.qos.logback.classic.multiJVM.SafeModeRollingFileAppender
-ch.qos.logback.classic.net.CounterBasedEvaluator
+ch.qos.logback.classic.blackbox.net.CounterBasedEvaluator
 ch.qos.logback.classic.net.DilutedSMTPAppenderTest
 ch.qos.logback.classic.net.ExternalMockSocketServer
 ch.qos.logback.classic.net.mock.MockAppender
@@ -387,7 +387,7 @@ ch.qos.logback.classic.net.server.RemoteAppenderStreamClientTest
 ch.qos.logback.classic.net.server.ServerSocketReceiverFunctionalTest
 ch.qos.logback.classic.net.server.ServerSocketReceiverTest
 ch.qos.logback.classic.net.server.SSLServerSocketReceiverTest
-ch.qos.logback.classic.net.SMTPAppender_GreenTest
+ch.qos.logback.classic.blackbox.net.SMTPAppender_GreenTest
 ch.qos.logback.classic.net.SocketAppenderMessageLossTest
 ch.qos.logback.classic.net.SocketMin
 ch.qos.logback.classic.net.SocketReceiverTest
@@ -424,7 +424,7 @@ ch.qos.logback.classic.spi.BogusClassLoader
 ch.qos.logback.classic.spi.CallerDataTest
 ch.qos.logback.classic.spi.ContextListenerTest
 ch.qos.logback.classic.spi.CPDCSpecial
-ch.qos.logback.classic.spi.DummyThrowableProxy
+ch.qos.logback.classic.spi.PubThrowableProxy
 ch.qos.logback.classic.spi.LocalFirstClassLoader
 ch.qos.logback.classic.spi.LoggerComparatorTest
 ch.qos.logback.classic.spi.LoggingEventSerializationPerfTest
@@ -435,7 +435,7 @@ ch.qos.logback.classic.spi.PackagingDataCalculatorTest
 ch.qos.logback.classic.spi.PubLoggingEventVO
 ch.qos.logback.classic.spi.special.CPDCSpecialImpl
 ch.qos.logback.classic.spi.ThrowableProxyTest
-ch.qos.logback.classic.testUtil.SampleConverter
+ch.qos.logback.classic.pattern.SampleConverter
 ch.qos.logback.classic.turbo.DebugUsersTurboFilter
 ch.qos.logback.classic.turbo.DuplicateMessageFilterTest
 ch.qos.logback.classic.turbo.lru.Event
@@ -468,7 +468,7 @@ org.dummy.Log4jInvocation
 org.slf4j.implTest.InitializationOutputTest
 org.slf4j.implTest.MultithreadedInitializationTest
 org.slf4j.implTest.RecursiveInitializationTest
-org.slf4j.implTest.RecursiveLBAppender
+ch.qos.logback.classic.RecursiveLBAppender
 org.slf4j.test_osgi.BundleTest
 org.slf4j.test_osgi.CheckingBundleListener
 org.slf4j.test_osgi.FelixHost
@@ -842,7 +842,7 @@ ch.qos.logback.core.appender.ConsoleAppenderTest
 ch.qos.logback.core.appender.DummyAppenderTest
 ch.qos.logback.core.appender.DummyWriterAppender
 ch.qos.logback.core.appender.FileAppenderTest
-ch.qos.logback.core.appender.XTeeOutputStream
+ch.qos.logback.core.testUtil.XTeeOutputStream
 ch.qos.logback.core.AsyncAppenderBaseTest
 ch.qos.logback.core.BasicStatusManagerTest
 ch.qos.logback.core.boolex.MatcherTest
@@ -853,7 +853,7 @@ ch.qos.logback.core.contention.ThreadedThroughputCalculator
 ch.qos.logback.core.contention.WaitOnExecutionMultiThreadedHarness
 ch.qos.logback.core.ContextBaseTest
 ch.qos.logback.core.encoder.ByteArrayUtilTest
-ch.qos.logback.core.encoder.DummyEncoder
+ch.qos.logback.core.testUtil.DummyEncoder
 ch.qos.logback.core.encoder.NopEncoder
 ch.qos.logback.core.FileAppenderResilienceTest
 ch.qos.logback.core.FileAppenderResilience_AS_ROOT_Test
@@ -877,10 +877,10 @@ ch.qos.logback.core.joran.action.ext.HelloAction
 ch.qos.logback.core.joran.action.ext.IncAction
 ch.qos.logback.core.joran.action.ext.StackAction
 ch.qos.logback.core.joran.action.ext.TouchAction
-ch.qos.logback.core.joran.action.IncludeActionTest
+ch.qos.logback.core.joran.action.IncludeModelHandlerTest
 ch.qos.logback.core.joran.action.PropertyActionTest
 ch.qos.logback.core.joran.action.TopElementAction
-ch.qos.logback.core.joran.conditional.PropertyEvalScriptBuilderTest
+ch.qos.logback.core.blackbox.joran.conditional.PropertyEvalScriptBuilderTest
 ch.qos.logback.core.joran.event.SaxEventRecorderTest
 ch.qos.logback.core.joran.event.stax.StaxEventRecorderTest
 ch.qos.logback.core.joran.implicitAction.Cake
@@ -1008,7 +1008,7 @@ ch.qos.logback.core.testUtil.FileTestUtil
 ch.qos.logback.core.testUtil.FileToBufferUtil
 ch.qos.logback.core.testUtil.NPEAppender
 ch.qos.logback.core.testUtil.RandomUtil
-ch.qos.logback.core.testUtil.StatusChecker
+ch.qos.logback.core.status.testUtil.StatusChecker
 ch.qos.logback.core.testUtil.StringListAppender
 ch.qos.logback.core.testUtil.TeeOutputStream
 ch.qos.logback.core.testUtil.TrivialStatusListener

@@ -18,22 +18,19 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LevelChangePropagatorTest {
     int rand = RandomUtil.getPositiveInt();
     LoggerContext loggerContext = new LoggerContext();
     LevelChangePropagator levelChangePropagator = new LevelChangePropagator();
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
-    @Before
+    @BeforeEach
     public void setUp() {
         levelChangePropagator.setContext(loggerContext);
         loggerContext.addListener(levelChangePropagator);
@@ -47,6 +44,8 @@ public class LevelChangePropagatorTest {
 
         assertEquals(julLevel, julLogger.getLevel());
     }
+
+
 
     @Test
     public void smoke() {
@@ -72,11 +71,25 @@ public class LevelChangePropagatorTest {
         assertEquals(julLevel, julLogger.getLevel());
     }
 
+    // https://jira.qos.ch/browse/LOGBACK-1612
+    @Test
+    public void jonathan() {
+        Level level = Level.INFO;
+        Logger logger = loggerContext.getLogger("aaa");
+        logger.setLevel(level);
+
+        java.util.logging.Logger julLogger = JULHelper.asJULLogger(logger);
+        java.util.logging.Level julLevel = JULHelper.asJULLevel(level);
+
+        assertFalse(julLogger.isLoggable(java.util.logging.Level.CONFIG));
+    }
+
     @Test
     public void julHelperAsJulLevelRejectsNull() {
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("Unexpected level [null]");
-        JULHelper.asJULLevel(null);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            JULHelper.asJULLevel(null);
+        });
+        assertEquals("Unexpected level [null]", e.getMessage());
     }
 
     @Test

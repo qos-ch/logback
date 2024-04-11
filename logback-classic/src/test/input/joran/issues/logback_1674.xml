@@ -1,0 +1,15 @@
+<configuration debug="false">
+
+    <appender name="STDOUT-ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="com.foo.SomeEncoder"/>
+        </appender>
+    </appender>
+    <root level="${ROOT_LOG_LEVEL:-info}">
+        <appender-ref ref="STDOUT-ASYNC"/>
+    </root>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT-ASYNC"/>
+    </root>
+</configuration>

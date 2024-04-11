@@ -13,21 +13,20 @@
  */
 package org.slf4j.implTest;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.PrintStream;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.LoggerFactoryFriend;
-
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.status.NopStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.TeeOutputStream;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactoryFriend;
+
+import java.io.PrintStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -39,10 +38,10 @@ public class InitializationOutputTest {
     TeeOutputStream tee;
     PrintStream original;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         original = System.out;
-        // tee will output bytes on System out but it will also
+        // tee will output bytes on System.out but it will also
         // collect them so that the output can be compared against
         // some expected output data
 
@@ -53,7 +52,7 @@ public class InitializationOutputTest {
         System.setOut(new PrintStream(tee));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setOut(original);
         System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
@@ -62,7 +61,8 @@ public class InitializationOutputTest {
 
     @Test
     public void noOutputIfContextHasAStatusListener() {
-        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY,
+                ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
         System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, NopStatusListener.class.getName());
 
         LoggerFactoryFriend.reset();

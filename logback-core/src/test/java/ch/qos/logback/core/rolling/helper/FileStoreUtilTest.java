@@ -18,14 +18,14 @@ import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.FileUtil;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileStoreUtilTest {
 
@@ -45,7 +45,7 @@ public class FileStoreUtilTest {
     }
 
     // test should be run manually
-    @Ignore
+    @Disabled
     @Test
     public void manual_filesOnDifferentVolumesShouldBeDetectedAsSuch() throws RolloverFailure {
         if (!EnvUtil.isJDK7OrHigher())

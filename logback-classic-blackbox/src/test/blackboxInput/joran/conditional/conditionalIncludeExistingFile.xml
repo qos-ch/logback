@@ -1,0 +1,32 @@
+
+<!--
+  ~ Logback: the reliable, generic, fast and flexible logging framework.
+  ~ Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+  ~
+  ~ This program and the accompanying materials are dual-licensed under
+  ~ either the terms of the Eclipse Public License v1.0 as published by
+  ~ the Eclipse Foundation
+  ~
+  ~   or (per the licensee's choosing)
+  ~
+  ~ under the terms of the GNU Lesser General Public License version 2.1
+  ~ as published by the Free Software Foundation.
+  -->
+
+<configuration>
+
+  <!--  This is one of the rare config files where the variables are supposed to be
+  set before the evaluation of the condition -->
+  
+  
+  <define name="INCLUDED_FILE_EXISTS" 
+          class="ch.qos.logback.core.property.FileExistsPropertyDefiner">
+      <path>src/test/blackboxInput/joran/conditional/includedFile.xml</path>
+  </define>
+  
+   <if condition='property("INCLUDED_FILE_EXISTS").equals("true")'>
+    <then>
+        <include file="src/test/blackboxInput/joran/conditional/includedFile.xml"/>
+    </then>
+  </if> 
+</configuration>

@@ -25,6 +25,7 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.JaninoEventEvaluatorBase;
 import ch.qos.logback.core.boolex.Matcher;
+import org.slf4j.Marker;
 
 public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent> {
 
@@ -47,7 +48,8 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent
         DEFAULT_PARAM_NAME_LIST.add("loggerContext");
         DEFAULT_PARAM_NAME_LIST.add("level");
         DEFAULT_PARAM_NAME_LIST.add("timeStamp");
-        //DEFAULT_PARAM_NAME_LIST.add("markerList");
+        DEFAULT_PARAM_NAME_LIST.add("marker");
+        DEFAULT_PARAM_NAME_LIST.add("markerList");
         DEFAULT_PARAM_NAME_LIST.add("mdc");
         DEFAULT_PARAM_NAME_LIST.add("throwableProxy");
         DEFAULT_PARAM_NAME_LIST.add("throwable");
@@ -64,7 +66,8 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent
         DEFAULT_PARAM_TYPE_LIST.add(LoggerContextVO.class);
         DEFAULT_PARAM_TYPE_LIST.add(int.class);
         DEFAULT_PARAM_TYPE_LIST.add(long.class);
-        //DEFAULT_PARAM_TYPE_LIST.add(List.class);
+        DEFAULT_PARAM_TYPE_LIST.add(Marker.class);
+        DEFAULT_PARAM_TYPE_LIST.add(MarkerList.class);
         DEFAULT_PARAM_TYPE_LIST.add(Map.class);
         DEFAULT_PARAM_TYPE_LIST.add(IThrowableProxy.class);
         DEFAULT_PARAM_TYPE_LIST.add(Throwable.class);
@@ -123,7 +126,12 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent
 //        // In order to avoid NullPointerException, we could push a dummy marker if
 //        // the event's marker is null. However, this would surprise user who
 //        // expect to see a null marker instead of a dummy one.
-//        values[i++] = loggingEvent.getMarkerList();
+
+        MarkerList markerList = new MarkerList(loggingEvent.getMarkerList());
+        Marker marker = markerList.getFirstMarker();
+        values[i++] = marker;
+        values[i++] = markerList;
+
         values[i++] = loggingEvent.getMDCPropertyMap();
 
         IThrowableProxy iThrowableProxy = loggingEvent.getThrowableProxy();
@@ -146,5 +154,4 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent
 
         return values;
     }
-
 }

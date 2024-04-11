@@ -13,20 +13,19 @@
  */
 package ch.qos.logback.classic.util;
 
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
-@Ignore
+@Disabled
 public class InitializationIntegrationTest {
 
     @Test

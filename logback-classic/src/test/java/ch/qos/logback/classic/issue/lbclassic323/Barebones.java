@@ -16,13 +16,15 @@ package ch.qos.logback.classic.issue.lbclassic323;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 
+
+// LOGBACK-329
 public class Barebones {
 
     public static void main(String[] args) {
         Context context = new ContextBase();
         for (int i = 0; i < 3; i++) {
             SenderRunnable senderRunnable = new SenderRunnable("" + i);
-            context.getScheduledExecutorService().execute(senderRunnable);
+            context.getExecutorService().execute(senderRunnable);
         }
         System.out.println("done");
         // System.exit(0);

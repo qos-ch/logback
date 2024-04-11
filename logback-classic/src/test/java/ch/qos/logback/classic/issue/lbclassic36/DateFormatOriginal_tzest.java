@@ -13,9 +13,7 @@
  */
 package ch.qos.logback.classic.issue.lbclassic36;
 
-import junit.framework.TestCase;
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,38 +22,11 @@ import java.util.Date;
 //import org.joda.time.format.DateTimeFormat;
 //import org.joda.time.DateTime;
 
-public class DateFormatOriginal_tzest extends TestCase {
+public class DateFormatOriginal_tzest {
     public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
     static final long NANOS_IN_ONE_SEC = 1000 * 1000 * 1000L;
 
-    /**
-     * Create the test case
-     * 
-     * @param testName
-     *                name of the test case
-     */
-    public DateFormatOriginal_tzest(String testName) {
-        super(testName);
-    }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(DateFormatOriginal_tzest.class);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
-    }
-
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     // public void testRaw() throws Exception {
     // SimpleDateFormat simpleFormat = new SimpleDateFormat(ISO8601_PATTERN);
@@ -82,6 +53,7 @@ public class DateFormatOriginal_tzest extends TestCase {
     // + " ns - Difference: " + diff + "%");
     // }
 
+    @Test
     public void testSynchronized() throws Exception {
         SynchronizedDateFormatter formatter = new SynchronizedDateFormatter();
         int threads = 10;
@@ -104,7 +76,7 @@ public class DateFormatOriginal_tzest extends TestCase {
         System.out.printf("Synchronized DateFormat: %,.4f seconds\n", actual);
 
     }
-
+    @Test
     public void testUnSynchronized() throws Exception {
         UnsynchronizedDateFormatter formatter = new UnsynchronizedDateFormatter();
         int threads = 10;
@@ -127,7 +99,7 @@ public class DateFormatOriginal_tzest extends TestCase {
         System.out.printf("Unsynchronized DateFormat: %,.4f seconds\n", actual);
 
     }
-
+    @Test
     public void testThreadLocal() throws Exception {
         ThreadLocalDateFormatter formatter = new ThreadLocalDateFormatter();
         int threads = 10;
@@ -237,7 +209,8 @@ public class DateFormatOriginal_tzest extends TestCase {
     // DateTime date;
     // long iterCount;
     //
-    // public DateTimeFormatThread(JodaFormatter f, DateTime date, long iterations) {
+    // public DateTimeFormatThread(JodaFormatter f, DateTime date, long iterations)
+    // {
     // this.formatter = f;
     // this.date = date;
     // this.iterCount = iterations;

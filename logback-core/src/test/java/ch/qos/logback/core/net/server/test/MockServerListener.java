@@ -21,10 +21,10 @@ import ch.qos.logback.core.net.server.Client;
 import ch.qos.logback.core.net.server.ServerListener;
 
 /**
- * A mock {@link ServerListener} that has a blocking queue to pass a client
- * to a {@link #acceptClient()} caller.  If the {@link #close()} method is
- * called while a caller is blocked waiting to take from the queue, the
- * caller's thread is interrupted.
+ * A mock {@link ServerListener} that has a blocking queue to pass a client to a
+ * {@link #acceptClient()} caller. If the {@link #close()} method is called
+ * while a caller is blocked waiting to take from the queue, the caller's thread
+ * is interrupted.
  *
  * @author Carl Harris
  */

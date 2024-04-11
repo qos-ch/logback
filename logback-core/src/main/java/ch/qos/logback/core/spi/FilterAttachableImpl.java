@@ -44,9 +44,9 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
     }
 
     /**
-     * Loop through the filters in the list. As soon as a filter decides on
-     * ACCEPT or DENY, then that value is returned. If all of the filters return
-     * NEUTRAL, then NEUTRAL is returned.
+     * Loop through the filters in the list. As soon as a filter decides on ACCEPT
+     * or DENY, then that value is returned. If all of the filters return NEUTRAL,
+     * then NEUTRAL is returned.
      */
     public FilterReply getFilterChainDecision(E event) {
 

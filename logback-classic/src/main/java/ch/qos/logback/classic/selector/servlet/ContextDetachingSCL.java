@@ -25,20 +25,20 @@ import org.slf4j.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
-import ch.qos.logback.classic.util.JNDIUtil;
+import ch.qos.logback.core.util.JNDIUtil;
 
 public class ContextDetachingSCL implements ServletContextListener {
 
     public void contextInitialized(ServletContextEvent arg0) {
         // do nothing
     }
-    
+
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         String loggerContextName = null;
 
         try {
             Context ctx = JNDIUtil.getInitialContext();
-            loggerContextName = (String) JNDIUtil.lookup(ctx, JNDI_CONTEXT_NAME);
+            loggerContextName = (String) JNDIUtil.lookupString(ctx, JNDI_CONTEXT_NAME);
         } catch (NamingException ne) {
         }
 
@@ -62,7 +62,5 @@ public class ContextDetachingSCL implements ServletContextListener {
             }
         }
     }
-
- 
 
 }

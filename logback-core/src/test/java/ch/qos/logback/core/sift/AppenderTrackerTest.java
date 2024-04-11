@@ -19,13 +19,12 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Relatively straightforward unit tests for AppenderTracker.
@@ -39,32 +38,32 @@ public class AppenderTrackerTest {
     String key = "k-" + diff;
     long now = 3000;
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 
     @Test
     public void removeStaleComponentsShouldNotBomb() {
         appenderTracker.removeStaleComponents(now);
-        assertEquals(0, appenderTracker.getComponentCount());
+        Assertions.assertEquals(0, appenderTracker.getComponentCount());
     }
 
     @Test
     public void findingTheInexistentShouldNotBomb() {
-        assertNull(appenderTracker.find(key));
+        Assertions.assertNull(appenderTracker.find(key));
         now += AppenderTracker.DEFAULT_TIMEOUT + 1;
         appenderTracker.removeStaleComponents(now);
-        assertNull(appenderTracker.find(key));
+        Assertions.assertNull(appenderTracker.find(key));
     }
 
     @Test
     public void smoke() {
         Appender<Object> a = appenderTracker.getOrCreate(key, now);
-        assertTrue(a.isStarted());
+        Assertions.assertTrue(a.isStarted());
         now += AppenderTracker.DEFAULT_TIMEOUT + 1;
         appenderTracker.removeStaleComponents(now);
-        assertFalse(a.isStarted());
-        assertNull(appenderTracker.find(key));
+        Assertions.assertFalse(a.isStarted());
+        Assertions.assertNull(appenderTracker.find(key));
     }
 
     @Test
@@ -73,9 +72,9 @@ public class AppenderTrackerTest {
         appenderTracker.endOfLife(key);
         now += AppenderTracker.LINGERING_TIMEOUT + 1;
         appenderTracker.removeStaleComponents(now);
-        assertFalse(a.isStarted());
+        Assertions.assertFalse(a.isStarted());
         a = appenderTracker.find(key);
-        assertNull(a);
+        Assertions.assertNull(a);
     }
 
     @Test
@@ -85,13 +84,13 @@ public class AppenderTrackerTest {
         // clean
         appenderTracker.removeStaleComponents(now);
         Appender<Object> lingering = appenderTracker.getOrCreate(key, now);
-        assertTrue(lingering.isStarted());
-        assertTrue(a == lingering);
+        Assertions.assertTrue(lingering.isStarted());
+        Assertions.assertTrue(a == lingering);
         now += AppenderTracker.LINGERING_TIMEOUT + 1;
         appenderTracker.removeStaleComponents(now);
-        assertFalse(a.isStarted());
+        Assertions.assertFalse(a.isStarted());
         a = appenderTracker.find(key);
-        assertNull(a);
+        Assertions.assertNull(a);
     }
 
     @Test
@@ -105,9 +104,9 @@ public class AppenderTrackerTest {
         }
         // cleaning only happens in removeStaleComponents
         appenderTracker.removeStaleComponents(now++);
-        assertEquals(max, appenderTracker.allKeys().size());
-        assertNull(appenderTracker.find(key + "-" + 0));
-        assertFalse(appenderList.get(0).isStarted());
+        Assertions.assertEquals(max, appenderTracker.allKeys().size());
+        Assertions.assertNull(appenderTracker.find(key + "-" + 0));
+        Assertions.assertFalse(appenderList.get(0).isStarted());
     }
 
     @Test
@@ -121,20 +120,21 @@ public class AppenderTrackerTest {
         }
 
         long numComponentsCreated = timeout + 1;
-        assertEquals(numComponentsCreated, appenderTracker.allKeys().size());
+        Assertions.assertEquals(numComponentsCreated, appenderTracker.allKeys().size());
 
-        // cleaning only happens in removeStaleComponents. The first appender should timeout
+        // cleaning only happens in removeStaleComponents. The first appender should
+        // time out
         appenderTracker.removeStaleComponents(now++);
 
         // the first appender should have been removed
-        assertEquals(numComponentsCreated - 1, appenderTracker.allKeys().size());
-        assertNull(appenderTracker.find(key + "-" + 0));
-        assertFalse(appenderList.get(0).isStarted());
+        Assertions.assertEquals(numComponentsCreated - 1, appenderTracker.allKeys().size());
+        Assertions.assertNull(appenderTracker.find(key + "-" + 0));
+        Assertions.assertFalse(appenderList.get(0).isStarted());
 
         // the other appenders should be in the tracker
         for (int i = 1; i <= timeout; i++) {
-            assertNotNull(appenderTracker.find(key + "-" + i));
-            assertTrue(appenderList.get(i).isStarted());
+            Assertions.assertNotNull(appenderTracker.find(key + "-" + i));
+            Assertions.assertTrue(appenderList.get(i).isStarted());
         }
     }
 

@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class CoreConstants {
 
@@ -20,25 +22,21 @@ public class CoreConstants {
     final public static String STATUS_LISTENER_CLASS_KEY = "logback.statusListenerClass";
     final public static String SYSOUT = "SYSOUT";
 
+    final public static String STDOUT = "STDOUT";
+
     /**
      * Number of idle threads to retain in a context's executor service.
      */
     public static final int CORE_POOL_SIZE = 0;
 
-    // Apparently ScheduledThreadPoolExecutor has limitation where a task cannot be submitted from 
-    // within a running task unless the pool has worker threads already available. ThreadPoolExecutor 
-    // does not have this limitation.
-    // This causes tests failures in SocketReceiverTest.testDispatchEventForEnabledLevel and
-    // ServerSocketReceiverFunctionalTest.testLogEventFromClient.
-    // We thus set a pool size > 0 for tests to pass.
-    public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 1;
+    // In Java 21 and later the actual threads are assumed to be virtual
+    public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 4;
 
-    
     /**
      * Maximum number of threads to allow in a context's executor service.
      */
-    // if you need a different MAX_POOL_SIZE, please file create a jira issue
-    // asking to make MAX_POOL_SIZE a parameter.
+    // if you need a different MAX_POOL_SIZE, please file create a github issue
+    // asking for a larger MAX_POOL_SIZE parameter.
     public static final int MAX_POOL_SIZE = 32;
 
     // Note that the line.separator property can be looked up even by
@@ -47,7 +45,7 @@ public class CoreConstants {
     public static final int LINE_SEPARATOR_LEN = LINE_SEPARATOR.length();
 
     public static final String CODES_URL = "http://logback.qos.ch/codes.html";
-    public static final String MANUAL_URL_PREFIX = "http://logback.qos.ch/manual/";   
+    public static final String MANUAL_URL_PREFIX = "http://logback.qos.ch/manual/";
     public static final String MORE_INFO_PREFIX = "For more information, please visit ";
 
     /**
@@ -62,8 +60,10 @@ public class CoreConstants {
 
     public static final String ISO8601_STR = "ISO8601";
     public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+
+    public static final String FILE_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HHmm";
     public static final String DAILY_DATE_PATTERN = "yyyy-MM-dd";
- 
+
     /**
      * Time format used in Common Log Format
      */
@@ -75,23 +75,25 @@ public class CoreConstants {
     public static final String EVALUATOR_MAP = "EVALUATOR_MAP";
 
     /**
-     * Key used to locate a map Files used by FileAppender instances in context's object map.
+     * Key used to locate a map Files used by FileAppender instances in context's
+     * object map.
      * 
-     * Said map consists of entries of the type (appender name, File option) 
+     * Said map consists of entries of the type (appender name, File option)
      */
     public static final String FA_FILENAME_COLLISION_MAP = "FA_FILENAMES_MAP";
 
     /**
-     * Key used to locate a collision map for RollingFileAppender instances in context's object map.
+     * Key used to locate a collision map for RollingFileAppender instances in
+     * context's object map.
      * 
-     * The collision map consists of entities of the type (appender name, FileNamePattern option)
+     * The collision map consists of entities of the type (appender name,
+     * FileNamePattern option)
      */
     public static final String RFA_FILENAME_PATTERN_COLLISION_MAP = "RFA_FILENAME_PATTERN_COLLISION_MAP";
 
     /**
-     * By convention, we assume that the static method named "valueOf" taking
-     * a string argument can restore a given object from its string
-     * representation.
+     * By convention, we assume that the static method named "valueOf" taking a
+     * string argument can restore a given object from its string representation.
      */
     public static final String VALUE_OF = "valueOf";
 
@@ -101,9 +103,19 @@ public class CoreConstants {
     public static final String EMPTY_STRING = "";
 
     /**
+     * String value returned in case data is not available.
+     *
+     * For example, when caller information is not available this constant is used for file name,
+     * method name, etc.
+     */
+    public static final String NA = "?";
+
+    /**
      * An empty string array.
      */
     public static final String[] EMPTY_STRING_ARRAY = new String[] {};
+
+    public static final Charset UTF_8_CHARSET = StandardCharsets.UTF_8;
 
     /**
      * An empty Class array.
@@ -127,21 +139,20 @@ public class CoreConstants {
     public static final char DASH_CHAR = '-';
     public static final String DEFAULT_VALUE_SEPARATOR = ":-";
 
+    public static final String NULL_STR = "null";
     /**
-     * Number of rows before in an HTML table before,
-     * we close the table and create a new one
+     * Number of rows before in an HTML table before, we close the table and create
+     * a new one
      */
     public static final int TABLE_ROW_LIMIT = 10000;
 
     // reset the ObjectOutputStream every OOS_RESET_FREQUENCY calls
-    // this avoid serious memory leaks
+    // this avoids serious memory leaks
     public static final int OOS_RESET_FREQUENCY = 70;
 
-    /**
-     * The reference bogo instructions per second on
-     * Ceki's machine (Orion)
-     */
-    public static long REFERENCE_BIPS = 9000;
+    // See https://jakarta.ee/specifications/platform/8/platform-spec-8.html#a616
+    // there are the java:comp, java:module, java:app, java:global namespaces
+    public static final String JNDI_JAVA_NAMESPACE = "java:";
 
     // the max number of times an error should be reported
     public static final int MAX_ERROR_COUNT = 4;
@@ -150,8 +161,8 @@ public class CoreConstants {
     public static final char TAB = '\t';
     public static final char DOLLAR = '$';
 
-    public static final String SEE_FNP_NOT_SET = "See also "+CODES_URL+"#tbr_fnp_not_set";
-    public static final String SEE_MISSING_INTEGER_TOKEN = "See also "+CODES_URL+"#sat_missing_integer_token";
+    public static final String SEE_FNP_NOT_SET = "See also " + CODES_URL + "#tbr_fnp_not_set";
+    public static final String SEE_MISSING_INTEGER_TOKEN = "See also " + CODES_URL + "#sat_missing_integer_token";
 
     public static final String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
     public static final String CONFIGURATION_WATCH_LIST_RESET_X = "CONFIGURATION_WATCH_LIST_RESET";
@@ -163,8 +174,7 @@ public class CoreConstants {
     public static final String SHUTDOWN_HOOK_THREAD = "SHUTDOWN_HOOK";
 
     /**
-     * The key under which the local host name is registered in the logger
-     * context.
+     * The key under which the local host name is registered in the logger context.
      */
     public static final String HOSTNAME_KEY = "HOSTNAME";
 
@@ -199,9 +209,24 @@ public class CoreConstants {
     public static final String LEFT_ACCOLADE = new String(new char[] { CURLY_LEFT });
     public static final String RIGHT_ACCOLADE = new String(new char[] { CURLY_RIGHT });
     public static final long UNBOUNDED_TOTAL_SIZE_CAP = 0;
-    public static final int UNBOUND_HISTORY = 0;
+
+    /**
+     * If Rolling
+     */
+    public static final int UNBOUNDED_HISTORY = 0;
     
-    public static final String RECONFIGURE_ON_CHANGE_TASK = "RECONFIGURE_ON_CHANGE_TASK";
+    /**
+     * Replaced by {@link CoreConstants#UNBOUNDED_HISTORY} with the same identical value.
+
+     * @deprecated
+     * @see #UNBOUNDED_HISTORY
+     */
+    public static final int UNBOUND_HISTORY = UNBOUNDED_HISTORY;
+    
+    //public static final String RECONFIGURE_ON_CHANGE_TASK = "RECONFIGURE_ON_CHANGE_TASK";
     public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "SizeAndTimeBasedFNATP is deprecated. Use SizeAndTimeBasedRollingPolicy instead";
 
+    public static final String LOGBACK_CLASSIC_VERSION_MESSAGE = "This is logback-classic version ";
+    public static final char JSON_LINE_SEPARATOR = '\n';
+    final public static String MODEL_CONFIG_FILE_EXTENSION = ".scmo";
 }

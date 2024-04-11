@@ -13,27 +13,27 @@
  */
 package ch.qos.logback.core.helpers;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.CoreConstants;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ThrowableToStringArrayTest {
 
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

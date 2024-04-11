@@ -13,27 +13,23 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.IMarkerFactory;
-import org.slf4j.Marker;
-import org.slf4j.event.KeyValuePair;
-import org.slf4j.helpers.BasicMarkerFactory;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.event.KeyValuePair;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class KeyValuePairConverterTest {
     LoggerContext lc;
     KeyValuePairConverter converter;
     LoggingEvent event;
-    @Before
+
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         converter = new KeyValuePairConverter();
@@ -41,7 +37,7 @@ public class KeyValuePairConverterTest {
         event = createLoggingEvent();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         converter.stop();
@@ -50,21 +46,21 @@ public class KeyValuePairConverterTest {
 
     @Test
     public void testWithNullKVPList() {
-    	//event.getKeyValuePairs().add(new KeyValuePair("k", "v"));
+        // event.getKeyValuePairs().add(new KeyValuePair("k", "v"));
         String result = converter.convert(event);
         assertEquals("", result);
     }
-    
 
     @Test
     public void testWithOnelKVP() {
-    	event.addKeyValuePair(new KeyValuePair("k", "v"));
+        event.addKeyValuePair(new KeyValuePair("k", "v"));
         String result = converter.convert(event);
         assertEquals("k=\"v\"", result);
     }
-    
+
     private LoggingEvent createLoggingEvent() {
-        LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
+        LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME),
+                Level.DEBUG, "test message", null, null);
         return le;
     }
 }

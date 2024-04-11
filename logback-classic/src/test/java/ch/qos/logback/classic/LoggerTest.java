@@ -13,20 +13,23 @@
  */
 package ch.qos.logback.classic;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.Status;
+import org.slf4j.spi.LoggingEventBuilder;
+import org.slf4j.spi.NOPLoggingEventBuilder;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class LoggerTest {
 
@@ -77,9 +80,9 @@ public class LoggerTest {
         Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         LoggerContext lc = logger.getLoggerContext();
 
-        assertNotNull("Returned logger is null", logger);
-        assertEquals("Return logger isn't named root", logger.getName(), Logger.ROOT_LOGGER_NAME);
-        assertTrue("logger instances should be indentical", logger == lc.root);
+        assertNotNull(logger, "Returned logger is null");
+        assertEquals(logger.getName(), Logger.ROOT_LOGGER_NAME, "Return logger isn't named root");
+        assertTrue(logger == lc.root, "logger instances should be indentical");
     }
 
     @Test
@@ -160,6 +163,13 @@ public class LoggerTest {
     public void testEnabled_All() throws Exception {
         root.setLevel(Level.ALL);
         checkLevelThreshold(loggerTest, Level.ALL);
+    }
+
+    @Test
+    public void fluentAPIAtDisabledDebugLevelShouldReturnNOPLoggingEventBuilder() throws Exception {
+        root.setLevel(Level.INFO);
+        LoggingEventBuilder leb = loggerTest.atLevel(org.slf4j.event.Level.DEBUG);
+        assertEquals(NOPLoggingEventBuilder.class, leb.getClass());
     }
 
     @Test

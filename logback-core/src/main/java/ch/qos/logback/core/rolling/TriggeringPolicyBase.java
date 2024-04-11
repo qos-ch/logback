@@ -16,8 +16,8 @@ package ch.qos.logback.core.rolling;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
- * SizeBasedTriggeringPolicy looks at size of the file being
- * currently written to.
+ * SizeBasedTriggeringPolicy looks at size of the file being currently written
+ * to.
  * 
  * @author Ceki G&uuml;lc&uuml;
  *

@@ -17,14 +17,12 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 
 public class FileFilterUtilTest {
 
@@ -33,10 +31,12 @@ public class FileFilterUtilTest {
     // see also http://jira.qos.ch/browse/LBCORE-164
     @Test
     public void findHighestCounterTest() throws ParseException {
-        String[] sa = new String[] { "c:/log/debug-old-2010-08-10.0.log", "c:/log/debug-old-2010-08-10.1.log", "c:/log/debug-old-2010-08-10.10.log",
-                "c:/log/debug-old-2010-08-10.11.log", "c:/log/debug-old-2010-08-10.12.log", "c:/log/debug-old-2010-08-10.2.log",
-                "c:/log/debug-old-2010-08-10.3.log", "c:/log/debug-old-2010-08-10.4.log", "c:/log/debug-old-2010-08-10.5.log",
-                "c:/log/debug-old-2010-08-10.6.log", "c:/log/debug-old-2010-08-10.7.log", "c:/log/debug-old-2010-08-10.8.log",
+        String[] sa = new String[] { "c:/log/debug-old-2010-08-10.0.log", "c:/log/debug-old-2010-08-10.1.log",
+                "c:/log/debug-old-2010-08-10.10.log", "c:/log/debug-old-2010-08-10.11.log",
+                "c:/log/debug-old-2010-08-10.12.log", "c:/log/debug-old-2010-08-10.2.log",
+                "c:/log/debug-old-2010-08-10.3.log", "c:/log/debug-old-2010-08-10.4.log",
+                "c:/log/debug-old-2010-08-10.5.log", "c:/log/debug-old-2010-08-10.6.log",
+                "c:/log/debug-old-2010-08-10.7.log", "c:/log/debug-old-2010-08-10.8.log",
                 "c:/log/debug-old-2010-08-10.9.log" };
 
         File[] matchingFileArray = new File[sa.length];
@@ -49,6 +49,6 @@ public class FileFilterUtilTest {
         rexexp = fnp.toRegexForFixedDate(sdf.parse("2010-08-10"));
         String stemRegex = FileFilterUtil.afterLastSlash(rexexp);
         int result = FileFilterUtil.findHighestCounter(matchingFileArray, stemRegex);
-        assertEquals(12, result);
+        Assertions.assertEquals(12, result);
     }
 }

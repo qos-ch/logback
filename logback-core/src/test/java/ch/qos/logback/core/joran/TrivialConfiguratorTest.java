@@ -13,10 +13,6 @@
  */
 package ch.qos.logback.core.joran;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,11 +20,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.function.Supplier;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -46,14 +44,13 @@ import ch.qos.logback.core.testUtil.TrivialStatusListener;
 public class TrivialConfiguratorTest {
 
     Context context = new ContextBase();
-    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
 
-    
-    @Before
+    @BeforeEach
     public void setUp() {
-        // rule store is case insensitve
-        rulesMap.put(new ElementSelector("x"), new TopElementAction());
-        rulesMap.put(new ElementSelector("x/inc"), new IncAction());
+        // rule store is case-insensitive
+        rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
+        rulesMap.put(new ElementSelector("x/inc"), () -> new IncAction());
 
     }
 
@@ -70,9 +67,9 @@ public class TrivialConfiguratorTest {
         int oldEndCount = IncAction.endCount;
         int oldErrorCount = IncAction.errorCount;
         doTest(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "inc.xml");
-        assertEquals(oldErrorCount, IncAction.errorCount);
-        assertEquals(oldBeginCount + 1, IncAction.beginCount);
-        assertEquals(oldEndCount + 1, IncAction.endCount);
+        Assertions.assertEquals(oldErrorCount, IncAction.errorCount);
+        Assertions.assertEquals(oldBeginCount + 1, IncAction.beginCount);
+        Assertions.assertEquals(oldEndCount + 1, IncAction.endCount);
     }
 
     @Test
@@ -84,11 +81,11 @@ public class TrivialConfiguratorTest {
         try {
             doTest(filename);
         } catch (Exception e) {
-            assertTrue(e.getMessage().startsWith("Could not open ["));
+            Assertions.assertTrue(e.getMessage().startsWith("Could not open ["));
         }
-        assertTrue(tsl.list.size() + " should be greater than or equal to 1", tsl.list.size() >= 1);
+        Assertions.assertTrue(tsl.list.size() >= 1, tsl.list.size() + " should be greater than or equal to 1");
         Status s0 = tsl.list.get(0);
-        assertTrue(s0.getMessage().startsWith("Could not open ["));
+        Assertions.assertTrue(s0.getMessage().startsWith("Could not open ["));
     }
 
     @Test
@@ -101,9 +98,9 @@ public class TrivialConfiguratorTest {
             doTest(filename);
         } catch (Exception e) {
         }
-        assertEquals(2, tsl.list.size());
+        Assertions.assertEquals(2, tsl.list.size());
         Status s0 = tsl.list.get(0);
-        assertTrue(s0.getMessage().startsWith(CoreConstants.XML_PARSING));
+        Assertions.assertTrue(s0.getMessage().startsWith(CoreConstants.XML_PARSING));
     }
 
     @Test
@@ -116,8 +113,8 @@ public class TrivialConfiguratorTest {
         tc.setContext(context);
         tc.doConfigure(url);
         // deleting an open file fails
-        assertTrue(jarFile.delete());
-        assertFalse(jarFile.exists());
+        Assertions.assertTrue(jarFile.delete());
+        Assertions.assertFalse(jarFile.exists());
     }
 
     @Test
@@ -143,8 +140,8 @@ public class TrivialConfiguratorTest {
         is.close();
 
         // deleting an open file fails
-        assertTrue(jarFile.delete());
-        assertFalse(jarFile.exists());
+        Assertions.assertTrue(jarFile.delete());
+        Assertions.assertFalse(jarFile.exists());
     }
 
     File makeRandomJarFile() {

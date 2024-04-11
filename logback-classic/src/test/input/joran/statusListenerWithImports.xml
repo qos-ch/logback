@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="false">
+
+  <import class="ch.qos.logback.core.testUtil.TrivialStatusListener"/>
+  <import class="ch.qos.logback.core.read.ListAppender"/>
+  
+  
+  <statusListener class="TrivialStatusListener"/>
+  
+  <appender name="LIST" class="ListAppender"/>
+  
+  <logger name="ch.qos.logback.classic.joran">
+    <level value="INFO" />
+  </logger>
+
+  <root>
+    <level value="DEBUG" />
+    <appender-ref ref="LIST" />
+  </root>
+  
+</configuration>
+  

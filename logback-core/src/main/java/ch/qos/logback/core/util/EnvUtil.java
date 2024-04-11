@@ -1,17 +1,20 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.util;
+
+import java.lang.module.ModuleDescriptor;
+import java.util.Optional;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -19,6 +22,46 @@ package ch.qos.logback.core.util;
 public class EnvUtil {
 
     private EnvUtil() {
+    }
+
+    /**
+     * <p>Returns the current version of logback, or null if data is not
+     * available.
+     * </p>
+     *
+     * @since 1.3.0
+     * @return current version or null if missing version data
+     */
+    static public String logbackVersion() {
+        String moduleVersion = logbackVersionByModule();
+        if(moduleVersion != null)
+            return moduleVersion;
+
+        Package pkg = EnvUtil.class.getPackage();
+        if (pkg == null) {
+            return null;
+        }
+        return pkg.getImplementationVersion();
+    }
+
+    /**
+     * <p>Returns the current version of logback via class.getModule() or null if data is not
+     * available.
+     * </p>
+     *
+     * @since 1.3.0
+     * @return current version or null if missing version data
+     */
+    static private String logbackVersionByModule() {
+        Module module = EnvUtil.class.getModule();
+        if (module == null)
+            return null;
+
+        ModuleDescriptor md = module.getDescriptor();
+        if (md == null)
+            return null;
+        Optional<String> opt = md.rawVersion();
+        return opt.orElse(null);
     }
 
     static public int getJDKVersion(String javaVersionStr) {
@@ -60,7 +103,19 @@ public class EnvUtil {
     static public boolean isJDK16OrHigher() {
         return isJDK_N_OrHigher(16);
     }
-    
+
+    static public boolean isJDK18OrHigher() {
+        return isJDK_N_OrHigher(18);
+    }
+
+    /**
+     * @since logback 1.3.12/1.4.12
+     * @return true if runtime JDK is version 21 or higher
+     */
+    static public boolean isJDK21OrHigher() {
+        return isJDK_N_OrHigher(21);
+    }
+
     static public boolean isJaninoAvailable() {
         ClassLoader classLoader = EnvUtil.class.getClassLoader();
         try {
@@ -74,6 +129,16 @@ public class EnvUtil {
     public static boolean isWindows() {
         String os = System.getProperty("os.name");
         return os.startsWith("Windows");
+    }
+
+    static public boolean isClassAvailable(Class callerClass, String className) {
+        ClassLoader classLoader = Loader.getClassLoaderOfClass(callerClass);
+        try {
+            Class<?> bindingClass = classLoader.loadClass(className);
+            return (bindingClass != null);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
 }

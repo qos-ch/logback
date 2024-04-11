@@ -1,9 +1,21 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.core.model.processor;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -27,23 +39,22 @@ public class DefineModelHandler extends ModelHandlerBase {
     public DefineModelHandler(Context context) {
         super(context);
     }
-    
-	static public DefineModelHandler makeInstance(Context context, InterpretationContext ic) {
-		return new DefineModelHandler(context);
-	}
-	
+
+    static public DefineModelHandler makeInstance(Context context, ModelInterpretationContext ic) {
+        return new DefineModelHandler(context);
+    }
+
     @Override
     protected Class<DefineModel> getSupportedModelClass() {
-    	return DefineModel.class;
+        return DefineModel.class;
     }
-    
+
     @Override
-    public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
+    public void handle(ModelInterpretationContext interpretationContext, Model model) throws ModelHandlerException {
         definer = null;
         inError = false;
         propertyName = null;
 
-        
         DefineModel defineModel = (DefineModel) model;
 
         propertyName = defineModel.getName();
@@ -51,16 +62,20 @@ public class DefineModelHandler extends ModelHandlerBase {
 
         scope = ActionUtil.stringToScope(scopeStr);
 
-        if (OptionHelper.isNullOrEmpty(propertyName)) {
-            addError("Missing property name for property definer. Near [" + model.getTag() + "] line " + model.getLineNumber());
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(propertyName)) {
+            addError("Missing property name for property definer. Near [" + model.getTag() + "] line "
+                    + model.getLineNumber());
             inError = true;
         }
 
         // read property definer class name
         String className = defineModel.getClassName();
-        if (OptionHelper.isNullOrEmpty(className)) {
-            addError("Missing class name for property definer. Near [" + model.getTag() + "] line " + model.getLineNumber());
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
+            addError("Missing class name for property definer. Near [" + model.getTag() + "] line "
+                    + model.getLineNumber());
             inError = true;
+        } else {
+            className = interpretationContext.getImport(className);
         }
 
         if (inError)
@@ -81,10 +96,11 @@ public class DefineModelHandler extends ModelHandlerBase {
     }
 
     /**
-    * Now property definer is initialized by all properties and we can put
-    * property value to context
-    */
-    public void postHandle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
+     * Now property definer is initialized by all properties and we can put property
+     * value to context
+     */
+    @Override
+    public void postHandle(ModelInterpretationContext interpretationContext, Model model) throws ModelHandlerException {
         if (inError) {
             return;
         }
@@ -92,7 +108,8 @@ public class DefineModelHandler extends ModelHandlerBase {
         Object o = interpretationContext.peekObject();
 
         if (o != definer) {
-            addWarn("The object at the of the stack is not the property definer for property named [" + propertyName + "] pushed earlier.");
+            addWarn("The object at the of the stack is not the property definer for property named [" + propertyName
+                    + "] pushed earlier.");
         } else {
             interpretationContext.popObject();
             if (definer instanceof LifeCycle)
@@ -102,7 +119,7 @@ public class DefineModelHandler extends ModelHandlerBase {
             // not null
             String propertyValue = definer.getPropertyValue();
             if (propertyValue != null) {
-                addInfo("Setting property "+propertyName+"="+propertyValue+" in scope "+scope);
+                addInfo("Setting property " + propertyName + "=" + propertyValue + " in scope " + scope);
                 ActionUtil.setProperty(interpretationContext, propertyName, propertyValue, scope);
             }
         }

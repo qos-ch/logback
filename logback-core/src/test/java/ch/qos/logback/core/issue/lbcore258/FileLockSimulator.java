@@ -19,11 +19,12 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
 /**
- *  FileLockSimulator is a small application intended to simulate FileAppender in prudent mode.
- * In this mode, the application obtains an exclusive lock on the file, writes to the file and
- * then releases the lock.
+ * FileLockSimulator is a small application intended to simulate FileAppender in
+ * prudent mode. In this mode, the application obtains an exclusive lock on the
+ * file, writes to the file and then releases the lock.
  *
- * <pre>  Usage:
+ * <pre>
+ *   Usage:
  *   java  FileLockSimulator instanceName pathToLogFile delay
  * where
  * "instanceName" is the name given to the current instance of the application
@@ -31,15 +32,18 @@ import java.nio.channels.FileLock;
  * "delay" is the number of milliseconds of sleep observed every 128 writes
  * </pre>
  *
- * <b>This small application requires only the JDK to compile and to execute.</b>
+ * <b>This small application requires only the JDK to compile and to
+ * execute.</b>
  *
- * <p>FileLockSimulator should be launched as many times and from as many hosts as there will be
- * JVMs writing to a log file in prudent mode. Performance should be quite good if
- * "pathToLogFile" is on a local file system. On networked file systems such as NFS, performance
- * depends on the speed of the network and NFS implementation. It has been observed that file
- * locking over NFS is biased so that the current owner of the lock is favored over other processes.
- * Thus, while one process hogs the lock for the log file, other processes starve waiting for the
- * lock to the point of appearing deadlocked.
+ * <p>
+ * FileLockSimulator should be launched as many times and from as many hosts as
+ * there will be JVMs writing to a log file in prudent mode. Performance should
+ * be quite good if "pathToLogFile" is on a local file system. On networked file
+ * systems such as NFS, performance depends on the speed of the network and NFS
+ * implementation. It has been observed that file locking over NFS is biased so
+ * that the current owner of the lock is favored over other processes. Thus,
+ * while one process hogs the lock for the log file, other processes starve
+ * waiting for the lock to the point of appearing deadlocked.
  *
  */
 public class FileLockSimulator {

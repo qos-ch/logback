@@ -1,22 +1,20 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015, QOS.ch. All rights
+ * reserved.
  *
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v1.0 as published by
- * the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under either the terms of the Eclipse Public License
+ * v1.0 as published by the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.rolling.helper;
 
 import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
-import java.util.Date;
+import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -29,13 +27,14 @@ import ch.qos.logback.core.util.FileSize;
 public class TimeBasedArchiveRemover extends ContextAwareBase implements ArchiveRemover {
 
     static protected final long UNINITIALIZED = -1;
-    // aim for 32 days, except in case of hourly rollover, see MAX_VALUE_FOR_INACTIVITY_PERIODS
+    // aim for 32 days, except in case of hourly rollover, see
+    // MAX_VALUE_FOR_INACTIVITY_PERIODS
     static protected final long INACTIVITY_TOLERANCE_IN_MILLIS = 32L * (long) CoreConstants.MILLIS_IN_ONE_DAY;
     static final int MAX_VALUE_FOR_INACTIVITY_PERIODS = 14 * 24; // 14 days in case of hourly rollover
 
     final FileNamePattern fileNamePattern;
     final RollingCalendar rc;
-    private int maxHistory = CoreConstants.UNBOUND_HISTORY;
+    private int maxHistory = CoreConstants.UNBOUNDED_HISTORY;
     private long totalSizeCap = CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
     final boolean parentClean;
     long lastHeartBeat = UNINITIALIZED;
@@ -47,24 +46,39 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     }
 
     int callCount = 0;
-    public void clean(Date now) {
- 
-        long nowInMillis = now.getTime();
+
+    public Future<?> cleanAsynchronously(Instant now) {
+        ArchiveRemoverRunnable runnable = new ArchiveRemoverRunnable(now);
+        ExecutorService alternateExecutorService = context.getAlternateExecutorService();
+        Future<?> future = alternateExecutorService.submit(runnable);
+        return future;
+    }
+
+    /**
+     * Called from the cleaning thread.
+     *
+     * @param now
+     */
+    @Override
+    public void clean(Instant now) {
+
+        long nowInMillis = now.toEpochMilli();
         // for a live appender periodsElapsed is expected to be 1
         int periodsElapsed = computeElapsedPeriodsSinceLastClean(nowInMillis);
         lastHeartBeat = nowInMillis;
         if (periodsElapsed > 1) {
-            addInfo("Multiple periods, i.e. " + periodsElapsed + " periods, seem to have elapsed. This is expected at application start.");
+            addInfo("Multiple periods, i.e. " + periodsElapsed
+                    + " periods, seem to have elapsed. This is expected at application start.");
         }
         for (int i = 0; i < periodsElapsed; i++) {
             int offset = getPeriodOffsetForDeletionTarget() - i;
-            Date dateOfPeriodToClean = rc.getEndOfNextNthPeriod(now, offset);
-            cleanPeriod(dateOfPeriodToClean);
+            Instant instantOfPeriodToClean = rc.getEndOfNextNthPeriod(now, offset);
+            cleanPeriod(instantOfPeriodToClean);
         }
     }
 
-    protected File[] getFilesInPeriod(Date dateOfPeriodToClean) {
-        String filenameToDelete = fileNamePattern.convert(dateOfPeriodToClean);
+    protected File[] getFilesInPeriod(Instant instantOfPeriodToClean) {
+        String filenameToDelete = fileNamePattern.convert(instantOfPeriodToClean);
         File file2Delete = new File(filenameToDelete);
 
         if (fileExistsAndIsFile(file2Delete)) {
@@ -78,12 +92,11 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         return file2Delete.exists() && file2Delete.isFile();
     }
 
-    public void cleanPeriod(Date dateOfPeriodToClean) {
-        File[] matchingFileArray = getFilesInPeriod(dateOfPeriodToClean);
+    public void cleanPeriod(Instant instantOfPeriodToClean) {
+        File[] matchingFileArray = getFilesInPeriod(instantOfPeriodToClean);
 
         for (File f : matchingFileArray) {
-            addInfo("deleting " + f);
-            f.delete();
+            checkAndDeleteFile(f);
         }
 
         if (parentClean && matchingFileArray.length > 0) {
@@ -92,28 +105,60 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         }
     }
 
-    void capTotalSize(Date now) {
-        long totalSize = 0;
-        long totalRemoved = 0;
-        for (int offset = 0; offset < maxHistory; offset++) {
-            Date date = rc.getEndOfNextNthPeriod(now, -offset);
-            File[] matchingFileArray = getFilesInPeriod(date);
-            descendingSort(matchingFileArray, date);
-            for (File f : matchingFileArray) {
-                long size = f.length();
-                if (totalSize + size > totalSizeCap) {
-                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
-                    totalRemoved += size;
-                    f.delete();
-                }
-                totalSize += size;
-            }
+    private boolean checkAndDeleteFile(File f) {
+        addInfo("deleting " + f);
+        if (f == null) {
+            addWarn("Cannot delete empty file");
+            return false;
+        } else if (!f.exists()) {
+            addWarn("Cannot delete non existent file");
+            return false;
         }
-        addInfo("Removed  " + new FileSize(totalRemoved) + " of files");
+
+        boolean result = f.delete();
+        if (!result) {
+            addWarn("Failed to delete file " + f.toString());
+        }
+        return result;
     }
 
-    
-    protected void descendingSort(File[] matchingFileArray, Date date) {
+    void capTotalSize(Instant now) {
+        long totalSize = 0;
+        long totalRemoved = 0;
+        int successfulDeletions = 0;
+        int failedDeletions = 0;
+
+        for (int offset = 0; offset < maxHistory; offset++) {
+            Instant instant = rc.getEndOfNextNthPeriod(now, -offset);
+            File[] matchingFileArray = getFilesInPeriod(instant);
+            descendingSort(matchingFileArray, instant);
+            for (File f : matchingFileArray) {
+                long size = f.length();
+                totalSize += size;
+                if (totalSize > totalSizeCap) {
+                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
+
+                    boolean success = checkAndDeleteFile(f);
+                    if (success) {
+                        successfulDeletions++;
+                        totalRemoved += size;
+                    } else {
+                        failedDeletions++;
+                    }
+                }
+            }
+        }
+        if ((successfulDeletions + failedDeletions) == 0) {
+            addInfo("No removal attempts were made.");
+        } else {
+            addInfo("Removed  " + new FileSize(totalRemoved) + " of files in " + successfulDeletions + " files.");
+            if (failedDeletions != 0) {
+                addInfo("There were " + failedDeletions + " failed deletion attempts.");
+            }
+        }
+    }
+
+    protected void descendingSort(File[] matchingFileArray, Instant instant) {
         // nothing to do in super class
     }
 
@@ -138,6 +183,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     /**
      * Computes whether the fileNamePattern may create sub-folders.
+     *
      * @param fileNamePattern
      * @return
      */
@@ -147,7 +193,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         if (dtc.getDatePattern().indexOf('/') != -1) {
             return true;
         }
-        // if the literal string subsequent to the dtc contains a /, we also
+        // if the literal string after the dtc contains a /, we also
         // need parent cleaning
 
         Converter<Object> p = fileNamePattern.headTokenConverter;
@@ -179,9 +225,8 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     }
 
     /**
-     * Will remove the directory passed as parameter if empty. After that, if the
-     * parent is also becomes empty, remove the parent dir as well but at most 3
-     * times.
+     * Will remove the directory passed as parameter if empty. After that, if the parent is also becomes empty, remove
+     * the parent dir as well but at most 3 times.
      *
      * @param dir
      * @param depth
@@ -193,7 +238,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         }
         if (dir.isDirectory() && FileFilterUtil.isEmptyDirectory(dir)) {
             addInfo("deleting folder [" + dir + "]");
-            dir.delete();
+            checkAndDeleteFile(dir);
             removeFolderIfEmpty(dir.getParentFile(), depth + 1);
         }
     }
@@ -214,17 +259,10 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         return "c.q.l.core.rolling.helper.TimeBasedArchiveRemover";
     }
 
-    public Future<?> cleanAsynchronously(Date now) {
-        ArhiveRemoverRunnable runnable = new ArhiveRemoverRunnable(now);
-        ExecutorService executorService = context.getScheduledExecutorService();
-        Future<?> future = executorService.submit(runnable);
-        return future;
-    }
+    public class ArchiveRemoverRunnable implements Runnable {
+        Instant now;
 
-    public class ArhiveRemoverRunnable implements Runnable {
-        Date now;
-
-        ArhiveRemoverRunnable(Date now) {
+        ArchiveRemoverRunnable(Instant now) {
             this.now = now;
         }
 

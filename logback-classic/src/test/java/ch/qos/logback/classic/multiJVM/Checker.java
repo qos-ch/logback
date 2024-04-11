@@ -26,8 +26,9 @@ public class Checker {
     static void usage(String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + Checker.class.getName() + " runLength filename stamp0 stamp1 ..stampN\n"
-                        + "   runLength (integer) the number of logs to generate perthread\n" + "    filename (string) the filename where to write\n"
-                        + "   stamp0 JVM instance stamp0\n" + "   stamp1 JVM instance stamp1\n");
+                + "   runLength (integer) the number of logs to generate perthread\n"
+                + "    filename (string) the filename where to write\n" + "   stamp0 JVM instance stamp0\n"
+                + "   stamp1 JVM instance stamp1\n");
         System.exit(1);
     }
 

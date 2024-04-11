@@ -52,20 +52,21 @@ public interface StatusManager {
 
     /**
      * Add a status listener.
+     * 
      * @param listener
      */
 
     /**
-     * Add a status listener. The StatusManager may decide to skip installation if an 
-     * earlier instance was already installed.
+     * Add a status listener. The StatusManager may decide to skip installation if
+     * an earlier instance was already installed.
      * 
      * @param listener
      * @return true if actually added, false if skipped
      */
     boolean add(StatusListener listener);
 
-    /**);
-     * Remove a status listener.
+    /**
+     * ); Remove a status listener.
      * 
      * @param listener
      */

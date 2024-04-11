@@ -59,8 +59,8 @@ public class ContextAwareBase implements ContextAware {
     }
 
     /**
-     * The declared origin of status messages. By default 'this'. Derived classes may override this
-     * method to declare other origin.
+     * The declared origin of status messages. By default 'this'. Derived classes
+     * may override this method to declare other origin.
      * 
      * @return the declared origin, by default 'this'
      */

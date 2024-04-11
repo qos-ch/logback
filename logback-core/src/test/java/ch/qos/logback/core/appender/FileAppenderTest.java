@@ -13,24 +13,21 @@
  */
 package ch.qos.logback.core.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.testUtil.DummyEncoder;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
@@ -66,16 +63,17 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
         appender.stop();
 
         File file = new File(filename);
-        assertTrue(file.exists());
-        assertTrue("failed to delete " + file.getAbsolutePath(), file.delete());
+        Assertions.assertTrue(file.exists());
+        Assertions.assertTrue(file.delete(), "failed to delete " + file.getAbsolutePath());
     }
 
     @Test
     public void testCreateParentFolders() {
-        String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-testCreateParentFolders-" + diff + "/testCreateParentFolders.txt";
+        String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-testCreateParentFolders-" + diff
+                + "/testCreateParentFolders.txt";
         File file = new File(filename);
-        assertFalse(file.getParentFile().exists());
-        assertFalse(file.exists());
+        Assertions.assertFalse(file.getParentFile().exists());
+        Assertions.assertFalse(file.exists());
 
         FileAppender<Object> appender = new FileAppender<Object>();
         appender.setEncoder(new DummyEncoder<Object>());
@@ -86,13 +84,13 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
         appender.start();
         appender.doAppend(new Object());
         appender.stop();
-        assertTrue(file.getParentFile().exists());
-        assertTrue(file.exists());
+        Assertions.assertTrue(file.getParentFile().exists());
+        Assertions.assertTrue(file.exists());
 
         // cleanup
-        assertTrue("failed to delete " + file.getAbsolutePath(), file.delete());
+        Assertions.assertTrue(file.delete(), "failed to delete " + file.getAbsolutePath());
         File parent = file.getParentFile();
-        assertTrue("failed to delete " + parent.getAbsolutePath(), parent.delete());
+        Assertions.assertTrue(parent.delete(), "failed to delete " + parent.getAbsolutePath());
     }
 
     @Test
@@ -109,22 +107,23 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
         appender.setPrudent(true);
         appender.start();
 
-        assertTrue(appender.isAppend());
+        Assertions.assertTrue(appender.isAppend());
 
         StatusManager sm = context.getStatusManager();
         // StatusPrinter.print(context);
         StatusChecker statusChecker = new StatusChecker(context);
-        assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
+        Assertions.assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
         List<Status> statusList = sm.getCopyOfStatusList();
-        assertTrue("Expecting status list size to be 2 or larger, but was " + statusList.size(), statusList.size() >= 2);
+        Assertions.assertTrue(
+                statusList.size() >= 2, "Expecting status list size to be 2 or larger, but was " + statusList.size());
         String msg1 = statusList.get(1).getMessage();
 
-        assertTrue("Got message [" + msg1 + "]", msg1.startsWith("Setting \"Append\" property"));
+        Assertions.assertTrue(msg1.startsWith("Setting \"Append\" property"), "Got message [" + msg1 + "]");
 
         appender.doAppend(new Object());
         appender.stop();
-        assertTrue(file.exists());
-        assertTrue("failed to delete " + file.getAbsolutePath(), file.delete());
+        Assertions.assertTrue(file.exists());
+        Assertions.assertTrue(file.delete(), "failed to delete " + file.getAbsolutePath());
     }
 
     @Test
@@ -137,7 +136,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
         appender0.setContext(context);
         appender0.setEncoder(new DummyEncoder<Object>());
         appender0.start();
-        assertTrue(appender0.isStarted());
+        Assertions.assertTrue(appender0.isStarted());
 
         FileAppender<Object> appender1 = new FileAppender<Object>();
         appender1.setName("FA1");
@@ -146,7 +145,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
         appender1.setEncoder(new DummyEncoder<Object>());
         appender1.start();
 
-        assertFalse(appender1.isStarted());
+        Assertions.assertFalse(appender1.isStarted());
 
         StatusPrinter.print(context);
         StatusChecker checker = new StatusChecker(context);

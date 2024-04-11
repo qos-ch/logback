@@ -17,8 +17,9 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
 /**
- * CyclicBufferAppender stores events in a cyclic buffer of user-specified size. As the 
- * name suggests, if the size of the buffer is N, only the latest N events are available.
+ * CyclicBufferAppender stores events in a cyclic buffer of user-specified size.
+ * As the name suggests, if the size of the buffer is N, only the latest N
+ * events are available.
  * 
  * 
  * @author Ceki Gulcu

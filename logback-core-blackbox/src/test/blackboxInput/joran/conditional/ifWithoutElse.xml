@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<x>
+  <stack name="BEGIN"/>
+  <if condition='p("ki1").equals("val1")'>
+    <then>
+      <stack name="a"/>
+    </then>   
+  </if>
+  <stack name="END"/>
+</x>

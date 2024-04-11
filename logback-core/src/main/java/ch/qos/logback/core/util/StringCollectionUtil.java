@@ -27,13 +27,13 @@ import java.util.regex.Pattern;
 public class StringCollectionUtil {
 
     /**
-     * Retains all values in the subject collection that are matched by
-     * at least one of a collection of regular expressions.
+     * Retains all values in the subject collection that are matched by at least one
+     * of a collection of regular expressions.
      * <p>
      * This method is a convenience overload for
      * {@link #retainMatching(Collection, Collection)}.
-     *   
-     * @param values subject value collection 
+     * 
+     * @param values   subject value collection
      * @param patterns patterns to match
      */
     public static void retainMatching(Collection<String> values, String... patterns) {
@@ -41,14 +41,14 @@ public class StringCollectionUtil {
     }
 
     /**
-     * Retains all values in the subject collection that are matched by
-     * at least one of a collection of regular expressions.
+     * Retains all values in the subject collection that are matched by at least one
+     * of a collection of regular expressions.
      * <p>
      * The semantics of this method are conceptually similar to
-     * {@link Collection#retainAll(Collection)}, but uses pattern matching
-     * instead of exact matching.
+     * {@link Collection#retainAll(Collection)}, but uses pattern matching instead
+     * of exact matching.
      * 
-     * @param values subject value collection 
+     * @param values   subject value collection
      * @param patterns patterns to match
      */
     public static void retainMatching(Collection<String> values, Collection<String> patterns) {
@@ -67,13 +67,13 @@ public class StringCollectionUtil {
     }
 
     /**
-     * Removes all values in the subject collection that are matched by
-     * at least one of a collection of regular expressions.
+     * Removes all values in the subject collection that are matched by at least one
+     * of a collection of regular expressions.
      * <p>
      * This method is a convenience overload for
      * {@link #removeMatching(Collection, Collection)}.
      * 
-     * @param values subject value collection 
+     * @param values   subject value collection
      * @param patterns patterns to match
      */
     public static void removeMatching(Collection<String> values, String... patterns) {
@@ -81,14 +81,14 @@ public class StringCollectionUtil {
     }
 
     /**
-     * Removes all values in the subject collection that are matched by
-     * at least one of a collection of regular expressions.
+     * Removes all values in the subject collection that are matched by at least one
+     * of a collection of regular expressions.
      * <p>
      * The semantics of this method are conceptually similar to
-     * {@link Collection#removeAll(Collection)}, but uses pattern matching
-     * instead of exact matching.
+     * {@link Collection#removeAll(Collection)}, but uses pattern matching instead
+     * of exact matching.
      * 
-     * @param values subject value collection 
+     * @param values   subject value collection
      * @param patterns patterns to match
      */
     public static void removeMatching(Collection<String> values, Collection<String> patterns) {

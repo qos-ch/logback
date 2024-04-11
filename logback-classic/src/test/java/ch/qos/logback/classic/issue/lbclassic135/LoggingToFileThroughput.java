@@ -18,6 +18,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 
 /**
@@ -42,8 +43,9 @@ public class LoggingToFileThroughput {
             tp.execute(buildArray(logger));
         }
 
-        tp.execute(buildArray(logger));
-        tp.printThroughput("File:   ");
+        RunnableWithCounterAndDone[] runnnableArray = buildArray(logger);
+        tp.execute(runnnableArray);
+        tp.printThroughput(runnnableArray, "File:   ");
         lc.stop();
     }
 

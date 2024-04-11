@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE x>
+<!DOCTYPE configuration>
 
-<x>
+<configuration>
   <include file="${includeKey}" />
   <include file="${secondFileKey}" />
-</x>
+</configuration>

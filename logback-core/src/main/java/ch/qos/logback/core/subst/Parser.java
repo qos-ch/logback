@@ -27,13 +27,20 @@ import java.util.List;
 // V = E|E :- E
 //   = E(':-'E|~)
 
+// new definition
+
+// V = E | E :- Eopt
+//   = E (~| :- Eopt)
+
 /**
  * Parse a token list returning a node chain.
  *
  * @author Ceki Gulcu
  */
 public class Parser {
-
+    
+    static final public String EXPECTING_DATA_AFTER_LEFT_ACCOLADE = "Expecting at least a literal between left accolade and ':-'";
+    
     final List<Token> tokenList;
     int pointer = 0;
 
@@ -72,7 +79,9 @@ public class Parser {
     // T = LITERAL | '${' V '}'
     private Node T() throws ScanException {
         Token t = peekAtCurentToken();
-
+        if(t == null) {
+            return null;    
+        }
         switch (t.type) {
         case LITERAL:
             advanceTokenPointer();
@@ -103,26 +112,34 @@ public class Parser {
         return new Node(Node.Type.LITERAL, s);
     }
 
-    // V = E(':='E|~)
+    // V = E (~| :- Eopt)
     private Node V() throws ScanException {
         Node e = E();
         Node variable = new Node(Node.Type.VARIABLE, e);
         Token t = peekAtCurentToken();
         if (isDefaultToken(t)) {
             advanceTokenPointer();
-            Node def = E();
-            variable.defaultPart = def;
+            Node def = Eopt();
+            if(def != null) {
+                variable.defaultPart = def;
+            } else {
+                variable.defaultPart = makeNewLiteralNode(CoreConstants.EMPTY_STRING);
+            }
         }
         return variable;
     }
 
-    // C = E(':='E|~)
+    
+    // C = E(':-'E|~)
     private Node C() throws ScanException {
         Node e0 = E();
         Token t = peekAtCurentToken();
         if (isDefaultToken(t)) {
             advanceTokenPointer();
             Node literal = makeNewLiteralNode(CoreConstants.DEFAULT_VALUE_SEPARATOR);
+            if(e0 == null) {
+              throw new ScanException(EXPECTING_DATA_AFTER_LEFT_ACCOLADE);
+            }
             e0.append(literal);
             Node e1 = E();
             e0.append(e1);

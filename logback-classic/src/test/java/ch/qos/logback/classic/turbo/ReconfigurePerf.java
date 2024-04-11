@@ -17,9 +17,9 @@ import java.io.File;
 import java.io.IOException;
 
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -30,7 +30,7 @@ import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.joran.spi.JoranException;
 
-@Ignore
+@Disabled
 public class ReconfigurePerf {
     final static int THREAD_COUNT = 500;
     // final static int LOOP_LEN = 1000 * 1000;
@@ -53,7 +53,7 @@ public class ReconfigurePerf {
     Logger logger = loggerContext.getLogger(this.getClass());
     MultiThreadedHarness harness;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // take into account propagation latency occurs on Linux
         if (EnvUtilForTests.isLinux()) {

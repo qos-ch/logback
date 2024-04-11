@@ -13,13 +13,11 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -35,24 +33,30 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 import java.nio.charset.Charset;
-@Ignore
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class SyslogAppenderTest {
 
     private static final String SYSLOG_PREFIX_REGEX = "<\\d{2}>\\w{3} [\\d ]\\d \\d{2}(:\\d{2}){2} [\\w.-]* ";
 
     LoggerContext lc = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+
     SyslogAppender sa = new SyslogAppender();
     MockSyslogServer mockServer;
     String loggerName = this.getClass().getName();
     Logger logger = lc.getLogger(loggerName);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc.setName("test");
+        lc.setMDCAdapter(logbackMDCAdapter);
         sa.setContext(lc);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -126,7 +130,8 @@ public class SyslogAppenderTest {
         String expected = "<" + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
         assertTrue(msg.startsWith(expected));
 
-        checkRegexMatch(msg, SYSLOG_PREFIX_REGEX + "test/something \\[" + threadName + "\\] " + loggerName + " " + logMsg);
+        checkRegexMatch(msg,
+                SYSLOG_PREFIX_REGEX + "test/something \\[" + threadName + "\\] " + loggerName + " " + logMsg);
 
     }
 
@@ -171,7 +176,7 @@ public class SyslogAppenderTest {
     }
 
     private void checkRegexMatch(String s, String regex) {
-        assertTrue("The string [" + s + "] did not match regex [" + regex + "]", s.matches(regex));
+        assertTrue(s.matches(regex), "The string [" + s + "] did not match regex [" + regex + "]");
     }
 
     @Test
@@ -201,7 +206,8 @@ public class SyslogAppenderTest {
         final int maxMessageSize = sa.getMaxMessageSize();
         String largeMsg = new String(mockServer.getMessageList().get(0));
         assertTrue(largeMsg.startsWith(expected));
-        String largeRegex = SYSLOG_PREFIX_REGEX + "\\[" + threadName + "\\] " + loggerName + " " + "a{" + (maxMessageSize - 2000) + "," + maxMessageSize + "}";
+        String largeRegex = SYSLOG_PREFIX_REGEX + "\\[" + threadName + "\\] " + loggerName + " " + "a{"
+                + (maxMessageSize - 2000) + "," + maxMessageSize + "}";
         checkRegexMatch(largeMsg, largeRegex);
 
         String msg = new String(mockServer.getMessageList().get(1));
@@ -238,7 +244,8 @@ public class SyslogAppenderTest {
         // See LOGBACK-732
         setMockServerAndConfigure(1);
 
-        // Use a string that can be encoded in a somewhat odd encoding (ISO-8859-4) to minimize
+        // Use a string that can be encoded in a somewhat odd encoding (ISO-8859-4) to
+        // minimize
         // the probability of the encoding test to work by accident
         String logMsg = "R\u0129ga"; // Riga spelled with the i having a tilda on top
 

@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,12 +55,13 @@ public class FileNamePattern extends ContextAwareBase {
         ConverterUtil.startConverters(this.headTokenConverter);
     }
 
-    
     void parse() {
         try {
             // http://jira.qos.ch/browse/LOGBACK-197
-            // we escape ')' for parsing purposes. Note that the original pattern is preserved
-            // because it is shown to the user in status messages. We don't want the escaped version
+            // we escape ')' for parsing purposes. Note that the original pattern is
+            // preserved
+            // because it is shown to the user in status messages. We don't want the escaped
+            // version
             // to leak out.
             String patternForParsing = escapeRightParantesis(pattern);
             Parser<Object> p = new Parser<Object>(patternForParsing, new AlmostAsIsEscapeUtil());
@@ -88,7 +90,6 @@ public class FileNamePattern extends ContextAwareBase {
         return result;
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -105,7 +106,6 @@ public class FileNamePattern extends ContextAwareBase {
             return false;
         return true;
     }
-
 
     public DateTokenConverter<Object> getPrimaryDateTokenConverter() {
         Converter<Object> p = headTokenConverter;
@@ -141,7 +141,7 @@ public class FileNamePattern extends ContextAwareBase {
         IntegerTokenConverter itc = getIntegerTokenConverter();
         return itc != null;
     }
-    
+
     public String convertMultipleArguments(Object... objectList) {
         StringBuilder buf = new StringBuilder();
         Converter<Object> c = headTokenConverter;
@@ -186,12 +186,11 @@ public class FileNamePattern extends ContextAwareBase {
         return pattern;
     }
 
-    
     /**
      * Given date, convert this instance to a regular expression.
      *
-     * Used to compute sub-regex when the pattern has both %d and %i, and the
-     * date is known.
+     * Used to compute sub-regex when the pattern has both %d and %i, and the date
+     * is known.
      * 
      * @param date - known date
      */
@@ -210,6 +209,32 @@ public class FileNamePattern extends ContextAwareBase {
         }
         return buf.toString();
     }
+
+
+    /**
+     * Given date, convert this instance to a regular expression.
+     *
+     * Used to compute sub-regex when the pattern has both %d and %i, and the date
+     * is known.
+     *
+     * @param instant - known instant
+     */
+    public String toRegexForFixedDate(Instant instant) {
+        StringBuilder buf = new StringBuilder();
+        Converter<Object> p = headTokenConverter;
+        while (p != null) {
+            if (p instanceof LiteralConverter) {
+                buf.append(p.convert(null));
+            } else if (p instanceof IntegerTokenConverter) {
+                buf.append("(\\d+)");
+            } else if (p instanceof DateTokenConverter) {
+                buf.append(p.convert(instant));
+            }
+            p = p.getNext();
+        }
+        return buf.toString();
+    }
+
 
     /**
      * Given date, convert this instance to a regular expression

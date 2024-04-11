@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configuration file for the logging. -->
+<configuration debug="true">
+	<import
+		class="ch.qos.logback.classic.encoder.PatternLayoutEncoder" />
+	<import class="ch.qos.logback.classic.AsyncAppender" />
+	<import class="ch.qos.logback.core.FileAppender" />
+	<import class="ch.qos.logback.core.ConsoleAppender" />
+
+	<shutdownHook />
+
+
+	<!-- see https://logback.qos.ch/manual/configuration.html#shutdownHook -->
+	<shutdownHook />
+
+	<appender name="CONSOLE" class="ConsoleAppender">
+		<encoder>
+			<pattern>%level %logger - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="ASYNC" class="AsyncAppender">
+		<appender-ref ref="FILE" />
+	</appender>
+	<appender name="FILE" class="FileAppender">
+		<file>target/test-output/logback_1614/test.log</file>
+		<append>false</append>
+		<encoder>
+			<pattern>%d [%thread] %-5level %logger{36}: - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Level = "trace", "debug", "info", "warn", "error", "OFF" -->
+	<root level="trace">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ASYNC" />
+	</root>
+
+</configuration>

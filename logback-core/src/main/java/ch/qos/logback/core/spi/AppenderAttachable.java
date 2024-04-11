@@ -40,7 +40,7 @@ public interface AppenderAttachable<E> {
 
     /**
      * Returns <code>true</code> if the specified appender is in list of
-     * attached attached, <code>false</code> otherwise.
+     * attached, <code>false</code> otherwise.
      */
     boolean isAttached(Appender<E> appender);
 

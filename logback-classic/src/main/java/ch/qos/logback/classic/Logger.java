@@ -22,11 +22,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.spi.DefaultLoggingEventBuilder;
 import org.slf4j.spi.LocationAwareLogger;
+import org.slf4j.spi.LoggingEventAware;
 import org.slf4j.spi.LoggingEventBuilder;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LogbackLoggingEventBuilder;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import ch.qos.logback.core.Appender;
@@ -35,13 +36,13 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
-public final class Logger implements org.slf4j.Logger, LocationAwareLogger, AppenderAttachable<ILoggingEvent>, Serializable {
+public final class Logger
+        implements org.slf4j.Logger, LocationAwareLogger, LoggingEventAware, AppenderAttachable<ILoggingEvent>, Serializable {
 
     private static final long serialVersionUID = 5454405123156820674L; // 8745934908040027998L;
 
     /**
-     * The fully qualified name of this class. Used in gathering caller
-     * information.
+     * The fully qualified name of this class. Used in gathering caller information.
      */
     public static final String FQCN = ch.qos.logback.classic.Logger.class.getName();
 
@@ -58,8 +59,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     transient private int effectiveLevelInt;
 
     /**
-     * The parent of this category. All categories have at least one ancestor
-     * which is the root category.
+     * The parent of this category. All categories have at least one ancestor which
+     * is the root category.
      */
     transient private Logger parent;
 
@@ -70,15 +71,15 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 
     /**
      * It is assumed that once the 'aai' variable is set to a non-null value, it
-     * will never be reset to null. it is further assumed that only place where
-     * the 'aai'ariable is set is within the addAppender method. This method is
+     * will never be reset to null. it is further assumed that only place where the
+     * 'aai'ariable is set is within the addAppender method. This method is
      * synchronized on 'this' (Logger) protecting against simultaneous
      * re-configuration of this logger (a very unlikely scenario).
      * 
      * <p>
-     * It is further assumed that the AppenderAttachableImpl is responsible for
-     * its internal synchronization and thread safety. Thus, we can get away with
-     * *not* synchronizing on the 'aai' (check null/ read) because
+     * It is further assumed that the AppenderAttachableImpl is responsible for its
+     * internal synchronization and thread safety. Thus, we can get away with *not*
+     * synchronizing on the 'aai' (check null/ read) because
      * <p>
      * 1) the 'aai' variable is immutable once set to non-null
      * <p>
@@ -90,12 +91,12 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      */
     transient private AppenderAttachableImpl<ILoggingEvent> aai;
     /**
-     * Additivity is set to true by default, that is children inherit the
-     * appenders of their ancestors by default. If this variable is set to
-     * <code>false</code> then the appenders located in the ancestors of this
-     * logger will not be used. However, the children of this logger will inherit
-     * its appenders, unless the children have their additivity flag set to
-     * <code>false</code> too. See the user manual for more details.
+     * Additivity is set to true by default, that is children inherit the appenders
+     * of their ancestors by default. If this variable is set to <code>false</code>
+     * then the appenders located in the ancestors of this logger will not be used.
+     * However, the children of this logger will inherit its appenders, unless the
+     * children have their additivity flag set to <code>false</code> too. See the
+     * user manual for more details.
      */
     transient private boolean additive = true;
 
@@ -250,8 +251,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     /**
      * Invoke all the appenders of this logger.
      * 
-     * @param event
-     *          The event to log
+     * @param event The event to log
      */
     public void callAppenders(ILoggingEvent event) {
         int writes = 0;
@@ -294,16 +294,16 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      * IMPORTANT: Calls to this method must be within a synchronized block on this
      * logger.
      * 
-     * @param lastPart
-     *          the suffix (i.e. last part) of the child logger name. This
-     *          parameter may not include dots, i.e. the logger separator
-     *          character.
+     * @param lastPart the suffix (i.e. last part) of the child logger name. This
+     *                 parameter may not include dots, i.e. the logger separator
+     *                 character.
      * @return
      */
     Logger createChildByLastNamePart(final String lastPart) {
         int i_index = LoggerNameUtil.getFirstSeparatorIndexOf(lastPart);
         if (i_index != -1) {
-            throw new IllegalArgumentException("Child name [" + lastPart + " passed as parameter, may not include [" + CoreConstants.DOT + "]");
+            throw new IllegalArgumentException(
+                    "Child name [" + lastPart + " passed as parameter, may not include [" + CoreConstants.DOT + "]");
         }
 
         if (childrenList == null) {
@@ -350,7 +350,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         int i_index = LoggerNameUtil.getSeparatorIndexOf(childName, this.name.length() + 1);
         if (i_index != -1) {
             throw new IllegalArgumentException("For logger [" + this.name + "] child name [" + childName
-                            + " passed as parameter, may not include '.' after index" + (this.name.length() + 1));
+                    + " passed as parameter, may not include '.' after index" + (this.name.length() + 1));
         }
 
         if (childrenList == null) {
@@ -365,14 +365,15 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 
     /**
      * The next methods are not merged into one because of the time we gain by not
-     * creating a new Object[] with the params. This reduces the cost of not
-     * logging by about 20 nanoseconds.
+     * creating a new Object[] with the params. This reduces the cost of not logging
+     * by about 20 nanoseconds.
      */
 
-    private void filterAndLog_0_Or3Plus(final String localFQCN, final Marker marker, final Level level, final String msg, final Object[] params,
-                    final Throwable t) {
+    private void filterAndLog_0_Or3Plus(final String localFQCN, final Marker marker, final Level level,
+            final String msg, final Object[] params, final Throwable t) {
 
-        final FilterReply decision = loggerContext.getTurboFilterChainDecision_0_3OrMore(marker, this, level, msg, params, t);
+        final FilterReply decision = loggerContext.getTurboFilterChainDecision_0_3OrMore(marker, this, level, msg,
+                params, t);
 
         if (decision == FilterReply.NEUTRAL) {
             if (effectiveLevelInt > level.levelInt) {
@@ -385,7 +386,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         buildLoggingEventAndAppend(localFQCN, marker, level, msg, params, t);
     }
 
-    private void filterAndLog_1(final String localFQCN, final Marker marker, final Level level, final String msg, final Object param, final Throwable t) {
+    private void filterAndLog_1(final String localFQCN, final Marker marker, final Level level, final String msg,
+            final Object param, final Throwable t) {
 
         final FilterReply decision = loggerContext.getTurboFilterChainDecision_1(marker, this, level, msg, param, t);
 
@@ -400,10 +402,11 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         buildLoggingEventAndAppend(localFQCN, marker, level, msg, new Object[] { param }, t);
     }
 
-    private void filterAndLog_2(final String localFQCN, final Marker marker, final Level level, final String msg, final Object param1, final Object param2,
-                    final Throwable t) {
+    private void filterAndLog_2(final String localFQCN, final Marker marker, final Level level, final String msg,
+            final Object param1, final Object param2, final Throwable t) {
 
-        final FilterReply decision = loggerContext.getTurboFilterChainDecision_2(marker, this, level, msg, param1, param2, t);
+        final FilterReply decision = loggerContext.getTurboFilterChainDecision_2(marker, this, level, msg, param1,
+                param2, t);
 
         if (decision == FilterReply.NEUTRAL) {
             if (effectiveLevelInt > level.levelInt) {
@@ -416,8 +419,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         buildLoggingEventAndAppend(localFQCN, marker, level, msg, new Object[] { param1, param2 }, t);
     }
 
-    private void buildLoggingEventAndAppend(final String localFQCN, final Marker marker, final Level level, final String msg, final Object[] params,
-                    final Throwable t) {
+    private void buildLoggingEventAndAppend(final String localFQCN, final Marker marker, final Level level,
+            final String msg, final Object[] params, final Throwable t) {
         LoggingEvent le = new LoggingEvent(localFQCN, this, level, msg, t, params);
         le.addMarker(marker);
         callAppenders(le);
@@ -763,13 +766,13 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     }
 
     /**
-     * Creates a {@link LoggingEventBuilder} of type {@link LogbackLoggingEventBuilder}.
+     * Creates a {@link LoggingEventBuilder} of type {@link DefaultLoggingEventBuilder}.
      * 
      * @since 1.3
      */
     @Override
     public LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level level) {
-    	return new LogbackLoggingEventBuilder(this, level);
+        return new DefaultLoggingEventBuilder(this, level);
     }
 
     public void log(Marker marker, String fqcn, int levelInt, String message, Object[] argArray, Throwable t) {
@@ -778,44 +781,46 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     }
 
     /**
-     * Support SLF4J interception during initialization as introduced in SLF4J version 1.7.15
-     * @since 1.1.4 
+     * Support SLF4J interception during initialization as introduced in SLF4J
+     * version 1.7.15
+     * 
+     * @since 1.1.4
      * @param slf4jEvent
      */
     public void log(org.slf4j.event.LoggingEvent slf4jEvent) {
-    	org.slf4j.event.Level slf4jLevel = slf4jEvent.getLevel();
-		Level logbackLevel = Level.convertAnSLF4JLevel(slf4jLevel);
-		
-		// By default, assume this class was the caller. This happens during initialization.
-		// However, it is possible that the caller is some other library, e.g. 
-		// slf4j-jdk-platform-logging
-        
-		String callerBoundary = slf4jEvent.getCallerBoundary();
-        if(callerBoundary==null) {
-        	callerBoundary = FQCN;
-        }
-        
-		LoggingEvent lle = new LoggingEvent(callerBoundary, this, logbackLevel,  slf4jEvent.getMessage(), slf4jEvent.getThrowable(), 
-				slf4jEvent.getArgumentArray());
-		List<Marker> markers = slf4jEvent.getMarkers();
-		
-		if(markers != null) {
-			markers.forEach(m -> lle.addMarker(m));
-		}
-		
-		lle.setKeyValuePairs(slf4jEvent.getKeyValuePairs());
-		
+        org.slf4j.event.Level slf4jLevel = slf4jEvent.getLevel();
+        Level logbackLevel = Level.convertAnSLF4JLevel(slf4jLevel);
 
-		// Note that at this point, any calls made with a logger disabled 
-		// for a given level, will be already filtered out/in. TurboFilters cannot 
-		// act at this point in the process.
-		this.callAppenders(lle);
+        // By default, assume this class was the caller. This happens during
+        // initialization.
+        // However, it is possible that the caller is some other library, e.g.
+        // slf4j-jdk-platform-logging
+
+        String callerBoundary = slf4jEvent.getCallerBoundary();
+        if (callerBoundary == null) {
+            callerBoundary = FQCN;
+        }
+
+        LoggingEvent lle = new LoggingEvent(callerBoundary, this, logbackLevel, slf4jEvent.getMessage(),
+                slf4jEvent.getThrowable(), slf4jEvent.getArgumentArray());
+        List<Marker> markers = slf4jEvent.getMarkers();
+
+        if (markers != null) {
+            markers.forEach(m -> lle.addMarker(m));
+        }
+
+        lle.setKeyValuePairs(slf4jEvent.getKeyValuePairs());
+
+        // Note that at this point, any calls made with a logger disabled
+        // for a given level, will be already filtered out/in. TurboFilters cannot
+        // act at this point in the process.
+        this.callAppenders(lle);
     }
 
     /**
-     * After serialization, the logger instance does not know its LoggerContext.
-     * The best we can do here, is to return a logger with the same name
-     * returned by org.slf4j.LoggerFactory.
+     * After serialization, the logger instance does not know its LoggerContext. The
+     * best we can do here, is to return a logger with the same name returned by
+     * org.slf4j.LoggerFactory.
      * 
      * @return Logger instance with the same name
      * @throws ObjectStreamException

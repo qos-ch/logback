@@ -18,11 +18,11 @@ import java.io.IOException;
 import ch.qos.logback.core.spi.ContextAware;
 
 /**
- * An object that is responsible for the asynchronous execution of a
- * socket server.
+ * An object that is responsible for the asynchronous execution of a socket
+ * server.
  * <p>
- * This interface exists primarily to allow the runner to be mocked for
- * the purpose of unit testing the socket server implementation.
+ * This interface exists primarily to allow the runner to be mocked for the
+ * purpose of unit testing the socket server implementation.
  * 
  * @author Carl Harris
  */
@@ -30,6 +30,7 @@ public interface ServerRunner<T extends Client> extends ContextAware, Runnable {
 
     /**
      * Gets a flag indicating whether the server is currently running.
+     * 
      * @return flag state
      */
     boolean isRunning();
@@ -37,15 +38,17 @@ public interface ServerRunner<T extends Client> extends ContextAware, Runnable {
     /**
      * Stops execution of the runner.
      * <p>
-     * This method must cause all I/O and thread resources associated with
-     * the runner to be released.  If the receiver has not been started, this
-     * method must have no effect.
+     * This method must cause all I/O and thread resources associated with the
+     * runner to be released. If the receiver has not been started, this method must
+     * have no effect.
+     * 
      * @throws IOException
      */
     void stop() throws IOException;
 
     /**
-     * Presents each connected client to the given visitor.   
+     * Presents each connected client to the given visitor.
+     * 
      * @param visitor the subject visitor
      */
     void accept(ClientVisitor<T> visitor);

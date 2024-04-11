@@ -31,8 +31,8 @@ import org.slf4j.Marker;
  * Send an e-mail when a specific logging event occurs, typically on errors or
  * fatal errors.
  * 
- * For more information about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#SMTPAppender
+ * For more information about this appender, please refer to the online manual
+ * at http://logback.qos.ch/manual/appenders.html#SMTPAppender
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -47,8 +47,8 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
 
     /**
      * The default constructor will instantiate the appender with a
-     * {@link EventEvaluator} that will trigger on events with level
-     * ERROR or higher.
+     * {@link EventEvaluator} that will trigger on events with level ERROR or
+     * higher.
      */
     public SMTPAppender() {
 
@@ -66,16 +66,15 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Use the parameter as the {@link
-     * EventEvaluator} for this SMTPAppender.
+     * Use the parameter as the {@link EventEvaluator} for this SMTPAppender.
      */
     public SMTPAppender(EventEvaluator<ILoggingEvent> eventEvaluator) {
         this.eventEvaluator = eventEvaluator;
     }
 
     /**
-     * Perform SMTPAppender specific appending actions, mainly adding the event to
-     * a cyclic buffer.
+     * Perform SMTPAppender specific appending actions, mainly adding the event to a
+     * cyclic buffer.
      */
     protected void subAppend(CyclicBuffer<ILoggingEvent> cb, ILoggingEvent event) {
         if (includeCallerData) {
@@ -99,10 +98,10 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
         if (markers == null || markers.isEmpty())
             return false;
 
-        for(Marker marker: markers) {
-        	if(marker.contains(ClassicConstants.FINALIZE_SESSION_MARKER)) {
-        		return true;
-        	}
+        for (Marker marker : markers) {
+            if (marker.contains(ClassicConstants.FINALIZE_SESSION_MARKER)) {
+                return true;
+            }
         }
         return false;
     }
@@ -136,8 +135,8 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     public void setIncludeCallerData(boolean includeCallerData) {
         this.includeCallerData = includeCallerData;
     }
-    
+
     Future<?> getAsynchronousSendingFuture() {
-    	return asynchronousSendingFuture;
+        return asynchronousSendingFuture;
     }
 }

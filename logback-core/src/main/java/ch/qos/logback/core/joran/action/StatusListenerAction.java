@@ -15,7 +15,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.status.StatusListener;
@@ -28,21 +28,23 @@ public class StatusListenerAction extends BaseModelAction {
     StatusListener statusListener = null;
 
     @Override
-    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isNullOrEmpty(className)) {
-            addError("Missing class name for statusListener. Near [" + name + "] line " + getLineNumber(interpretationContext));
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
+            addError("Missing class name for statusListener. Near [" + name + "] line "
+                    + getLineNumber(interpretationContext));
             return false;
         }
         return true;
     }
 
     @Override
-    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
         StatusListenerModel statusListenerModel = new StatusListenerModel();
         statusListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
         return statusListenerModel;
     }
-
 
 }

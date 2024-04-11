@@ -5,61 +5,60 @@ import java.util.Map;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.AppenderAttachable;
 
 public class AppenderRefModelHandler extends ModelHandlerBase {
-	boolean inError = false;
+    boolean inError = false;
 
-	public AppenderRefModelHandler(Context context) {
-		super(context);
-	}
+    public AppenderRefModelHandler(Context context) {
+        super(context);
+    }
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
-		return new AppenderRefModelHandler(context);
-	}	
-		
-	@Override
-	protected Class<? extends AppenderRefModel> getSupportedModelClass() {
-		return AppenderRefModel.class;
-	}
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new AppenderRefModelHandler(context);
+    }
 
-	@Override
-	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+    @Override
+    protected Class<? extends AppenderRefModel> getSupportedModelClass() {
+        return AppenderRefModel.class;
+    }
 
-		Object o = interpContext.peekObject();
+    @Override
+    public void handle(ModelInterpretationContext interpContext, Model model) throws ModelHandlerException {
 
-		if (!(o instanceof AppenderAttachable)) {
-			inError = true;
-			String errMsg = "Could not find an AppenderAttachable at the top of execution stack. Near "
-					+ model.idString();
-			addError(errMsg);
-			return;
-		}
+        Object o = interpContext.peekObject();
 
-		AppenderRefModel appenderRefModel = (AppenderRefModel) model;
-		AppenderAttachable<?> appenderAttachable = (AppenderAttachable<?>) o;
+        if (!(o instanceof AppenderAttachable)) {
+            inError = true;
+            String errMsg = "Could not find an AppenderAttachable at the top of execution stack. Near "
+                    + model.idString();
+            addError(errMsg);
+            return;
+        }
 
-		attachRefencedAppenders(interpContext, appenderRefModel,appenderAttachable);
-		
-	}
+        AppenderRefModel appenderRefModel = (AppenderRefModel) model;
+        AppenderAttachable<?> appenderAttachable = (AppenderAttachable<?>) o;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	void attachRefencedAppenders(InterpretationContext interpContext, AppenderRefModel appenderRefModel, AppenderAttachable<?> appenderAttachable) {
-		String appenderName = interpContext.subst(appenderRefModel.getRef());
-		
-		Map<String, Appender> appenderBag = (Map<String, Appender>) interpContext.getObjectMap()
-				.get(JoranConstants.APPENDER_BAG);
+        attachRefencedAppenders(interpContext, appenderRefModel, appenderAttachable);
 
-		Appender appender = appenderBag.get(appenderName);
-		if (appender == null) {
-			addError("Failed to find appender named [" + appenderName + "]");
-		} else {
-			addInfo("Attaching appender named [" + appenderName + "] to " +appenderAttachable );
-			appenderAttachable.addAppender(appender);
-		}
+    }
 
-	}
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    void attachRefencedAppenders(ModelInterpretationContext mic, AppenderRefModel appenderRefModel,
+            AppenderAttachable<?> appenderAttachable) {
+        String appenderName = mic.subst(appenderRefModel.getRef());
+
+        Map<String, Appender> appenderBag = (Map<String, Appender>) mic.getObjectMap().get(JoranConstants.APPENDER_BAG);
+
+        Appender appender = appenderBag.get(appenderName);
+        if (appender == null) {
+            addError("Failed to find appender named [" + appenderName + "]");
+        } else {
+            addInfo("Attaching appender named [" + appenderName + "] to " + appenderAttachable);
+            appenderAttachable.addAppender(appender);
+        }
+
+    }
 }

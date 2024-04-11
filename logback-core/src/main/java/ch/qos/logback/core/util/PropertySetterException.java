@@ -14,8 +14,8 @@
 package ch.qos.logback.core.util;
 
 /**
- * Thrown when an error is encountered whilst attempting to set a property
- * using the {@link ch.qos.logback.core.joran.util.PropertySetter} utility class.
+ * Thrown when an error is encountered whilst attempting to set a property using
+ * the {@link ch.qos.logback.core.joran.util.PropertySetter} utility class.
  * 
  * @author Anders Kristensen
  */

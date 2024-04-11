@@ -13,10 +13,10 @@
  */
 package ch.qos.logback.core.spi;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * A
@@ -35,7 +35,7 @@ public class ScenarioBasedCyclicBufferTrackerTest {
         assertEquals(t_at.lingererKeysAsOrderedList(), at.lingererKeysAsOrderedList());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         parameters.keySpaceLen = 128;
         parameters.maxTimestampInc = ComponentTracker.DEFAULT_TIMEOUT / 2;

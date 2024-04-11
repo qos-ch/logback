@@ -8,11 +8,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * A GC-free lock-free thread-safe implementation of the {@link List} interface for use cases where iterations over the list vastly out-number modifications on the list.
+ * A GC-free lock-free thread-safe implementation of the {@link List} interface
+ * for use cases where iterations over the list vastly out-number modifications
+ * on the list.
  * 
- * <p>Underneath, it wraps an instance of {@link CopyOnWriteArrayList} and exposes a copy of the array used by that instance.
+ * <p>
+ * Underneath, it wraps an instance of {@link CopyOnWriteArrayList} and exposes
+ * a copy of the array used by that instance.
  * 
- * <p>Typical use:</p>
+ * <p>
+ * Typical use:
+ * </p>
  * 
  * <pre>
  *   COWArrayList&lt;Integer&gt; list = new COWArrayList(new Integer[0]);
@@ -27,21 +33,28 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *   for(int i = 0; i &lt; intArray.length; i++) {
  *     sum != intArray[i];
  *   }
- * </pre>  
- *   
- *  <p>If the list is not modified, then repetitive calls to {@link #asTypedArray()}, {@link #toArray()} and 
- *  {@link #toArray(Object[])} are guaranteed to be GC-free. Note that iterating over the list using 
- *  {@link COWArrayList#iterator()} and {@link COWArrayList#listIterator()} are <b>not</b> GC-free.</p>
- *   
+ * </pre>
+ * 
+ * <p>
+ * If the list is not modified, then repetitive calls to
+ * {@link #asTypedArray()}, {@link #toArray()} and {@link #toArray(Object[])}
+ * are guaranteed to be GC-free. Note that iterating over the list using
+ * {@link COWArrayList#iterator()} and {@link COWArrayList#listIterator()} are
+ * <b>not</b> GC-free.
+ * </p>
+ * 
  * @author Ceki Gulcu
  * @since 1.1.10
  */
 public class COWArrayList<E> implements List<E> {
 
-    // Implementation note: markAsStale() should always be invoked *after* list-modifying actions.
-    // If not, readers might get a stale array until the next write. The potential problem is nicely
-    // explained by Rob Eden. See https://github.com/qos-ch/logback/commit/32a2047a1adfc#commitcomment-20791176
-    
+    // Implementation note: markAsStale() should always be invoked *after*
+    // list-modifying actions.
+    // If not, readers might get a stale array until the next write. The potential
+    // problem is nicely
+    // explained by Rob Eden. See
+    // https://github.com/qos-ch/logback/commit/32a2047a1adfc#commitcomment-20791176
+
     AtomicBoolean fresh = new AtomicBoolean(false);
     CopyOnWriteArrayList<E> underlyingList = new CopyOnWriteArrayList<E>();
     E[] ourCopy;
@@ -100,9 +113,9 @@ public class COWArrayList<E> implements List<E> {
     }
 
     /**
-     * Return an array of type E[]. The returned array is intended to be iterated over. 
-     * If the list is modified, subsequent calls to this method will return different/modified 
-     * array instances.
+     * Return an array of type E[]. The returned array is intended to be iterated
+     * over. If the list is modified, subsequent calls to this method will return
+     * different/modified array instances.
      * 
      * @return
      */
@@ -110,11 +123,11 @@ public class COWArrayList<E> implements List<E> {
         refreshCopyIfNecessary();
         return ourCopy;
     }
-    
+
     private void markAsStale() {
         fresh.set(false);
     }
-    
+
     public void addIfAbsent(E e) {
         underlyingList.addIfAbsent(e);
         markAsStale();
@@ -141,36 +154,36 @@ public class COWArrayList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-    	markAsStale();
-    	boolean result = underlyingList.addAll(c);
+        markAsStale();
+        boolean result = underlyingList.addAll(c);
         return result;
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends E> col) {
         markAsStale();
-    	boolean result = underlyingList.addAll(index, col);
+        boolean result = underlyingList.addAll(index, col);
         return result;
     }
 
     @Override
     public boolean removeAll(Collection<?> col) {
         markAsStale();
-    	boolean result = underlyingList.removeAll(col);
+        boolean result = underlyingList.removeAll(col);
         return result;
     }
 
     @Override
     public boolean retainAll(Collection<?> col) {
         markAsStale();
-    	boolean result = underlyingList.retainAll(col);
+        boolean result = underlyingList.retainAll(col);
         return result;
     }
 
     @Override
     public void clear() {
         markAsStale();
-    	underlyingList.clear();
+        underlyingList.clear();
     }
 
     @Override
@@ -182,20 +195,20 @@ public class COWArrayList<E> implements List<E> {
     @Override
     public E set(int index, E element) {
         markAsStale();
-    	E e = underlyingList.set(index, element);
+        E e = underlyingList.set(index, element);
         return e;
     }
 
     @Override
     public void add(int index, E element) {
         markAsStale();
-    	underlyingList.add(index, element);
+        underlyingList.add(index, element);
     }
 
     @Override
     public E remove(int index) {
         markAsStale();
-    	E e = (E) underlyingList.remove(index);
+        E e = (E) underlyingList.remove(index);
         return e;
     }
 

@@ -17,7 +17,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -25,9 +25,11 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  *
  * Most of the work for configuring logback is done by Actions.
  *
- * <p>Action methods are invoked as the XML file is parsed.
+ * <p>
+ * Action methods are invoked as the XML file is parsed.
  *
- * <p>This class is largely inspired from the relevant class in the
+ * <p>
+ * This class is largely inspired from the relevant class in the
  * commons-digester project of the Apache Software Foundation.
  *
  * @author Craig McClanahan
@@ -51,30 +53,35 @@ public abstract class Action extends ContextAwareBase {
      * Called when the parser encounters an element matching a
      * {@link ch.qos.logback.core.joran.spi.ElementSelector Pattern}.
      */
-    public abstract void begin(InterpretationContext intercon, String name, Attributes attributes) throws ActionException;
+    public abstract void begin(SaxEventInterpretationContext intercon, String name, Attributes attributes)
+            throws ActionException;
 
     /**
      * Called to pass the body (as text) contained within an element.
+     * 
      * @param ic
      * @param body
      * @throws ActionException
      */
-    public void body(InterpretationContext intercon, String body) throws ActionException {
+    public void body(SaxEventInterpretationContext intercon, String body) throws ActionException {
         // NOP
     }
 
     /*
-     * Called when the parser encounters an endElement event matching a {@link ch.qos.logback.core.joran.spi.Pattern
-     * Pattern}.
+     * Called when the parser encounters an endElement event matching a {@link
+     * ch.qos.logback.core.joran.spi.Pattern Pattern}.
      */
-    public abstract void end(InterpretationContext intercon, String name) throws ActionException;
+    public abstract void end(SaxEventInterpretationContext intercon, String name) throws ActionException;
 
     public String toString() {
         return this.getClass().getName();
     }
 
-    protected int getColumnNumber(InterpretationContext intercon) {
+    protected int getColumnNumber(SaxEventInterpretationContext intercon) {
         SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
+        if (interpreter == null)
+            return -1;
+
         Locator locator = interpreter.getLocator();
         if (locator != null) {
             return locator.getColumnNumber();
@@ -83,9 +90,9 @@ public abstract class Action extends ContextAwareBase {
     }
 
     // move to InterpretationContext
-    static public int getLineNumber(InterpretationContext intercon) {
+    static public int getLineNumber(SaxEventInterpretationContext intercon) {
         SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
-        if(interpreter == null)
+        if (interpreter == null)
             return -1;
         Locator locator = interpreter.getLocator();
         if (locator != null) {
@@ -94,15 +101,15 @@ public abstract class Action extends ContextAwareBase {
         return -1;
     }
 
-    protected String getLineColStr(InterpretationContext intercon) {
+    protected String getLineColStr(SaxEventInterpretationContext intercon) {
         return "line: " + getLineNumber(intercon) + ", column: " + getColumnNumber(intercon);
     }
-    
-    protected String atLine(InterpretationContext intercon) {
-    	return "At line "+intercon.getLineNumber();
+
+    protected String atLine(SaxEventInterpretationContext intercon) {
+        return "At line " + getLineNumber(intercon);
     }
-    
-    protected String nearLine(InterpretationContext intercon) {
-    	return "Near line "+intercon.getLineNumber();
+
+    protected String nearLine(SaxEventInterpretationContext intercon) {
+        return "Near line " + getLineNumber(intercon);
     }
 }

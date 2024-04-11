@@ -1,21 +1,21 @@
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertNull;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.pattern.CompositeConverter;
 
-public class XCompositeConverter extends CompositeConverter<ILoggingEvent>{
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-	void assertNoNext() {
-		assertNull("converter instance has next element", this.getNext());
-	}
+public class XCompositeConverter extends CompositeConverter<ILoggingEvent> {
 
-	@Override
-	protected String transform(ILoggingEvent event, String in) {
-		if (event.getMessage().contains("assert"))
-			assertNoNext();
-		return "";
-	}
+    void assertNoNext() {
+        assertNull( this.getNext(), "converter instance has next element");
+    }
+
+    @Override
+    protected String transform(ILoggingEvent event, String in) {
+        if (event.getMessage().contains("assert"))
+            assertNoNext();
+        return "";
+    }
 
 }

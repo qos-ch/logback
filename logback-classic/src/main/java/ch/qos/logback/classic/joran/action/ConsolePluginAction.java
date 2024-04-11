@@ -20,7 +20,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.SocketAppender;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 
 public class ConsolePluginAction extends Action {
 
@@ -28,7 +28,7 @@ public class ConsolePluginAction extends Action {
     private static final Integer DEFAULT_PORT = 4321;
 
     @Override
-    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+    public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) throws ActionException {
         String portStr = attributes.getValue(PORT_ATTR);
         Integer port = null;
 
@@ -58,7 +58,7 @@ public class ConsolePluginAction extends Action {
     }
 
     @Override
-    public void end(InterpretationContext ec, String name) throws ActionException {
+    public void end(SaxEventInterpretationContext ec, String name) throws ActionException {
 
     }
 }

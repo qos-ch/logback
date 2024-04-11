@@ -50,11 +50,11 @@ class Token {
     public Token(int type, String value) {
         this(type, value, null);
     }
-    
+
     public Token(int type, List<String> optionsList) {
         this(type, null, optionsList);
     }
-    
+
     public Token(int type, String value, List<String> optionsList) {
         this.type = type;
         this.value = value;
@@ -68,11 +68,11 @@ class Token {
     public String getValue() {
         return value;
     }
-    
+
     public List<String> getOptionsList() {
         return optionsList;
     }
-    
+
     public String toString() {
         String typeStr = null;
         switch (type) {

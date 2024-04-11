@@ -13,11 +13,12 @@
  */
 package ch.qos.logback.classic;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
-public class LoggerTestHelper  {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+public class LoggerTestHelper {
 
     static void assertNameEquals(Logger logger, String name) {
         assertNotNull(logger);

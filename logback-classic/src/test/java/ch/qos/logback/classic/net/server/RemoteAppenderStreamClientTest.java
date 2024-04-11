@@ -13,15 +13,12 @@
  */
 package ch.qos.logback.classic.net.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -31,6 +28,9 @@ import ch.qos.logback.classic.net.mock.MockAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Unit tests for {@link RemoteAppenderStreamClient}.
@@ -44,7 +44,7 @@ public class RemoteAppenderStreamClientTest {
     private LoggingEvent event;
     private RemoteAppenderStreamClient client;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 

@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic;
 
+import static ch.qos.logback.core.CoreConstants.JNDI_JAVA_NAMESPACE;
+
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -22,15 +24,22 @@ public class ClassicConstants {
     public static final String LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";
     public static final String CONFIG_FILE_PROPERTY = "logback.configurationFile";
 
-    public static final String JNDI_CONFIGURATION_RESOURCE = "java:comp/env/logback/configuration-resource";
-    public static final String JNDI_CONTEXT_NAME = "java:comp/env/logback/context-name";
+    /**
+     * property name designating the path for the serialized configuration model file
+     * @since 1.3.9/1.4.9
+     */
+    public static final String MODEL_CONFIG_FILE_PROPERTY = "logback.scmoFile";
+
+    public static final String JNDI_CONFIGURATION_RESOURCE = JNDI_JAVA_NAMESPACE
+            + "comp/env/logback/configuration-resource";
+    public static final String JNDI_CONTEXT_NAME = JNDI_JAVA_NAMESPACE + "comp/env/logback/context-name";
 
     /**
-     * The maximum number of package separators (dots) that abbreviation
-     * algorithms can handle. Class or logger names with more separators will have
-     * their first MAX_DOTS parts shortened.
+     * The maximum number of package separators (dots) that abbreviation algorithms
+     * can handle. Class or logger names with more separators will have their first
+     * MAX_DOTS parts shortened.
      * 
-     * Since 1.3.0, no longer unused 
+     * Since 1.3.0, no longer unused
      */
     public static final int MAX_DOTS = 16;
 
@@ -51,4 +60,6 @@ public class ClassicConstants {
 
     public static final String FINALIZE_SESSION = "FINALIZE_SESSION";
     public static final Marker FINALIZE_SESSION_MARKER = MarkerFactory.getMarker(FINALIZE_SESSION);
+    final public static String AUTOCONFIG_FILE = "logback.xml";
+    final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
 }

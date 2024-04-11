@@ -50,13 +50,14 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
     }
 
     /**
-     * The <b>LocationInfo</b> option takes a boolean value. By default, it is
-     * set to false which means there will be no location information output by
-     * this layout. If the the option is set to true, then the file name and line
-     * number of the statement at the origin of the log statement will be output.
+     * The <b>LocationInfo</b> option takes a boolean value. By default, it is set
+     * to false which means there will be no location information output by this
+     * layout. If the option is set to true, then the file name and line number
+     * of the statement at the origin of the log statement will be output.
      * 
-     * <p>If you are embedding this layout within an {@link
-     * org.apache.log4j.net.SMTPAppender} then make sure to set the
+     * <p>
+     * If you are embedding this layout within an
+     * {@link org.apache.log4j.net.SMTPAppender} then make sure to set the
      * <b>LocationInfo</b> option of that appender as well.
      */
     public void setLocationInfo(boolean flag) {
@@ -73,8 +74,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
     /**
      * Sets whether MDC key-value pairs should be output, default false.
      * 
-     * @param flag
-     *                new value.
+     * @param flag new value.
      * @since 1.2.15
      */
     public void setProperties(final boolean flag) {
@@ -154,7 +154,8 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
         }
 
         /*
-         * <log4j:properties> <log4j:data name="name" value="value"/> </log4j:properties>
+         * <log4j:properties> <log4j:data name="name" value="value"/>
+         * </log4j:properties>
          */
         if (this.getProperties()) {
             Map<String, String> propertyMap = event.getMDCPropertyMap();

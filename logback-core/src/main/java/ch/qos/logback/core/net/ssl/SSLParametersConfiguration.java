@@ -29,6 +29,7 @@ import ch.qos.logback.core.util.StringCollectionUtil;
  * A configuration of SSL parameters for an {@link SSLEngine}.
  *
  * @author Carl Harris
+ * @author Bruno Harbulot
  */
 public class SSLParametersConfiguration extends ContextAwareBase {
 
@@ -40,33 +41,52 @@ public class SSLParametersConfiguration extends ContextAwareBase {
     private Boolean wantClientAuth;
     private String[] enabledProtocols;
     private String[] enabledCipherSuites;
+    private Boolean hostnameVerification;
 
     /**
      * Configures SSL parameters on an {@link SSLConfigurable}.
+     * 
      * @param socket the subject configurable
      */
     public void configure(SSLConfigurable socket) {
         socket.setEnabledProtocols(enabledProtocols(socket.getSupportedProtocols(), socket.getDefaultProtocols()));
-        socket.setEnabledCipherSuites(enabledCipherSuites(socket.getSupportedCipherSuites(), socket.getDefaultCipherSuites()));
+        socket.setEnabledCipherSuites(
+                enabledCipherSuites(socket.getSupportedCipherSuites(), socket.getDefaultCipherSuites()));
         if (isNeedClientAuth() != null) {
             socket.setNeedClientAuth(isNeedClientAuth());
         }
         if (isWantClientAuth() != null) {
             socket.setWantClientAuth(isWantClientAuth());
         }
+        if (hostnameVerification != null) {
+            addInfo("hostnameVerification=" + hostnameVerification);
+            socket.setHostnameVerification(hostnameVerification);
+        }
+    }
+
+    public boolean getHostnameVerification() {
+        if (hostnameVerification == null)
+            return false;
+        return hostnameVerification;
+    }
+
+    public void setHostnameVerification(boolean hostnameVerification) {
+        this.hostnameVerification = hostnameVerification;
     }
 
     /**
      * Gets the set of enabled protocols based on the configuration.
-     * @param supportedProtocols protocols supported by the SSL engine 
-     * @param defaultProtocols default protocols enabled by the SSL engine
+     * 
+     * @param supportedProtocols protocols supported by the SSL engine
+     * @param defaultProtocols   default protocols enabled by the SSL engine
      * @return enabled protocols
      */
     private String[] enabledProtocols(String[] supportedProtocols, String[] defaultProtocols) {
         if (enabledProtocols == null) {
             // we're assuming that the same engine is used for all configurables
             // so once we determine the enabled set, we won't do it again
-            if (OptionHelper.isNullOrEmpty(getIncludedProtocols()) && OptionHelper.isNullOrEmpty(getExcludedProtocols())) {
+            if (OptionHelper.isNullOrEmptyOrAllSpaces(getIncludedProtocols())
+                    && OptionHelper.isNullOrEmptyOrAllSpaces(getExcludedProtocols())) {
                 enabledProtocols = Arrays.copyOf(defaultProtocols, defaultProtocols.length);
             } else {
                 enabledProtocols = includedStrings(supportedProtocols, getIncludedProtocols(), getExcludedProtocols());
@@ -80,18 +100,21 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the set of enabled cipher suites based on the configuration.
-     * @param supportedCipherSuites cipher suites supported by the SSL engine 
-     * @param defaultCipherSuites default cipher suites enabled by the SSL engine
+     * 
+     * @param supportedCipherSuites cipher suites supported by the SSL engine
+     * @param defaultCipherSuites   default cipher suites enabled by the SSL engine
      * @return enabled cipher suites
      */
     private String[] enabledCipherSuites(String[] supportedCipherSuites, String[] defaultCipherSuites) {
         if (enabledCipherSuites == null) {
             // we're assuming that the same engine is used for all configurables
             // so once we determine the enabled set, we won't do it again
-            if (OptionHelper.isNullOrEmpty(getIncludedCipherSuites()) && OptionHelper.isNullOrEmpty(getExcludedCipherSuites())) {
+            if (OptionHelper.isNullOrEmptyOrAllSpaces(getIncludedCipherSuites())
+                    && OptionHelper.isNullOrEmptyOrAllSpaces(getExcludedCipherSuites())) {
                 enabledCipherSuites = Arrays.copyOf(defaultCipherSuites, defaultCipherSuites.length);
             } else {
-                enabledCipherSuites = includedStrings(supportedCipherSuites, getIncludedCipherSuites(), getExcludedCipherSuites());
+                enabledCipherSuites = includedStrings(supportedCipherSuites, getIncludedCipherSuites(),
+                        getExcludedCipherSuites());
             }
             for (String cipherSuite : enabledCipherSuites) {
                 addInfo("enabled cipher suite: " + cipherSuite);
@@ -101,14 +124,15 @@ public class SSLParametersConfiguration extends ContextAwareBase {
     }
 
     /**
-     * Applies include and exclude patterns to an array of default string values
-     * to produce an array of strings included by the patterns.
+     * Applies include and exclude patterns to an array of default string values to
+     * produce an array of strings included by the patterns.
+     * 
      * @param defaults default list of string values
      * @param included comma-separated patterns that identity values to include
      * @param excluded comma-separated patterns that identity string to exclude
      * @return an array of strings containing those strings from {@code defaults}
-     *    that match at least one pattern in {@code included} that are not
-     *    matched by any pattern in {@code excluded}
+     *         that match at least one pattern in {@code included} that are not
+     *         matched by any pattern in {@code excluded}
      */
     private String[] includedStrings(String[] defaults, String included, String excluded) {
         List<String> values = new ArrayList<String>(defaults.length);
@@ -124,6 +148,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Splits a string containing comma-separated values into an array.
+     * 
      * @param s the subject string
      * @return array of values contained in {@code s}
      */
@@ -133,8 +158,9 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the JSSE secure transport protocols to include.
-     * @return a string containing comma-separated JSSE secure transport 
-     *    protocol names (e.g. {@code TLSv1})
+     * 
+     * @return a string containing comma-separated JSSE secure transport protocol
+     *         names (e.g. {@code TLSv1})
      */
     public String getIncludedProtocols() {
         return includedProtocols;
@@ -142,8 +168,9 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Sets the JSSE secure transport protocols to include.
-     * @param protocols a string containing comma-separated JSSE secure 
-     *    transport protocol names
+     * 
+     * @param protocols a string containing comma-separated JSSE secure transport
+     *                  protocol names
      * @see Java Cryptography Architecture Standard Algorithm Name Documentation
      */
     public void setIncludedProtocols(String protocols) {
@@ -152,8 +179,9 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the JSSE secure transport protocols to exclude.
-     * @return a string containing comma-separated JSSE secure transport 
-     *    protocol names (e.g. {@code TLSv1})
+     * 
+     * @return a string containing comma-separated JSSE secure transport protocol
+     *         names (e.g. {@code TLSv1})
      */
     public String getExcludedProtocols() {
         return excludedProtocols;
@@ -161,8 +189,9 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Sets the JSSE secure transport protocols to exclude.
-     * @param protocols a string containing comma-separated JSSE secure 
-     *    transport protocol names
+     * 
+     * @param protocols a string containing comma-separated JSSE secure transport
+     *                  protocol names
      * @see Java Cryptography Architecture Standard Algorithm Name Documentation
      */
     public void setExcludedProtocols(String protocols) {
@@ -171,8 +200,9 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the JSSE cipher suite names to include.
-     * @return a string containing comma-separated JSSE cipher suite names
-     *    (e.g. {@code TLS_DHE_RSA_WITH_AES_256_CBC_SHA})
+     * 
+     * @return a string containing comma-separated JSSE cipher suite names (e.g.
+     *         {@code TLS_DHE_RSA_WITH_AES_256_CBC_SHA})
      */
     public String getIncludedCipherSuites() {
         return includedCipherSuites;
@@ -180,8 +210,9 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Sets the JSSE cipher suite names to include.
-     * @param cipherSuites a string containing comma-separated JSSE cipher
-     *    suite names
+     * 
+     * @param cipherSuites a string containing comma-separated JSSE cipher suite
+     *                     names
      * @see Java Cryptography Architecture Standard Algorithm Name Documentation
      */
     public void setIncludedCipherSuites(String cipherSuites) {
@@ -190,8 +221,9 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the JSSE cipher suite names to exclude.
-     * @return a string containing comma-separated JSSE cipher suite names
-     *    (e.g. {@code TLS_DHE_RSA_WITH_AES_256_CBC_SHA})
+     * 
+     * @return a string containing comma-separated JSSE cipher suite names (e.g.
+     *         {@code TLS_DHE_RSA_WITH_AES_256_CBC_SHA})
      */
     public String getExcludedCipherSuites() {
         return excludedCipherSuites;
@@ -199,8 +231,9 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Sets the JSSE cipher suite names to exclude.
-     * @param cipherSuites a string containing comma-separated JSSE cipher
-     *    suite names
+     * 
+     * @param cipherSuites a string containing comma-separated JSSE cipher suite
+     *                     names
      * @see Java Cryptography Architecture Standard Algorithm Name Documentation
      */
     public void setExcludedCipherSuites(String cipherSuites) {
@@ -209,6 +242,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets a flag indicating whether client authentication is required.
+     * 
      * @return flag state
      */
     public Boolean isNeedClientAuth() {
@@ -217,6 +251,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Sets a flag indicating whether client authentication is required.
+     * 
      * @param needClientAuth the flag state to set
      */
     public void setNeedClientAuth(Boolean needClientAuth) {
@@ -225,6 +260,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets a flag indicating whether client authentication is desired.
+     * 
      * @return flag state
      */
     public Boolean isWantClientAuth() {
@@ -233,6 +269,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Sets a flag indicating whether client authentication is desired.
+     * 
      * @param wantClientAuth the flag state to set
      */
     public void setWantClientAuth(Boolean wantClientAuth) {

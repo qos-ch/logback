@@ -18,9 +18,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.function.UnaryOperator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
@@ -36,6 +36,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  * predict the names of the files which should be generated and compare them
  * with witness files.
  * <p>
+ * 
  * <pre>
  *                Compression     file option    Stop/Restart
  *     Test1      NO              BLANK           NO
@@ -67,13 +68,13 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
     RolloverChecker rolloverChecker;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() {
         super.setUp();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -85,7 +86,8 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
         }
     }
 
-    void initTRBP(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp, String filenamePattern, long givenTime) {
+    void initTRBP(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp, String filenamePattern,
+            long givenTime) {
         tbrp.setContext(context);
         tbrp.setFileNamePattern(filenamePattern);
         tbrp.setParent(rfa);
@@ -96,14 +98,16 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
         rfa.start();
     }
 
-    void genericTest(String testId, String patternPrefix, String compressionSuffix, UnaryOperator<String> filenameFunction, int waitDuration) throws IOException {
-        
-    	String fileName = filenameFunction.apply(testId);
-    	//String fileName = fileOptionIsSet ? testId2FileName(testId) : null;
-       
-    	initRFA(rfa1, fileName);
+    void genericTest(String testId, String patternPrefix, String compressionSuffix,
+            UnaryOperator<String> filenameFunction, int waitDuration) throws IOException {
 
-        String fileNamePatternStr = randomOutputDir + patternPrefix + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}" + compressionSuffix;
+        String fileName = filenameFunction.apply(testId);
+        // String fileName = fileOptionIsSet ? testId2FileName(testId) : null;
+
+        initRFA(rfa1, fileName);
+
+        String fileNamePatternStr = randomOutputDir + patternPrefix + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}"
+                + compressionSuffix;
 
         initTRBP(rfa1, tbrp1, fileNamePatternStr, currentTime);
 
@@ -130,11 +134,12 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
         waitForJobsToComplete();
 
         massageExpectedFilesToCorresponToCurrentTarget(testId, filenameFunction);
-        //StatusPrinter.print(context);
+        // StatusPrinter.print(context);
         rolloverChecker.check(expectedFilenameList);
     }
 
-    void defaultTest(String testId, String patternPrefix, String compressionSuffix, UnaryOperator<String> filenameFunction, int waitDuration) throws IOException {
+    void defaultTest(String testId, String patternPrefix, String compressionSuffix,
+            UnaryOperator<String> filenameFunction, int waitDuration) throws IOException {
         boolean withCompression = compressionSuffix.length() > 0;
         rolloverChecker = new DefaultRolloverChecker(testId, withCompression, compressionSuffix);
         genericTest(testId, patternPrefix, compressionSuffix, filenameFunction, waitDuration);
@@ -223,7 +228,6 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
             fos = new FileOutputStream(fileName);
 
-            
             rolloverChecker = new ZRolloverChecker(testId);
             genericTest(testId, "failed_rename", "", this::testId2FileName, NO_RESTART);
             rolloverChecker.check(expectedFilenameList);
@@ -234,7 +238,6 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
                 fos.close();
         }
     }
-
 
 //    @Test
 //    public void failed_rename2() throws IOException {
@@ -254,5 +257,4 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 //        }
 //    }
 
-    
 }

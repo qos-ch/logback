@@ -20,12 +20,13 @@ import java.util.regex.Pattern;
  * Instances of this class represent the size of a file. Internally, the size is
  * stored as long.
  * 
- * <p>The {@link #valueOf} method can convert strings such as "3 kb", "5 mb", into
+ * <p>
+ * The {@link #valueOf} method can convert strings such as "3 kb", "5 mb", into
  * FileSize instances. The recognized unit specifications for file size are the
  * "kb", "mb", and "gb". The unit name may be followed by an "s". Thus, "2 kbs"
  * and "2 kb" are equivalent. In the absence of a time unit specification, byte
  * is assumed.
- *  
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
@@ -37,7 +38,8 @@ public class FileSize {
     private final static String UNIT_PART = "(|kb|mb|gb)s?";
     private final static int UNIT_GROUP = 2;
 
-    private static final Pattern FILE_SIZE_PATTERN = Pattern.compile(LENGTH_PART + "\\s*" + UNIT_PART, Pattern.CASE_INSENSITIVE);
+    private static final Pattern FILE_SIZE_PATTERN = Pattern.compile(LENGTH_PART + "\\s*" + UNIT_PART,
+            Pattern.CASE_INSENSITIVE);
 
     static public final long KB_COEFFICIENT = 1024;
     static public final long MB_COEFFICIENT = 1024 * KB_COEFFICIENT;
@@ -78,25 +80,25 @@ public class FileSize {
             throw new IllegalArgumentException("String value [" + fileSizeStr + "] is not in the expected format.");
         }
     }
-    
+
     @Override
     public String toString() {
         long inKB = size / KB_COEFFICIENT;
-        
-        if(inKB == 0) 
+
+        if (inKB == 0)
             return size + " Bytes";
-        
+
         long inMB = size / MB_COEFFICIENT;
-        if(inMB == 0) {
+        if (inMB == 0) {
             return inKB + " KB";
         }
-        
+
         long inGB = size / GB_COEFFICIENT;
-        if(inGB == 0) {
+        if (inGB == 0) {
             return inMB + " MB";
         }
-        
+
         return inGB + " GB";
-        
+
     }
 }

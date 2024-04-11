@@ -2,19 +2,21 @@ package ch.qos.logback.classic;
 
 import java.util.concurrent.CyclicBarrier;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.contention.AbstractMultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
+import org.junit.jupiter.api.Timeout;
 
-@Ignore
+@Disabled
 public class LoggerContextConcurrentResetTest {
     static int CONCURRENT_RESET_THREAD_COUNT = 10;
 
     // see http://jira.qos.ch/browse/LOGBACK-397
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1)
     public void concurrentReset() throws InterruptedException {
         LoggerContext loggerContext = new LoggerContext();
         CyclicBarrier cyclicBarrier = new CyclicBarrier(CONCURRENT_RESET_THREAD_COUNT);

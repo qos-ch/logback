@@ -23,7 +23,9 @@ public class StackTraceElementProxy implements Serializable {
     // save a byte or two during serialization, as we can
     // reconstruct this field from 'ste'
     transient private String steAsString;
-    private ClassPackagingData cpd;
+
+    @Deprecated
+    ClassPackagingData classPackagingData;
 
     public StackTraceElementProxy(StackTraceElement ste) {
         if (ste == null) {
@@ -44,14 +46,14 @@ public class StackTraceElementProxy implements Serializable {
     }
 
     public void setClassPackagingData(ClassPackagingData cpd) {
-        if (this.cpd != null) {
+        if (this.classPackagingData != null) {
             throw new IllegalStateException("Packaging data has been already set");
         }
-        this.cpd = cpd;
+        this.classPackagingData = cpd;
     }
 
     public ClassPackagingData getClassPackagingData() {
-        return cpd;
+        return classPackagingData;
     }
 
     @Override
@@ -72,11 +74,11 @@ public class StackTraceElementProxy implements Serializable {
         if (!ste.equals(other.ste)) {
             return false;
         }
-        if (cpd == null) {
-            if (other.cpd != null) {
+        if (classPackagingData == null) {
+            if (other.classPackagingData != null) {
                 return false;
             }
-        } else if (!cpd.equals(other.cpd)) {
+        } else if (!classPackagingData.equals(other.classPackagingData)) {
             return false;
         }
         return true;

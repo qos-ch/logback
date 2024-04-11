@@ -28,7 +28,7 @@ import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter
 import ch.qos.logback.classic.Level
 import ch.qos.logback.core.testUtil.CoreTestConstants
 import ch.qos.logback.core.testUtil.RandomUtil
-import ch.qos.logback.core.testUtil.StatusChecker
+import ch.qos.logback.core.status.testUtil.StatusChecker
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.core.Appender
 import ch.qos.logback.core.helpers.NOPAppender

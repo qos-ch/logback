@@ -37,7 +37,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * </pre>
  * 
  * where <em>port</em> is a port number where the server listens and
- * <em>configFile</em> is an xml configuration file fed to
+ * <em>configFile</em> is an XML configuration file fed to
  * {@link JoranConfigurator}.
  * 
  * </pre>
@@ -146,8 +146,8 @@ public class SimpleSocketServer extends Thread {
     }
 
     /**
-     * Signal another thread that we have established a connection
-     * This is useful for testing purposes.
+     * Signal another thread that we have established a connection This is useful
+     * for testing purposes.
      */
     void signalAlmostReadiness() {
         if (latch != null && latch.getCount() != 0) {
@@ -158,6 +158,7 @@ public class SimpleSocketServer extends Thread {
 
     /**
      * Used for testing purposes
+     * 
      * @param latch
      */
     void setLatch(CountDownLatch latch) {
@@ -165,8 +166,8 @@ public class SimpleSocketServer extends Thread {
     }
 
     /**
-      * Used for testing purposes
-      */
+     * Used for testing purposes
+     */
     public CountDownLatch getLatch() {
         return latch;
     }
@@ -204,7 +205,7 @@ public class SimpleSocketServer extends Thread {
 
         // don't allow simultaneous access to the socketNodeList
         // (e.g. removal whole iterating on the list causes
-        // java.util.ConcurrentModificationException
+        // java.util.ConcurrentModificationException)
         synchronized (socketNodeList) {
             socketNodeList.remove(sn);
         }

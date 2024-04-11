@@ -36,15 +36,15 @@ import ch.qos.logback.core.status.ErrorStatus;
 public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     /**
-     * It is the encoder which is ultimately responsible for writing the event to
-     * an {@link OutputStream}.
+     * It is the encoder which is ultimately responsible for writing the event to an
+     * {@link OutputStream}.
      */
     protected Encoder<E> encoder;
 
     /**
      * All synchronization in this class is done via the lock object.
      */
-    protected final ReentrantLock lock = new ReentrantLock(false);
+    protected final ReentrantLock streamWriteLock = new ReentrantLock(false);
 
     /**
      * This is the {@link OutputStream outputStream} where output will be written.
@@ -54,10 +54,10 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     boolean immediateFlush = true;
 
     /**
-    * The underlying output stream used by this appender.
-    * 
-    * @return
-    */
+     * The underlying output stream used by this appender.
+     * 
+     * @return
+     */
     public OutputStream getOutputStream() {
         return outputStream;
     }
@@ -103,19 +103,21 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     }
 
     /**
-     * Stop this appender instance. The underlying stream or writer is also
-     * closed.
+     * Stop this appender instance. The underlying stream or writer is also closed.
      * 
      * <p>
      * Stopped appenders cannot be reused.
      */
     public void stop() {
-        lock.lock();
+        if(!isStarted())
+            return;
+
+        streamWriteLock.lock();
         try {
             closeOutputStream();
             super.stop();
         } finally {
-            lock.unlock();
+            streamWriteLock.unlock();
         }
     }
 
@@ -154,11 +156,10 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
      * <code>OutputStream</code> will be closed when the appender instance is
      * closed.
      * 
-     * @param outputStream
-     *          An already opened OutputStream.
+     * @param outputStream An already opened OutputStream.
      */
     public void setOutputStream(OutputStream outputStream) {
-        lock.lock();
+        streamWriteLock.lock();
         try {
             // close any previously opened output stream
             closeOutputStream();
@@ -170,7 +171,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
             encoderInit();
         } finally {
-            lock.unlock();
+            streamWriteLock.unlock();
         }
     }
 
@@ -181,27 +182,38 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
                 writeBytes(header);
             } catch (IOException ioe) {
                 this.started = false;
-                addStatus(new ErrorStatus("Failed to initialize encoder for appender named [" + name + "].", this, ioe));
+                addStatus(
+                        new ErrorStatus("Failed to initialize encoder for appender named [" + name + "].", this, ioe));
             }
         }
     }
+
     protected void writeOut(E event) throws IOException {
         byte[] byteArray = this.encoder.encode(event);
         writeBytes(byteArray);
     }
 
     private void writeBytes(byte[] byteArray) throws IOException {
-        if(byteArray == null || byteArray.length == 0)
+        if (byteArray == null || byteArray.length == 0)
             return;
-        
-        lock.lock();
+
+        streamWriteLock.lock();
         try {
-            this.outputStream.write(byteArray);
-            if (immediateFlush) {
-                this.outputStream.flush();
-            }
+            writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
         } finally {
-            lock.unlock();
+            streamWriteLock.unlock();
+        }
+    }
+
+    /**
+     * A simple method to write to an outputStream and flush the stream if immediateFlush is set to true.
+     *
+     * @since 1.3.9/1.4.9
+     */
+    protected final void writeByteArrayToOutputStreamWithPossibleFlush(byte[] byteArray) throws IOException {
+        this.outputStream.write(byteArray);
+        if (immediateFlush) {
+            this.outputStream.flush();
         }
     }
 
@@ -222,13 +234,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             if (event instanceof DeferredProcessingAware) {
                 ((DeferredProcessingAware) event).prepareForDeferredProcessing();
             }
-            // the synchronization prevents the OutputStream from being closed while we
-            // are writing. It also prevents multiple threads from entering the same
-            // converter. Converters assume that they are in a synchronized block.
-            // lock.lock();
-
-            byte[] byteArray = this.encoder.encode(event);
-            writeBytes(byteArray);
+            writeOut(event);
 
         } catch (IOException ioe) {
             // as soon as an exception occurs, move to non-started state

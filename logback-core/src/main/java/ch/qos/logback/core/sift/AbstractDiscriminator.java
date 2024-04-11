@@ -16,7 +16,8 @@ package ch.qos.logback.core.sift;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
- * Base implementation of {@link Discriminator} that provides basic lifecycle management
+ * Base implementation of {@link Discriminator} that provides basic lifecycle
+ * management
  *
  * @author Tomasz Nurkiewicz
  * @since 3/29/13, 3:28 PM

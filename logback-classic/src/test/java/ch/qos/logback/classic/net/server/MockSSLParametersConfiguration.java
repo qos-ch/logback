@@ -17,8 +17,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
- * A mock {@link SSLParametersConfiguration} with instrumentation for
- * unit testing.
+ * A mock {@link SSLParametersConfiguration} with instrumentation for unit
+ * testing.
  *
  * @author Carl Harris
  */

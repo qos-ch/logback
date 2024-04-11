@@ -33,20 +33,31 @@ import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import ch.qos.logback.core.testUtil.FileTestUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
-
-@Ignore
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+@Disabled
 public class ReconfigureOnChangeTest {
     final static int THREAD_COUNT = 5;
     final static int LOOP_LEN = 1000 * 1000;
@@ -61,9 +72,11 @@ public class ReconfigureOnChangeTest {
 
     final static String SCAN_LOGBACK_474_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/scan_logback_474.xml";
 
-    final static String INCLUSION_SCAN_TOPLEVEL0_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/inclusion/topLevel0.xml";
+    final static String INCLUSION_SCAN_TOPLEVEL0_AS_STR = ClassicTestConstants.INPUT_PREFIX
+            + "turbo/inclusion/topLevel0.xml";
 
-    final static String INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/inclusion/topByResource.xml";
+    final static String INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR = ClassicTestConstants.INPUT_PREFIX
+            + "turbo/inclusion/topByResource.xml";
 
     final static String INCLUSION_SCAN_INNER0_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/inclusion/inner0.xml";
 
@@ -78,26 +91,26 @@ public class ReconfigureOnChangeTest {
 
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass());
-    ExecutorService executorService = loggerContext.getExecutorService();
+    ExecutorService executorService = loggerContext.getScheduledExecutorService();
 
     StatusChecker checker = new StatusChecker(loggerContext);
     AbstractMultiThreadedHarness harness;
 
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) loggerContext.getExecutorService();
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) loggerContext.getScheduledExecutorService();
 
     int expectedResets = 2;
 
-    @BeforeClass
+    @BeforeAll
     static public void classSetup() {
         FileTestUtil.makeTestOutputDir();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         harness = new WaitOnExecutionMultiThreadedHarness(executor, expectedResets);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -164,11 +177,13 @@ public class ReconfigureOnChangeTest {
     }
 
     List<File> getConfigurationFileList(LoggerContext context) {
-        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
+        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil
+                .getConfigurationWatchList(loggerContext);
         return configurationWatchList.getCopyOfFileWatchList();
     }
 
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4)
     public void scanWithFileInclusion() throws JoranException, IOException, InterruptedException {
         File topLevelFile = new File(INCLUSION_SCAN_TOPLEVEL0_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER0_AS_STR);
@@ -178,7 +193,8 @@ public class ReconfigureOnChangeTest {
         assertThatListContainsFile(fileList, innerFile);
     }
 
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4, unit= TimeUnit.SECONDS)
     public void scanWithResourceInclusion() throws JoranException, IOException, InterruptedException {
         File topLevelFile = new File(INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
@@ -195,7 +211,8 @@ public class ReconfigureOnChangeTest {
         String configurationStr = "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include resource=\"asResource/inner1.xml\"/></configuration>";
         configure(new ByteArrayInputStream(configurationStr.getBytes("UTF-8")));
 
-        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
+        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil
+                .getConfigurationWatchList(loggerContext);
         assertNull(configurationWatchList.getMainURL());
 
         ReconfigureOnChangeFilter reconfigureOnChangeFilter = (ReconfigureOnChangeFilter) getFirstTurboFilter();
@@ -203,14 +220,17 @@ public class ReconfigureOnChangeTest {
         assertFalse(reconfigureOnChangeFilter.isStarted());
     }
 
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4, unit= TimeUnit.SECONDS)
     public void fallbackToSafe() throws IOException, JoranException, InterruptedException {
         String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_fallbackToSafe-" + diff + ".xml";
         File topLevelFile = new File(path);
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><root level=\"ERROR\"/></configuration> ");
+        writeToFile(topLevelFile,
+                "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><root level=\"ERROR\"/></configuration> ");
         configure(topLevelFile);
 
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" + "  <root></configuration>");
+        writeToFile(topLevelFile,
+                "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" + "  <root></configuration>");
 
         rocfDetachReconfigurationToNewThreadAndAwaitTermination();
 
@@ -220,12 +240,16 @@ public class ReconfigureOnChangeTest {
         assertThatFirstFilterIsROCF();
     }
 
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4)
     public void fallbackToSafeWithIncludedFile() throws IOException, JoranException, InterruptedException {
-        String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff + ".xml";
-        String innerFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_inner-" + diff + ".xml";
+        String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff
+                + ".xml";
+        String innerFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_inner-" + diff
+                + ".xml";
         File topLevelFile = new File(topLevelFileAsStr);
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include file=\"" + innerFileAsStr + "\"/></configuration> ");
+        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include file=\""
+                + innerFileAsStr + "\"/></configuration> ");
 
         File innerFile = new File(innerFileAsStr);
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
@@ -240,7 +264,8 @@ public class ReconfigureOnChangeTest {
     }
 
     // check for deadlocks
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4)
     public void scan_LOGBACK_474() throws JoranException, IOException, InterruptedException {
         File file = new File(SCAN_LOGBACK_474_FILE_AS_STR);
         configure(file);
@@ -278,7 +303,7 @@ public class ReconfigureOnChangeTest {
 
         // there might be more effective resets than the expected amount
         // since the harness may be sleeping while a reset occurs
-        assertTrue(failMsg, expected <= effectiveResets && (expected + 2) >= effectiveResets);
+        assertTrue(expected <= effectiveResets && (expected + 2) >= effectiveResets, failMsg);
 
     }
 
@@ -292,7 +317,7 @@ public class ReconfigureOnChangeTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void directPerfTest() throws MalformedURLException {
         if (EnvUtilForTests.isLinux()) {
             // for some reason this test does not pass on Linux (AMD 64 bit,
@@ -319,7 +344,7 @@ public class ReconfigureOnChangeTest {
         return (end - start) / (1.0d * LOOP_LEN);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void indirectPerfTest() throws MalformedURLException {
         if (EnvUtilForTests.isLinux()) {
@@ -340,7 +365,7 @@ public class ReconfigureOnChangeTest {
         // the reference was computed on Orion (Ceki's computer)
         @SuppressWarnings("unused")
         long referencePerf = 68;
-        //BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 
     void addInfo(String msg, Object o) {
@@ -414,7 +439,8 @@ public class ReconfigureOnChangeTest {
         }
 
         private void malformedUpdate() throws IOException {
-            writeToFile(configFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" + "  <root level=\"ERROR\">\n" + "</configuration>");
+            writeToFile(configFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n"
+                    + "  <root level=\"ERROR\">\n" + "</configuration>");
         }
 
         private void malformedInnerUpdate() throws IOException {

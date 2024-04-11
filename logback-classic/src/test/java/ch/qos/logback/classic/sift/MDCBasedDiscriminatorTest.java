@@ -16,19 +16,18 @@ package ch.qos.logback.classic.sift;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -38,32 +37,33 @@ public class MDCBasedDiscriminatorTest {
     static String DEFAULT_VAL = "DEFAULT_VAL";
 
     MDCBasedDiscriminator discriminator = new MDCBasedDiscriminator();
-    LoggerContext context = new LoggerContext();
-    Logger logger = context.getLogger(this.getClass());
+    LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+    Logger logger = loggerContext.getLogger(this.getClass());
 
     int diff = RandomUtil.getPositiveInt();
     String key = "MDCBasedDiscriminatorTest_key" + diff;
     String value = "MDCBasedDiscriminatorTest_val" + diff;
     LoggingEvent event;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MDC.clear();
-        discriminator.setContext(context);
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
+        discriminator.setContext(loggerContext);
         discriminator.setKey(key);
         discriminator.setDefaultValue(DEFAULT_VAL);
         discriminator.start();
         assertTrue(discriminator.isStarted());
     }
 
-    @After
+    @AfterEach
     public void teaDown() {
         MDC.clear();
     }
 
     @Test
     public void smoke() {
-        MDC.put(key, value);
+        logbackMDCAdapter.put(key, value);
         event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
 
         String discriminatorValue = discriminator.getDiscriminatingValue(event);

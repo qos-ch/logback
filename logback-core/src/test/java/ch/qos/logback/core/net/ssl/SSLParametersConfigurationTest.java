@@ -13,15 +13,15 @@
  */
 package ch.qos.logback.core.net.ssl;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.net.ssl.mock.MockSSLConfigurable;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for {@link SSLParametersConfiguration}.
@@ -34,7 +34,7 @@ public class SSLParametersConfigurationTest {
 
     private SSLParametersConfiguration configuration = new SSLParametersConfiguration();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         configuration.setContext(new ContextBase());
     }

@@ -13,21 +13,21 @@
  */
 package ch.qos.logback.core.util;
 
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.text.DateFormatSymbols;
 import java.util.Locale;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CharSequenceToRegexMapperTest {
     static Locale KO_LOCALE = new Locale("ko", "KR");
     Locale oldLocale = Locale.getDefault();
 
-    @After
+    @AfterEach
     public void tearDown() {
         Locale.setDefault(oldLocale);
     }
@@ -49,14 +49,14 @@ public class CharSequenceToRegexMapperTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void noneOfTheSymbolsAreOfZeroLengthForKorean() {
         Locale.setDefault(KO_LOCALE);
         noneOfTheSymbolsAreOfZeroLength();
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void noneOfTheSymbolsAreOfZeroLengthForSwiss() {
         Locale.setDefault(new Locale("fr", "CH"));
         noneOfTheSymbolsAreOfZeroLength();
@@ -75,7 +75,7 @@ public class CharSequenceToRegexMapperTest {
     private void checkEmptyString(String[] symbolArray, String category) {
         for (String s : symbolArray) {
             System.out.println(category + " [" + s + "]");
-            assertTrue(category + " contains empty strings", s.length() > 0);
+            Assertions.assertTrue(s.length() > 0, category + " contains empty strings");
         }
     }
 

@@ -13,27 +13,26 @@
  */
 package ch.qos.logback.classic.selector;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.testUtil.MockInitialContext;
+import ch.qos.logback.core.testUtil.MockInitialContextFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
 
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
-import ch.qos.logback.classic.util.MockInitialContext;
-import ch.qos.logback.classic.util.MockInitialContextFactory;
-import ch.qos.logback.core.Context;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Ignore
+@Disabled
 public class ContextJNDISelectorTest {
 
     static String INITIAL_CONTEXT_KEY = "java.naming.factory.initial";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, "JNDI");
@@ -43,14 +42,14 @@ public class ContextJNDISelectorTest {
         MockInitialContext mic = MockInitialContextFactory.getContext();
         mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "toto");
 
-        // The property must be set after we setup the Mock
+        // The property must be set after we set up the Mock
         System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
 
         // this call will create the context "toto"
         LoggerFactory.getLogger(ContextDetachingSCLTest.class);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty(INITIAL_CONTEXT_KEY);
     }
@@ -69,7 +68,8 @@ public class ContextJNDISelectorTest {
 
         LoggerFactory.getLogger(ContextDetachingSCLTest.class);
 
-        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton()
+                .getContextSelector();
         Context context = selector.getLoggerContext();
         assertEquals("tata", context.getName());
         System.out.println(selector.getContextNames());
@@ -81,7 +81,8 @@ public class ContextJNDISelectorTest {
         MockInitialContext mic = MockInitialContextFactory.getContext();
         mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, null);
 
-        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton()
+                .getContextSelector();
         Context context = selector.getLoggerContext();
 
         assertEquals("default", context.getName());

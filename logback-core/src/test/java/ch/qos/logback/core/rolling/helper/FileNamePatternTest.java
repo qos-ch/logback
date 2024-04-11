@@ -13,18 +13,18 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * @author Ceki
@@ -123,7 +123,9 @@ public class FileNamePatternTest {
         }
 
         {
-            FileNamePattern fnp = new FileNamePattern("folder/%d{yyyy/MM, aux, Australia/Perth}/test.%d{yyyy-MM-dd'T'HHmm, Australia/Perth}.log", context);
+            FileNamePattern fnp = new FileNamePattern(
+                    "folder/%d{yyyy/MM, aux, Australia/Perth}/test.%d{yyyy-MM-dd'T'HHmm, Australia/Perth}.log",
+                    context);
             assertEquals("folder/2003/05/test.2003-05-20T1855.log", fnp.convert(cal.getTime()));
             assertNotNull(fnp.getPrimaryDateTokenConverter());
         }

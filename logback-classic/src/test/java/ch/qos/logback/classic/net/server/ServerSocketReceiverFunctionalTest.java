@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.classic.net.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -24,10 +24,10 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -41,11 +41,10 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 /**
  * A functional test for {@link ServerSocketReceiver}.
  * <p>
- * In this test we create a SocketServer, connect to it over the local
- * network interface, and validate that it receives messages and delivers
- * them to its appender.
+ * In this test we create a SocketServer, connect to it over the local network
+ * interface, and validate that it receives messages and delivers them to its
+ * appender.
  */
-@Ignore
 public class ServerSocketReceiverFunctionalTest {
 
     private static final int EVENT_COUNT = 10;
@@ -56,10 +55,11 @@ public class ServerSocketReceiverFunctionalTest {
     private ServerSocket serverSocket;
     private InstrumentedServerSocketReceiver receiver;
     private LoggerContext lc;
-
-    @Before
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
+        lc.setMDCAdapter(logbackMDCAdapter);
 
         appender = new MockAppender();
         appender.start();
@@ -75,7 +75,7 @@ public class ServerSocketReceiverFunctionalTest {
         receiver.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         receiver.stop();
         ExecutorService executor = lc.getExecutorService();
@@ -86,7 +86,8 @@ public class ServerSocketReceiverFunctionalTest {
 
     @Test
     public void testLogEventFromClient() throws Exception {
-        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
+        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null,
+                new Object[0]);
         Socket socket = new Socket(InetAddress.getLocalHost(), serverSocket.getLocalPort());
 
         try {

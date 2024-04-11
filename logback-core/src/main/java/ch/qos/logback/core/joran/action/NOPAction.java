@@ -15,20 +15,19 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 
 /**
- * No operation (NOP) action that does strictly nothing. 
- * Setting a rule to this pattern is sometimes useful in order
- * to prevent implicit actions to kick in.
- *  
+ * No operation (NOP) action that does strictly nothing. Setting a rule to this
+ * pattern is sometimes useful in order to prevent implicit actions to kick in.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NOPAction extends Action {
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+    public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) {
     }
 
-    public void end(InterpretationContext ec, String name) {
+    public void end(SaxEventInterpretationContext ec, String name) {
     }
 }

@@ -32,12 +32,12 @@ final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Loop through the filters in the chain. As soon as a filter decides on
-     * ACCEPT or DENY, then that value is returned. If all of the filters return
-     * NEUTRAL, then NEUTRAL is returned.
+     * Loop through the filters in the chain. As soon as a filter decides on ACCEPT
+     * or DENY, then that value is returned. If all of the filters return NEUTRAL,
+     * then NEUTRAL is returned.
      */
-    public FilterReply getTurboFilterChainDecision(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params,
-                    final Throwable t) {
+    public FilterReply getTurboFilterChainDecision(final Marker marker, final Logger logger, final Level level,
+            final String format, final Object[] params, final Throwable t) {
 
         final int size = size();
         // if (size == 0) {

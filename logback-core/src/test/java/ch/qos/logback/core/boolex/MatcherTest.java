@@ -13,28 +13,34 @@
  */
 package ch.qos.logback.core.boolex;
 
-import junit.framework.TestCase;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-public class MatcherTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class MatcherTest {
 
     Context context;
     Matcher matcher;
 
+    @BeforeEach
     public void setUp() throws Exception {
         context = new ContextBase();
         matcher = new Matcher();
         matcher.setContext(context);
         matcher.setName("testMatcher");
-        super.setUp();
     }
 
+    @AfterEach
     public void tearDown() throws Exception {
         matcher = null;
-        super.tearDown();
     }
 
+    @Test
     public void testFullRegion() throws Exception {
         matcher.setRegex(".*test.*");
         matcher.start();

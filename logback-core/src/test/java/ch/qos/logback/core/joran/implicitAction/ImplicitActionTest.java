@@ -13,21 +13,17 @@
  */
 package ch.qos.logback.core.joran.implicitAction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.StatusListenerModel;
@@ -36,8 +32,11 @@ import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ImplicitActionTest {
 
@@ -46,23 +45,21 @@ public class ImplicitActionTest {
     FruitContext fruitContext = new FruitContext();
     SimpleConfigurator simpleConfigurator;
     StatusChecker checker = new StatusChecker(fruitContext);
-    
-    @Before
+
+    @BeforeEach
     public void setUp() throws Exception {
         fruitContext.setName("fruits");
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("/context/"), new FruitContextAction());
-        rulesMap.put(new ElementSelector("/context/statusListener"), new StatusListenerAction());
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("/context/"), () -> new FruitContextAction());
+        rulesMap.put(new ElementSelector("/context/statusListener"), () -> new StatusListenerAction());
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
+           
             @Override
-            protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+            protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
                 defaultProcessor.addHandler(FruitContextModel.class, FruitContextModelHandler::makeInstance);
                 defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
                 defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler::makeInstance);
-                
-                return defaultProcessor;
             }
 
         };
@@ -146,7 +143,7 @@ public class ImplicitActionTest {
 
     @Test
     public void statusListenerWithPrefix() throws Exception {
-        try {                                             
+        try {
             simpleConfigurator.doConfigure(IMPLCIT_DIR + "statusListenerWithPrefix.xml");
             StatusPrinter.print(fruitContext);
             checker.assertIsErrorFree();

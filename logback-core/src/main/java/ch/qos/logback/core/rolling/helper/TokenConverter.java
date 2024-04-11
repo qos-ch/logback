@@ -14,10 +14,10 @@
 package ch.qos.logback.core.rolling.helper;
 
 /**
- * <code>TokenConverter</code> offers some basic functionality used by more 
- * specific token  converters. 
+ * <code>TokenConverter</code> offers some basic functionality used by more
+ * specific token converters.
  * <p>
- * It basically sets up the chained architecture for tokens. It also forces 
+ * It basically sets up the chained architecture for tokens. It also forces
  * derived classes to fix their type.
  * 
  * @author Ceki

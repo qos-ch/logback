@@ -40,7 +40,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
      */
     public static final int DEFAULT_BACKLOG = 50;
 
-    /** 
+    /**
      * Default queue size used for each client
      */
     public static final int DEFAULT_CLIENT_QUEUE_SIZE = 100;
@@ -58,12 +58,13 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
         if (isStarted())
             return;
         try {
-            ServerSocket socket = getServerSocketFactory().createServerSocket(getPort(), getBacklog(), getInetAddress());
+            ServerSocket socket = getServerSocketFactory().createServerSocket(getPort(), getBacklog(),
+                    getInetAddress());
             ServerListener<RemoteReceiverClient> listener = createServerListener(socket);
 
-            runner = createServerRunner(listener, getContext().getScheduledExecutorService());
+            runner = createServerRunner(listener, getContext().getExecutorService());
             runner.setContext(getContext());
-            getContext().getScheduledExecutorService().execute(runner);
+            getContext().getExecutorService().execute(runner);
             super.start();
         } catch (Exception ex) {
             addError("server startup error: " + ex, ex);
@@ -74,7 +75,8 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
         return new RemoteReceiverServerListener(socket);
     }
 
-    protected ServerRunner<RemoteReceiverClient> createServerRunner(ServerListener<RemoteReceiverClient> listener, Executor executor) {
+    protected ServerRunner<RemoteReceiverClient> createServerRunner(ServerListener<RemoteReceiverClient> listener,
+            Executor executor) {
         return new RemoteReceiverServerRunner(listener, executor, getClientQueueSize());
     }
 
@@ -82,6 +84,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     public void stop() {
         if (!isStarted())
             return;
+        
         try {
             runner.stop();
             super.stop();
@@ -104,14 +107,16 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     }
 
     /**
-     * Post process an event received via {@link #append append()}.
+     * Postprocess an event received via {@link #append append()}.
+     * 
      * @param event
      */
     protected abstract void postProcessEvent(E event);
 
     /**
-     * Gets a transformer that will be used to convert a received event
-     * to a {@link Serializable} form.
+     * Gets a transformer that will be used to convert a received event to a
+     * {@link Serializable} form.
+     * 
      * @return
      */
     protected abstract PreSerializationTransformer<E> getPST();
@@ -119,9 +124,9 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     /**
      * Gets the factory used to create {@link ServerSocket} objects.
      * <p>
-     * The default implementation delegates to 
-     * {@link ServerSocketFactory#getDefault()}.  Subclasses may override to
-     * private a different socket factory implementation.
+     * The default implementation delegates to
+     * {@link ServerSocketFactory#getDefault()}. Subclasses may override to private
+     * a different socket factory implementation.
      * 
      * @return socket factory.
      */
@@ -131,6 +136,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
     /**
      * Gets the local address for the listener.
+     * 
      * @return an {@link InetAddress} representation of the local address.
      * @throws UnknownHostException
      */
@@ -142,6 +148,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
     /**
      * Gets the local port for the listener.
+     * 
      * @return local port
      */
     public int getPort() {
@@ -150,6 +157,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
     /**
      * Sets the local port for the listener.
+     * 
      * @param port the local port to set
      */
     public void setPort(int port) {
@@ -159,8 +167,9 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     /**
      * Gets the listener queue depth.
      * <p>
-     * This represents the number of connected clients whose connections 
-     * have not yet been accepted.
+     * This represents the number of connected clients whose connections have not
+     * yet been accepted.
+     * 
      * @return queue depth
      * @see java.net.ServerSocket
      */
@@ -171,8 +180,9 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     /**
      * Sets the listener queue depth.
      * <p>
-     * This represents the number of connected clients whose connections 
-     * have not yet been accepted.
+     * This represents the number of connected clients whose connections have not
+     * yet been accepted.
+     * 
      * @param backlog the queue depth to set
      * @see java.net.ServerSocket
      */
@@ -182,6 +192,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
     /**
      * Gets the local address for the listener.
+     * 
      * @return a string representation of the local address
      */
     public String getAddress() {
@@ -190,6 +201,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
     /**
      * Sets the local address for the listener.
+     * 
      * @param address a host name or a string representation of an IP address
      */
     public void setAddress(String address) {
@@ -197,7 +209,8 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     }
 
     /**
-     * Gets the event queue size used for each client connection. 
+     * Gets the event queue size used for each client connection.
+     * 
      * @return queue size
      */
     public int getClientQueueSize() {
@@ -206,6 +219,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
     /**
      * Sets the event queue size used for each client connection.
+     * 
      * @param clientQueueSize the queue size to set
      */
     public void setClientQueueSize(int clientQueueSize) {

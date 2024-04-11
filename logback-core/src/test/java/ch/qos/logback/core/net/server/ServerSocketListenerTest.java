@@ -13,16 +13,14 @@
  */
 package ch.qos.logback.core.net.server;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 
@@ -37,10 +35,10 @@ public class ServerSocketListenerTest {
     @SuppressWarnings("rawtypes")
     private ServerSocketListener listener;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         serverSocket = ServerSocketUtil.createServerSocket();
-        assertNotNull(serverSocket);
+        Assertions.assertNotNull(serverSocket);
         listener = new InstrumentedServerSocketListener(serverSocket);
     }
 
@@ -55,12 +53,12 @@ public class ServerSocketListenerTest {
                 localClient.wait(10);
             }
         }
-        assertTrue(localClient.isConnected());
+        Assertions.assertTrue(localClient.isConnected());
         localClient.close();
 
         serverSocket.setSoTimeout(5000);
         Client client = listener.acceptClient();
-        assertNotNull(client);
+        Assertions.assertNotNull(client);
         client.close();
     }
 

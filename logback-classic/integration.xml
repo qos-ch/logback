@@ -1,64 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="integration" default="testAll" basedir=".">
 
-	<!--
-		This build file is usually run indirectly via Maven.
-		
-		When running this build file through Ant directly, you must
-		define the slf4jVersion property on the command line, e.g.:
-		
-		ant  -Dslf4jVersion=1.5.4-SNAPSHOT	
-	-->
-	
-	<echo message="slf4j.version:  ${slf4j.version}" />
-	<echo message="hamcrest:  ${org.hamcrest:hamcrest-core:jar}" />
-	
-	<path id="basicClasspath">
-		<!-- post junit version 4.12, we neeed to add hamcrest manually to the 
-		     classpath, even though the m-ant-plugin declares a dependecy on hamcrest! -->
-		<pathelement location="${org.hamcrest:hamcrest-core:jar}" />
-		<pathelement location="../logback-core/target/classes/" />
-		<pathelement location="../logback-core/target/test-classes/" />
-		<pathelement location="./target/classes/" />
-		<pathelement location="./target/test-classes/" />
-		<pathelement location="./lib/slf4j-api-${slf4j.version}.jar" />
-        <pathelement location="./src/test/input/integration/autoInit/" />
-	</path >
+    <!--
+        This build file is usually run indirectly via Maven.
+
+        When running this build file through Ant directly, you must
+        define the slf4jVersion property on the command line, e.g.:
+
+        ant  -Dslf4j.version=2.0.2-SNAPSHOT
+    -->
+
+    <echo message="project.version:  ${project.version}"/>
+    <echo message="project.build.outputDirectory:  ${project.build.outputDirectory}"/>
+    <echo message="project.build.testOutputDirectory:  ${project.build.testOutputDirectory}"/>
+    <echo message="project.build.directory:  ${project.build.directory}"/>
 
 
-	<target name="testAll" depends="init, testWithoutGroovy" 
-          unless="maven.test.skip">
-	</target>
+    <echo message="slf4j.version:  ${slf4j.version}"/>
+    <echo message="hamcrest:  ${org.hamcrest:hamcrest-core:jar}"/>
 
-	<target name="init" depends="copySLF4J_JAR">
-	   <echo message="in init"/>
-	   <mkdir dir="target/unit-reports" />
-   </target>
-
-  <target name="copySLF4J_JAR">
-    <echo>Making lib/ folder in case it does not already exist.</echo>
-  	<mkdir dir="lib/"/>
-    <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
-    <!-- sneak in a clean up procedure of the ../logback-examples/lib/ folder-->
-    <delete quiet="true">
-      <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar" />
-    </delete>
-    <copy file="${org.slf4j:slf4j-api:jar}" todir="lib/" />
-  </target>
+    <path id="basicClasspath">
+        <!-- post junit version 4.12, we need to add hamcrest manually to the
+             classpath, even though the m-ant-plugin declares a dependency on hamcrest! -->
+        <pathelement location="${org.hamcrest:hamcrest-core:jar}"/>
+        <pathelement location="../logback-core/target/logback-core-${project.version}.jar/"/>
+        <pathelement location="../logback-core/target/test-classes/"/>
+        <pathelement location="${project.build.outputDirectory}"/>
+        <pathelement location="${project.build.testOutputDirectory}"/>
+        <pathelement location="./lib/slf4j-api-${slf4j.version}.jar"/>
+        <pathelement location="./src/test/input/integration/autoInit/"/>
+    </path>
 
 
-	<target name="testWithoutGroovy" unless="maven.test.skip">
-		<junit printsummary="yes" fork="no" haltonfailure="yes">
-			<classpath refid="basicClasspath" />
-			<formatter type="plain" />
-			<test fork="yes" todir="target/unit-reports" 
-            outfile="TEST-NoGroovy" 
-            name="ch.qos.logback.classic.util.InitializationIntegrationTest" />
-		</junit>
-	</target>
+    <target name="testAll" depends="init, testWithoutGroovy"
+            unless="maven.test.skip">
+    </target>
+
+    <target name="init" depends="">
+        <echo message="in init"/>
+        <echo message="Making target/unit-reports folder"/>
+        <mkdir dir="${project.build.directory}/unit-reports"/>
+    </target>
+
+    <target name="copySLF4J_JAR">
+        <echo>Making lib/ folder in case it does not already exist.</echo>
+        <mkdir dir="lib/"/>
+        <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
+        <!-- sneak in a cleanup procedure of the ../logback-examples/lib/ folder-->
+        <delete quiet="true">
+            <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar"/>
+        </delete>
+        <copy file="${org.slf4j:slf4j-api:jar}" todir="lib/"/>
+    </target>
 
 
-
+    <target name="testWithoutGroovy" unless="maven.test.skip">
+        <junitlauncher  printsummary="yes" haltonfailure="yes">
+            <classpath refid="basicClasspath"/>
+            <listener type="legacy-plain"  sendSysOut="true" sendSysErr="true"/>
+            <test name="ch.qos.logback.classic.util.InitializationIntegrationTest"
+                outputdir="${project.build.directory}/unit-reports" >
+                <listener type="legacy-plain"/>
+            </test>
+        </junitlauncher>
+    </target>
 
 
 </project>

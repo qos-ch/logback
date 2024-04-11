@@ -13,17 +13,17 @@
  */
 package ch.qos.logback.classic.issue.lbclassic135.lbclassic139;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
+import org.junit.jupiter.api.Test;
 
 public class LB139_DeadlockTest {
 
     LoggerContext loggerContext = new LoggerContext();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         loggerContext.setName("LB139");
         BasicConfigurator bc = new BasicConfigurator();

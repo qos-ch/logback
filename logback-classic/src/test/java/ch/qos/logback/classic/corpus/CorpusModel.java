@@ -20,6 +20,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ClassPackagingData;
 import ch.qos.logback.classic.spi.LoggerContextVO;
+import ch.qos.logback.classic.spi.PubLoggerContextVO;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyVO;
@@ -27,7 +28,8 @@ import ch.qos.logback.classic.spi.ThrowableProxyVO;
 /**
  * Models the corpus.
  * 
- * <p>This contains the probability distributions of levels, logger names,
+ * <p>
+ * This contains the probability distributions of levels, logger names,
  * messages, message arguments.
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -161,14 +163,15 @@ public class CorpusModel {
 
     public long getRandomTimeStamp() {
         // subtract 1 so that 0 is allowed
-        lastTimeStamp += RandomUtil.gaussianAsPositiveInt(random, AVERAGE_MILLIS_INCREMENT, STD_DEV_FOR_MILLIS_INCREMENT) - 1;
+        lastTimeStamp += RandomUtil.gaussianAsPositiveInt(random, AVERAGE_MILLIS_INCREMENT,
+                STD_DEV_FOR_MILLIS_INCREMENT) - 1;
         return lastTimeStamp;
     }
 
-    LoggerContextVO getRandomlyNamedLoggerContextVO() {
+    PubLoggerContextVO getRandomlyNamedLoggerContextVO() {
         LoggerContext lc = new LoggerContext();
         lc.setName(getRandomJavaIdentifier());
-        return new LoggerContextVO(lc);
+        return new PubLoggerContextVO(lc);
     }
 
     String getRandomWord() {
@@ -188,7 +191,8 @@ public class CorpusModel {
 
     public StackTraceElement[] getRandomCallerData(int depth, String loggerName) {
         StackTraceElement[] cda = new StackTraceElement[depth];
-        StackTraceElement cd = new StackTraceElement(loggerName, getRandomJavaIdentifier(), extractLastPart(loggerName), 0);
+        StackTraceElement cd = new StackTraceElement(loggerName, getRandomJavaIdentifier(), extractLastPart(loggerName),
+                0);
         cda[0] = cd;
         for (int i = 1; i < depth; i++) {
             String ln = getRandomLoggerNameFromPool(loggerNamePool);
@@ -243,7 +247,8 @@ public class CorpusModel {
 
     private Throwable getRandomThrowable(Level level) {
         double rn = random.nextDouble();
-        if ((level == Level.WARN && rn < THROWABLE_PROPABILITY_FOR_WARNING) || (level == Level.ERROR && rn < THROWABLE_PROPABILITY_FOR_ERRORS)) {
+        if ((level == Level.WARN && rn < THROWABLE_PROPABILITY_FOR_WARNING)
+                || (level == Level.ERROR && rn < THROWABLE_PROPABILITY_FOR_ERRORS)) {
             return ExceptionBuilder.build(random, NESTING_PROBABILITY);
         } else {
             return null;

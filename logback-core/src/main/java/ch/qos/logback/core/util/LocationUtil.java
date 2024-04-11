@@ -18,8 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * A static utility method that converts a string that describes the
- * location of a resource into a {@link URL} object.
+ * A static utility method that converts a string that describes the location of
+ * a resource into a {@link URL} object.
  *
  * @author Carl Harris
  */
@@ -33,13 +33,14 @@ public class LocationUtil {
 
     /**
      * Converts a string describing the location of a resource into a URL object.
+     * 
      * @param location String describing the location
      * @return URL object that refers to {@code location}
-     * @throws MalformedURLException if {@code location} is not a syntatically
-     *    valid URL
+     * @throws MalformedURLException if {@code location} is not a syntactically valid
+     *                               URL
      * @throws FileNotFoundException if {@code location} specifies a non-existent
-     *    classpath resource
-     * @throws NullPointerException if {@code location} is {@code null}
+     *                               classpath resource
+     * @throws NullPointerException  if {@code location} is {@code null}
      */
     public static URL urlForResource(String location) throws MalformedURLException, FileNotFoundException {
         if (location == null) {

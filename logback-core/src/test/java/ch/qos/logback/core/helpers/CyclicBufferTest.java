@@ -13,17 +13,16 @@
  */
 package ch.qos.logback.core.helpers;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-
 public class CyclicBufferTest {
 
     void assertSize(CyclicBuffer<String> cb, int size) {
-        assertEquals(size, cb.length());
+        Assertions.assertEquals(size, cb.length());
     }
 
     @Test
@@ -36,9 +35,9 @@ public class CyclicBufferTest {
         assertSize(cb, 2);
         cb.add("two");
         assertSize(cb, 2);
-        assertEquals("one", cb.get());
+        Assertions.assertEquals("one", cb.get());
         assertSize(cb, 1);
-        assertEquals("two", cb.get());
+        Assertions.assertEquals("two", cb.get());
         assertSize(cb, 0);
     }
 
@@ -54,7 +53,7 @@ public class CyclicBufferTest {
         assertSize(cb, 0);
 
         List<String> witness = Arrays.asList("zero", "one");
-        assertEquals(witness, clone.asList());
+        Assertions.assertEquals(witness, clone.asList());
 
     }
 }

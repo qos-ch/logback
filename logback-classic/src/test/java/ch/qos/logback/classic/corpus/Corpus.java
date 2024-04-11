@@ -22,21 +22,27 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
+import ch.qos.logback.classic.spi.PubLoggerContextVO;
 import ch.qos.logback.classic.spi.PubLoggingEventVO;
 import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.CoreConstants;
 
 /**
  * 
- * <p>Usage:
+ * <p>
+ * Usage:
  * 
- * <p><code>ILoggingEvent[] eventArray = Corpus.makeStandardCorpus();</code>
+ * <p>
+ * <code>ILoggingEvent[] eventArray = Corpus.makeStandardCorpus();</code>
  * 
- * <p>if you wish to dump the events into a file, say "/corpus.log" :
+ * <p>
+ * if you wish to dump the events into a file, say "/corpus.log" :
  * 
- * <p> <code>Corpus.dump(eventArray, "/corpus.log");
+ * <p>
+ * <code>Corpus.dump(eventArray, "/corpus.log");
  * 
- * <p>For the model behind the corpus, refer to {@link CorpusModel}.
+ * <p>
+ * For the model behind the corpus, refer to {@link CorpusModel}.
  * 
  * @author Ceki G&uuml;lc&uuml;
  *
@@ -53,8 +59,8 @@ public class Corpus {
     }
 
     /**
-     * Make a standard corpus. The standard corpus has
-     * {@link #STANDARD_CORPUS_SIZE} elements.
+     * Make a standard corpus. The standard corpus has {@link #STANDARD_CORPUS_SIZE}
+     * elements.
      * 
      * @return event array representing the standard corpus
      * @throws IOException
@@ -66,7 +72,7 @@ public class Corpus {
     }
 
     static public ILoggingEvent[] make(CorpusModel corpusModel, int n, boolean withCallerData) {
-        LoggerContextVO lcVO = corpusModel.getRandomlyNamedLoggerContextVO();
+        PubLoggerContextVO lcVO = corpusModel.getRandomlyNamedLoggerContextVO();
         PubLoggingEventVO[] plevoArray = new PubLoggingEventVO[n];
         for (int i = 0; i < n; i++) {
             PubLoggingEventVO e = new PubLoggingEventVO();
@@ -81,7 +87,8 @@ public class Corpus {
             e.argumentArray = corpusModel.getRandomArgumentArray(logStatement.mat.numberOfArguments);
 
             if (withCallerData) {
-                e.callerDataArray = corpusModel.getRandomCallerData(ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH, e.loggerName);
+                e.callerDataArray = corpusModel.getRandomCallerData(ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH,
+                        e.loggerName);
             }
             e.throwableProxy = logStatement.throwableProxy;
             e.threadName = corpusModel.getRandomThreadNameFromPool();

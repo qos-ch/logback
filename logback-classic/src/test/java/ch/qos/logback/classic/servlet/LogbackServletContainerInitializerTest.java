@@ -9,21 +9,21 @@ import static org.mockito.Mockito.when;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.core.CoreConstants;
+import org.junit.jupiter.api.Test;
 
 public class LogbackServletContainerInitializerTest {
 
     LogbackServletContainerInitializer lsci = new LogbackServletContainerInitializer();
-    
-    @Before
+
+    @BeforeEach
     public void setUp() throws Exception {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -37,7 +37,8 @@ public class LogbackServletContainerInitializerTest {
     @Test
     public void noListenerShouldBeAddedWhenDisabled() throws ServletException {
         ServletContext mockedServletContext = mock(ServletContext.class);
-        when(mockedServletContext.getInitParameter(CoreConstants.DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY)).thenReturn("true");
+        when(mockedServletContext.getInitParameter(CoreConstants.DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY))
+                .thenReturn("true");
         lsci.onStartup(null, mockedServletContext);
         verify(mockedServletContext, times(0)).addListener(any(LogbackServletContextListener.class));
     }

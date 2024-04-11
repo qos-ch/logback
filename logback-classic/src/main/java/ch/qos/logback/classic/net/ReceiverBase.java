@@ -36,7 +36,7 @@ public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle
             throw new IllegalStateException("context not set");
         }
         if (shouldStart()) {
-            getContext().getScheduledExecutorService().execute(getRunnableTask());
+            getContext().getExecutorService().execute(getRunnableTask());
             started = true;
         }
     }
@@ -65,10 +65,11 @@ public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle
     /**
      * Determines whether this receiver should start.
      * <p>
-     * Subclasses will implement this method to do any subclass-specific
-     * validation.  The subclass's {@link #getRunnableTask()} method will be 
-     * invoked (and the task returned will be submitted to the executor)
-     * if and only if this method returns {@code true} 
+     * Subclasses will implement this method to do any subclass-specific validation.
+     * The subclass's {@link #getRunnableTask()} method will be invoked (and the
+     * task returned will be submitted to the executor) if and only if this method
+     * returns {@code true}
+     * 
      * @return flag indicating whether this receiver should start
      */
     protected abstract boolean shouldStart();
@@ -80,6 +81,7 @@ public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle
 
     /**
      * Provides the runnable task this receiver will execute.
+     * 
      * @return runnable task
      */
     protected abstract Runnable getRunnableTask();

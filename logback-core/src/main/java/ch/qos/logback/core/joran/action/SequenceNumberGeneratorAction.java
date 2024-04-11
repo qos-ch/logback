@@ -15,71 +15,30 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.spi.BasicSequenceNumberGenerator;
-import ch.qos.logback.core.spi.SequenceNumberGenerator;
-import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.SequenceNumberGeneratorModel;
 
 /**
- * Action which handles &lt;sequenceNumberGenerator&gt; elements in configuration files.
+ * Action which handles &lt;sequenceNumberGenerator&gt; elements in
+ * configuration files.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class SequenceNumberGeneratorAction extends Action {
+public class SequenceNumberGeneratorAction extends BaseModelAction {
 
-    SequenceNumberGenerator sequenceNumberGenerator;
-    private boolean inError;
-
-    /**
-     * Instantiates a shutdown hook of the given class and sets its name.
-     * 
-     * The hook thus generated is placed in the {@link InterpretationContext}'s
-     * shutdown hook bag.
-     */
     @Override
-    public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
-        sequenceNumberGenerator = null;
-        inError = false;
-
-        String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isNullOrEmpty(className)) {
-            className = BasicSequenceNumberGenerator.class.getName();
-            addInfo("Assuming className [" + className + "]");
-        }
-
-        try {
-            addInfo("About to instantiate SequenceNumberGenerator of type [" + className + "]");
-
-            sequenceNumberGenerator = (SequenceNumberGenerator) OptionHelper.instantiateByClassName(className, SequenceNumberGenerator.class, context);
-            sequenceNumberGenerator.setContext(context);
-
-            ic.pushObject(sequenceNumberGenerator);
-        } catch (Exception e) {
-            inError = true;
-            addError("Could not create a SequenceNumberGenerator of type [" + className + "].", e);
-            throw new ActionException(e);
-        }
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        SequenceNumberGeneratorModel sngm = new SequenceNumberGeneratorModel();
+        sngm.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+        return sngm;
     }
 
-    /**
-     * Once the children elements are also parsed, now is the time to activate the
-     * shutdown hook options.
-     */
     @Override
-    public void end(InterpretationContext ic, String name) throws ActionException {
-        if (inError) {
-            return;
-        }
-
-        Object o = ic.peekObject();
-        if (o != sequenceNumberGenerator) {
-            addWarn("The object at the of the stack is not the hook pushed earlier.");
-        } else {
-            ic.popObject();
-
-            addInfo("Registering sequenceNumberGenerator with context.");
-            context.setSequenceNumberGenerator(sequenceNumberGenerator);
-        }
+    protected boolean validPreconditions(SaxEventInterpretationContext seic, String name, Attributes attributes) {
+        PreconditionValidator validator = new PreconditionValidator(this, seic, name, attributes);
+        validator.validateClassAttribute();
+        return validator.isValid();
     }
 }

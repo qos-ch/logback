@@ -31,8 +31,9 @@ import ch.qos.logback.core.spi.ScanException;
  * <p/>
  * <p/>
  * <p>
- * The returned tokens are one of: LITERAL, '%', FORMAT_MODIFIER, SIMPLE_KEYWORD, COMPOSITE_KEYWORD
- * OPTION, LEFT_PARENTHESIS, and RIGHT_PARENTHESIS.
+ * The returned tokens are one of: LITERAL, '%', FORMAT_MODIFIER,
+ * SIMPLE_KEYWORD, COMPOSITE_KEYWORD OPTION, LEFT_PARENTHESIS, and
+ * RIGHT_PARENTHESIS.
  * </p>
  * <p/>
  * <p>

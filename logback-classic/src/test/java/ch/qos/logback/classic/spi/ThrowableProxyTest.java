@@ -13,28 +13,27 @@
  */
 package ch.qos.logback.classic.spi;
 
-import static org.junit.Assert.assertEquals;
+import ch.qos.logback.core.util.EnvUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import ch.qos.logback.core.util.EnvUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ThrowableProxyTest {
 
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -48,11 +47,11 @@ public class ThrowableProxyTest {
         result = result.replace("common frames omitted", "more");
         String expected = sw.toString();
 
-        //System.out.println("========expected");
-        //System.out.println(expected);
+        // System.out.println("========expected");
+        // System.out.println(expected);
 
-        //System.out.println("========result");
-        //System.out.println(result);
+        // System.out.println("========result");
+        // System.out.println(result);
 
         assertEquals(expected, result);
     }
@@ -84,7 +83,7 @@ public class ThrowableProxyTest {
             Exception barException = new Exception("Bar");
             e.addSuppressed(fooException);
             e.addSuppressed(barException);
-            
+
             ex = e;
         }
         verify(ex);
@@ -92,7 +91,7 @@ public class ThrowableProxyTest {
 
     @Test
     public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException {
-                                                      // sense.
+        // sense.
         Exception ex = null;
         try {
             someMethod();
@@ -100,10 +99,10 @@ public class ThrowableProxyTest {
             ex = new Exception("Wrapper", e);
             Exception fooException = new Exception("Foo");
             Exception barException = new Exception("Bar");
-            
+
             ex.addSuppressed(fooException);
             e.addSuppressed(barException);
-            
+
         }
         verify(ex);
     }
@@ -119,7 +118,7 @@ public class ThrowableProxyTest {
             Exception barException = new Exception("Bar");
             barException.addSuppressed(fooException);
             e.addSuppressed(barException);
-  
+
         }
         verify(ex);
     }
@@ -160,9 +159,9 @@ public class ThrowableProxyTest {
     // see also https://jira.qos.ch/browse/LOGBACK-1454
     @Test
     public void cyclicCause() {
-    	// Earlier JDKs may formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
+        // Earlier JDKs may format things differently
+        if (!EnvUtil.isJDK16OrHigher())
+            return;
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.initCause(e2);
@@ -172,9 +171,9 @@ public class ThrowableProxyTest {
     // see also https://jira.qos.ch/browse/LOGBACK-1454
     @Test
     public void cyclicSuppressed() {
-    	// Earlier JDKs may formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
+        // Earlier JDKs may format things differently
+        if (!EnvUtil.isJDK16OrHigher())
+            return;
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.addSuppressed(e2);

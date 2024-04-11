@@ -13,22 +13,21 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.test.AbstractPatternLayoutBaseTest;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 
 public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Object> {
 
     Context context = new ContextBase();
     StatusChecker checker = new StatusChecker(context);
-    
+
     public PatternLayoutBase<Object> getPatternLayoutBase() {
         return new SamplePatternLayout<Object>();
     }
@@ -49,7 +48,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
 
         // StatusManager sm = context.getStatusManager();
         // StatusPrinter.print(sm);
-        assertEquals("x123", s);
+        Assertions.assertEquals("x123", s);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         plb.setPattern("x(%OTT\\)y");
         plb.start();
         String s = plb.doLayout(new Object());
-        assertEquals("x(123)y", s);
+        Assertions.assertEquals("x(123)y", s);
     }
 
     @Test
@@ -71,7 +70,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         plb.setPattern("x\\(%OTT\\)y");
         plb.start();
         String s = plb.doLayout(new Object());
-        assertEquals("x(123)y", s);
+        Assertions.assertEquals("x(123)y", s);
     }
 
     @Test
@@ -82,9 +81,8 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         plb.setPattern("hello \\% world");
         plb.start();
         String s = plb.doLayout(new Object());
-        assertEquals("hello % world", s);
+        Assertions.assertEquals("hello % world", s);
     }
-
 
     @Test
     public void noClosingCurlyBrace() {
@@ -92,10 +90,10 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         plb.setContext(context);
         plb.setPattern("%x %hello{asd");
         plb.start();
-        
+
         checker.assertContainsMatch(Status.ERROR, "Failed to parse pattern");
     }
-    
+
     @Override
     public Context getContext() {
         return context;

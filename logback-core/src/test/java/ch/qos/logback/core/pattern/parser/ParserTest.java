@@ -13,19 +13,17 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.FormatInfo;
 import ch.qos.logback.core.spi.ScanException;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 
 public class ParserTest {
 
@@ -36,8 +34,8 @@ public class ParserTest {
     public void testBasic() throws Exception {
         Parser<Object> p = new Parser<>("hello");
         Node t = p.parse();
-        assertEquals(Node.LITERAL, t.getType());
-        assertEquals("hello", t.getValue());
+        Assertions.assertEquals(Node.LITERAL, t.getType());
+        Assertions.assertEquals("hello", t.getValue());
     }
 
     @Test
@@ -48,7 +46,7 @@ public class ParserTest {
             Node t = p.parse();
             Node witness = new Node(Node.LITERAL, "hello");
             witness.next = new SimpleKeywordNode("xyz");
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
 
         {
@@ -60,7 +58,7 @@ public class ParserTest {
             optionList.add("x");
             n.setOptions(optionList);
             witness.next = n;
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
     }
 
@@ -79,7 +77,7 @@ public class ParserTest {
             // System.out.println("w:" + witness);
             // System.out.println(t);
 
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
 
         // System.out.println("testRecursive part 2");
@@ -93,7 +91,7 @@ public class ParserTest {
             composite.setChildNode(child);
             witness.next = composite;
             child.next = new Node(Node.LITERAL, " ");
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
 
         {
@@ -106,7 +104,7 @@ public class ParserTest {
             child.next = new Node(Node.LITERAL, " ");
             child.next.next = new SimpleKeywordNode("h");
             witness.next = composite;
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
 
         {
@@ -121,7 +119,7 @@ public class ParserTest {
             witness.next = composite;
             composite.next = new Node(Node.LITERAL, " ");
             composite.next.next = new SimpleKeywordNode("m");
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
 
         {
@@ -139,7 +137,7 @@ public class ParserTest {
             witness.next = composite;
             composite.next = new Node(Node.LITERAL, " ");
             composite.next.next = new SimpleKeywordNode("m");
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
 
     }
@@ -159,7 +157,7 @@ public class ParserTest {
             child.next = composite;
             composite.setChildNode(new SimpleKeywordNode("h"));
 
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
     }
 
@@ -170,14 +168,14 @@ public class ParserTest {
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
         {
             Parser<Object> p = new Parser<>("%4.5x");
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(4, 5));
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
 
         {
@@ -185,14 +183,14 @@ public class ParserTest {
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(4, 5, false, true));
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
         {
             Parser<Object> p = new Parser<>("%-4.-5x");
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(4, 5, false, false));
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
 
         {
@@ -203,7 +201,7 @@ public class ParserTest {
             Node n = witness.next = new Node(Node.LITERAL, " ");
             n = n.next = new SimpleKeywordNode("y");
             ((FormattingNode) n).setFormatInfo(new FormatInfo(12, Integer.MAX_VALUE));
-            assertEquals(witness, t);
+            Assertions.assertEquals(witness, t);
         }
     }
 
@@ -216,7 +214,7 @@ public class ParserTest {
         List<String> ol = new ArrayList<String>();
         ol.add("test ");
         witness.setOptions(ol);
-        assertEquals(witness, t);
+        Assertions.assertEquals(witness, t);
     }
 
     @Test
@@ -229,7 +227,7 @@ public class ParserTest {
         ol.add("a");
         ol.add("b");
         witness.setOptions(ol);
-        assertEquals(witness, t);
+        Assertions.assertEquals(witness, t);
     }
 
     // see http://jira.qos.ch/browse/LBCORE-180
@@ -240,7 +238,7 @@ public class ParserTest {
         SimpleKeywordNode witness = new SimpleKeywordNode("x");
         witness.setOptions(new ArrayList<String>());
         witness.next = new Node(Node.LITERAL, "a");
-        assertEquals(witness, t);
+        Assertions.assertEquals(witness, t);
     }
 
     @Test
@@ -255,7 +253,7 @@ public class ParserTest {
         composite.setChildNode(child);
         witness.next = composite;
 
-        assertEquals(witness, t);
+        Assertions.assertEquals(witness, t);
 
     }
 
@@ -264,7 +262,7 @@ public class ParserTest {
         try {
             Parser<Object> p = new Parser<>("");
             p.parse();
-            fail("");
+            Assertions.fail("");
         } catch (ScanException e) {
 
         }
@@ -276,9 +274,9 @@ public class ParserTest {
             Parser<Object> p = new Parser<>("hello%(abc");
             p.setContext(context);
             p.parse();
-            fail("where the is exception?");
+            Assertions.fail("where the is exception?");
         } catch (ScanException ise) {
-            assertEquals("Expecting RIGHT_PARENTHESIS token but got null", ise.getMessage());
+            Assertions.assertEquals("Expecting RIGHT_PARENTHESIS token but got null", ise.getMessage());
         }
         StatusChecker sc = new StatusChecker(context);
         sc.assertContainsMatch("Expecting RIGHT_PARENTHESIS");

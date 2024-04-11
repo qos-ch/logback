@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.*;
 
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.spi.ConfigurationEvent;
+import ch.qos.logback.core.spi.ConfigurationEventListener;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.spi.SequenceNumberGenerator;
@@ -45,15 +45,21 @@ public class ContextBase implements Context, LifeCycle {
     // when it changes so that a new instance of propertyMap can be
     // serialized. For the time being, we ignore this shortcoming.
     Map<String, String> propertyMap = new HashMap<String, String>();
-    Map<String, Object> objectMap = new HashMap<String, Object>();
+    Map<String, Object> objectMap = new ConcurrentHashMap<>();
 
     LogbackLock configurationLock = new LogbackLock();
 
+    final private List<ConfigurationEventListener> configurationEventListenerList = new CopyOnWriteArrayList<>();
+
     private ScheduledExecutorService scheduledExecutorService;
+
+    private ThreadPoolExecutor threadPoolExecutor;
+    private ExecutorService alternateExecutorService;
+
+
     protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
     private LifeCycleManager lifeCycleManager;
     private SequenceNumberGenerator sequenceNumberGenerator;
-  
 
     private boolean started;
 
@@ -70,7 +76,8 @@ public class ContextBase implements Context, LifeCycle {
      * context is initialized with a {@link BasicStatusManager}. A null value for
      * the 'statusManager' argument is not allowed.
      * 
-     * <p> A malicious attacker can set the status manager to a dummy instance,
+     * <p>
+     * A malicious attacker can set the status manager to a dummy instance,
      * disabling internal error reporting.
      *
      * @param statusManager the new status manager
@@ -100,9 +107,19 @@ public class ContextBase implements Context, LifeCycle {
         putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, FileNamePattern>());
     }
 
+    @Override
+    public void addSubstitutionProperty(String key, String value) {
+        if (key == null || value == null) {
+            return;
+        }
+        // values with leading or trailing spaces are bad. We remove them now.
+        value = value.trim();
+        propertyMap.put(key, value);
+    }
+
     /**
-     * Given a key, return the corresponding property value. If invoked with
-     * the special key "CONTEXT_NAME", the name of the context is returned.
+     * Given a key, return the corresponding property value. If invoked with the
+     * special key "CONTEXT_NAME", the name of the context is returned.
      *
      * @param key
      * @return
@@ -160,9 +177,9 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     public void stop() {
-        // We don't check "started" here, because the executor service uses
+        // We don't check "started" here, because the executor services use
         // lazy initialization, rather than being created in the start method
-        stopExecutorService();
+        stopExecutorServices();
 
         started = false;
     }
@@ -184,11 +201,12 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     /**
-     * The context name can be set only if it is not already set, or if the
-     * current name is the default context name, namely "default", or if the
-     * current name and the old name are the same.
+     * The context name can be set only if it is not already set, or if the current
+     * name is the default context name, namely "default", or if the current name
+     * and the old name are the same.
      *
-     * @throws IllegalStateException if the context already has a name, other than "default".
+     * @throws IllegalStateException if the context already has a name, other than
+     *                               "default".
      */
     public void setName(String name) throws IllegalStateException {
         if (name != null && name.equals(this.name)) {
@@ -209,15 +227,25 @@ public class ContextBase implements Context, LifeCycle {
         return configurationLock;
     }
 
+
+
     @Override
-    /**
-     * @deprecated replaced by getScheduledExecutorService
-     */
     public synchronized ExecutorService getExecutorService() {
-        return getScheduledExecutorService();
+        if (threadPoolExecutor == null) {
+            threadPoolExecutor = (ThreadPoolExecutor) ExecutorServiceUtil.newThreadPoolExecutor();
+        }
+        return threadPoolExecutor;
     }
 
     @Override
+    public synchronized ExecutorService getAlternateExecutorService() {
+        if(alternateExecutorService == null) {
+            alternateExecutorService = ExecutorServiceUtil.newAlternateThreadPoolExecutor();
+        }
+        return alternateExecutorService;
+    }
+
+        @Override
     public synchronized ScheduledExecutorService getScheduledExecutorService() {
         if (scheduledExecutorService == null) {
             scheduledExecutorService = ExecutorServiceUtil.newScheduledExecutorService();
@@ -225,23 +253,24 @@ public class ContextBase implements Context, LifeCycle {
         return scheduledExecutorService;
     }
 
-    private synchronized void stopExecutorService() {
-        if (scheduledExecutorService != null) {
-            ExecutorServiceUtil.shutdown(scheduledExecutorService);
-            scheduledExecutorService = null;
-        }
+    private synchronized void stopExecutorServices() {
+        ExecutorServiceUtil.shutdown(scheduledExecutorService);
+        scheduledExecutorService = null;
+
+        ExecutorServiceUtil.shutdown(threadPoolExecutor);
+        threadPoolExecutor = null;
     }
 
     private void removeShutdownHook() {
         Thread hook = (Thread) getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
         if (hook != null) {
             removeObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
-            
+
             try {
-            	sm.add(new InfoStatus("Removing shutdownHook "+hook, this));
-            	Runtime runtime = Runtime.getRuntime();
-            	boolean result = runtime.removeShutdownHook(hook);
-            	sm.add(new InfoStatus("ShutdownHook removal result: "+ result, this));
+                sm.add(new InfoStatus("Removing shutdownHook " + hook, this));
+                Runtime runtime = Runtime.getRuntime();
+                boolean result = runtime.removeShutdownHook(hook);
+                sm.add(new InfoStatus("ShutdownHook removal result: " + result, this));
             } catch (IllegalStateException e) {
                 // if JVM is already shutting down, ISE is thrown
                 // no need to do anything else
@@ -257,13 +286,13 @@ public class ContextBase implements Context, LifeCycle {
      * Gets the life cycle manager for this context.
      * <p>
      * The default implementation lazily initializes an instance of
-     * {@link LifeCycleManager}.  Subclasses may override to provide a custom 
-     * manager implementation, but must take care to return the same manager
-     * object for each call to this method.
+     * {@link LifeCycleManager}. Subclasses may override to provide a custom manager
+     * implementation, but must take care to return the same manager object for each
+     * call to this method.
      * <p>
      * This is exposed primarily to support instrumentation for unit testing.
      * 
-     * @return manager object 
+     * @return manager object
      */
     synchronized LifeCycleManager getLifeCycleManager() {
         if (lifeCycleManager == null) {
@@ -285,15 +314,15 @@ public class ContextBase implements Context, LifeCycle {
     /**
      * @deprecated replaced by getCopyOfScheduledFutures
      */
-    @Deprecated 
+    @Deprecated
     public List<ScheduledFuture<?>> getScheduledFutures() {
         return getCopyOfScheduledFutures();
     }
-    
+
     public List<ScheduledFuture<?>> getCopyOfScheduledFutures() {
         return new ArrayList<ScheduledFuture<?>>(scheduledFutures);
     }
-    
+
     public SequenceNumberGenerator getSequenceNumberGenerator() {
         return sequenceNumberGenerator;
     }
@@ -302,4 +331,14 @@ public class ContextBase implements Context, LifeCycle {
         this.sequenceNumberGenerator = sequenceNumberGenerator;
     }
 
+    @Override
+    public void addConfigurationEventListener(ConfigurationEventListener listener) {
+        configurationEventListenerList.add(listener);
+    }
+
+    @Override
+    public void fireConfigurationEvent(ConfigurationEvent configurationEvent) {
+        //System.out.println("xxxx fireConfigurationEvent  of "+configurationEvent);
+        configurationEventListenerList.forEach( l -> l.listen(configurationEvent));
+    }
 }

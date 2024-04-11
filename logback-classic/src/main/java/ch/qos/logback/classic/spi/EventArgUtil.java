@@ -28,7 +28,8 @@ public class EventArgUtil {
     }
 
     /**
-     * This method should be called only if {@link #successfulExtraction(Throwable)} returns true.
+     * This method should be called only if {@link #successfulExtraction(Throwable)}
+     * returns true.
      *
      * @param argArray
      * @return

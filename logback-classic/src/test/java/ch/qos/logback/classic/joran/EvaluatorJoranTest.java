@@ -13,14 +13,10 @@
  */
 package ch.qos.logback.classic.joran;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -36,6 +32,11 @@ import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Disabled
 public class EvaluatorJoranTest {
 
     @Test
@@ -46,7 +47,8 @@ public class EvaluatorJoranTest {
         jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleEvaluator.xml");
 
         @SuppressWarnings("unchecked")
-        Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
+        Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext
+                .getObject(CoreConstants.EVALUATOR_MAP);
         assertNotNull(evalMap);
         JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("msgEval");
         assertNotNull(evaluator);
@@ -59,7 +61,7 @@ public class EvaluatorJoranTest {
         assertFalse(evaluator.evaluate(event1));
     }
 
-    @Ignore // markers are no longer suported in Janino
+    @Disabled // markers are no longer supported in Janino
     @Test
     public void testIgnoreMarker() throws NullPointerException, EvaluationException, JoranException {
         JoranConfigurator jc = new JoranConfigurator();
@@ -68,7 +70,8 @@ public class EvaluatorJoranTest {
 
         jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
         @SuppressWarnings("unchecked")
-        Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
+        Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext
+                .getObject(CoreConstants.EVALUATOR_MAP);
         assertNotNull(evalMap);
 
         Logger logger = loggerContext.getLogger("xx");

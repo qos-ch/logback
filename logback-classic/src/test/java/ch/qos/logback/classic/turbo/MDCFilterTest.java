@@ -13,16 +13,16 @@
  */
 package ch.qos.logback.classic.turbo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.MDC;
 
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class MDCFilterTest {
 
@@ -32,7 +32,7 @@ public class MDCFilterTest {
 
     private MDCFilter filter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         filter = new MDCFilter();
         filter.setOnMatch("ACCEPT");
@@ -43,7 +43,7 @@ public class MDCFilterTest {
         MDC.clear();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         MDC.clear();
     }

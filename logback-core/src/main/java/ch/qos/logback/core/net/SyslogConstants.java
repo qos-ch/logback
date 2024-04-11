@@ -14,7 +14,8 @@
 package ch.qos.logback.core.net;
 
 /**
- * Constants used by syslog daemon and transitively by {@link SyslogAppenderBase}.
+ * Constants used by syslog daemon and transitively by
+ * {@link SyslogAppenderBase}.
  * 
  * @author Ceki G&uuml;lc&uuml;
  **/
@@ -30,7 +31,7 @@ public class SyslogConstants {
     public static final int EMERGENCY_SEVERITY = 0;
     /** Alert: action must be taken immediately */
     public static final int ALERT_SEVERITY = 1;
-    /**  Critical: critical conditions */
+    /** Critical: critical conditions */
     public static final int CRITICAL_SEVERITY = 2;
     /** Error: error conditions */
     public static final int ERROR_SEVERITY = 3;
@@ -38,7 +39,7 @@ public class SyslogConstants {
     public static final int WARNING_SEVERITY = 4;
     /** Notice: normal but significant condition */
     public static final int NOTICE_SEVERITY = 5;
-    /**  Informational: informational messages */
+    /** Informational: informational messages */
     public static final int INFO_SEVERITY = 6;
     /** Debug: debug-level messages */
     public static final int DEBUG_SEVERITY = 7;
@@ -63,7 +64,7 @@ public class SyslogConstants {
     public static final int LOG_UUCP = 8 << 3;
     /** clock daemon, numerical code 9. */
     public static final int LOG_CRON = 9 << 3;
-    /** security/authorization  messages, numerical code 10. */
+    /** security/authorization messages, numerical code 10. */
     public static final int LOG_AUTHPRIV = 10 << 3;
     /** ftp daemon, numerical code 11. */
     public static final int LOG_FTP = 11 << 3;
@@ -89,6 +90,6 @@ public class SyslogConstants {
     public static final int LOG_LOCAL5 = 21 << 3;
     /** reserved for local use, numerical code 22. */
     public static final int LOG_LOCAL6 = 22 << 3;
-    /** reserved for local use, numerical code 23.*/
+    /** reserved for local use, numerical code 23. */
     public static final int LOG_LOCAL7 = 23 << 3;
 }

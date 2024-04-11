@@ -34,8 +34,7 @@ public class Transform {
      * &lt;table&gt;, etc) and replaces any '&lt;','&gt;' ... characters with
      * respective predefined entity references.
      * 
-     * @param input
-     *          The text to be converted.
+     * @param input The text to be converted.
      */
     public static String escapeTags(final String input) {
         if (input == null || input.length() == 0 || !UNSAFE_XML_CHARS.matcher(input).find()) {
@@ -49,6 +48,7 @@ public class Transform {
      * This method takes a StringBuilder which may contain HTML tags (ie, &lt;b&gt;,
      * &lt;table&gt;, etc) and replaces any '&lt;' and '&gt;' characters with
      * respective predefined entity references.
+     * 
      * @param buf StringBuffer to transform
      * @return
      */
@@ -92,12 +92,11 @@ public class Transform {
      * Ensures that embedded CDEnd strings (]]&gt;) are handled properly within
      * message, NDC and throwable tag text.
      * 
-     * @param output
-     *          Writer. The initial CDStart (&lt;![CDATA[) and final CDEnd (]]&gt;) of
-     *          the CDATA section are the responsibility of the calling method.
+     * @param output Writer. The initial CDStart (&lt;![CDATA[) and final CDEnd
+     *               (]]&gt;) of the CDATA section are the responsibility of the
+     *               calling method.
      * 
-     * @param str
-     *          The String that is inserted into an existing CDATA Section.
+     * @param str    The String that is inserted into an existing CDATA Section.
      */
     public static void appendEscapingCDATA(StringBuilder output, String str) {
         if (str == null) {

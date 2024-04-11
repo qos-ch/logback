@@ -19,7 +19,7 @@ import ch.qos.logback.core.util.Compare;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultRolloverChecker implements RolloverChecker {
 
@@ -39,7 +39,8 @@ public class DefaultRolloverChecker implements RolloverChecker {
         for (String fn : expectedFilenameList) {
             String suffix = withCompression ? addGZIfNotLast(expectedFilenameList, i, compressionSuffix) : "";
 
-            String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i + suffix;
+            String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i
+                    + suffix;
             assertTrue(Compare.compare(fn, witnessFileName));
             i++;
         }

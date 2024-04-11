@@ -16,6 +16,8 @@ package ch.qos.logback.core.joran.spi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
@@ -34,30 +36,58 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     static String KLEENE_STAR = "*";
 
     // key: Pattern instance, value: ArrayList containing actions
-    HashMap<ElementSelector, List<Action>> rules = new HashMap<ElementSelector, List<Action>>();
+    HashMap<ElementSelector, Supplier<Action>> rules = new HashMap<>();
 
-    // public SimpleRuleStore() {
-    // }
+    List<String> transparentPathParts = new ArrayList<>(2);
+    Map<String, String> pathPartsMapForRenaming = new HashMap<>(2);
 
     public SimpleRuleStore(Context context) {
         setContext(context);
     }
 
+
+    public void addTransparentPathPart(String pathPart) {
+        if (pathPart == null)
+            throw new IllegalArgumentException("pathPart cannot be null");
+
+        pathPart = pathPart.trim();
+
+        if (pathPart.isEmpty())
+            throw new IllegalArgumentException("pathPart cannot be empty or to consist of only spaces");
+
+        if (pathPart.contains("/"))
+            throw new IllegalArgumentException("pathPart cannot contain '/', i.e. the forward slash character");
+
+        transparentPathParts.add(pathPart);
+
+    }
+
     /**
-     * Add a new rule, i.e. a pattern, action pair to the rule store. <p> Note
-     * that the added action's LoggerRepository will be set in the process.
+     * Rename path parts.
+     *
+     * @param originalName the name before renaming
+     * @param modifiedName the after renaming
+     * @since 1.5.5
      */
-    public void addRule(ElementSelector elementSelector, Action action) {
-        action.setContext(context);
+    @Override
+    public void addPathPathMapping(String originalName, String modifiedName) {
+        pathPartsMapForRenaming.put(originalName, modifiedName);
+    }
 
-        List<Action> a4p = rules.get(elementSelector);
+    /**
+     * Add a new rule, i.e. a pattern, action pair to the rule store.
+     * <p>
+     * Note that the added action's LoggerRepository will be set in the process.
+     */
+    public void addRule(ElementSelector elementSelector, Supplier<Action> actionSupplier) {
 
-        if (a4p == null) {
-            a4p = new ArrayList<Action>();
-            rules.put(elementSelector, a4p);
+        Supplier<Action> existing = rules.get(elementSelector);
+
+        if (existing == null) {
+            rules.put(elementSelector, actionSupplier);
+        } else {
+            throw new IllegalStateException(elementSelector.toString() + " already has an associated action supplier");
         }
-
-        a4p.add(action);
     }
 
     public void addRule(ElementSelector elementSelector, String actionClassName) {
@@ -69,34 +99,88 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
             addError("Could not instantiate class [" + actionClassName + "]", e);
         }
         if (action != null) {
-            addRule(elementSelector, action);
+     //       addRule(elementSelector, action);
         }
     }
 
-    // exact match has highest priority
+    // exact match has the highest priority
     // if no exact match, check for suffix (tail) match, i.e matches
     // of type */x/y. Suffix match for */x/y has higher priority than match for
     // */x
     // if no suffix match, check for prefix match, i.e. matches for x/*
     // match for x/y/* has higher priority than matches for x/*
 
-    public List<Action> matchActions(ElementPath elementPath) {
-        List<Action> actionList;
+    public Supplier<Action> matchActions(ElementPath elementPath) {
+        
+        Supplier<Action> actionSupplier = internalMatchAction(elementPath);
+        if(actionSupplier != null) {
+            return actionSupplier;
+        }
 
-        if ((actionList = fullPathMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = suffixMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = prefixMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = middleMatch(elementPath)) != null) {
-            return actionList;
+        actionSupplier = matchActionsWithoutTransparentParts(elementPath);
+        if(actionSupplier != null) {
+            return actionSupplier;
+        }
+
+        return matchActionsWithRenamedParts(elementPath);
+
+    }
+
+    private Supplier<Action> matchActionsWithoutTransparentParts(ElementPath elementPath) {
+        ElementPath cleanedElementPath = removeTransparentPathParts(elementPath);
+        return internalMatchAction(cleanedElementPath);
+    }
+
+    private Supplier<Action> matchActionsWithRenamedParts(ElementPath elementPath) {
+        ElementPath renamedElementPath = renamePathParts(elementPath);
+        return internalMatchAction(renamedElementPath);
+    }
+
+    private Supplier<Action> internalMatchAction(ElementPath elementPath) {
+        Supplier<Action> actionSupplier;
+
+        if ((actionSupplier = fullPathMatch(elementPath)) != null) {
+            return actionSupplier;
+        } else if ((actionSupplier = suffixMatch(elementPath)) != null) {
+            return actionSupplier;
+        } else if ((actionSupplier = prefixMatch(elementPath)) != null) {
+            return actionSupplier;
+        } else if ((actionSupplier = middleMatch(elementPath)) != null) {
+            return actionSupplier;
         } else {
             return null;
         }
     }
 
-    List<Action> fullPathMatch(ElementPath elementPath) {
+    ElementPath removeTransparentPathParts(ElementPath originalElementPath) {
+
+        List<String> preservedElementList = new ArrayList<>(originalElementPath.partList.size());
+
+        for (String part : originalElementPath.partList) {
+            boolean shouldKeep = transparentPathParts.stream().noneMatch(p -> p.equalsIgnoreCase(part));
+            if (shouldKeep)
+                preservedElementList.add(part);
+        }
+
+        return new ElementPath(preservedElementList);
+
+    }
+
+
+    ElementPath renamePathParts(ElementPath originalElementPath) {
+
+        List<String> result = new ArrayList<>(originalElementPath.partList.size());
+
+        for (String part : originalElementPath.partList) {
+            String modifiedName = pathPartsMapForRenaming.getOrDefault(part, part);
+            result.add(modifiedName);
+        }
+
+        return new ElementPath(result);
+    }
+
+
+    Supplier<Action> fullPathMatch(ElementPath elementPath) {
         for (ElementSelector selector : rules.keySet()) {
             if (selector.fullPathMatch(elementPath))
                 return rules.get(selector);
@@ -105,7 +189,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
 
     // Suffix matches are matches of type */x/y
-    List<Action> suffixMatch(ElementPath elementPath) {
+    Supplier<Action> suffixMatch(ElementPath elementPath) {
         int max = 0;
         ElementSelector longestMatchingElementSelector = null;
 
@@ -130,7 +214,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
         return (p.size() > 1) && p.get(0).equals(KLEENE_STAR);
     }
 
-    List<Action> prefixMatch(ElementPath elementPath) {
+    Supplier<Action> prefixMatch(ElementPath elementPath) {
         int max = 0;
         ElementSelector longestMatchingElementSelector = null;
 
@@ -157,7 +241,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
         return KLEENE_STAR.equals(last);
     }
 
-    List<Action> middleMatch(ElementPath path) {
+    Supplier<Action> middleMatch(ElementPath path) {
 
         int max = 0;
         ElementSelector longestMatchingElementSelector = null;

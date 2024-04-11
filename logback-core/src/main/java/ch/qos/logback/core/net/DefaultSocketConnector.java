@@ -54,8 +54,8 @@ public class DefaultSocketConnector implements SocketConnector {
      *
      * @param address       address of remote listener
      * @param port          port of remote listener
-     * @param delayStrategy strategy for choosing the delay to impose before
-     *                      each connection attempt
+     * @param delayStrategy strategy for choosing the delay to impose before each
+     *                      connection attempt
      */
     public DefaultSocketConnector(InetAddress address, int port, DelayStrategy delayStrategy) {
         this.address = address;
@@ -64,7 +64,8 @@ public class DefaultSocketConnector implements SocketConnector {
     }
 
     /**
-     * Loops until the desired connection is established and returns the resulting connector.
+     * Loops until the desired connection is established and returns the resulting
+     * connector.
      */
     public Socket call() throws InterruptedException {
         useDefaultsForMissingFields();

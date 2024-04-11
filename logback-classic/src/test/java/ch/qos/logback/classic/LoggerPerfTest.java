@@ -13,11 +13,9 @@
  */
 package ch.qos.logback.classic;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
@@ -25,7 +23,9 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
 
-@Ignore
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Disabled
 public class LoggerPerfTest {
 
     static final long NANOS_IN_ONE_SEC = 1000 * 1000 * 1000L;
@@ -36,7 +36,7 @@ public class LoggerPerfTest {
     Logger lbLogger = lc.getLogger(this.getClass());
     org.slf4j.Logger logger = lbLogger;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 
@@ -48,7 +48,7 @@ public class LoggerPerfTest {
         @SuppressWarnings("unused")
         long referencePerf = 60;
 
-        //BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 
     double computeDurationOfDisabledLogsWith_1_NOPFilter(int numOfFilters, long len) {
@@ -74,7 +74,7 @@ public class LoggerPerfTest {
 
         @SuppressWarnings("unused")
         long referencePerf = 15;
-        //BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 
     double computedurationOfIsDebugEnabled(final long len) {
@@ -99,7 +99,7 @@ public class LoggerPerfTest {
 
         @SuppressWarnings("unused")
         long referencePerf = 18;
-        //BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 
     double computeDurationOfDisabledLog_NoParameters(final long len) {
@@ -126,7 +126,8 @@ public class LoggerPerfTest {
 
         @SuppressWarnings("unused")
         long referencePerf = 30;
-        //BogoPerf.assertDuration(avgDuration, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(avgDuration, referencePerf,
+        // CoreConstants.REFERENCE_BIPS);
     }
 
     double computeDurationOfDisabledLog_1_Parameter(long len) {
@@ -156,7 +157,8 @@ public class LoggerPerfTest {
 
         @SuppressWarnings("unused")
         long referencePerf = 800;
-       // BogoPerf.assertDuration(avgDuration, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(avgDuration, referencePerf,
+        // CoreConstants.REFERENCE_BIPS);
     }
 
     double computeDurationOfEnabledLog(long len) {
@@ -211,8 +213,9 @@ public class LoggerPerfTest {
         double max = ((((double) NANOS_PER_CALL) / NANOS_IN_ONE_SEC) * iterCount) * tolerance;
         double serialized = (((double) NANOS_PER_CALL) / NANOS_IN_ONE_SEC) * iterCount * threadCount;
         double actual = ((double) (end - start)) / NANOS_IN_ONE_SEC;
-        System.out.printf("Sleep duration: %,.4f seconds. Max expected: %,.4f seconds, Serialized: %,.4f\n", actual, max, serialized);
-        assertTrue("Exceeded maximum expected time.", actual < max);
+        System.out.printf("Sleep duration: %,.4f seconds. Max expected: %,.4f seconds, Serialized: %,.4f\n", actual,
+                max, serialized);
+        assertTrue(actual < max, "Exceeded maximum expected time.");
     }
 
     // ============================================================

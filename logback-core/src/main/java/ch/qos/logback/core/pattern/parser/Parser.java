@@ -27,7 +27,7 @@ import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.ScanException;
 
-// ~=lamda
+// ~=lambda
 // E = TE|T
 
 // Left factorization
@@ -47,7 +47,8 @@ public class Parser<E> extends ContextAwareBase {
     public final static Map<String, String> DEFAULT_COMPOSITE_CONVERTER_MAP = new HashMap<String, String>();
     public final static String REPLACE_CONVERTER_WORD = "replace";
     static {
-        DEFAULT_COMPOSITE_CONVERTER_MAP.put(Token.BARE_COMPOSITE_KEYWORD_TOKEN.getValue().toString(), IdentityCompositeConverter.class.getName());
+        DEFAULT_COMPOSITE_CONVERTER_MAP.put(Token.BARE_COMPOSITE_KEYWORD_TOKEN.getValue().toString(),
+                IdentityCompositeConverter.class.getName());
         DEFAULT_COMPOSITE_CONVERTER_MAP.put(REPLACE_CONVERTER_WORD, ReplacingCompositeConverter.class.getName());
     }
 

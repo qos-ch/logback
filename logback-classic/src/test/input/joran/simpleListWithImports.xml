@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration xmlns:logback='http://ch.qos.logback/' debug="false">
+  <import class="ch.qos.logback.core.read.ListAppender"/>
+
+  <appender name="LIST" class="ListAppender"/>
+    
+  <root>
+    <level value="DEBUG" />
+    <appender-ref ref="LIST" />
+  </root>
+  
+</configuration>
+  
+  

@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -17,8 +17,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,9 +35,9 @@ public class StatusUtil {
     }
 
     /**
-     * Returns true if the StatusManager associated with the context passed
-     * as parameter has one or more StatusListener instances registered. Returns
-     * false otherwise.
+     * Returns true if the StatusManager associated with the context passed as
+     * parameter has one or more StatusListener instances registered. Returns false
+     * otherwise.
      *
      * @param context
      * @return true if one or more StatusListeners registered, false otherwise
@@ -57,7 +57,7 @@ public class StatusUtil {
     static public List<Status> filterStatusListByTimeThreshold(List<Status> rawList, long threshold) {
         List<Status> filteredList = new ArrayList<Status>();
         for (Status s : rawList) {
-            if (s.getDate() >= threshold)
+            if (s.getTimestamp() >= threshold)
                 filteredList.add(s);
         }
         return filteredList;
@@ -100,13 +100,13 @@ public class StatusUtil {
     }
 
     public boolean isErrorFree(long threshold) {
-        return Status.ERROR > getHighestLevel(threshold);
+        return getHighestLevel(threshold) < Status.ERROR;
     }
 
     public boolean isWarningOrErrorFree(long threshold) {
         return Status.WARN > getHighestLevel(threshold);
     }
-    
+
     public boolean containsMatch(long threshold, int level, String regex) {
         List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
         Pattern p = Pattern.compile(regex);
@@ -140,6 +140,17 @@ public class StatusUtil {
         return false;
     }
 
+    public int levelCount(int level, long threshold) {
+        List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
+
+        int count = 0;
+        for (Status status : filteredList) {
+            if (status.getLevel() == level)
+                count++;
+        }
+        return count;
+    }
+
     public int matchCount(String regex) {
         int count = 0;
         Pattern p = Pattern.compile(regex);
@@ -154,19 +165,32 @@ public class StatusUtil {
     }
 
     public boolean containsException(Class<?> exceptionType) {
-        Iterator<Status> stati = sm.getCopyOfStatusList().iterator();
-        while (stati.hasNext()) {
-            Status status = stati.next();
+        return containsException(exceptionType, null);
+    }
+
+    public boolean containsException(Class<?> exceptionType, String msgRegex) {
+        for (Status status : sm.getCopyOfStatusList()) {
             Throwable t = status.getThrowable();
             while (t != null) {
                 if (t.getClass().getName().equals(exceptionType.getName())) {
-                    return true;
+                    if (msgRegex == null) {
+                        return true;
+                    } else if (checkRegexMatch(t.getMessage(), msgRegex)) {
+                        return true;
+                    }
                 }
                 t = t.getCause();
             }
         }
         return false;
     }
+
+    private boolean checkRegexMatch(String message, String msgRegex) {
+        Pattern p = Pattern.compile(msgRegex);
+        Matcher matcher = p.matcher(message);
+        return matcher.lookingAt();
+    }
+
 
     /**
      * Return the time of last reset. -1 if last reset time could not be found
@@ -182,10 +206,24 @@ public class StatusUtil {
         for (int i = len - 1; i >= 0; i--) {
             Status s = statusList.get(i);
             if (CoreConstants.RESET_MSG_PREFIX.equals(s.getMessage())) {
-                return s.getDate();
+                return s.getTimestamp();
             }
         }
         return -1;
     }
 
+    public static String diff(Status left, Status right) {
+        StringBuilder sb = new StringBuilder();
+        if( left.getLevel() != right.getLevel()) {
+            sb.append(" left.level ").append(left.getLevel()).append(" != right.level ").append(right.getLevel());
+        }
+        if( left.getTimestamp() != right.getTimestamp()) {
+            sb.append(" left.timestamp ").append(left.getTimestamp()).append(" != right.timestamp ").append(right.getTimestamp());
+        }
+        if( !Objects.equals(left.getMessage(), right.getMessage())) {
+            sb.append(" left.message ").append(left.getMessage()).append(" != right.message ").append(right.getMessage());
+        }
+
+        return sb.toString();
+    }
 }

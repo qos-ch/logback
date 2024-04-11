@@ -13,19 +13,15 @@
  */
 package ch.qos.logback.core.spi;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Iterator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.helpers.NOPAppender;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test case verifies all the methods of AppenderAttableImpl work properly.
@@ -36,12 +32,12 @@ public class AppenderAttachableImplTest {
 
     private AppenderAttachableImpl<TestEvent> aai;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         aai = new AppenderAttachableImpl<TestEvent>();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         aai = null;
     }
@@ -57,7 +53,7 @@ public class AppenderAttachableImplTest {
         ta.start();
         aai.addAppender(ta);
         int size = aai.appendLoopOnAppenders(event);
-        assertTrue("Incorrect number of appenders", size == 2);
+        Assertions.assertTrue(size == 2, "Incorrect number of appenders");
     }
 
     @Test
@@ -74,9 +70,9 @@ public class AppenderAttachableImplTest {
         while (iter.hasNext()) {
             ++size;
             Appender<TestEvent> app = iter.next();
-            assertTrue("Bad Appender", app == ta || app == tab);
+            Assertions.assertTrue(app == ta || app == tab, "Bad Appender");
         }
-        assertTrue("Incorrect number of appenders", size == 2);
+        Assertions.assertTrue(size == 2, "Incorrect number of appenders");
     }
 
     @Test
@@ -92,14 +88,14 @@ public class AppenderAttachableImplTest {
         aai.addAppender(testOther);
 
         Appender<TestEvent> a = aai.getAppender("testOther");
-        assertNotNull("Could not find appender", a);
-        assertTrue("Wrong appender", a == testOther);
+        Assertions.assertNotNull(a, "Could not find appender");
+        Assertions.assertTrue(a == testOther, "Wrong appender");
 
         a = aai.getAppender("test");
-        assertNotNull("Could not find appender", a);
-        assertTrue("Wrong appender", a == test);
+        Assertions.assertNotNull(a, "Could not find appender");
+        Assertions.assertTrue(a == test, "Wrong appender");
         a = aai.getAppender("NotThere");
-        assertNull("Appender was returned", a);
+        Assertions.assertNull(a, "Appender was returned");
     }
 
     @Test
@@ -111,8 +107,8 @@ public class AppenderAttachableImplTest {
         tab.setName("test");
         tab.start();
         aai.addAppender(tab);
-        assertTrue("Appender is not attached", aai.isAttached(ta));
-        assertTrue("Appender is not attached", aai.isAttached(tab));
+        Assertions.assertTrue(aai.isAttached(ta), "Appender is not attached");
+        Assertions.assertTrue(aai.isAttached(tab), "Appender is not attached");
     }
 
     @Test
@@ -124,10 +120,10 @@ public class AppenderAttachableImplTest {
         tab.setName("test");
         tab.start();
         aai.addAppender(tab);
-        assertTrue("Appender was not started", tab.isStarted());
+        Assertions.assertTrue(tab.isStarted(), "Appender was not started");
         aai.detachAndStopAllAppenders();
-        assertNull("Appender was not removed", aai.getAppender("test"));
-        assertFalse("Appender was not stopped", tab.isStarted());
+        Assertions.assertNull(aai.getAppender("test"), "Appender was not removed");
+        Assertions.assertFalse(tab.isStarted(), "Appender was not stopped");
     }
 
     @Test
@@ -139,9 +135,9 @@ public class AppenderAttachableImplTest {
         tab.setName("test");
         tab.start();
         aai.addAppender(tab);
-        assertTrue("Appender not detached", aai.detachAppender(tab));
-        assertNull("Appender was not removed", aai.getAppender("test"));
-        assertFalse("Appender detach error", aai.detachAppender(tab));
+        Assertions.assertTrue(aai.detachAppender(tab),"Appender not detached");
+        Assertions.assertNull(aai.getAppender("test"), "Appender was not removed");
+        Assertions.assertFalse(aai.detachAppender(tab), "Appender detach error");
     }
 
     @Test
@@ -155,9 +151,9 @@ public class AppenderAttachableImplTest {
         tab.start();
         aai.addAppender(tab);
 
-        assertTrue(aai.detachAppender("test"));
-        assertTrue(aai.detachAppender("test1"));
-        assertFalse(aai.detachAppender("test1"));
+        Assertions.assertTrue(aai.detachAppender("test"));
+        Assertions.assertTrue(aai.detachAppender("test1"));
+        Assertions.assertFalse(aai.detachAppender("test1"));
     }
 
     private static class TestEvent {

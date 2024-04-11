@@ -13,14 +13,13 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CaseCombinatorTest {
 
@@ -37,15 +36,15 @@ public class CaseCombinatorTest {
         witness.add("A-b=");
         witness.add("a-B=");
         witness.add("A-B=");
-        assertEquals(witness, result);
+        Assertions.assertEquals(witness, result);
     }
 
     @Test
     public void other() {
         List<String> result = p.combinations("aBCd");
-        assertEquals(16, result.size());
+        Assertions.assertEquals(16, result.size());
         Set<String> witness = new HashSet<String>(result);
         // check that there are no duplicates
-        assertEquals(16, witness.size());
+        Assertions.assertEquals(16, witness.size());
     }
 }

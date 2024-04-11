@@ -13,21 +13,16 @@
  */
 package ch.qos.logback.classic.html;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.EntityResolver;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -35,7 +30,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.classic.spi.DummyThrowableProxy;
+import ch.qos.logback.classic.spi.PubThrowableProxy;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
@@ -45,13 +40,18 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class HTMLLayoutTest {
 
     LoggerContext lc;
     Logger root;
     HTMLLayout layout;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         lc.setName("default");
@@ -66,7 +66,7 @@ public class HTMLLayoutTest {
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         layout = null;
@@ -80,6 +80,7 @@ public class HTMLLayoutTest {
         Document doc = parseOutput(header + "</body></html>");
         Element rootElement = doc.getRootElement();
         assertNotNull(rootElement.element("body"));
+
     }
 
     @Test
@@ -103,7 +104,7 @@ public class HTMLLayoutTest {
     @Test
     public void testAppendThrowable() throws Exception {
         StringBuilder buf = new StringBuilder();
-        DummyThrowableProxy tp = new DummyThrowableProxy();
+        PubThrowableProxy tp = new PubThrowableProxy();
         tp.setClassName("test1");
         tp.setMessage("msg1");
 
@@ -191,15 +192,17 @@ public class HTMLLayoutTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void rawLimit() throws Exception {
         StringBuilder sb = new StringBuilder();
         String header = layout.getFileHeader();
-        assertTrue(header.startsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
+        assertTrue(header.startsWith(
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
         sb.append(header);
         sb.append(layout.getPresentationHeader());
         for (int i = 0; i < CoreConstants.TABLE_ROW_LIMIT * 3; i++) {
-            sb.append(layout.doLayout(new LoggingEvent(this.getClass().getName(), root, Level.DEBUG, "test message" + i, null, null)));
+            sb.append(layout.doLayout(
+                    new LoggingEvent(this.getClass().getName(), root, Level.DEBUG, "test message" + i, null, null)));
         }
         sb.append(layout.getPresentationFooter());
         sb.append(layout.getFileFooter());

@@ -20,7 +20,7 @@ import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * A class that filters events by the level equality.
-
+ * 
  * <p>
  * For more information about this filter, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html#levelFilter

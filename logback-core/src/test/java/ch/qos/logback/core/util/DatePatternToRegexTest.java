@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.assertTrue;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,10 +20,12 @@ import java.util.List;
 import java.util.Locale;
 
 import ch.qos.logback.core.rolling.helper.DateTokenConverter;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.CoreConstants;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DatePatternToRegexTest {
     static Calendar CAL_2009_08_3_NIGHT = Calendar.getInstance();
@@ -33,7 +33,7 @@ public class DatePatternToRegexTest {
     static Locale CZ_LOCALE = new Locale("cs", "CZ");
     static Locale KO_LOCALE = new Locale("ko", "KR");
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpCalendars() {
         CAL_2009_08_3_NIGHT.set(2009, 8, 3, 21, 57, 16);
         CAL_2009_08_3_NIGHT.set(Calendar.MILLISECOND, 333);
@@ -139,7 +139,7 @@ public class DatePatternToRegexTest {
         String regex = dtc.toRegex();
         // System.out.println("expected="+expected);
         // System.out.println(regex);
-        assertTrue("[" + expected + "] does not match regex [" + regex + "]", expected.matches(regex));
+        assertTrue(expected.matches(regex), "[" + expected + "] does not match regex [" + regex + "]");
     }
 
     private DateTokenConverter<?> makeDTC(String datePattern) {

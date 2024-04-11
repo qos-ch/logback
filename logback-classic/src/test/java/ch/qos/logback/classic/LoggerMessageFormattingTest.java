@@ -13,20 +13,21 @@
  */
 package ch.qos.logback.classic;
 
-import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoggerMessageFormattingTest {
 
     LoggerContext lc;
     ListAppender<ILoggingEvent> listAppender;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         lc = new LoggerContext();
         Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);

@@ -13,15 +13,15 @@
  */
 package ch.qos.logback.classic.turbo.lru;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Ignore
+@Disabled
 public class LRUCacheTest {
 
     @Test
@@ -71,11 +71,12 @@ public class LRUCacheTest {
         simulator.simulate(scenario, lruCache, tlruCache);
         // assertEquals(tlruCache.keyList(), lruCache.keyList());
         long end = System.nanoTime();
-        System.out.println("cacheSize=" + cacheSize + ", worldSize=" + worldSize + ", elapsed time=" + ((end - start) / (1000 * 1000)) + " in millis");
+        System.out.println("cacheSize=" + cacheSize + ", worldSize=" + worldSize + ", elapsed time="
+                + ((end - start) / (1000 * 1000)) + " in millis");
     }
 
     @Test
-    @Ignore
+    @Disabled
     // slow test that is known to pass
     public void multiThreadedScenario() throws InterruptedException {
         int cacheSize = 100;

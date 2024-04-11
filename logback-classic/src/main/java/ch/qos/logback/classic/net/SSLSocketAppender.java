@@ -20,8 +20,8 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 /**
  * A {@link SocketAppender} that supports SSL.
  * <p>
- * For more information on this appender, please refer to the online manual
- * at http://logback.qos.ch/manual/appenders.html#SSLSocketAppender
+ * For more information on this appender, please refer to the online manual at
+ * http://logback.qos.ch/manual/appenders.html#SSLSocketAppender
  * 
  * @author Carl Harris
  */

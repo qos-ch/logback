@@ -20,6 +20,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonValueInstantiator;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.MessageFormatter;
@@ -40,13 +44,14 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
 
     public String threadName;
     public String loggerName;
-    public LoggerContextVO loggerContextVO;
+    public PubLoggerContextVO loggerContextVO;
 
     public transient Level level;
     public String message;
 
     private transient String formattedMessage;
 
+    @JsonAlias
     public Object[] argumentArray;
 
     public IThrowableProxy throwableProxy;
@@ -55,6 +60,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public List<KeyValuePair> kvpList;
     public Map<String, String> mdcPropertyMap;
     public long timeStamp;
+    public int nanoseconds;
     public long sequenceNumber;
 
     public String getThreadName() {
@@ -69,6 +75,8 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         return loggerName;
     }
 
+
+    @JsonIgnore
     public Level getLevel() {
         return level;
     }
@@ -115,6 +123,11 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         return timeStamp;
     }
 
+    @Override
+    public int getNanoseconds() {
+        return nanoseconds;
+    }
+
     public long getSequenceNumber() {
         return sequenceNumber;
     }
@@ -122,7 +135,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public void setSequenceNumber(long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
-    
+
     public long getContextBirthTime() {
         return loggerContextVO.getBirthTime();
     }
@@ -142,11 +155,11 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public void prepareForDeferredProcessing() {
     }
 
-	@Override
-	public List<KeyValuePair> getKeyValuePairs() {
-		return kvpList;
-	}
-	
+    @Override
+    public List<KeyValuePair> getKeyValuePairs() {
+        return kvpList;
+    }
+
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeInt(level.levelInt);
@@ -249,7 +262,5 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         sb.append(getFormattedMessage());
         return sb.toString();
     }
-
-
 
 }

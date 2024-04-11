@@ -22,8 +22,8 @@ import ch.qos.logback.core.spi.AbstractComponentTracker;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 
 /**
- * Track appenders by key. When an appender is not used for
- * longer than {@link #DEFAULT_TIMEOUT} it is stopped and removed.
+ * Track appenders by key. When an appender is not used for longer than
+ * {@link #DEFAULT_TIMEOUT} it is stopped and removed.
  *
  * @author Tommy Becker
  * @author Ceki Gulcu

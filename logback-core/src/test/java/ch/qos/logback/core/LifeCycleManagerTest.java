@@ -13,9 +13,8 @@
  */
 package ch.qos.logback.core;
 
-import static org.junit.Assert.assertFalse;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link LifeCycleManager}.
@@ -32,7 +31,7 @@ public class LifeCycleManagerTest {
         manager.register(component);
         component.start();
         manager.reset();
-        assertFalse(component.isStarted());
+        Assertions.assertFalse(component.isStarted());
     }
 
 }

@@ -16,6 +16,7 @@ package ch.qos.logback.core.subst;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
+import ch.qos.logback.core.subst.Node.Type;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.List;
@@ -28,11 +29,13 @@ import java.util.Stack;
  */
 public class NodeToStringTransformer {
 
+    public static final String CIRCULAR_VARIABLE_REFERENCE_DETECTED = "Circular variable reference detected while parsing input [";
     final Node node;
     final PropertyContainer propertyContainer0;
     final PropertyContainer propertyContainer1;
 
-    public NodeToStringTransformer(Node node, PropertyContainer propertyContainer0, PropertyContainer propertyContainer1) {
+    public NodeToStringTransformer(Node node, PropertyContainer propertyContainer0,
+            PropertyContainer propertyContainer1) {
         this.node = node;
         this.propertyContainer0 = propertyContainer0;
         this.propertyContainer1 = propertyContainer1;
@@ -42,7 +45,8 @@ public class NodeToStringTransformer {
         this(node, propertyContainer0, null);
     }
 
-    public static String substituteVariable(String input, PropertyContainer pc0, PropertyContainer pc1) throws ScanException {
+    public static String substituteVariable(String input, PropertyContainer pc0, PropertyContainer pc1)
+            throws ScanException {
         Node node = tokenizeAndParseString(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, pc0, pc1);
         return nodeToStringTransformer.transform();
@@ -61,7 +65,8 @@ public class NodeToStringTransformer {
         return stringBuilder.toString();
     }
 
-    private void compileNode(Node inputNode, StringBuilder stringBuilder, Stack<Node> cycleCheckStack) throws ScanException {
+    private void compileNode(Node inputNode, StringBuilder stringBuilder, Stack<Node> cycleCheckStack)
+            throws ScanException {
         Node n = inputNode;
         while (n != null) {
             switch (n.type) {
@@ -92,6 +97,7 @@ public class NodeToStringTransformer {
         String key = keyBuffer.toString();
         String value = lookupKey(key);
 
+        // empty values are considered valid
         if (value != null) {
             Node innerNode = tokenizeAndParseString(value);
             compileNode(innerNode, stringBuilder, cycleCheckStack);
@@ -99,6 +105,7 @@ public class NodeToStringTransformer {
             return;
         }
 
+        // empty default literal is a valid value
         if (n.defaultPart == null) {
             stringBuilder.append(key + CoreConstants.UNDEFINED_PROPERTY_SUFFIX);
             cycleCheckStack.pop();
@@ -141,12 +148,23 @@ public class NodeToStringTransformer {
     }
 
     private String variableNodeValue(Node variableNode) {
-        Node literalPayload = (Node) variableNode.payload;
-        return (String) literalPayload.payload;
+        Node payload = (Node) variableNode.payload;
+        if(payload == null) {
+            return CoreConstants.EMPTY_STRING;
+        }
+        
+        if(payload.type == Type.LITERAL) {
+            return (String) payload.payload;
+        }
+        
+        if(payload.type == Type.VARIABLE) {
+            return " ? " + variableNodeValue(payload);
+        }
+        throw new IllegalStateException("unreachable code");
     }
 
     private String constructRecursionErrorMessage(Stack<Node> recursionNodes) {
-        StringBuilder errorBuilder = new StringBuilder("Circular variable reference detected while parsing input [");
+        StringBuilder errorBuilder = new StringBuilder(CIRCULAR_VARIABLE_REFERENCE_DETECTED);
 
         for (Node stackNode : recursionNodes) {
             errorBuilder.append("${").append(variableNodeValue(stackNode)).append("}");
@@ -159,9 +177,10 @@ public class NodeToStringTransformer {
     }
 
     /**
-     * Determine if a node has already been visited already by checking the cycleDetectionStack
-     * for it's existence. This method is used -- rather than Stack.contains() -- because
-     * we want to ignore the Node's 'next' attribute when comparing for equality.
+     * Determine if a node has already been visited already by checking the
+     * cycleDetectionStack for its existence. This method is used -- rather than
+     * Stack.contains() -- because we want to ignore the Node's 'next' attribute
+     * when comparing for equality.
      */
     private boolean haveVisitedNodeAlready(Node node, Stack<Node> cycleDetectionStack) {
         for (Node cycleNode : cycleDetectionStack) {

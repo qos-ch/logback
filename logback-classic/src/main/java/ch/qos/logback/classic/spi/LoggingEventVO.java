@@ -14,9 +14,11 @@
 package ch.qos.logback.classic.spi;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ import org.slf4j.helpers.MessageFormatter;
 import ch.qos.logback.classic.Level;
 
 // http://www.riehle.org/computer-science/research/1998/ubilab-tr-1998-10-1.html
+// See also the paper https://www.riehle.org/computer-science/research/1998/ubilab-tr-1998-10-1.pdf
 
 /**
  * A read-only and serializable implementation of {@link ILoggingEvent}.
@@ -40,6 +43,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
 
     private static final int NULL_ARGUMENT_ARRAY = -1;
     private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
+    private static final int ARGUMENT_ARRAY_DESERIALIZATION_LIMIT = 128;
 
     private String threadName;
     private String loggerName;
@@ -60,7 +64,10 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     private List<Marker> markerList;
     private List<KeyValuePair> keyValuePairList;
     private Map<String, String> mdcPropertyMap;
-    private long timeStamp;
+
+    private long timestamp;
+    private int nanoseconds;
+
     private long sequenceNumber;
 
     public static LoggingEventVO build(ILoggingEvent le) {
@@ -74,8 +81,8 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         ledo.markerList = le.getMarkerList();
         ledo.keyValuePairList = le.getKeyValuePairs();
         ledo.mdcPropertyMap = le.getMDCPropertyMap();
-        
-        ledo.timeStamp = le.getTimeStamp();
+        ledo.timestamp = le.getTimeStamp();
+        ledo.nanoseconds = le.getNanoseconds();
         ledo.sequenceNumber = le.getSequenceNumber();
         ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
         // add caller data only if it is there already
@@ -140,14 +147,16 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         return markerList;
     }
 
-    public long getTimeStamp() {
-        return timeStamp;
-    }
+    @Override
+    public long getTimeStamp() { return timestamp; }
+
+    @Override
+    public int getNanoseconds() {  return nanoseconds; }
 
     public long getSequenceNumber() {
         return sequenceNumber;
     }
-    
+
     public long getContextBirthTime() {
         return loggerContextVO.getBirthTime();
     }
@@ -165,10 +174,10 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     }
 
     @Override
-	public List<KeyValuePair> getKeyValuePairs() {
-		return this.keyValuePairList;
-	}
-    
+    public List<KeyValuePair> getKeyValuePairs() {
+        return this.keyValuePairList;
+    }
+
     public void prepareForDeferredProcessing() {
     }
 
@@ -197,6 +206,12 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         level = Level.toLevel(levelInt);
 
         int argArrayLen = in.readInt();
+
+        // Prevent DOS attacks via large or negative arrays
+        if (argArrayLen < NULL_ARGUMENT_ARRAY || argArrayLen > ARGUMENT_ARRAY_DESERIALIZATION_LIMIT) {
+            throw new InvalidObjectException("Argument array length is invalid: " + argArrayLen);
+        }
+
         if (argArrayLen != NULL_ARGUMENT_ARRAY) {
             argumentArray = new String[argArrayLen];
             for (int i = 0; i < argArrayLen; i++) {
@@ -211,10 +226,12 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     @Override
     public int hashCode() {
         final int prime = 31;
+        long millis = getTimeStamp();
+
         int result = 1;
         result = prime * result + ((message == null) ? 0 : message.hashCode());
         result = prime * result + ((threadName == null) ? 0 : threadName.hashCode());
-        result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
+        result = prime * result + (int) (millis ^ (millis >>> 32));
         return result;
     }
 
@@ -244,7 +261,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
                 return false;
         } else if (!threadName.equals(other.threadName))
             return false;
-        if (timeStamp != other.timeStamp)
+        if (getTimeStamp() != other.getTimeStamp())
             return false;
 
         if (markerList == null) {
@@ -261,5 +278,4 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         return true;
     }
 
-	
 }

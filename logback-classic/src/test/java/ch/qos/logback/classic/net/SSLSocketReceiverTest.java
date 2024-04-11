@@ -13,15 +13,15 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.net.InetAddress;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Unit tests for {@link SSLSocketReceiver}.
@@ -32,7 +32,7 @@ public class SSLSocketReceiverTest {
 
     private SSLSocketReceiver remote = new SSLSocketReceiver();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         remote.setContext(lc);

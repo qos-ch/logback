@@ -13,20 +13,20 @@
  */
 package ch.qos.logback.classic.control;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 
 /**
- * This class is for testing ControlLoggerContext which is a control class for testing HLoggerContext.
+ * This class is for testing ControlLoggerContext which is a control class for
+ * testing HLoggerContext.
  */
 public class ControlLoggerContextTest {
     ControlLoggerContext clc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         clc = new ControlLoggerContext();
     }
@@ -34,24 +34,24 @@ public class ControlLoggerContextTest {
     @Test
     public void smoke() {
         ControlLogger x = clc.getLogger("x");
-        assertEquals("x", x.getName());
-        assertEquals(clc.getRootLogger(), x.parent);
+        Assertions.assertEquals("x", x.getName());
+        Assertions.assertEquals(clc.getRootLogger(), x.parent);
 
         ControlLogger abc = clc.getLogger("a.b.c");
-        assertEquals("a.b.c", abc.getName());
-        assertEquals(Level.DEBUG, abc.getEffectiveLevel());
+        Assertions.assertEquals("a.b.c", abc.getName());
+        Assertions.assertEquals(Level.DEBUG, abc.getEffectiveLevel());
     }
 
     @Test
     public void testCreation() {
         ControlLogger xyz = clc.getLogger("x.y.z");
-        assertEquals("x.y.z", xyz.getName());
-        assertEquals("x.y", xyz.parent.getName());
-        assertEquals("x", xyz.parent.parent.getName());
-        assertEquals("root", xyz.parent.parent.parent.getName());
+        Assertions.assertEquals("x.y.z", xyz.getName());
+        Assertions.assertEquals("x.y", xyz.parent.getName());
+        Assertions.assertEquals("x", xyz.parent.parent.getName());
+        Assertions.assertEquals("root", xyz.parent.parent.parent.getName());
 
         ControlLogger xyz_ = clc.exists("x.y.z");
-        assertEquals("x.y.z", xyz_.getName());
+        Assertions.assertEquals("x.y.z", xyz_.getName());
 
     }
 }

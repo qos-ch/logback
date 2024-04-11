@@ -14,7 +14,7 @@
 package ch.qos.logback.core.pattern;
 
 /**
- * A minimal converter which sets up the general interface for derived classes. 
+ * A minimal converter which sets up the general interface for derived classes.
  * It also implements the functionality to chain converters in a linked list.
  * 
  * @author ceki
@@ -35,7 +35,7 @@ abstract public class Converter<E> {
      * In its simplest incarnation, a convert simply appends the data extracted from
      * the event to the buffer passed as parameter.
      * 
-     * @param buf The input buffer where data is appended
+     * @param buf   The input buffer where data is appended
      * @param event The event from where data is extracted
      */
     public void write(StringBuilder buf, E event) {

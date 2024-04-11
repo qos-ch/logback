@@ -13,36 +13,35 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.IMarkerFactory;
-import org.slf4j.Marker;
-import org.slf4j.helpers.BasicMarkerFactory;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.IMarkerFactory;
+import org.slf4j.Marker;
+import org.slf4j.helpers.BasicMarkerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MarkerConverterTest {
 
     LoggerContext lc;
     MarkerConverter converter;
-    // use a different facotry for each test so that they are independent
+    // use a different factory for each test so that they are independent
     IMarkerFactory markerFactory = new BasicMarkerFactory();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         converter = new MarkerConverter();
         converter.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         converter.stop();
@@ -86,7 +85,8 @@ public class MarkerConverterTest {
     }
 
     private ILoggingEvent createLoggingEvent(Marker marker) {
-        LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
+        LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME),
+                Level.DEBUG, "test message", null, null);
         le.addMarker(marker);
         return le;
     }

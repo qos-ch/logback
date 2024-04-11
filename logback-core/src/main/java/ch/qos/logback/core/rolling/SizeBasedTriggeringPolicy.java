@@ -15,9 +15,11 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 
+import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.DefaultInvocationGate;
 import ch.qos.logback.core.util.InvocationGate;
+import ch.qos.logback.core.util.SimpleInvocationGate;
 
 /**
  * SizeBasedTriggeringPolicy looks at size of the file being currently written
@@ -39,11 +41,18 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
     public static final long DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
     FileSize maxFileSize = new FileSize(DEFAULT_MAX_FILE_SIZE);
+    InvocationGate invocationGate = new SimpleInvocationGate();
+    Duration checkIncrement = null;
 
     public SizeBasedTriggeringPolicy() {
     }
 
-    InvocationGate invocationGate = new DefaultInvocationGate();
+    public void start() {
+        if(checkIncrement != null)
+            invocationGate = new SimpleInvocationGate(checkIncrement);
+        super.start();
+    }
+
 
     public boolean isTriggeringEvent(final File activeFile, final E event) {
         long now = System.currentTimeMillis();
@@ -53,14 +62,19 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
         return (activeFile.length() >= maxFileSize.getSize());
     }
 
-
     public FileSize getMaxFileSize() {
         return this.maxFileSize;
     }
 
-    
     public void setMaxFileSize(FileSize aMaxFileSize) {
         this.maxFileSize = aMaxFileSize;
     }
 
+    public Duration getCheckIncrement() {
+        return checkIncrement;
+    }
+
+    public void setCheckIncrement(Duration checkIncrement) {
+        this.checkIncrement = checkIncrement;
+    }
 }

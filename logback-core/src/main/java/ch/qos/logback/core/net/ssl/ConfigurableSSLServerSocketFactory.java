@@ -22,14 +22,13 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
 /**
- * An {@link SSLServerSocketFactory} that configures SSL parameters 
- * (those specified in {@link SSLParametersConfiguration} on each newly 
- * created socket. 
+ * An {@link SSLServerSocketFactory} that configures SSL parameters (those
+ * specified in {@link SSLParametersConfiguration}) on each newly created socket.
  * <p>
- * When any of this factory's {@code createServerSocket} methods are invoked, 
- * it calls on a delegate {@link SSLServerSocketFactory} to create the socket, 
- * and then sets the SSL parameters of the socket (using the provided 
- * configuration) before returning the socket to the caller.
+ * When any of this factory's {@code createServerSocket} methods are invoked, it
+ * calls on a delegate {@link SSLServerSocketFactory} to create the socket, and
+ * then sets the SSL parameters of the socket (using the provided configuration)
+ * before returning the socket to the caller.
  *
  * @author Carl Harris
  */
@@ -40,10 +39,11 @@ public class ConfigurableSSLServerSocketFactory extends ServerSocketFactory {
 
     /**
      * Creates a new factory.
-     * @param parameters parameters that will be configured on each
-     *    socket created by the factory
-     * @param delegate socket factory that will be called upon to create
-     *    server sockets before configuration
+     * 
+     * @param parameters parameters that will be configured on each socket created
+     *                   by the factory
+     * @param delegate   socket factory that will be called upon to create server
+     *                   sockets before configuration
      */
     public ConfigurableSSLServerSocketFactory(SSLParametersConfiguration parameters, SSLServerSocketFactory delegate) {
         this.parameters = parameters;

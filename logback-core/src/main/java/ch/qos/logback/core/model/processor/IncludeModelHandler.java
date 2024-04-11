@@ -1,6 +1,30 @@
+/*
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
+
 package ch.qos.logback.core.model.processor;
 
-import static ch.qos.logback.core.joran.JoranConstants.INCLUDED_TAG;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.GenericXMLConfigurator;
+import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.event.SaxEventRecorder;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.model.IncludeModel;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.spi.ErrorCodes;
+import ch.qos.logback.core.util.Loader;
+import ch.qos.logback.core.util.OptionHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,218 +33,217 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
-import java.util.Stack;
+import java.util.function.Supplier;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.JoranConstants;
-import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.event.SaxEventRecorder;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
-import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.model.IncludeModel;
-import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.util.Loader;
-import ch.qos.logback.core.util.OptionHelper;
+import static ch.qos.logback.core.joran.JoranConstants.CONFIGURATION_TAG;
+import static ch.qos.logback.core.joran.JoranConstants.INCLUDED_TAG;
 
+/**
+ * @since 1.5.5
+ */
 public class IncludeModelHandler extends ModelHandlerBase {
+    boolean inError = false;
+    private String attributeInUse;
+    private boolean optional;
 
-	private boolean optional;
-	private String attributeInUse;
+    public IncludeModelHandler(Context context) {
+        super(context);
+    }
 
-	public IncludeModelHandler(Context context) {
-		super(context);
-	}
+    static public IncludeModelHandler makeInstance(Context context, ModelInterpretationContext mic) {
+        return new IncludeModelHandler(context);
+    }
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
-		return new IncludeModelHandler(context);
-	}	
+    @Override
+    protected Class<IncludeModel> getSupportedModelClass() {
+        return IncludeModel.class;
+    }
 
-	@Override
-	protected Class<IncludeModel> getSupportedModelClass() {
-		return IncludeModel.class;
-	}
+    @Override
+    public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        IncludeModel includeModel = (IncludeModel) model;
 
-	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		IncludeModel includeModel = (IncludeModel) model;
-		SaxEventRecorder localRecorder = new SaxEventRecorder(context, includeModel.getElementPath()) {
-			@Override
-			public boolean shouldIgnoreForElementPath(String tagName) {
-				return JoranConstants.INCLUDED_TAG.equalsIgnoreCase(tagName);
-			}
-		};
+        this.optional = OptionHelper.toBoolean(includeModel.getOptional(), false);
 
-		this.optional = OptionHelper.toBoolean(includeModel.getOptional(), false);
+        if (!checkAttributes(includeModel)) {
+            inError = true;
+            return;
+        }
 
-		if (!checkAttributes(includeModel)) {
-			return;
-		}
+        InputStream in = getInputStream(mic, includeModel);
+        if(in == null) {
+            inError = true;
+            return;
+        }
 
-		InputStream in = getInputStream(intercon, includeModel);
-		try {
-			if (in != null) {
+        SaxEventRecorder recorder = null;
 
-				parseAndRecord(in, localRecorder);
-				// remove the <included> tag from the beginning and </included> from the end
-				trimHeadAndTail(localRecorder, INCLUDED_TAG);
+        try {
+            recorder = populateSaxEventRecorder(in);
 
-				SaxEventInterpreter localInterpreter = intercon.getSaxEventInterpreter()
-						.duplicate(includeModel.getElementPath());
-				// add models
-				localInterpreter.getEventPlayer().play(localRecorder.saxEventList);
-				transferModelStack(includeModel, localInterpreter);
-			}
-		} catch (JoranException e) {
-			addError("Error while parsing  " + attributeInUse, e);
-		} finally {
-			close(in);
-		}
-	}
+            List<SaxEvent> saxEvents = recorder.getSaxEventList();
+            if (saxEvents.isEmpty()) {
+                addWarn("Empty sax event list");
+                return;
+            }
 
-	private void transferModelStack(IncludeModel includeModel, SaxEventInterpreter subInterpreter) {
-		Stack<Model> copy = subInterpreter.getInterpretationContext().getCopyOfModelStack();
-		for (Model m : copy) {
-			includeModel.addSubModel(m);
-		}
-	}
+            //trimHeadAndTail(saxEvents);
 
-	private void close(InputStream in) {
-		if (in != null) {
-			try {
-				in.close();
-			} catch (IOException e) {
-			}
-		}
-	}
+            Supplier<? extends GenericXMLConfigurator> jcSupplier = mic.getConfiguratorSupplier();
+            if (jcSupplier == null) {
+                addError("null configurator supplier. Abandoning inclusion of [" + attributeInUse + "]");
+                inError = true;
+                return;
+            }
 
-	private boolean checkAttributes(IncludeModel includeModel) {
-		int count = 0;
+            GenericXMLConfigurator genericXMLConfigurator = jcSupplier.get();
+            genericXMLConfigurator.getRuleStore().addPathPathMapping(INCLUDED_TAG, CONFIGURATION_TAG);
 
-		if (!OptionHelper.isNullOrEmpty(includeModel.getFile())) {
-			count++;
-		}
-		if (!OptionHelper.isNullOrEmpty(includeModel.getUrl())) {
-			count++;
-		}
-		if (!OptionHelper.isNullOrEmpty(includeModel.getResource())) {
-			count++;
-		}
+            Model modelFromIncludedFile = genericXMLConfigurator.buildModelFromSaxEventList(recorder.getSaxEventList());
+            if (modelFromIncludedFile == null) {
+                addError(ErrorCodes.EMPTY_MODEL_STACK);
+                return;
+            }
 
-		if (count == 0) {
-			addError("One of \"path\", \"resource\" or \"url\" attributes must be set.");
-			return false;
-		} else if (count > 1) {
-			addError("Only one of \"file\", \"url\" or \"resource\" attributes should be set.");
-			return false;
-		} else if (count == 1) {
-			return true;
-		}
-		throw new IllegalStateException("Count value [" + count + "] is not expected");
-	}
+            includeModel.getSubModels().addAll(modelFromIncludedFile.getSubModels());
 
-	private InputStream getInputStream(InterpretationContext ec, IncludeModel includeModel) {
-		URL inputURL = getInputURL(ec, includeModel);
-		if (inputURL == null)
-			return null;
+        } catch (JoranException e) {
+            inError = true;
+            addError("Error processing XML data in [" + attributeInUse + "]", e);
+        }
+    }
 
-		ConfigurationWatchListUtil.addToWatchList(context, inputURL);
-		return openURL(inputURL);
-	}
+    public SaxEventRecorder populateSaxEventRecorder(final InputStream inputStream) throws JoranException {
+        SaxEventRecorder recorder = new SaxEventRecorder(context);
+        recorder.recordEvents(inputStream);
+        return recorder;
+    }
 
-	private URL getInputURL(InterpretationContext ec, IncludeModel includeModel) {
-		String fileAttribute = includeModel.getFile();
-		String urlAttribute = includeModel.getUrl();
-		String resourceAttribute = includeModel.getResource();
+    private void trimHeadAndTail( List<SaxEvent> saxEventList) {
+        // Let's remove the two <included> events before
+        // adding the events to the player.
 
-		if (!OptionHelper.isNullOrEmpty(fileAttribute)) {
-			this.attributeInUse = ec.subst(fileAttribute);
-			return filePathAsURL(attributeInUse);
-		}
+        // note saxEventList.size() changes over time as events are removed
 
-		if (!OptionHelper.isNullOrEmpty(urlAttribute)) {
-			this.attributeInUse = ec.subst(urlAttribute);
-			return attributeToURL(attributeInUse);
-		}
+        if (saxEventList.size() == 0) {
+            return;
+        }
 
-		if (!OptionHelper.isNullOrEmpty(resourceAttribute)) {
-			this.attributeInUse = ec.subst(resourceAttribute);
-			return resourceAsURL(attributeInUse);
-		}
-		// given previous checkAttributes() check we cannot reach this line
-		throw new IllegalStateException("A URL stream should have been returned");
-	}
+        SaxEvent first = saxEventList.get(0);
+        if (first != null && first.qName.equalsIgnoreCase(INCLUDED_TAG)) {
+            saxEventList.remove(0);
+        }
 
-	private InputStream openURL(URL url) {
-		try {
-			return url.openStream();
-		} catch (IOException e) {
-			optionalWarning("Failed to open [" + url.toString() + "]");
-			return null;
-		}
-	}
+        SaxEvent last = saxEventList.get(saxEventList.size() - 1);
+        if (last != null && last.qName.equalsIgnoreCase(INCLUDED_TAG)) {
+            saxEventList.remove(saxEventList.size() - 1);
+        }
+    }
 
-	private URL attributeToURL(String urlAttribute) {
-		try {
-			return new URL(urlAttribute);
-		} catch (MalformedURLException mue) {
-			String errMsg = "URL [" + urlAttribute + "] is not well formed.";
-			addError(errMsg, mue);
-			return null;
-		}
-	}
+    InputStream getInputStream(ModelInterpretationContext mic, IncludeModel includeModel) {
+        URL inputURL = getInputURL(mic, includeModel);
+        if (inputURL == null)
+            return null;
 
-	private URL resourceAsURL(String resourceAttribute) {
-		URL url = Loader.getResourceBySelfClassLoader(resourceAttribute);
-		if (url == null) {
-			optionalWarning("Could not find resource corresponding to [" + resourceAttribute + "]");
-			return null;
-		} else
-			return url;
-	}
+        ConfigurationWatchListUtil.addToWatchList(context, inputURL);
+        return openURL(inputURL);
+    }
 
-	private void optionalWarning(String msg) {
-		if (!optional) {
-			addWarn(msg);
-		}
-	}
+    InputStream openURL(URL url) {
+        try {
+            return url.openStream();
+        } catch (IOException e) {
+            optionalWarning("Failed to open [" + url.toString() + "]");
+            return null;
+        }
+    }
 
-	URL filePathAsURL(String path) {
-		URI uri = new File(path).toURI();
-		try {
-			return uri.toURL();
-		} catch (MalformedURLException e) {
-			// impossible to get here
-			e.printStackTrace();
-			return null;
-		}
-	}
+    private boolean checkAttributes(IncludeModel includeModel) {
+        String fileAttribute = includeModel.getFile();
+        String urlAttribute = includeModel.getUrl();
+        String resourceAttribute = includeModel.getResource();
 
-	private void parseAndRecord(InputStream inputSource, SaxEventRecorder recorder) throws JoranException {
-		recorder.setContext(context);
-		recorder.recordEvents(inputSource);
-	}
+        int count = 0;
 
-	private void trimHeadAndTail(SaxEventRecorder recorder, String tagName) {
-		// Let's remove the two events with the specified tag before
-		// adding the events to the player.
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(fileAttribute)) {
+            count++;
+        }
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(urlAttribute)) {
+            count++;
+        }
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(resourceAttribute)) {
+            count++;
+        }
 
-		List<SaxEvent> saxEventList = recorder.saxEventList;
+        if (count == 0) {
+            addError("One of \"path\", \"resource\" or \"url\" attributes must be set.");
+            return false;
+        } else if (count > 1) {
+            addError("Only one of \"file\", \"url\" or \"resource\" attributes should be set.");
+            return false;
+        } else if (count == 1) {
+            return true;
+        }
+        throw new IllegalStateException("Count value [" + count + "] is not expected");
+    }
 
-		if (saxEventList.size() == 0) {
-			return;
-		}
+    URL getInputURL(ModelInterpretationContext mic, IncludeModel includeModel) {
+        String fileAttribute = includeModel.getFile();
+        String urlAttribute = includeModel.getUrl();
+        String resourceAttribute = includeModel.getResource();
 
-		SaxEvent first = saxEventList.get(0);
-		if (first != null && first.qName.equalsIgnoreCase(tagName)) {
-			saxEventList.remove(0);
-		}
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(fileAttribute)) {
+            this.attributeInUse = mic.subst(fileAttribute);
+            return filePathAsURL(attributeInUse);
+        }
 
-		SaxEvent last = saxEventList.get(recorder.saxEventList.size() - 1);
-		if (last != null && last.qName.equalsIgnoreCase(tagName)) {
-			saxEventList.remove(recorder.saxEventList.size() - 1);
-		}
-	}
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(urlAttribute)) {
+            this.attributeInUse = mic.subst(urlAttribute);
+            return attributeToURL(attributeInUse);
+        }
 
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(resourceAttribute)) {
+            this.attributeInUse = mic.subst(resourceAttribute);
+            return resourceAsURL(attributeInUse);
+        }
+        // given preceding checkAttributes() check we cannot reach this line
+        throw new IllegalStateException("A URL stream should have been returned at this stage");
+
+    }
+
+    URL filePathAsURL(String path) {
+        URI uri = new File(path).toURI();
+        try {
+            return uri.toURL();
+        } catch (MalformedURLException e) {
+            // impossible to get here
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    URL attributeToURL(String urlAttribute) {
+        try {
+            return new URL(urlAttribute);
+        } catch (MalformedURLException mue) {
+            String errMsg = "URL [" + urlAttribute + "] is not well formed.";
+            addError(errMsg, mue);
+            return null;
+        }
+    }
+
+    URL resourceAsURL(String resourceAttribute) {
+        URL url = Loader.getResourceBySelfClassLoader(resourceAttribute);
+        if (url == null) {
+            optionalWarning("Could not find resource corresponding to [" + resourceAttribute + "]");
+            return null;
+        } else
+            return url;
+    }
+
+    private void optionalWarning(String msg) {
+        if (!optional) {
+            addWarn(msg);
+        }
+    }
 }

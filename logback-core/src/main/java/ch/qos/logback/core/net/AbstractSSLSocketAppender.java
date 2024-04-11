@@ -41,6 +41,7 @@ public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppende
     /**
      * Gets an {@link SocketFactory} that produces SSL sockets using an
      * {@link SSLContext} that is derived from the appender's configuration.
+     * 
      * @return socket factory
      */
     @Override
@@ -66,8 +67,9 @@ public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppende
 
     /**
      * Gets the SSL configuration.
-     * @return SSL configuration; if no configuration has been set, a
-     *    default configuration is returned
+     * 
+     * @return SSL configuration; if no configuration has been set, a default
+     *         configuration is returned
      */
     public SSLConfiguration getSsl() {
         if (ssl == null) {
@@ -78,6 +80,7 @@ public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppende
 
     /**
      * Sets the SSL configuration.
+     * 
      * @param ssl the SSL configuration to set
      */
     public void setSsl(SSLConfiguration ssl) {

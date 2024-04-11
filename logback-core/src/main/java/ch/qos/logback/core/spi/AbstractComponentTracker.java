@@ -18,8 +18,9 @@ import ch.qos.logback.core.CoreConstants;
 import java.util.*;
 
 /**
- * An abstract implementation of the ComponentTracker interface. Derived classes must implement
- * {@link #buildComponent(String)}, {@link #processPriorToRemoval(Object)}, and {@link #isComponentStale(Object)}
+ * An abstract implementation of the ComponentTracker interface. Derived classes
+ * must implement {@link #buildComponent(String)},
+ * {@link #processPriorToRemoval(Object)}, and {@link #isComponentStale(Object)}
  * methods as appropriate for their component type.
  *
  * @param <C> component type
@@ -35,17 +36,20 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     final public static long LINGERING_TIMEOUT = 10 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
     /**
-     * The minimum amount of time that has to elapse between successive removal iterations.
+     * The minimum amount of time that has to elapse between successive removal
+     * iterations.
      */
     final public static long WAIT_BETWEEN_SUCCESSIVE_REMOVAL_ITERATIONS = CoreConstants.MILLIS_IN_ONE_SECOND;
 
     protected int maxComponents = DEFAULT_MAX_COMPONENTS;
     protected long timeout = DEFAULT_TIMEOUT;
 
-    // an access ordered map. Least recently accessed element will be removed after a 'timeout'
+    // an access-ordered map. Least recently accessed element will be removed after
+    // a 'timeout'
     LinkedHashMap<String, Entry<C>> liveMap = new LinkedHashMap<String, Entry<C>>(32, .75f, ACCESS_ORDERED);
 
-    // an access ordered map. Least recently accessed element will be removed after LINGERING_TIMEOUT
+    // an access-ordered map. Least recently accessed element will be removed after
+    // LINGERING_TIMEOUT
     LinkedHashMap<String, Entry<C>> lingerersMap = new LinkedHashMap<String, Entry<C>>(16, .75f, ACCESS_ORDERED);
     long lastCheck = 0;
 
@@ -65,8 +69,8 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     abstract protected C buildComponent(String key);
 
     /**
-     * Components can declare themselves stale. Such components may be
-     * removed before they time out.
+     * Components can declare themselves stale. Such components may be removed
+     * before they time out.
      *
      * @param c
      * @return
@@ -95,7 +99,9 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     /**
      * {@inheritDoc}
      *
-     * <p>Note that this method is synchronized.</p>
+     * <p>
+     * Note that this method is synchronized.
+     * </p>
      *
      * @param key {@inheritDoc}
      * @return {@inheritDoc}
@@ -110,11 +116,13 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     }
 
     /**
-     *  {@inheritDoc}
+     * {@inheritDoc}
      *
-     * <p>Note that this method is atomic, i.e. synchronized.</p>
+     * <p>
+     * Note that this method is atomic, i.e. synchronized.
+     * </p>
      *
-     * @param key {@inheritDoc}
+     * @param key       {@inheritDoc}
      * @param timestamp {@inheritDoc}
      * @return {@inheritDoc}
      */
@@ -144,8 +152,8 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     }
 
     /**
-     * Clear (and detach) components which are stale. Components which have not
-     * been accessed for more than a user-specified duration are deemed stale.
+     * Clear (and detach) components which are stale. Components which have not been
+     * accessed for more than a user-specified duration are deemed stale.
      *
      * @param now
      */
@@ -169,7 +177,8 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
         genericStaleComponentRemover(lingerersMap, now, byLingering);
     }
 
-    private void genericStaleComponentRemover(LinkedHashMap<String, Entry<C>> map, long now, RemovalPredicator<C> removalPredicator) {
+    private void genericStaleComponentRemover(LinkedHashMap<String, Entry<C>> map, long now,
+            RemovalPredicator<C> removalPredicator) {
         Iterator<Map.Entry<String, Entry<C>>> iter = map.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry<String, Entry<C>> mapEntry = iter.next();

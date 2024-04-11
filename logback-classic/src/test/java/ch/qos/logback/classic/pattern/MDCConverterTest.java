@@ -13,41 +13,41 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.MDC;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MDCConverterTest {
 
-    LoggerContext lc;
+    LoggerContext loggerContext;
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     MDCConverter converter;
     int diff = RandomUtil.getPositiveInt();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        lc = new LoggerContext();
+        loggerContext = new LoggerContext();
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
         converter = new MDCConverter();
         converter.start();
-        MDC.clear();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
-        lc = null;
+        loggerContext = null;
         converter.stop();
         converter = null;
-        MDC.clear();
     }
 
     @Test
@@ -55,7 +55,7 @@ public class MDCConverterTest {
         String k = "MDCConverterTest_k" + diff;
         String v = "MDCConverterTest_v" + diff;
 
-        MDC.put(k, v);
+        logbackMDCAdapter.put(k, v);
         ILoggingEvent le = createLoggingEvent();
         String result = converter.convert(le);
         assertEquals(k + "=" + v, result);
@@ -63,15 +63,16 @@ public class MDCConverterTest {
 
     @Test
     public void testConvertWithMultipleEntries() {
-        MDC.put("testKey", "testValue");
-        MDC.put("testKey2", "testValue2");
+        logbackMDCAdapter.put("testKey", "testValue");
+        logbackMDCAdapter.put("testKey2", "testValue2");
         ILoggingEvent le = createLoggingEvent();
         String result = converter.convert(le);
         boolean isConform = result.matches("testKey2?=testValue2?, testKey2?=testValue2?");
-        assertTrue(result + " is not conform", isConform);
+        assertTrue( isConform, result + " is not conform");
     }
 
     private ILoggingEvent createLoggingEvent() {
-        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
+        return new LoggingEvent(this.getClass().getName(), loggerContext.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG,
+                "test message", null, null);
     }
 }

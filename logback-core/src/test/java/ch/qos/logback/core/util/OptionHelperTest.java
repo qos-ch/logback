@@ -13,33 +13,37 @@
  */
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static ch.qos.logback.core.subst.NodeToStringTransformer.CIRCULAR_VARIABLE_REFERENCE_DETECTED;
+import static ch.qos.logback.core.subst.Parser.EXPECTING_DATA_AFTER_LEFT_ACCOLADE;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ScanException;
+import org.junit.jupiter.api.Timeout;
 
 public class OptionHelperTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     String text = "Testing ${v1} variable substitution ${v2}";
     String expected = "Testing if variable substitution works";
     Context context = new ContextBase();
     Map<String, String> secondaryMap;
 
-    @Before
+    int diff = RandomUtil.getPositiveInt();
+
+    @BeforeEach
     public void setUp() throws Exception {
         secondaryMap = new HashMap<String, String>();
     }
@@ -136,17 +140,21 @@ public class OptionHelperTest {
         assertEquals("logs/archive/LOGBACK_trace_archive.log", result);
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void stubstVarsShouldNotGoIntoInfiniteLoop() throws ScanException {
         context.putProperty("v1", "if");
         context.putProperty("v2", "${v3}");
         context.putProperty("v3", "${v4}");
         context.putProperty("v4", "${v2}c");
 
-        expectedException.expect(Exception.class);
-        OptionHelper.substVars(text, context);
+        Exception e = assertThrows(Exception.class, () -> {
+            OptionHelper.substVars(text, context);
+        });
+        String expectedMessage =  CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${v2} --> ${v3} --> ${v4} --> ${v2}]";
+        assertEquals(expectedMessage, e.getMessage());
     }
-
+    
     @Test
     public void nonCircularGraphShouldWork() throws ScanException {
         context.putProperty("A", "${B} and ${C}");
@@ -159,63 +167,119 @@ public class OptionHelperTest {
         assertEquals("B1-value and C1-value and B1-value", result);
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences0() throws ScanException {
         context.putProperty("A", "${A}");
-
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${A}]");
-        OptionHelper.substVars("${A}", context);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+           OptionHelper.substVars("${A}", context);
+        });
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${A}]";
+        assertEquals(expectedMessage, e.getMessage());
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences1() throws ScanException {
         context.putProperty("A", "${A}a");
 
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${A}]");
-        OptionHelper.substVars("${A}", context);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            OptionHelper.substVars("${A}", context);
+        });
+        
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${A}]";
+        assertEquals(expectedMessage, e.getMessage());
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences2() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");
         context.putProperty("C", "${A}");
 
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${B} --> ${C} --> ${A}]");
-        OptionHelper.substVars("${A}", context);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+           OptionHelper.substVars("${A}", context);
+        });
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${B} --> ${C} --> ${A}]";
+        assertEquals(expectedMessage, e.getMessage());
     }
 
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46755
+    @Test
+    public void recursionErrorWithNullLiteralPayload() throws ScanException {
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+           OptionHelper.substVars("abc${AA$AA${}}}xyz", context);
+        });
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${AA} --> ${}]";
+        assertEquals(expectedMessage, e.getMessage());
+    }
+
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46892
+    @Test
+    public void leftAccoladeFollowedByDefaultStateWithNoLiteral() throws ScanException {
+        Exception e = assertThrows(ScanException.class, () -> {
+            OptionHelper.substVars("x{:-a}", context);
+        });
+        String expectedMessage = EXPECTING_DATA_AFTER_LEFT_ACCOLADE;
+        assertEquals(expectedMessage, e.getMessage());
+    }
+
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46966
+    @Test
+    public void nestedEmptyVariables() throws ScanException {
+
+        Exception e = assertThrows(Exception.class, () -> {
+            OptionHelper.substVars("${${${}}}", context);
+        });
+        String expectedMessage =  CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${ ?  ? } --> ${ ? } --> ${}]";
+        assertEquals(expectedMessage, e.getMessage());
+    }
+    
+    
+    
     @Test
     public void detectCircularReferencesInDefault() throws ScanException {
         context.putProperty("A", "${B:-${A}}");
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${B} --> ${A}]");
-        OptionHelper.substVars("${A}", context);
+     
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            OptionHelper.substVars("${A}", context);
+        });
+
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${B} --> ${A}]";
+        assertEquals(expectedMessage, e.getMessage());
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences3() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");
         context.putProperty("C", "${A}");
 
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${B} --> ${C} --> ${A} --> ${B}]");
-        OptionHelper.substVars("${B} ", context);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            OptionHelper.substVars("${B} ", context);
+        });
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED + "${B} --> ${C} --> ${A} --> ${B}]";
+        assertEquals(expectedMessage, e.getMessage());
+
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences4() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");
         context.putProperty("C", "${A}");
 
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${C} --> ${A} --> ${B} --> ${C}]");
-        OptionHelper.substVars("${C} and ${A}", context);
+        
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            OptionHelper.substVars("${C} and ${A}", context);
+        });
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${C} --> ${A} --> ${B} --> ${C}]";
+        assertEquals(expectedMessage, e.getMessage());
     }
 
     @Test
@@ -226,10 +290,12 @@ public class OptionHelperTest {
         context.putProperty("C", "${C1}");
         context.putProperty("C1", "here's the loop: ${A}");
 
-        expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${C} --> ${C1} --> ${A}]");
-        String result = OptionHelper.substVars("${A}", context);
-        System.err.println(result);
+        
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            OptionHelper.substVars("${A}", context);
+        });
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${C} --> ${C1} --> ${A}]";
+        assertEquals(expectedMessage, e.getMessage());
     }
 
     @Test
@@ -246,11 +312,41 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void doesNotThrowNullPointerExceptionForEmptyVariable() throws JoranException, ScanException {
-        context.putProperty("var", "");
-        OptionHelper.substVars("${var}", context);
+    public void emptyVariableIsAccepted() throws JoranException, ScanException {
+        String varName = "var"+diff;
+        context.putProperty(varName, "");
+        String r = OptionHelper.substVars("x ${"+varName+"} b", context);
+        assertEquals("x  b", r);
     }
 
+    // https://jira.qos.ch/browse/LOGBACK-1012
+    // conflicts with the idea that variables assigned the empty string are valid
+    @Disabled
+    @Test
+    public void defaultExpansionForEmptyVariables() throws JoranException, ScanException {
+        String varName = "var"+diff;
+        context.putProperty(varName, "");
+
+        String r = OptionHelper.substVars("x ${"+varName+":-def} b", context);
+        assertEquals("x def b", r);
+    }
+
+    @Test
+    public void emptyDefault() throws ScanException {
+        String r = OptionHelper.substVars("a${undefinedX:-}b", context);
+        assertEquals("ab", r);
+    }
+
+    @Test
+    public void openBraceAsLastCharacter() throws JoranException, ScanException {
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            OptionHelper.substVars("a{a{", context);
+        });
+        String expectedMessage = "All tokens consumed but was expecting \"}\"";
+        assertEquals(expectedMessage, e.getMessage());
+    }
+
+    
     @Test
     public void trailingColon_LOGBACK_1140() throws ScanException {
         String prefix = "c:";
@@ -259,6 +355,9 @@ public class OptionHelperTest {
         String r = OptionHelper.substVars("${var}" + suffix, context);
         assertEquals(prefix + suffix, r);
     }
+
+
+
 
     @Test
     public void curlyBraces_LOGBACK_1101() throws ScanException {

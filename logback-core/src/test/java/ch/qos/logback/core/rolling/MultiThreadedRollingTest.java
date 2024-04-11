@@ -15,8 +15,6 @@ package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.testUtil.CoreTestConstants.FAILURE_EXIT_CODE;
 import static ch.qos.logback.core.testUtil.CoreTestConstants.SUCCESSFUL_EXIT_CODE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,9 +25,10 @@ import java.io.OutputStream;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -38,7 +37,7 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -61,12 +60,14 @@ public class MultiThreadedRollingTest {
     String pathToBash = EnvUtilForTests.getPathToBash();
     OutputStream scriptOS;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         encoder = new EchoEncoder<Object>();
         File outputDir = new File(outputDirStr);
-        outputDir.mkdirs();
-
+        boolean result = outputDir.mkdirs();
+        if(!result) {
+            System.out.println("Failed to create folder "+outputDirStr);
+        }
         System.out.println("Output dir [" + outputDirStr + "]");
 
         scriptOS = openScript();
@@ -87,7 +88,7 @@ public class MultiThreadedRollingTest {
         }
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         rfa.stop();
     }
@@ -170,7 +171,7 @@ public class MultiThreadedRollingTest {
         process.waitFor();
         int exitCode = process.exitValue();
 
-        assertEquals(SUCCESSFUL_EXIT_CODE, exitCode);
+        Assertions.assertEquals(SUCCESSFUL_EXIT_CODE, exitCode);
         System.out.println("External script based verification returned with exit code " + exitCode);
     }
 
@@ -251,7 +252,7 @@ public class MultiThreadedRollingTest {
         StatusChecker checker = new StatusChecker(context.getStatusManager());
         if (!checker.isErrorFree(0)) {
             StatusPrinter.print(context);
-            fail("errors reported");
+            Assertions.fail("errors reported");
         }
     }
 

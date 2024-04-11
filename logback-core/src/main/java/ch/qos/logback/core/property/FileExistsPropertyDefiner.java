@@ -19,9 +19,9 @@ import ch.qos.logback.core.util.OptionHelper;
 import java.io.File;
 
 /**
- * In conjunction with {@link ch.qos.logback.core.joran.action.PropertyAction} sets
- * the named variable to "true" if the file specified by {@link #setPath(String) path}
- * property exists, to "false" otherwise.
+ * In conjunction with {@link ch.qos.logback.core.joran.action.PropertyAction}
+ * sets the named variable to "true" if the file specified by
+ * {@link #setPath(String) path} property exists, to "false" otherwise.
  *
  * @see #getPropertyValue()
  *
@@ -45,13 +45,13 @@ public class FileExistsPropertyDefiner extends PropertyDefinerBase {
     }
 
     /**
-     * Returns "true" if the file specified by {@link #setPath(String) path} property exists.
-     * Returns "false" otherwise.
+     * Returns "true" if the file specified by {@link #setPath(String) path}
+     * property exists. Returns "false" otherwise.
      *
      * @return "true"|"false" depending on the existence of file
      */
     public String getPropertyValue() {
-        if (OptionHelper.isNullOrEmpty(path)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(path)) {
             addError("The \"path\" property must be set.");
             return null;
         }

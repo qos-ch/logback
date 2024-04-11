@@ -15,46 +15,52 @@ package ch.qos.logback.classic;
 
 import ch.qos.logback.classic.layout.TTLLLayout;
 import ch.qos.logback.classic.spi.Configurator;
+import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
- * BasicConfigurator configures logback-classic by attaching a 
- * {@link ConsoleAppender} to the root logger. The console appender's layout 
- * is set to a {@link ch.qos.logback.classic.layout.TTLLLayout TTLLLayout}.
+ * BasicConfigurator configures logback-classic by attaching a
+ * {@link ConsoleAppender} to the root logger. The console appender's layout is
+ * set to a {@link ch.qos.logback.classic.layout.TTLLLayout TTLLLayout}.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
+@ConfiguratorRank(value = ConfiguratorRank.FALLBACK)
 public class BasicConfigurator extends ContextAwareBase implements Configurator {
 
     public BasicConfigurator() {
     }
 
-    public void configure(LoggerContext lc) {
+    public ExecutionStatus configure(LoggerContext loggerContext) {
         addInfo("Setting up default configuration.");
-        
+
         ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
-        ca.setContext(lc);
+        ca.setContext(context);
         ca.setName("console");
         LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<ILoggingEvent>();
-        encoder.setContext(lc);
-        
- 
-        // same as 
+        encoder.setContext(context);
+
+        // same as
         // PatternLayout layout = new PatternLayout();
-        // layout.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
+        // layout.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -
+        // %msg%n");
         TTLLLayout layout = new TTLLLayout();
- 
-        layout.setContext(lc);
+
+        layout.setContext(context);
         layout.start();
         encoder.setLayout(layout);
-        
+
         ca.setEncoder(encoder);
         ca.start();
-        
-        Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+
+        Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         rootLogger.addAppender(ca);
+
+        // let the caller decide
+        return ExecutionStatus.NEUTRAL;
     }
 }

@@ -25,8 +25,9 @@ public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable<E
     String getName();
 
     /**
-     * This is where an appender accomplishes its work. Note that the argument 
-     * is of type Object.
+     * This is where an appender accomplishes its work. Note that the argument is of
+     * type Object.
+     * 
      * @param event
      */
     void doAppend(E event) throws LogbackException;

@@ -133,7 +133,8 @@ public class ThrowableProxyUtil {
     /**
      * @param sb The StringBuilder the STEPs are appended to.
      * @param tp the IThrowableProxy containing the STEPs.
-     * @deprecated Use subjoinSTEPArray(StringBuilder sb, int indentLevel, IThrowableProxy tp) instead.
+     * @deprecated Use subjoinSTEPArray(StringBuilder sb, int indentLevel,
+     *             IThrowableProxy tp) instead.
      */
     public static void subjoinSTEPArray(StringBuilder sb, IThrowableProxy tp) {
         // not called anymore - but it is public
@@ -141,9 +142,10 @@ public class ThrowableProxyUtil {
     }
 
     /**
-     * @param sb The StringBuilder the STEPs are appended to.
-     * @param indentLevel indentation level used for the STEPs, usually REGULAR_EXCEPTION_INDENT.
-     * @param tp the IThrowableProxy containing the STEPs.
+     * @param sb          The StringBuilder the STEPs are appended to.
+     * @param indentLevel indentation level used for the STEPs, usually
+     *                    REGULAR_EXCEPTION_INDENT.
+     * @param tp          the IThrowableProxy containing the STEPs.
      */
     public static void subjoinSTEPArray(StringBuilder sb, int indentLevel, IThrowableProxy tp) {
         StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
@@ -158,7 +160,8 @@ public class ThrowableProxyUtil {
 
         if (commonFrames > 0) {
             indent(sb, indentLevel);
-            sb.append("... ").append(commonFrames).append(" common frames omitted").append(CoreConstants.LINE_SEPARATOR);
+            sb.append("... ").append(commonFrames).append(" common frames omitted")
+                    .append(CoreConstants.LINE_SEPARATOR);
         }
 
     }
@@ -179,10 +182,11 @@ public class ThrowableProxyUtil {
     }
 
     private static void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-    	if(tp.isCyclic()) {
-    		buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage()).append(']');
-    	} else {
-          buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
-    	}
+        if (tp.isCyclic()) {
+            buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage())
+                    .append(']');
+        } else {
+            buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+        }
     }
 }

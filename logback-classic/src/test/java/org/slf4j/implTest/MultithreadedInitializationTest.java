@@ -1,7 +1,16 @@
 package org.slf4j.implTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactoryFriend;
+import org.slf4j.helpers.SubstituteLogger;
 
 import java.util.List;
 import java.util.Random;
@@ -9,18 +18,8 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactoryFriend;
-import org.slf4j.helpers.SubstituteLogger;
-
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.classic.ClassicTestConstants;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MultithreadedInitializationTest {
 
@@ -31,13 +30,14 @@ public class MultithreadedInitializationTest {
     int diff = new Random().nextInt(10000);
     String loggerName = "org.slf4j.impl.MultithreadedInitializationTest";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY,
+                ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
         LoggerFactoryFriend.reset();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
     }
@@ -60,7 +60,8 @@ public class MultithreadedInitializationTest {
     }
 
     private List<ILoggingEvent> getRecordedEvents() {
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(Logger.ROOT_LOGGER_NAME);
 
         ListAppender<ILoggingEvent> la = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
         assertNotNull(la);

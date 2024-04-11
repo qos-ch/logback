@@ -42,8 +42,8 @@ public class PackagingDataCalculator {
         // sun.reflect.Reflection class. However, this class will *not compile*
         // on JDKs lacking sun.reflect.Reflection.
         try {
-            //Reflection.getCallerClass(2);
-            //GET_CALLER_CLASS_METHOD_AVAILABLE = true;
+            // Reflection.getCallerClass(2);
+            // GET_CALLER_CLASS_METHOD_AVAILABLE = true;
         } catch (NoClassDefFoundError e) {
         } catch (NoSuchMethodError e) {
         } catch (UnsupportedOperationException e) {
@@ -83,7 +83,8 @@ public class PackagingDataCalculator {
         for (int i = 0; i < commonFrames; i++) {
             Class<?> callerClass = null;
             if (GET_CALLER_CLASS_METHOD_AVAILABLE) {
-                //callerClass = Reflection.getCallerClass(localFirstCommon + i - missfireCount + 1);
+                // callerClass = Reflection.getCallerClass(localFirstCommon + i - missfireCount
+                // + 1);
             }
             StackTraceElementProxy step = stepArray[stepFirstCommon + i];
             String stepClassname = step.ste.getClassName();
@@ -105,7 +106,8 @@ public class PackagingDataCalculator {
         populateUncommonFrames(commonFrames, stepArray, firsExactClassLoader);
     }
 
-    void populateUncommonFrames(int commonFrames, StackTraceElementProxy[] stepArray, ClassLoader firstExactClassLoader) {
+    void populateUncommonFrames(int commonFrames, StackTraceElementProxy[] stepArray,
+            ClassLoader firstExactClassLoader) {
         int uncommonFrames = stepArray.length - commonFrames;
         for (int i = 0; i < uncommonFrames; i++) {
             StackTraceElementProxy step = stepArray[i];

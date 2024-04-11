@@ -17,10 +17,10 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SyslogStartConverterTest {
 
@@ -37,7 +37,7 @@ public class SyslogStartConverterTest {
     private final String HOSTNAME = findHostname();
     private final Calendar calendar = Calendar.getInstance(Locale.US);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         converter = new SyslogStartConverter();
@@ -45,7 +45,7 @@ public class SyslogStartConverterTest {
         converter.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         converter.stop();
@@ -57,7 +57,7 @@ public class SyslogStartConverterTest {
         // RFC 3164, section 4.1.2:
         // If the day of the month is less than 10, then it MUST be represented as
         // a space and then the number. For example, the 7th day of August would be
-        // represented as "Aug  7", with two spaces between the "g" and the "7".
+        // represented as "Aug 7", with two spaces between the "g" and the "7".
         LoggingEvent le = createLoggingEvent();
         calendar.set(2012, Calendar.AUGUST, 7, 13, 15, 0);
         le.setTimeStamp(calendar.getTimeInMillis());
@@ -104,7 +104,7 @@ public class SyslogStartConverterTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void hostnameShouldNotIncludeDomain() throws Exception {
         // RFC 3164, section 4.1.2:
         // The Domain Name MUST NOT be included in the HOSTNAME field.
@@ -120,7 +120,8 @@ public class SyslogStartConverterTest {
     }
 
     private LoggingEvent createLoggingEvent() {
-        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
+        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG,
+                "test message", null, null);
     }
 
     private static String findHostname() {

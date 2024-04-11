@@ -13,12 +13,11 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -29,15 +28,21 @@ import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
 
-public class DilutedSMTPAppenderTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+public class DilutedSMTPAppenderTest {
+    LoggerContext lc = new LoggerContext();
+    Logger logger = lc.getLogger(this.getClass());
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     SMTPAppender appender;
     CyclicBufferTracker<ILoggingEvent> cbTracker;
     CyclicBuffer<ILoggingEvent> cb;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        LoggerContext lc = new LoggerContext();
+
+        lc.setMDCAdapter(logbackMDCAdapter);
         appender = new SMTPAppender();
         appender.setContext(lc);
         appender.setName("smtp");
@@ -62,7 +67,7 @@ public class DilutedSMTPAppenderTest {
         return layout;
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         appender = null;
     }
@@ -81,6 +86,7 @@ public class DilutedSMTPAppenderTest {
         LoggingEvent event = new LoggingEvent();
         event.setThreadName("thead name");
         event.setLevel(Level.DEBUG);
+        event.setLoggerContext(lc);
         appender.subAppend(cb, event);
         assertEquals(1, cb.length());
     }

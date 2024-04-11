@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<x>
+  <stack name="BEGIN"/>
+  <property name="Ki1" value="Val1"/>
+  <if condition='p("Ki1").equals("Val1")'>
+    <then>
+      <stack name="a"/>
+    </then>
+    <else>
+      <stack name="b"/>
+    </else>
+  </if>
+  <stack name="END"/>
+</x>

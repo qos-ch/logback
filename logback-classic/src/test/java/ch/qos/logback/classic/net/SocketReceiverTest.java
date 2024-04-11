@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -30,10 +30,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -50,9 +50,7 @@ import ch.qos.logback.core.status.Status;
  * Unit tests for {@link SocketReceiver}.
  *
  * @author Carl Harris
- */
-@Ignore
-public class SocketReceiverTest {
+ */public class SocketReceiverTest {
 
     private static final int DELAY = 1000;
     private static final String TEST_HOST_NAME = "NOT.A.VALID.HOST.NAME";
@@ -63,17 +61,20 @@ public class SocketReceiverTest {
     private MockSocketConnector connector;
     private MockAppender appender;
     private LoggerContext lc;
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+
     private Logger logger;
 
     private InstrumentedSocketReceiver receiver = new InstrumentedSocketReceiver();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         serverSocket = ServerSocketUtil.createServerSocket();
         socket = new Socket(serverSocket.getInetAddress(), serverSocket.getLocalPort());
         connector = new MockSocketConnector(socket);
 
         lc = new LoggerContext();
+        lc.setMDCAdapter(logbackMDCAdapter);
         lc.reset();
         receiver.setContext(lc);
         appender = new MockAppender();
@@ -82,7 +83,7 @@ public class SocketReceiverTest {
         logger.addAppender(appender);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         receiver.stop();
         ExecutorService executor = lc.getExecutorService();
@@ -167,7 +168,8 @@ public class SocketReceiverTest {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
         logger.setLevel(Level.DEBUG);
-        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
+        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null,
+                new Object[0]);
 
         LoggingEventVO eventVO = LoggingEventVO.build(event);
         oos.writeObject(eventVO);
@@ -191,7 +193,8 @@ public class SocketReceiverTest {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
         logger.setLevel(Level.INFO);
-        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
+        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null,
+                new Object[0]);
 
         LoggingEventVO eventVO = LoggingEventVO.build(event);
         oos.writeObject(eventVO);
@@ -208,7 +211,8 @@ public class SocketReceiverTest {
         private boolean connectorCreated;
 
         @Override
-        protected synchronized SocketConnector newConnector(InetAddress address, int port, int initialDelay, int retryDelay) {
+        protected synchronized SocketConnector newConnector(InetAddress address, int port, int initialDelay,
+                int retryDelay) {
             connectorCreated = true;
             notifyAll();
             return connector;
@@ -257,7 +261,8 @@ public class SocketReceiverTest {
     private static class MockSocketFactory extends SocketFactory {
 
         @Override
-        public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
+        public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
+                throws IOException {
             throw new UnsupportedOperationException();
         }
 
@@ -267,7 +272,8 @@ public class SocketReceiverTest {
         }
 
         @Override
-        public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
+        public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
+                throws IOException, UnknownHostException {
             throw new UnsupportedOperationException();
         }
 

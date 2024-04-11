@@ -13,9 +13,11 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
+import ch.qos.logback.core.spi.LifeCycle;
 
 public class NoAutoStartUtil {
 
@@ -101,4 +103,18 @@ public class NoAutoStartUtil {
 		}
 		return findAnnotation(superclass, annotationType, visited);
 	}
+
+  /**
+     * Is the object a {@link LifeCycle} and is it marked not marked with
+     * the NoAutoStart annotation.
+     * @param o
+     * @return
+     * @ since 1.5.2
+     */
+    static public boolean shouldBeStarted(Object o) {
+        if(o instanceof LifeCycle) {
+            return notMarkedWithNoAutoStart(o);
+        } else
+            return false;
+    }
 }

@@ -31,7 +31,7 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  * </pre>
  * 
  * where <em>port</em> is a port number where the server listens and
- * <em>configFile</em> is an xml configuration file fed to
+ * <em>configFile</em> is an XML configuration file fed to
  * {@link JoranConfigurator}.
  * 
  * When running the SimpleSSLServerFactory as shown above, it is necessary to
@@ -64,10 +64,10 @@ public class SimpleSSLSocketServer extends SimpleSocketServer {
 
     /**
      * Creates a new server using the default SSL context.
-     * @param lc logger context for received events
+     * 
+     * @param lc   logger context for received events
      * @param port port on which the server is to listen
-     * @throws NoSuchAlgorithmException if the default SSL context cannot be
-     *         created
+     * @throws NoSuchAlgorithmException if the default SSL context cannot be created
      */
     public SimpleSSLSocketServer(LoggerContext lc, int port) throws NoSuchAlgorithmException {
         this(lc, port, SSLContext.getDefault());
@@ -75,8 +75,9 @@ public class SimpleSSLSocketServer extends SimpleSocketServer {
 
     /**
      * Creates a new server using a custom SSL context.
-     * @param lc logger context for received events
-     * @param port port on which the server is to listen
+     * 
+     * @param lc         logger context for received events
+     * @param port       port on which the server is to listen
      * @param sslContext custom SSL context
      */
     public SimpleSSLSocketServer(LoggerContext lc, int port, SSLContext sslContext) {

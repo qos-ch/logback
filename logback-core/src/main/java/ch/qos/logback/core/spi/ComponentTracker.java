@@ -45,13 +45,14 @@ public interface ComponentTracker<C> {
 
     /**
      * Returns the number of components tracked.
+     * 
      * @return number of components
      */
     int getComponentCount();
 
     /**
-     * Find the component identified by 'key', without updating the timestamp. Returns null if no
-     * corresponding component could be found.
+     * Find the component identified by 'key', without updating the timestamp.
+     * Returns null if no corresponding component could be found.
      *
      * @param key
      * @return corresponding component, may be null
@@ -59,8 +60,8 @@ public interface ComponentTracker<C> {
     C find(String key);
 
     /**
-     * Get the component identified by 'key', updating its timestamp in the
-     * process. If the corresponding component could not be found, it is created.
+     * Get the component identified by 'key', updating its timestamp in the process.
+     * If the corresponding component could not be found, it is created.
      *
      * @param key
      * @param timestamp
@@ -69,22 +70,27 @@ public interface ComponentTracker<C> {
     C getOrCreate(String key, long timestamp);
 
     /**
-     * Remove components which are deemed stale. Components which have not
-     * been accessed for more than a user-specified duration are deemed stale.
+     * Remove components which are deemed stale. Components which have not been
+     * accessed for more than a user-specified duration are deemed stale.
      *
-     * <p>If the number of components exceeds, {@link #getComponentCount()},
-     * components in excess will be removed.</p>
+     * <p>
+     * If the number of components exceeds, {@link #getComponentCount()}, components
+     * in excess will be removed.
+     * </p>
      *
-     * <p>Depending on the component type, components will be cleared or stopped
-     * (as appropriate) right before removal.</p>
+     * <p>
+     * Depending on the component type, components will be cleared or stopped (as
+     * appropriate) right before removal.
+     * </p>
      *
-     * @param now  current time in milliseconds
+     * @param now current time in milliseconds
      */
     void removeStaleComponents(long now);
 
     /**
-     * Mark component identified by 'key' as having reached its end-of-life. End-of-lifed
-     * components will linger for a few more seconds before being removed.
+     * Mark component identified by 'key' as having reached its end-of-life.
+     * End-of-lifed components will linger for a few more seconds before being
+     * removed.
      *
      * @param key
      */
@@ -92,7 +98,8 @@ public interface ComponentTracker<C> {
 
     /**
      * Returns the collection of all components tracked by this instance.
-     * @return  collection of components
+     * 
+     * @return collection of components
      */
     Collection<C> allComponents();
 

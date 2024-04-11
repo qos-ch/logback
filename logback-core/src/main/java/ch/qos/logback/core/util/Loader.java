@@ -57,15 +57,28 @@ public class Loader {
     }
 
     /**
-     * Compute the number of occurrences a resource can be found by a class
-     * loader.
+     * This method is used to sanitize the <code>cl</code> argument in case it is null.
+     *
+     * @param cl a class loader, may be null
+     * @return the system class loader if the <code>cl</code> argument is null, return <code>cl</code> otherwise.
+     *
+     * @since 1.4.12
+     */
+    public static ClassLoader systemClassloaderIfNull(ClassLoader cl) {
+        if(cl == null)
+            return ClassLoader.getSystemClassLoader();
+        else
+            return cl;
+    }
+
+    /**
+     * Compute the number of occurrences a resource can be found by a class loader.
      *
      * @param resource
      * @param classLoader
      * @return
      * @throws IOException
      */
-
     public static Set<URL> getResources(String resource, ClassLoader classLoader) throws IOException {
         // See LBCLASSIC-159
         Set<URL> urlSet = new HashSet<URL>();
@@ -108,8 +121,7 @@ public class Loader {
 
     /**
      * Get the Thread Context Loader which is a JDK 1.2 feature. If we are running
-     * under JDK 1.1 or anything else goes wrong the method returns
-     * {@code null}.
+     * under JDK 1.1 or anything else goes wrong the method returns {@code null}.
      */
     public static ClassLoader getTCL() {
         return Thread.currentThread().getContextClassLoader();
@@ -152,19 +164,15 @@ public class Loader {
     }
 
     /**
-     * Return the class loader which loaded the class passed as argument. Return
-     * the system class loader if appropriate.
+     * Return the class loader which loaded the class passed as argument. Return the
+     * system class loader if the class loader of 'clazz' argument is null.
      *
      * @param clazz
      * @return
      */
     public static ClassLoader getClassLoaderOfClass(final Class<?> clazz) {
         ClassLoader cl = clazz.getClassLoader();
-        if (cl == null) {
-            return ClassLoader.getSystemClassLoader();
-        } else {
-            return cl;
-        }
+        return systemClassloaderIfNull(cl);
     }
 
     /**

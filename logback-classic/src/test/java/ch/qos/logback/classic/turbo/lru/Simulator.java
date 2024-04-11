@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.classic.turbo.lru;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Simulator {
 
@@ -53,7 +53,8 @@ public class Simulator {
         return scenario;
     }
 
-    public void simulate(List<Event<String>> scenario, LRUCache<String, String> lruCache, T_LRUCache<String> tlruCache) {
+    public void simulate(List<Event<String>> scenario, LRUCache<String, String> lruCache,
+            T_LRUCache<String> tlruCache) {
         for (Event<String> e : scenario) {
             if (e.put) {
                 lruCache.put(e.k, e.k);
@@ -62,7 +63,7 @@ public class Simulator {
                 String r0 = lruCache.get(e.k);
                 String r1 = tlruCache.get(e.k);
                 if (!multiThreaded) {
-                    // if the simulation is used in a multi-threaded
+                    // if the simulation is used in a multithreaded
                     // context, then the state of lruCache may be different than
                     // that of tlruCache. In single threaded mode, they should
                     // return the same values all the time

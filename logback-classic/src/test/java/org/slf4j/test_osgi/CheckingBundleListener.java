@@ -29,7 +29,8 @@ public class CheckingBundleListener implements BundleListener {
     }
 
     private void dump(BundleEvent be) {
-        System.out.println("BundleEvent:" + ", source " + be.getSource() + ", bundle=" + be.getBundle() + ", type=" + be.getType());
+        System.out.println("BundleEvent:" + ", source " + be.getSource() + ", bundle=" + be.getBundle() + ", type="
+                + be.getType());
 
     }
 

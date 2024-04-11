@@ -15,7 +15,6 @@ package ch.qos.logback.classic.util;
 
 public class TestHelper {
 
-
     static public Throwable makeNestedException(int level) {
         if (level == 0) {
             return new Exception("nesting level=" + level);
@@ -26,6 +25,7 @@ public class TestHelper {
 
     /**
      * Usage:
+     * 
      * <pre>
      * String s = "123";
      * positionOf("1").in(s) < positionOf("3").in(s)

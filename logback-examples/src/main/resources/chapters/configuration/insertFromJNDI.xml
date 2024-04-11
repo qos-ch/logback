@@ -8,7 +8,7 @@
     <!-- encoders are assigned by default the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
     <encoder>
-      <pattern>%d %contextName %level %msg %logger{50}%n</pattern>
+      <pattern>%d %contextName %level -%kvp- %msg %logger{50}%n</pattern>
     </encoder>
   </appender>
 

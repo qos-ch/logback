@@ -68,7 +68,8 @@ public class Compare {
         return bufferCompare(in1, in2, file1, file2);
     }
 
-    public static boolean bufferCompare(BufferedReader in1, BufferedReader in2, String file1, String file2) throws FileNotFoundException, IOException {
+    public static boolean bufferCompare(BufferedReader in1, BufferedReader in2, String file1, String file2)
+            throws FileNotFoundException, IOException {
 
         String s1;
         int lineCounter = 0;

@@ -32,8 +32,8 @@ import ch.qos.logback.core.util.CloseUtil;
 import ch.qos.logback.core.util.Duration;
 
 /**
- * An abstract base for module specific {@code SocketAppender}
- * implementations in other logback modules.
+ * An abstract base for module specific {@code SocketAppender} implementations
+ * in other logback modules.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -54,20 +54,19 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     public static final int DEFAULT_RECONNECTION_DELAY = 30000;
 
     /**
-     * Default size of the deque used to hold logging events that are destined
-     * for the remote peer.
+     * Default size of the deque used to hold logging events that are destined for
+     * the remote peer.
      */
     public static final int DEFAULT_QUEUE_SIZE = 128;
 
     /**
-     * Default timeout when waiting for the remote server to accept our
-     * connection.
+     * Default timeout when waiting for the remote server to accept our connection.
      */
     private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
 
     /**
-     * Default timeout for how long to wait when inserting an event into
-     * the BlockingQueue.
+     * Default timeout for how long to wait when inserting an event into the
+     * BlockingQueue.
      */
     private static final int DEFAULT_EVENT_DELAY_TIMEOUT = 100;
 
@@ -97,7 +96,8 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     }
 
     /**
-     * Constructs a new appender using the given {@link QueueFactory} and {@link ObjectWriterFactory}.
+     * Constructs a new appender using the given {@link QueueFactory} and
+     * {@link ObjectWriterFactory}.
      */
     AbstractSocketAppender(QueueFactory queueFactory, ObjectWriterFactory objectWriterFactory) {
         this.objectWriterFactory = objectWriterFactory;
@@ -113,13 +113,14 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
         int errorCount = 0;
         if (port <= 0) {
             errorCount++;
-            addError("No port was configured for appender" + name + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_port");
+            addError("No port was configured for appender" + name
+                    + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_port");
         }
 
         if (remoteHost == null) {
             errorCount++;
             addError("No remote host was configured for appender" + name
-                            + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
+                    + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
         }
 
         if (queueSize == 0) {
@@ -144,7 +145,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
             deque = queueFactory.newLinkedBlockingDeque(queueSize);
             peerId = "remote peer " + remoteHost + ":" + port + ": ";
             connector = createConnector(address, port, 0, reconnectionDelay.getMilliseconds());
-            task = getContext().getScheduledExecutorService().submit(new Runnable() {
+            task = getContext().getExecutorService().submit(new Runnable() {
                 @Override
                 public void run() {
                     connectSocketAndDispatchEvents();
@@ -191,8 +192,11 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
                     ObjectWriter objectWriter = createObjectWriterForSocket();
                     addInfo(peerId + "connection established");
                     dispatchEvents(objectWriter);
+                } catch (javax.net.ssl.SSLHandshakeException she) {
+                    // FIXME
+                    Thread.sleep(DEFAULT_RECONNECTION_DELAY);
                 } catch (IOException ex) {
-                    addInfo(peerId + "connection failed: " + ex);
+                    addInfo(peerId + "connection failed: ", ex);
                 } finally {
                     CloseUtil.closeQuietly(socket);
                     socket = null;
@@ -260,14 +264,14 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     /**
      * Creates a new {@link SocketConnector}.
      * <p>
-     * The default implementation creates an instance of {@link DefaultSocketConnector}.
-     * A subclass may override to provide a different {@link SocketConnector}
-     * implementation.
+     * The default implementation creates an instance of
+     * {@link DefaultSocketConnector}. A subclass may override to provide a
+     * different {@link SocketConnector} implementation.
      * 
-     * @param address target remote address
-     * @param port target remote port
+     * @param address      target remote address
+     * @param port         target remote port
      * @param initialDelay delay before the first connection attempt
-     * @param retryDelay delay before a reconnection attempt
+     * @param retryDelay   delay before a reconnection attempt
      * @return socket connector
      */
     protected SocketConnector newConnector(InetAddress address, int port, long initialDelay, long retryDelay) {
@@ -284,22 +288,24 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     }
 
     /**
-     * Post-processes an event before it is serialized for delivery to the
-     * remote receiver.
+     * Post-processes an event before it is serialized for delivery to the remote
+     * receiver.
+     * 
      * @param event the event to post-process
      */
     protected abstract void postProcessEvent(E event);
 
     /**
-     * Get the pre-serialization transformer that will be used to transform
-     * each event into a Serializable object before delivery to the remote
-     * receiver.
+     * Get the pre-serialization transformer that will be used to transform each
+     * event into a Serializable object before delivery to the remote receiver.
+     * 
      * @return transformer object
      */
     protected abstract PreSerializationTransformer<E> getPST();
 
     /**
-     * The <b>RemoteHost</b> property takes the name of of the host where a corresponding server is running.
+     * The <b>RemoteHost</b> property takes the name of the host where a
+     * corresponding server is running.
      */
     public void setRemoteHost(String host) {
         remoteHost = host;
@@ -313,8 +319,8 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     }
 
     /**
-     * The <b>Port</b> property takes a positive integer representing the port
-     * where the server is waiting for connections.
+     * The <b>Port</b> property takes a positive integer representing the port where
+     * the server is waiting for connections.
      */
     public void setPort(int port) {
         this.port = port;
@@ -329,8 +335,8 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
 
     /**
      * The <b>reconnectionDelay</b> property takes a positive {@link Duration} value
-     * representing the time to wait between each failed connection attempt
-     * to the server. The default value of this option is to 30 seconds.
+     * representing the time to wait between each failed connection attempt to the
+     * server. The default value of this option is to 30 seconds.
      *
      * <p>
      * Setting this option to zero turns off reconnection capability.
@@ -347,14 +353,13 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     }
 
     /**
-     * The <b>queueSize</b> property takes a non-negative integer representing
-     * the number of logging events to retain for delivery to the remote receiver.
-     * When the deque size is zero, event delivery to the remote receiver is
-     * synchronous.  When the deque size is greater than zero, the
-     * {@link #append(Object)} method returns immediately after enqueing the
-     * event, assuming that there is space available in the deque.  Using a
-     * non-zero deque length can improve performance by eliminating delays
-     * caused by transient network delays.
+     * The <b>queueSize</b> property takes a non-negative integer representing the
+     * number of logging events to retain for delivery to the remote receiver. When
+     * the deque size is zero, event delivery to the remote receiver is synchronous.
+     * When the deque size is greater than zero, the {@link #append(Object)} method
+     * returns immediately after enqueing the event, assuming that there is space
+     * available in the deque. Using a non-zero deque length can improve performance
+     * by eliminating delays caused by transient network delays.
      * 
      * @param queueSize the deque size to set.
      */
@@ -388,11 +393,11 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     }
 
     /**
-     * Sets the timeout that controls how long we'll wait for the remote
-     * peer to accept our connection attempt.
+     * Sets the timeout that controls how long we'll wait for the remote peer to
+     * accept our connection attempt.
      * <p>
-     * This property is configurable primarily to support instrumentation
-     * for unit testing.
+     * This property is configurable primarily to support instrumentation for unit
+     * testing.
      * 
      * @param acceptConnectionTimeout timeout value in milliseconds
      */

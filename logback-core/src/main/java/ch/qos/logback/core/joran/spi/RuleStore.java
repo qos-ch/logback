@@ -13,18 +13,19 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.List;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.joran.action.Action;
 
 /**
  * 
- * As its name indicates, a RuleStore contains 2-tuples consists of a ElementSelector
- * and an Action.
+ * As its name indicates, a RuleStore contains 2-tuples consists of a
+ * ElementSelector and an Action.
  * 
- * <p>As a joran configurator goes through the elements in a document, it asks
- * the rule store whether there are rules matching the current pattern by
- * invoking the {@link #matchActions(ElementPath)} method.
+ * <p>
+ * As a joran configurator goes through the elements in a document, it asks the
+ * rule store whether there are rules matching the current pattern by invoking
+ * the {@link #matchActions(ElementPath)} method.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 
@@ -32,7 +33,7 @@ import ch.qos.logback.core.joran.action.Action;
 public interface RuleStore {
 
     /**
-     * Add a new rule, given by a pattern and a action class (String).
+     * Add a new rule, given by a pattern and an action class (String).
      *
      * @param elementSelector
      * @param actionClassStr
@@ -44,9 +45,9 @@ public interface RuleStore {
      * Add a new rule, given by a pattern and an action instance.
      *
      * @param elementSelector
-     * @param action
+     * @param actionSupplier
      */
-    void addRule(ElementSelector elementSelector, Action action);
+    void addRule(ElementSelector elementSelector, Supplier<Action> actionSupplier);
 
     /**
      * Return a list of actions matching a pattern.
@@ -54,5 +55,10 @@ public interface RuleStore {
      * @param elementPath the path to match for
      * @return list of matching actions
      */
-    List<Action> matchActions(ElementPath elementPath);
-}
+    Supplier<Action> matchActions(ElementPath elementPath);
+    
+    void addTransparentPathPart(String pathPart);
+
+    public void addPathPathMapping(String originalName, String modifiedName);
+
+    }

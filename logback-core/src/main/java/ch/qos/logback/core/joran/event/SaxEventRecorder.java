@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -41,12 +42,11 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
     final ContextAwareImpl contextAwareImpl;
     final ElementPath elementPath;
-    public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
+    List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
     Locator locator;
-    
-    
+
     public SaxEventRecorder(Context context) {
-    	this(context, new ElementPath());
+        this(context, new ElementPath());
     }
 
     public SaxEventRecorder(Context context, ElementPath elementPath) {
@@ -54,17 +54,15 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         this.elementPath = elementPath;
     }
 
-    
-    
     final public void recordEvents(InputStream inputStream) throws JoranException {
         recordEvents(new InputSource(inputStream));
     }
 
-    public List<SaxEvent> recordEvents(InputSource inputSource) throws JoranException {
+    public void recordEvents(InputSource inputSource) throws JoranException {
         SAXParser saxParser = buildSaxParser();
         try {
             saxParser.parse(inputSource, this);
-            return saxEventList;
+            return;
         } catch (IOException ie) {
             handleError("I/O error occurred while parsing xml file", ie);
         } catch (SAXException se) {
@@ -85,17 +83,21 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setValidating(false);
-            //spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             // See LOGBACK-1465
             spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
             spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             spf.setNamespaceAware(true);
             return spf.newSAXParser();
-        } catch (Exception pce) {
-            String errMsg = "Parser configuration error occurred";
+        } catch (ParserConfigurationException pce) {
+            String errMsg = "Error during SAX paser configuration. See https://logback.qos.ch/codes.html#saxParserConfiguration";
             addError(errMsg, pce);
             throw new JoranException(errMsg, pce);
-        }
+        }  catch (SAXException pce) {
+            String errMsg = "Error during parser creation or parser configuration";
+            addError(errMsg, pce);
+            throw new JoranException(errMsg, pce);
+        } 
     }
 
     public void startDocument() {
@@ -110,13 +112,14 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     }
 
     protected boolean shouldIgnoreForElementPath(String tagName) {
-    	return false;
+        return false;
     }
+
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
 
         String tagName = getTagName(localName, qName);
-        if(!shouldIgnoreForElementPath(tagName)) {
-          elementPath.push(tagName);
+        if (!shouldIgnoreForElementPath(tagName)) {
+            elementPath.push(tagName);
         }
         ElementPath current = elementPath.duplicate();
         saxEventList.add(new StartEvent(current, namespaceURI, localName, qName, atts, getLocator()));
@@ -152,8 +155,8 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     public void endElement(String namespaceURI, String localName, String qName) {
         saxEventList.add(new EndEvent(namespaceURI, localName, qName, getLocator()));
         String tagName = getTagName(localName, qName);
-        if(!shouldIgnoreForElementPath(tagName)) {
-          elementPath.pop();
+        if (!shouldIgnoreForElementPath(tagName)) {
+            elementPath.pop();
         }
     }
 
@@ -166,17 +169,20 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     }
 
     public void error(SAXParseException spe) throws SAXException {
-        addError(XML_PARSING + " - Parsing error on line " + spe.getLineNumber() + " and column " + spe.getColumnNumber());
+        addError(XML_PARSING + " - Parsing error on line " + spe.getLineNumber() + " and column "
+                + spe.getColumnNumber());
         addError(spe.toString());
     }
 
     public void fatalError(SAXParseException spe) throws SAXException {
-        addError(XML_PARSING + " - Parsing fatal error on line " + spe.getLineNumber() + " and column " + spe.getColumnNumber());
+        addError(XML_PARSING + " - Parsing fatal error on line " + spe.getLineNumber() + " and column "
+                + spe.getColumnNumber());
         addError(spe.toString());
     }
 
     public void warning(SAXParseException spe) throws SAXException {
-        addWarn(XML_PARSING + " - Parsing warning on line " + spe.getLineNumber() + " and column " + spe.getColumnNumber(), spe);
+        addWarn(XML_PARSING + " - Parsing warning on line " + spe.getLineNumber() + " and column "
+                + spe.getColumnNumber(), spe);
     }
 
     public void addError(String msg) {

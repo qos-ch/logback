@@ -20,9 +20,10 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
  * Captures the data contained within a log statement, that is the data that the
  * developer puts in the source code when he writes:
  * 
- * <p>logger.debug("hello world");
+ * <p>
+ * logger.debug("hello world");
  * 
- * @author Ceki G&uuml;lc&uuml; 
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class LogStatement {
 

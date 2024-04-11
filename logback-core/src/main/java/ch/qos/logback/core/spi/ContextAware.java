@@ -17,7 +17,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.status.Status;
 
 /**
- * An object which has a context and add methods for updating internal status messages.
+ * An object which has a context and add methods for updating internal status
+ * messages.
  */
 public interface ContextAware {
 

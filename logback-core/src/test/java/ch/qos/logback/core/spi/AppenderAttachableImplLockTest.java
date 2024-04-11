@@ -14,7 +14,11 @@
 package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.Appender;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+import java.util.concurrent.TimeUnit;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +54,8 @@ public class AppenderAttachableImplLockTest {
     private AppenderAttachableImpl<Integer> aai = new AppenderAttachableImpl<Integer>();
 
     @SuppressWarnings("unchecked")
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value=1, unit = TimeUnit.SECONDS)
     public void getAppenderBoom() {
         Appender<Integer> mockAppender1 = mock(Appender.class);
 
@@ -70,8 +75,8 @@ public class AppenderAttachableImplLockTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(timeout = 15000)
-    //@Test
+    @Test
+    @Timeout(value=1, unit = TimeUnit.SECONDS)
     public void detachAppenderBoom() throws InterruptedException {
         Appender<Integer> mockAppender = mock(Appender.class);
         when(mockAppender.getName()).thenThrow(new RuntimeException("oops"));
@@ -85,7 +90,7 @@ public class AppenderAttachableImplLockTest {
                     // appender.getName called as a result of next statement
                     aai.detachAppender("foo");
                 } catch (RuntimeException e) {
-                	System.out.println("Caught "+e.toString());
+                    System.out.println("Caught " + e.toString());
                     // this leaves the write lock locked.
                 }
             }

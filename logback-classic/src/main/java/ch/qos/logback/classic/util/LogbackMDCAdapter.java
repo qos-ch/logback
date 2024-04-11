@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,12 +13,14 @@
  */
 package ch.qos.logback.classic.util;
 
+import org.slf4j.helpers.ThreadLocalMapOfStacks;
+import org.slf4j.spi.MDCAdapter;
+
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.spi.MDCAdapter;
 
 /**
  * A <em>Mapped Diagnostic Context</em>, or MDC in short, is an instrument for
@@ -26,62 +28,25 @@ import org.slf4j.spi.MDCAdapter;
  * typically interleaved when a server handles multiple clients
  * near-simultaneously.
  * <p/>
- * <b><em>The MDC is managed on a per thread basis</em></b>. Note that a child thread
- * <b>does not</b> inherit the mapped diagnostic context of its parent.
+ * <b><em>The MDC is managed on a per thread basis</em></b>. Note that a child
+ * thread <b>does not</b> inherit the mapped diagnostic context of its parent.
  * <p/>
  * <p/>
  * For more information about MDC, please refer to the online manual at
  * http://logback.qos.ch/manual/mdc.html
  *
  * @author Ceki G&uuml;lc&uuml;
+ * @author Michael Franz
  */
-public class LogbackMDCAdapter implements MDCAdapter {
+public class LogbackMDCAdapter implements MDCAdapter  {
 
-    // The internal map is copied so as
 
-    // We wish to avoid unnecessarily copying of the map. To ensure
-    // efficient/timely copying, we have a variable keeping track of the last
-    // operation. A copy is necessary on 'put' or 'remove' but only if the last
-    // operation was a 'get'. Get operations never necessitate a copy nor
-    // successive 'put/remove' operations, only a get followed by a 'put/remove'
-    // requires copying the map.
-    // See http://jira.qos.ch/browse/LOGBACK-620 for the original discussion.
+    // BEWARE: Keys or values placed in a ThreadLocal should not be of a type/class
+    // not included in the JDK. See also https://jira.qos.ch/browse/LOGBACK-450
 
-    // We no longer use CopyOnInheritThreadLocal in order to solve LBCLASSIC-183
-    // Initially the contents of the thread local in parent and child threads
-    // reference the same map. However, as soon as a thread invokes the put()
-    // method, the maps diverge as they should.
-    final ThreadLocal<Map<String, String>> copyOnThreadLocal = new ThreadLocal<Map<String, String>>();
-
-    private static final int WRITE_OPERATION = 1;
-    private static final int MAP_COPY_OPERATION = 2;
-
-    // keeps track of the last operation performed
-    final ThreadLocal<Integer> lastOperation = new ThreadLocal<Integer>();
-
-    private Integer getAndSetLastOperation(int op) {
-        Integer lastOp = lastOperation.get();
-        lastOperation.set(op);
-        return lastOp;
-    }
-
-    private boolean wasLastOpReadOrNull(Integer lastOp) {
-        return lastOp == null || lastOp.intValue() == MAP_COPY_OPERATION;
-    }
-
-    private Map<String, String> duplicateAndInsertNewMap(Map<String, String> oldMap) {
-        Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
-        if (oldMap != null) {
-            // we don't want the parent thread modifying oldMap while we are
-            // iterating over it
-            synchronized (oldMap) {
-                newMap.putAll(oldMap);
-            }
-        }
-
-        copyOnThreadLocal.set(newMap);
-        return newMap;
-    }
+    final ThreadLocal<Map<String, String>> readWriteThreadLocalMap = new ThreadLocal<Map<String, String>>();
+    final ThreadLocal<Map<String, String>> readOnlyThreadLocalMap = new ThreadLocal<Map<String, String>>();
+    private final ThreadLocalMapOfStacks threadLocalMapOfDeques = new ThreadLocalMapOfStacks();
 
     /**
      * Put a context value (the <code>val</code> parameter) as identified with the
@@ -91,6 +56,12 @@ public class LogbackMDCAdapter implements MDCAdapter {
      * <p/>
      * If the current thread does not have a context map it is created as a side
      * effect of this call.
+     * <p/>
+     * <p/>
+     * Each time a value is added, a new instance of the map is created. This is
+     * to be certain that the serialization process will operate on the updated
+     * map and not send a reference to the old map, thus not allowing the remote
+     * logback component to see the latest changes.
      *
      * @throws IllegalArgumentException in case the "key" parameter is null
      */
@@ -98,68 +69,94 @@ public class LogbackMDCAdapter implements MDCAdapter {
         if (key == null) {
             throw new IllegalArgumentException("key cannot be null");
         }
-
-        Map<String, String> oldMap = copyOnThreadLocal.get();
-        Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
-
-        if (wasLastOpReadOrNull(lastOp) || oldMap == null) {
-            Map<String, String> newMap = duplicateAndInsertNewMap(oldMap);
-            newMap.put(key, val);
-        } else {
-            oldMap.put(key, val);
+        Map<String, String> current = readWriteThreadLocalMap.get();
+        if (current == null) {
+            current = new HashMap<String, String>();
+            readWriteThreadLocalMap.set(current);
         }
-    }
 
-    /**
-     * Remove the the context identified by the <code>key</code> parameter.
-     * <p/>
-     */
-    public void remove(String key) {
-        if (key == null) {
-            return;
-        }
-        Map<String, String> oldMap = copyOnThreadLocal.get();
-        if (oldMap == null)
-            return;
-
-        Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
-
-        if (wasLastOpReadOrNull(lastOp)) {
-            Map<String, String> newMap = duplicateAndInsertNewMap(oldMap);
-            newMap.remove(key);
-        } else {
-            oldMap.remove(key);
-        }
-    }
-
-    /**
-     * Clear all entries in the MDC.
-     */
-    public void clear() {
-        lastOperation.set(WRITE_OPERATION);
-        copyOnThreadLocal.remove();
+        current.put(key, val);
+        nullifyReadOnlyThreadLocalMap();
     }
 
     /**
      * Get the context identified by the <code>key</code> parameter.
      * <p/>
+     * <p/>
+     * This method has no side effects.
      */
+    @Override
     public String get(String key) {
-        final Map<String, String> map = copyOnThreadLocal.get();
-        if ((map != null) && (key != null)) {
-            return map.get(key);
+        Map<String, String> hashMap = readWriteThreadLocalMap.get();
+
+        if ((hashMap != null) && (key != null)) {
+            return hashMap.get(key);
         } else {
             return null;
         }
     }
 
     /**
-     * Get the current thread's MDC as a map. This method is intended to be used
-     * internally.
+     * <p>Remove the context identified by the <code>key</code> parameter.
+     * <p/>
      */
+    @Override
+    public void remove(String key) {
+        if (key == null) {
+            return;
+        }
+
+        Map<String, String> current = readWriteThreadLocalMap.get();
+        if (current != null) {
+            current.remove(key);
+            nullifyReadOnlyThreadLocalMap();
+        }
+    }
+
+    private void nullifyReadOnlyThreadLocalMap() {
+        readOnlyThreadLocalMap.set(null);
+    }
+
+    /**
+     * Clear all entries in the MDC.
+     */
+    @Override
+    public void clear() {
+        readWriteThreadLocalMap.set(null);
+        nullifyReadOnlyThreadLocalMap();
+    }
+
+    /**
+     * <p>Get the current thread's MDC as a map. This method is intended to be used
+     * internally.</p>
+     *
+     * The returned map is unmodifiable (since version 1.3.2/1.4.2).
+     */
+    @SuppressWarnings("unchecked")
     public Map<String, String> getPropertyMap() {
-        lastOperation.set(MAP_COPY_OPERATION);
-        return copyOnThreadLocal.get();
+        Map<String, String> readOnlyMap = readOnlyThreadLocalMap.get();
+        if (readOnlyMap == null) {
+            Map<String, String> current = readWriteThreadLocalMap.get();
+            if (current != null) {
+                final Map<String, String> tempMap = new HashMap<String, String>(current);
+                readOnlyMap = Collections.unmodifiableMap(tempMap);
+                readOnlyThreadLocalMap.set(readOnlyMap);
+            }
+        }
+        return readOnlyMap;
+    }
+
+    /**
+     * Return a copy of the current thread's context map. Returned value may be
+     * null.
+     */
+    public Map getCopyOfContextMap() {
+        Map<String, String> readOnlyMap = getPropertyMap();
+        if (readOnlyMap == null) {
+            return null;
+        } else {
+            return new HashMap<String, String>(readOnlyMap);
+        }
     }
 
     /**
@@ -167,35 +164,44 @@ public class LogbackMDCAdapter implements MDCAdapter {
      * null.
      */
     public Set<String> getKeys() {
-        Map<String, String> map = getPropertyMap();
+        Map<String, String> readOnlyMap = getPropertyMap();
 
-        if (map != null) {
-            return map.keySet();
+        if (readOnlyMap != null) {
+            return readOnlyMap.keySet();
         } else {
             return null;
         }
     }
 
-    /**
-     * Return a copy of the current thread's context map. Returned value may be
-     * null.
-     */
-    public Map<String, String> getCopyOfContextMap() {
-        Map<String, String> hashMap = copyOnThreadLocal.get();
-        if (hashMap == null) {
-            return null;
+    @SuppressWarnings("unchecked")
+    public void setContextMap(Map contextMap) {
+        if (contextMap != null) {
+            readWriteThreadLocalMap.set(new HashMap<String, String>(contextMap));
         } else {
-            return new HashMap<String, String>(hashMap);
+            readWriteThreadLocalMap.set(null);
         }
+        nullifyReadOnlyThreadLocalMap();
     }
 
-    public void setContextMap(Map<String, String> contextMap) {
-        lastOperation.set(WRITE_OPERATION);
 
-        Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
-        newMap.putAll(contextMap);
-
-        // the newMap replaces the old one for serialisation's sake
-        copyOnThreadLocal.set(newMap);
+    @Override
+    public void pushByKey(String key, String value) {
+        threadLocalMapOfDeques.pushByKey(key, value);
     }
+
+    @Override
+    public String popByKey(String key) {
+        return threadLocalMapOfDeques.popByKey(key);
+    }
+
+    @Override
+    public Deque<String> getCopyOfDequeByKey(String key) {
+        return threadLocalMapOfDeques.getCopyOfDequeByKey(key);
+    }
+
+    @Override
+    public void clearDequeByKey(String key) {
+        threadLocalMapOfDeques.clearDequeByKey(key);
+    }
+
 }

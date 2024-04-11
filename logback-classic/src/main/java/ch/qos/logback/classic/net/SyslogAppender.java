@@ -30,9 +30,10 @@ import ch.qos.logback.core.net.SyslogAppenderBase;
 import ch.qos.logback.core.net.SyslogOutputStream;
 
 /**
- * This appender can be used to send messages to a remote syslog daemon. <p> For
- * more information about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#SyslogAppender
+ * This appender can be used to send messages to a remote syslog daemon.
+ * <p>
+ * For more information about this appender, please refer to the online manual
+ * at http://logback.qos.ch/manual/appenders.html#SyslogAppender
  *
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -62,7 +63,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
     /**
      * Convert a level to equivalent syslog severity. Only levels for printing
-     * methods i.e DEBUG, WARN, INFO and ERROR are converted.
+     * methods i.e. DEBUG, WARN, INFO and ERROR are converted.
      *
      * @see ch.qos.logback.core.net.SyslogAppenderBase#getSeverityForEvent(java.lang.Object)
      */
@@ -104,7 +105,8 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
 
     // LOGBACK-411 and LOGBACK-750
-    private void handleThrowableFirstLine(OutputStream sw, IThrowableProxy tp, String stackTracePrefix, boolean isRootException) throws IOException {
+    private void handleThrowableFirstLine(OutputStream sw, IThrowableProxy tp, String stackTracePrefix,
+            boolean isRootException) throws IOException {
         StringBuilder sb = new StringBuilder().append(stackTracePrefix);
 
         if (!isRootException) {
@@ -145,8 +147,9 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Setting throwableExcluded to true causes no Throwable's stack trace data to be sent to
-     * the syslog daemon. By default, stack trace data is sent to syslog daemon.
+     * Setting throwableExcluded to true causes no Throwable's stack trace data to
+     * be sent to the syslog daemon. By default, stack trace data is sent to syslog
+     * daemon.
      *
      * @param throwableExcluded
      * @since 1.0.4
@@ -166,10 +169,11 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * Stack trace lines are sent to the syslog server separately from the main message
-     * For stack trace lines, the stackTracePattern is used instead of {@link #suffixPattern}.
-     * The <b>stackTracePattern</b> option allows specification of a separately format for the
-     * non-standardized part of stack trace lines.
+     * Stack trace lines are sent to the syslog server separately from the main
+     * message For stack trace lines, the stackTracePattern is used instead of
+     * {@link #suffixPattern}. The <b>stackTracePattern</b> option allows
+     * specification of a separate format for the non-standardized part of stack
+     * trace lines.
      *
      * @param stackTracePattern
      * @since 1.0.4

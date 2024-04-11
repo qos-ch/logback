@@ -14,6 +14,7 @@
 package ch.qos.logback.core.joran;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitModelAction;
@@ -21,41 +22,28 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
-public class SimpleConfigurator extends GenericConfigurator {
+public class SimpleConfigurator extends GenericXMLConfigurator {
 
-    HashMap<ElementSelector, Action> rulesMap;
+    HashMap<ElementSelector, Supplier<Action>> rulesMap;
 
-    public SimpleConfigurator(HashMap<ElementSelector, Action> rules) {
+    public SimpleConfigurator(HashMap<ElementSelector, Supplier<Action>> rules) {
         this.rulesMap = rules;
     }
 
     @Override
-    protected void addImplicitRules(SaxEventInterpreter interpreter) {
-//    	BeanDescriptionCache bdc = interpreter.getInterpretationContext().getBeanDescriptionCache();
-    	
-//        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(bdc);
-//        nestedIA.setContext(context);
-//        interpreter.addImplicitAction(nestedIA);
-
-//        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(bdc);
-//        nestedSimpleIA.setContext(context);
-//        interpreter.addImplicitAction(nestedSimpleIA);
-        
-        
-        ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
-        interpreter.addImplicitAction(implicitRuleModelAction);
-
+    protected void setImplicitRuleSupplier(SaxEventInterpreter interpreter) {
+        interpreter.setImplicitActionSupplier(() -> new ImplicitModelAction());
     }
 
     public SaxEventInterpreter getInterpreter() {
-        return interpreter;
+        return saxEventInterpreter;
     }
 
     @Override
-    protected void addInstanceRules(RuleStore rs) {
+    protected void addElementSelectorAndActionAssociations(RuleStore rs) {
         for (ElementSelector elementSelector : rulesMap.keySet()) {
-            Action action = rulesMap.get(elementSelector);
-            rs.addRule(elementSelector, action);
+            Supplier<Action> actionSupplier = rulesMap.get(elementSelector);
+            rs.addRule(elementSelector, actionSupplier);
         }
     }
 }

@@ -13,16 +13,16 @@
  */
 package ch.qos.logback.core.pattern.parser.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.ExceptionalConverter;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 abstract public class AbstractPatternLayoutBaseTest<E> {
 
@@ -41,20 +41,31 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
         assertEquals("", s);
     }
 
+
+
     /**
      * This test checks that the pattern layout implementation starts its
-     * converters. ExceptionalConverter throws an exception if it's convert
-     * method is called before being started.
+     * converters. ExceptionalConverter throws an exception if it's convert method
+     * is called before being started.
      */
     @Test
     public void testConverterStart() {
         PatternLayoutBase<E> plb = getPatternLayoutBase();
         plb.setContext(getContext());
-        plb.getInstanceConverterMap().put("EX", ExceptionalConverter.class.getName());
+        plb.getInstanceConverterMap().put("EX", getExceptionalConverterClassName());
         plb.setPattern("%EX");
         plb.start();
         String result = plb.doLayout(getEventObject());
         assertFalse(result.contains("%PARSER_ERROR_EX"));
+    }
+
+    /**
+     *
+     * @return the class for the ExceptionalConverter (used in tests)
+     * @since 1.4.2
+     */
+    protected String getExceptionalConverterClassName() {
+        return ExceptionalConverter.class.getName();
     }
 
     @Test

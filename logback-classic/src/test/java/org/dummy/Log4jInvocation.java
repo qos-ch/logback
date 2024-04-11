@@ -13,17 +13,16 @@
  */
 package org.dummy;
 
-import static org.junit.Assert.assertEquals;
-
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import org.apache.log4j.Logger;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Used to test log4j-over-slf4j
@@ -39,7 +38,7 @@ public class Log4jInvocation {
     LoggerContext lc;
     ch.qos.logback.classic.Logger rootLogger;
 
-    @Before
+    @BeforeEach
     public void fixture() {
         lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         lc.reset();
@@ -85,6 +84,7 @@ public class Log4jInvocation {
         assertEquals(HELLO, event.getMessage());
 
         assertEquals(1, listAppender.stringList.size());
-        assertEquals("TRACE [" + Log4jInvocation.class.getName() + "] basic-test - Hello", listAppender.stringList.get(0));
+        assertEquals("TRACE [" + Log4jInvocation.class.getName() + "] basic-test - Hello",
+                listAppender.stringList.get(0));
     }
 }

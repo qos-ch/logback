@@ -17,8 +17,9 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 /**
- * Automatically flushes the underlying {@link java.io.ObjectOutputStream} immediately after calling
- * it's {@link java.io.ObjectOutputStream#writeObject(Object)} method.
+ * Automatically flushes the underlying {@link java.io.ObjectOutputStream}
+ * immediately after calling it's
+ * {@link java.io.ObjectOutputStream#writeObject(Object)} method.
  *
  * @author Sebastian Gr&ouml;bler
  */
@@ -32,8 +33,8 @@ public class AutoFlushingObjectWriter implements ObjectWriter {
      * Creates a new instance for the given {@link java.io.ObjectOutputStream}.
      *
      * @param objectOutputStream the stream to write to
-     * @param resetFrequency the frequency with which the given stream will be
-     *                       automatically reset to prevent a memory leak
+     * @param resetFrequency     the frequency with which the given stream will be
+     *                           automatically reset to prevent a memory leak
      */
     public AutoFlushingObjectWriter(ObjectOutputStream objectOutputStream, int resetFrequency) {
         this.objectOutputStream = objectOutputStream;
@@ -48,8 +49,9 @@ public class AutoFlushingObjectWriter implements ObjectWriter {
     }
 
     /**
-     * Failing to reset the object output stream every now and then creates a serious memory leak which
-     * is why the underlying stream will be reset according to the {@code resetFrequency}.
+     * Failing to reset the object output stream every now and then creates a
+     * serious memory leak which is why the underlying stream will be reset
+     * according to the {@code resetFrequency}.
      */
     private void preventMemoryLeak() throws IOException {
         if (++writeCounter >= resetFrequency) {

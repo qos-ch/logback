@@ -1,5 +1,4 @@
 <configuration debug="false">
-    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${output_dir}/info.log</file>

@@ -13,18 +13,12 @@
  */
 package ch.qos.logback.classic.net.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.net.server.test.MockServerListener;
@@ -32,6 +26,12 @@ import ch.qos.logback.core.net.server.test.MockServerRunner;
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for {@link ServerSocketReceiver}.
@@ -49,14 +49,14 @@ public class ServerSocketReceiverTest {
     private ServerSocket serverSocket;
     private InstrumentedServerSocketReceiver receiver;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         serverSocket = ServerSocketUtil.createServerSocket();
         receiver = new InstrumentedServerSocketReceiver(serverSocket, listener, runner);
         receiver.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         serverSocket.close();
     }

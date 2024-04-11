@@ -17,16 +17,16 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.model.ContextNameModel;
 import ch.qos.logback.core.joran.action.BaseModelAction;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 public class ContextNameAction extends BaseModelAction {
 
-    
     @Override
-    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-    	ContextNameModel contextNameModel = new ContextNameModel();
-    	return contextNameModel;
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        ContextNameModel contextNameModel = new ContextNameModel();
+        return contextNameModel;
     }
- 
+
 }

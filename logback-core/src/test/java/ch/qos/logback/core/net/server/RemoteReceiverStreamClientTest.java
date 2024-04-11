@@ -13,15 +13,13 @@
  */
 package ch.qos.logback.core.net.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 
@@ -42,7 +40,7 @@ public class RemoteReceiverStreamClientTest {
 
     private RemoteReceiverStreamClient client = new RemoteReceiverStreamClient("someId", outputStream);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         client.setContext(context);
         client.setQueue(queue);
@@ -57,10 +55,10 @@ public class RemoteReceiverStreamClientTest {
 
         // MockEventQueue will interrupt the thread when the queue is drained
         thread.join(1000);
-        assertFalse(thread.isAlive());
+        Assertions.assertFalse(thread.isAlive());
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
-        assertEquals(TEST_EVENT, ois.readObject());
+        Assertions.assertEquals(TEST_EVENT, ois.readObject());
     }
 
     @Test
@@ -72,11 +70,11 @@ public class RemoteReceiverStreamClientTest {
         Thread thread = new Thread(client);
         thread.start();
         thread.join(1000);
-        assertFalse(thread.isAlive());
+        Assertions.assertFalse(thread.isAlive());
 
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
         for (int i = 0; i < 10; i++) {
-            assertEquals(TEST_EVENT + i, ois.readObject());
+            Assertions.assertEquals(TEST_EVENT + i, ois.readObject());
         }
     }
 

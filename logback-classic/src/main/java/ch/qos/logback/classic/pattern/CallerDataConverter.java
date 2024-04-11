@@ -27,7 +27,8 @@ import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
- * This converter outputs caller data depending on depth or depth range and marker data.
+ * This converter outputs caller data depending on depth or depth range and
+ * marker data.
  * 
  * @author Ceki Gulcu
  */
@@ -76,7 +77,8 @@ public class CallerDataConverter extends ClassicConverter {
                 String evaluatorStr = optionList.get(i);
                 Context context = getContext();
                 if (context != null) {
-                    Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context.getObject(CoreConstants.EVALUATOR_MAP);
+                    Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context
+                            .getObject(CoreConstants.EVALUATOR_MAP);
                     EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap.get(evaluatorStr);
                     if (ee != null) {
                         addEvaluator(ee);
@@ -96,7 +98,8 @@ public class CallerDataConverter extends ClassicConverter {
 
     private void checkRange() {
         if (depthStart < 0 || depthEnd < 0) {
-            addError("Invalid depthStart/depthEnd range [" + depthStart + ", " + depthEnd + "] (negative values are not allowed)");
+            addError("Invalid depthStart/depthEnd range [" + depthStart + ", " + depthEnd
+                    + "] (negative values are not allowed)");
         } else if (depthStart >= depthEnd) {
             addError("Invalid depthEnd range [" + depthStart + ", " + depthEnd + "] (start greater or equal to end)");
         }
@@ -126,9 +129,10 @@ public class CallerDataConverter extends ClassicConverter {
                     if (errorCount < MAX_ERROR_COUNT) {
                         addError("Exception thrown for evaluator named [" + ee.getName() + "]", eex);
                     } else if (errorCount == MAX_ERROR_COUNT) {
-                        ErrorStatus errorStatus = new ErrorStatus("Exception thrown for evaluator named [" + ee.getName() + "].", this, eex);
+                        ErrorStatus errorStatus = new ErrorStatus(
+                                "Exception thrown for evaluator named [" + ee.getName() + "].", this, eex);
                         errorStatus.add(new ErrorStatus("This was the last warning about this evaluator's errors."
-                                        + "We don't want the StatusManager to get flooded.", this));
+                                + "We don't want the StatusManager to get flooded.", this));
                         addStatus(errorStatus);
                     }
 

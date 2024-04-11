@@ -13,11 +13,6 @@
  */
 package ch.qos.logback.core.net.server;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,9 +21,10 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.net.server.test.MockServerListener;
@@ -44,32 +40,32 @@ public class ConcurrentServerRunnerTest {
     private ExecutorService executor = Executors.newCachedThreadPool();
     private InstrumentedConcurrentServerRunner runner = new InstrumentedConcurrentServerRunner(listener, executor);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         runner.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         executor.shutdownNow();
-        assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
     }
 
     @Test
     public void testStartStop() throws Exception {
-        assertFalse(runner.isRunning());
+        Assertions.assertFalse(runner.isRunning());
         executor.execute(runner);
-        assertTrue(runner.awaitRunState(true, DELAY));
+        Assertions.assertTrue(runner.awaitRunState(true, DELAY));
         int retries = DELAY / SHORT_DELAY;
         synchronized (listener) {
             while (retries-- > 0 && listener.getWaiter() == null) {
                 listener.wait(SHORT_DELAY);
             }
         }
-        assertNotNull(listener.getWaiter());
+        Assertions.assertNotNull(listener.getWaiter());
         runner.stop();
-        assertTrue(listener.isClosed());
-        assertFalse(runner.awaitRunState(false, DELAY));
+        Assertions.assertTrue(listener.isClosed());
+        Assertions.assertFalse(runner.awaitRunState(false, DELAY));
     }
 
     @Test
@@ -83,7 +79,7 @@ public class ConcurrentServerRunnerTest {
                 client.wait(SHORT_DELAY);
             }
         }
-        assertTrue(runner.awaitRunState(true, DELAY));
+        Assertions.assertTrue(runner.awaitRunState(true, DELAY));
         client.close();
         runner.stop();
     }
@@ -101,7 +97,7 @@ public class ConcurrentServerRunnerTest {
                     client.wait(SHORT_DELAY);
                 }
             }
-            assertTrue(runner.awaitRunState(true, DELAY));
+            Assertions.assertTrue(runner.awaitRunState(true, DELAY));
         }
         runner.stop();
     }
@@ -117,10 +113,10 @@ public class ConcurrentServerRunnerTest {
                 client.wait(SHORT_DELAY);
             }
         }
-        assertTrue(runner.awaitRunState(true, DELAY));
+        Assertions.assertTrue(runner.awaitRunState(true, DELAY));
         MockClientVisitor visitor = new MockClientVisitor();
         runner.accept(visitor);
-        assertSame(client, visitor.getLastVisited());
+        Assertions.assertSame(client, visitor.getLastVisited());
         runner.stop();
     }
 

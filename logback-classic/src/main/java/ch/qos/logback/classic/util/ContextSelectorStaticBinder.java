@@ -42,8 +42,8 @@ public class ContextSelectorStaticBinder {
     }
 
     /**
-     * FOR INTERNAL USE. This method is intended for use by  StaticLoggerBinder.
-     *  
+     * FOR INTERNAL USE. This method is intended for use by StaticLoggerBinder.
+     * 
      * @param defaultLoggerContext
      * @throws ClassNotFoundException
      * @throws NoSuchMethodException
@@ -51,8 +51,8 @@ public class ContextSelectorStaticBinder {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public void init(LoggerContext defaultLoggerContext, Object key) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
-                    IllegalAccessException, InvocationTargetException {
+    public void init(LoggerContext defaultLoggerContext, Object key) throws ClassNotFoundException,
+            NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         if (this.key == null) {
             this.key = key;
         } else if (this.key != key) {
@@ -85,9 +85,9 @@ public class ContextSelectorStaticBinder {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    static ContextSelector dynamicalContextSelector(LoggerContext defaultLoggerContext, String contextSelectorStr) throws ClassNotFoundException,
-                    SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException,
-                    InvocationTargetException {
+    static ContextSelector dynamicalContextSelector(LoggerContext defaultLoggerContext, String contextSelectorStr)
+            throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException,
+            InstantiationException, IllegalAccessException, InvocationTargetException {
         Class<?> contextSelectorClass = Loader.loadClass(contextSelectorStr);
         Constructor<?> cons = contextSelectorClass.getConstructor(new Class[] { LoggerContext.class });
         return (ContextSelector) cons.newInstance(defaultLoggerContext);

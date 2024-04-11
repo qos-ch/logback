@@ -13,17 +13,17 @@
  */
 package ch.qos.logback.core.net.ssl;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.ssl.mock.MockContextAware;
 import ch.qos.logback.core.net.ssl.mock.MockKeyManagerFactoryFactoryBean;
 import ch.qos.logback.core.net.ssl.mock.MockKeyStoreFactoryBean;
 import ch.qos.logback.core.net.ssl.mock.MockSecureRandomFactoryBean;
 import ch.qos.logback.core.net.ssl.mock.MockTrustManagerFactoryFactoryBean;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for {@link SSLContextFactoryBean}.
@@ -57,7 +57,7 @@ public class SSLContextFactoryBeanTest {
     private MockContextAware context = new MockContextAware();
     private SSLContextFactoryBean factoryBean = new SSLContextFactoryBean();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         keyStore.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
         trustStore.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);

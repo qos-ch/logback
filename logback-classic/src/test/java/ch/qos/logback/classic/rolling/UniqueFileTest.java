@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.classic.rolling;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -25,12 +25,12 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.CachingDateFormatter;
 
 /**
- * Test that we can create time-stamped log files with the help of
- * the &lt;timestamp> element in configuration files.
+ * Test that we can create time-stamped log files with the help of the
+ * &lt;timestamp> element in configuration files.
  * 
  * @author Ceki G&uuml;lc&uuml;
  *
@@ -44,12 +44,12 @@ public class UniqueFileTest {
     int diff = RandomUtil.getPositiveInt() % 1000;
     String diffAsStr = Integer.toString(diff);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty(UNIK_DIFF, diffAsStr);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty(UNIK_DIFF);
     }
@@ -71,6 +71,7 @@ public class UniqueFileTest {
         Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
         root.info("hello");
 
-        ScaffoldingForRollingTests.existenceCheck(CoreTestConstants.OUTPUT_DIR_PREFIX + "UNIK_" + timestamp + diffAsStr + "log.txt");
+        ScaffoldingForRollingTests
+                .existenceCheck(CoreTestConstants.OUTPUT_DIR_PREFIX + "UNIK_" + timestamp + diffAsStr + "log.txt");
     }
 }

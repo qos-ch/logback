@@ -38,10 +38,10 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
     private boolean started;
 
     /**
-     * Given the FileNamePattern string, this method determines the compression
-     * mode depending on last letters of the fileNamePatternStr. Patterns ending
-     * with .gz imply GZIP compression, endings with '.zip' imply ZIP compression.
-     * Otherwise and by default, there is no compression.
+     * Given the FileNamePattern string, this method determines the compression mode
+     * depending on last letters of the fileNamePatternStr. Patterns ending with .gz
+     * imply GZIP compression, endings with '.zip' imply ZIP compression. Otherwise
+     * and by default, there is no compression.
      * 
      */
     protected void determineCompressionMode() {

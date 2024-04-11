@@ -49,7 +49,8 @@ public class DefaultThrowableRenderer implements IThrowableRenderer<ILoggingEven
 
         if (commonFrames > 0) {
             sbuf.append(TRACE_PREFIX);
-            sbuf.append("\t... ").append(commonFrames).append(" common frames omitted").append(CoreConstants.LINE_SEPARATOR);
+            sbuf.append("\t... ").append(commonFrames).append(" common frames omitted")
+                    .append(CoreConstants.LINE_SEPARATOR);
         }
     }
 

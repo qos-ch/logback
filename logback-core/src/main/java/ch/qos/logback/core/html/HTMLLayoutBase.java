@@ -27,8 +27,8 @@ import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.spi.ScanException;
 
 /**
- * This class is a base class for HTMLLayout classes part of
- * other logback modules such as logback-classic and logback-access.
+ * This class is a base class for HTMLLayout classes part of other logback
+ * modules such as logback-classic and logback-access.
  * 
  *
  * @author S&eacute;bastien Pennec
@@ -114,7 +114,8 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         Context context = getContext();
         if (context != null) {
             @SuppressWarnings("unchecked")
-            Map<String, String> contextMap = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+            Map<String, String> contextMap = (Map<String, String>) context
+                    .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
             if (contextMap != null) {
                 effectiveMap.putAll(contextMap);
             }
@@ -123,8 +124,8 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
     }
 
     /**
-     * The <b>Title </b> option takes a String value. This option sets the
-     * document title of the generated HTML document.
+     * The <b>Title </b> option takes a String value. This option sets the document
+     * title of the generated HTML document.
      * 
      * <p>
      * Defaults to 'Logback Log Messages'.

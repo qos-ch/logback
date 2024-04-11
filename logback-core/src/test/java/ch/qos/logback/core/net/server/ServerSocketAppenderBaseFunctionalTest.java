@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.net.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -23,10 +20,11 @@ import java.net.Socket;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
@@ -37,7 +35,7 @@ import ch.qos.logback.core.util.ExecutorServiceUtil;
  *
  * @author Carl Harris
  */
-@Ignore
+@Disabled
 public class ServerSocketAppenderBaseFunctionalTest {
 
     private static final String TEST_EVENT = "test event";
@@ -49,7 +47,7 @@ public class ServerSocketAppenderBaseFunctionalTest {
     private ServerSocket serverSocket;
     private InstrumentedServerSocketAppenderBase appender;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         serverSocket = ServerSocketUtil.createServerSocket();
@@ -58,11 +56,11 @@ public class ServerSocketAppenderBaseFunctionalTest {
         appender.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         executor.shutdownNow();
         executor.awaitTermination(10000, TimeUnit.MILLISECONDS);
-        assertTrue(executor.isTerminated());
+        Assertions.assertTrue(executor.isTerminated());
     }
 
     @Test
@@ -75,7 +73,7 @@ public class ServerSocketAppenderBaseFunctionalTest {
 
         for (int i = 0; i < EVENT_COUNT; i++) {
             appender.append(TEST_EVENT + i);
-            assertEquals(TEST_EVENT + i, ois.readObject());
+            Assertions.assertEquals(TEST_EVENT + i, ois.readObject());
         }
 
         socket.close();

@@ -13,11 +13,17 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.TestHelper;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.EnvUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -27,18 +33,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.util.TestHelper;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.util.EnvUtil;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ThrowableProxyConverterTest {
 
@@ -47,18 +46,19 @@ public class ThrowableProxyConverterTest {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         tpc.setContext(lc);
         tpc.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
     private ILoggingEvent createLoggingEvent(Throwable t) {
-        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t, null);
+        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG,
+                "test message", t, null);
     }
 
     @Test
@@ -120,27 +120,27 @@ public class ThrowableProxyConverterTest {
 
     @Test
     public void cyclicCause() {
-    	// Earlier JDKs may formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
+        // Earlier JDKs may format things differently
+        if (!EnvUtil.isJDK16OrHigher())
+            return;
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.initCause(e2);
         verify(e);
     }
- 
+
     @Test
     public void cyclicSuppressed() {
-    	// Earlier JDKs may formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
-        
-    	Exception e = new Exception("foo");
+        // Earlier JDKs may format things differently
+        if (!EnvUtil.isJDK16OrHigher())
+            return;
+
+        Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.addSuppressed(e2);
         verify(e);
     }
-    
+
     @Test
     public void withArgumentOfOne() throws Exception {
         final Throwable t = TestHelper.makeNestedException(0);
@@ -153,10 +153,11 @@ public class ThrowableProxyConverterTest {
 
         final String result = tpc.convert(le);
 
+        System.out.println(result);
         final BufferedReader reader = new BufferedReader(new StringReader(result));
         assertTrue(reader.readLine().contains(t.getMessage()));
         assertNotNull(reader.readLine());
-        assertNull("Unexpected line in stack trace", reader.readLine());
+        assertNull(reader.readLine(), "Unexpected line in stack trace");
     }
 
     @Test
@@ -174,7 +175,7 @@ public class ThrowableProxyConverterTest {
         final BufferedReader reader = new BufferedReader(new StringReader(result));
         assertTrue(reader.readLine().contains(t.getMessage()));
         assertNotNull(reader.readLine());
-        assertNull("Unexpected line in stack trace", reader.readLine());
+        assertNull(reader.readLine(), "Unexpected line in stack trace");
     }
 
     @Test
@@ -192,7 +193,7 @@ public class ThrowableProxyConverterTest {
 
         // then
         assertThat(result).doesNotContain(nameOfContainingMethod);
-        
+
     }
 
     @Test
@@ -229,8 +230,6 @@ public class ThrowableProxyConverterTest {
         assertThat(lines).hasSize(3 + 1);
     }
 
- 
-    
     void someMethod() throws Exception {
         throw new Exception("someMethod");
     }
@@ -240,7 +239,7 @@ public class ThrowableProxyConverterTest {
 
         ILoggingEvent le = createLoggingEvent(t);
         String result = tpc.convert(le);
-        //System.out.println(result);
+        // System.out.println(result);
         result = result.replace("common frames omitted", "more");
         assertEquals(sw.toString(), result);
     }

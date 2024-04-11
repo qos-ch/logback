@@ -21,8 +21,10 @@ package ch.qos.logback.core.joran;
  *
  */
 public abstract class JoranConstants {
-	public static final String INCLUDED_TAG = "included";
-	public static final String INCLUDE_TAG = "include";
+    public static final String INCLUDED_TAG = "included";
+    public static final String CONFIGURATION_TAG = "configuration";
+
+    public static final String INCLUDE_TAG = "include";
 
     public static final String APPENDER_TAG = "appender";
     public static final String REF_ATTRIBUTE = "ref";
@@ -40,5 +42,5 @@ public abstract class JoranConstants {
 
     public static final String APPENDER_BAG = "APPENDER_BAG";
     public static final String APPENDER_REF_BAG = "APPENDER_REF_BAG";
-    //public static final String FILTER_CHAIN_BAG = "FILTER_CHAIN_BAG";
+    // public static final String FILTER_CHAIN_BAG = "FILTER_CHAIN_BAG";
 }

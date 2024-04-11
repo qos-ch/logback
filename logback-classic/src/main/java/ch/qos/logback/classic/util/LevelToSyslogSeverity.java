@@ -20,8 +20,8 @@ import ch.qos.logback.core.net.SyslogConstants;
 public class LevelToSyslogSeverity {
 
     /*
-     * Convert a level to equivalent syslog severity. Only levels for printing methods i.e TRACE, DEBUG, WARN, INFO and
-     * ERROR are converted.
+     * Convert a level to equivalent syslog severity. Only levels for printing
+     * methods i.e. TRACE, DEBUG, WARN, INFO and ERROR are converted.
      */
     static public int convert(ILoggingEvent event) {
 

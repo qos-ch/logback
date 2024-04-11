@@ -31,8 +31,8 @@ public class ScenarioMaker {
     /**
      * Makes a scenario with len logger creations. Logger names are generated
      * independently such that the overwhelming majority of logger names will be
-     * unrelated to each other. Each logger creation may be followed with a
-     * randomly generated set levelInt action on that logger.
+     * unrelated to each other. Each logger creation may be followed with a randomly
+     * generated set levelInt action on that logger.
      * 
      * @param len
      * @return

@@ -15,10 +15,9 @@ package ch.qos.logback.core.subst;
 
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.spi.ScanException;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -27,7 +26,7 @@ public class NodeToStringTransformerTest {
 
     ContextBase propertyContainer0 = new ContextBase();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         propertyContainer0.putProperty("k0", "v0");
         propertyContainer0.putProperty("zero", "0");
@@ -47,13 +46,13 @@ public class NodeToStringTransformerTest {
         String input = "abv";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals(input, nodeToStringTransformer.transform());
+        Assertions.assertEquals(input, nodeToStringTransformer.transform());
     }
 
     void checkInputEqualsOutput(String input) throws ScanException {
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals(input, nodeToStringTransformer.transform());
+        Assertions.assertEquals(input, nodeToStringTransformer.transform());
     }
 
     @Test
@@ -69,7 +68,47 @@ public class NodeToStringTransformerTest {
         String input = "${k0}";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("v0", nodeToStringTransformer.transform());
+        Assertions.assertEquals("v0", nodeToStringTransformer.transform());
+    }
+
+    @Test
+    public void recursion0() throws ScanException {
+        assumeCycle("${nested:-${nested}}");
+        assumeCycle("${:-${}}");
+        assumeCycle("${$a:-${a:-${a:-b}}");
+    }
+
+    @Test
+    public void recursion1() throws ScanException {
+        propertyContainer0.putProperty("k", "${a}");
+        propertyContainer0.putProperty("a", "${k}");
+        assumeCycle("${k}");
+    }
+
+    // Is this a feature or a bug?
+    @Test
+    public void cascadedTransformation() throws ScanException {
+        propertyContainer0.putProperty("x", "${a}");
+        propertyContainer0.putProperty("a", "b");
+        propertyContainer0.putProperty("b", "c");
+        String result = transform("${${x}}");
+        Assertions.assertEquals("c", result);
+    }
+
+    public void assumeCycle(String input) throws ScanException {
+
+        try {
+            transform(input);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        Assertions.fail("circular reference should have been caught input=" + input);
+    }
+
+    private String transform(String input) throws ScanException {
+        Node node = makeNode(input);
+        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+        return nodeToStringTransformer.transform();
     }
 
     @Test
@@ -77,7 +116,7 @@ public class NodeToStringTransformerTest {
         String input = "a${k0}c";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("av0c", nodeToStringTransformer.transform());
+        Assertions.assertEquals("av0c", nodeToStringTransformer.transform());
     }
 
     @Test
@@ -85,7 +124,7 @@ public class NodeToStringTransformerTest {
         String input = "a${k${zero}}b";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("av0b", nodeToStringTransformer.transform());
+        Assertions.assertEquals("av0b", nodeToStringTransformer.transform());
     }
 
     @Test
@@ -93,7 +132,7 @@ public class NodeToStringTransformerTest {
         String input = "${${k0}.jdbc.url}";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("http://..", nodeToStringTransformer.transform());
+        Assertions.assertEquals("http://..", nodeToStringTransformer.transform());
     }
 
     @Test
@@ -102,7 +141,7 @@ public class NodeToStringTransformerTest {
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
         System.out.println(nodeToStringTransformer.transform());
-        assertEquals("%d{HH:mm:ss.SSS} host:local %logger{36} - %msg%n", nodeToStringTransformer.transform());
+        Assertions.assertEquals("%d{HH:mm:ss.SSS} host:local %logger{36} - %msg%n", nodeToStringTransformer.transform());
     }
 
     @Test
@@ -110,7 +149,7 @@ public class NodeToStringTransformerTest {
         String input = "java:comp/env/jdbc/datasource";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals(input, nodeToStringTransformer.transform());
+        Assertions.assertEquals(input, nodeToStringTransformer.transform());
     }
 
     @Test
@@ -118,7 +157,7 @@ public class NodeToStringTransformerTest {
         String input = "${k67:-b}c";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("bc", nodeToStringTransformer.transform());
+        Assertions.assertEquals("bc", nodeToStringTransformer.transform());
     }
 
     @Test
@@ -126,7 +165,7 @@ public class NodeToStringTransformerTest {
         String input = "a${k67:-x${k0}}c";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("axv0c", nodeToStringTransformer.transform());
+        Assertions.assertEquals("axv0c", nodeToStringTransformer.transform());
     }
 
     @Test
@@ -134,6 +173,24 @@ public class NodeToStringTransformerTest {
         String input = "a: {y}";
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("a: {y}", nodeToStringTransformer.transform());
+        Assertions.assertEquals("a: {y}", nodeToStringTransformer.transform());
+    }
+
+    @Test
+    public void definedAsEmpty() throws ScanException {
+        propertyContainer0.putProperty("empty", "");
+        String input = "a=${empty}";
+        Node node = makeNode(input);
+        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+        Assertions.assertEquals("a=", nodeToStringTransformer.transform());
+    }
+
+    @Test
+    public void emptyDefault() throws ScanException {
+        propertyContainer0.putProperty("empty", "");
+        String input = "a=${undef:-${empty}}";
+        Node node = makeNode(input);
+        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+        Assertions.assertEquals("a=", nodeToStringTransformer.transform());
     }
 }

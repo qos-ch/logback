@@ -33,7 +33,7 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
     private final ServerSocket serverSocket;
     private final ServerListener<RemoteAppenderClient> listener;
     private final ServerRunner<RemoteAppenderClient> runner;
-    
+
     @SuppressWarnings("rawtypes")
     private ServerListener lastListener;
 
@@ -41,7 +41,8 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
         this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
     }
 
-    public InstrumentedServerSocketReceiver(ServerSocket serverSocket, ServerListener<RemoteAppenderClient> listener, ServerRunner<RemoteAppenderClient> runner) {
+    public InstrumentedServerSocketReceiver(ServerSocket serverSocket, ServerListener<RemoteAppenderClient> listener,
+            ServerRunner<RemoteAppenderClient> runner) {
         this.serverSocket = serverSocket;
         this.listener = listener;
         this.runner = runner;
@@ -79,7 +80,7 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
     protected ServerListener<RemoteAppenderClient> createServerListener(ServerSocket socket) {
         return listener;
     }
-    
+
     @SuppressWarnings("rawtypes")
     public ServerListener getLastListener() {
         return lastListener;

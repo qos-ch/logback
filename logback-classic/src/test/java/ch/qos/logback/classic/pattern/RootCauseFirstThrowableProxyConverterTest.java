@@ -20,8 +20,8 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -43,14 +43,15 @@ public class RootCauseFirstThrowableProxyConverterTest {
     private StringWriter stringWriter = new StringWriter();
     private PrintWriter printWriter = new PrintWriter(stringWriter);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         converter.setContext(context);
         converter.start();
     }
 
     private ILoggingEvent createLoggingEvent(Throwable t) {
-        return new LoggingEvent(this.getClass().getName(), context.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t, null);
+        return new LoggingEvent(this.getClass().getName(), context.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG,
+                "test message", t, null);
     }
 
     @Test
@@ -108,7 +109,7 @@ public class RootCauseFirstThrowableProxyConverterTest {
         assertThat(positionOf("nesting level=0").in(result)).isLessThan(positionOf("nesting level =1").in(result));
         assertThat(positionOf("nesting level =1").in(result)).isLessThan(positionOf("nesting level =2").in(result));
     }
- 
+
     @Test
     public void cyclicCause() {
         Exception e = new Exception("foo");
@@ -119,8 +120,7 @@ public class RootCauseFirstThrowableProxyConverterTest {
 
         assertThat(result).startsWith("[CIRCULAR REFERENCE: java.lang.Exception: foo]");
     }
- 
-    
+
     @Test
     public void cyclicSuppressed() {
         Exception e = new Exception("foo");
@@ -132,9 +132,8 @@ public class RootCauseFirstThrowableProxyConverterTest {
         assertThat(result).startsWith("java.lang.Exception: foo");
         String circular = "Suppressed: [CIRCULAR REFERENCE: java.lang.Exception: foo]";
         String wrapped = "Wrapped by: java.lang.Exception: java.lang.Exception: foo";
-        
+
         assertThat(positionOf(circular).in(result)).isLessThan(positionOf(wrapped).in(result));
     }
-    
 
 }

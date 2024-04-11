@@ -13,24 +13,23 @@
  */
 package ch.qos.logback.classic.corpusTest;
 
-import static org.junit.Assert.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import org.junit.Test;
-
 import ch.qos.logback.classic.corpus.TextFileUtil;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TextFileUtilTest {
 
     @Test
     public void smoke() throws IOException {
         String s = "When on board H.M.S. 'Beagle,' as naturalist, I was much struck with\r\n"
-                        + "certain facts in the distribution of the inhabitants of South America,\r\n"
-                        + "and in the geological relations of the present to the past inhabitants\r\n" + "of that continent.";
+                + "certain facts in the distribution of the inhabitants of South America,\r\n"
+                + "and in the geological relations of the present to the past inhabitants\r\n" + "of that continent.";
 
         StringReader sr = new StringReader(s);
         BufferedReader br = new BufferedReader(sr);

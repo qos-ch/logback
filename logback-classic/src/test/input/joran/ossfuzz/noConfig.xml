@@ -1,0 +1,4 @@
+<!-- missing configuration element -->
+<!-- https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46793-->
+
+<param>a</param>

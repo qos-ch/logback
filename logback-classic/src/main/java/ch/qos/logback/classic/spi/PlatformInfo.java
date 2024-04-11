@@ -17,7 +17,7 @@ package ch.qos.logback.classic.spi;
  * This class provides information about the runtime platform.
  *
  * @author Ceki Gulcu
- * */
+ */
 public class PlatformInfo {
 
     private static final int UNINITIALIZED = -1;

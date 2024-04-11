@@ -25,7 +25,7 @@ import ch.qos.logback.classic.LoggerContext;
  * 
  * <p>
  * Some of the LoggerContext or Logger attributes MUST not survive
- * serialization, e.g appenders, level values etc, as these attributes may have
+ * serialization, e.g. appenders, level values etc., as these attributes may have
  * other values on the remote platform. LoggerContextVO class exposes the
  * minimal and relevant attributes to the remote host, instead of having to deal
  * with an incomplete LoggerContext with many null references.
@@ -37,9 +37,9 @@ public class LoggerContextVO implements Serializable {
 
     private static final long serialVersionUID = 5488023392483144387L;
 
-    final String name;
-    final Map<String, String> propertyMap;
-    final long birthTime;
+    protected String name;
+    protected Map<String, String> propertyMap;
+    protected long birthTime;
 
     public LoggerContextVO(LoggerContext lc) {
         this.name = lc.getName();
@@ -67,7 +67,8 @@ public class LoggerContextVO implements Serializable {
 
     @Override
     public String toString() {
-        return "LoggerContextVO{" + "name='" + name + '\'' + ", propertyMap=" + propertyMap + ", birthTime=" + birthTime + '}';
+        return "LoggerContextVO{" + "name='" + name + '\'' + ", propertyMap=" + propertyMap + ", birthTime=" + birthTime
+                + '}';
     }
 
     @Override

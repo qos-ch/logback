@@ -13,44 +13,42 @@
  */
 package ch.qos.logback.core.joran.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class PropertySetterTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    DefaultNestedComponentRegistry defaultComponentRegistry = new DefaultNestedComponentRegistry();
+public class PropertySetterTest {
 
     Context context = new ContextBase();
     StatusChecker checker = new StatusChecker(context);
     House house = new House();
-    
+
     PropertySetter setter = new PropertySetter(new BeanDescriptionCache(context), house);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         setter.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -123,17 +121,7 @@ public class PropertySetterTest {
         assertEquals(door, house.getDoor());
     }
 
-    @Test
-    public void testgetClassNameViaImplicitRules() {
-        Class<?> compClass = setter.getClassNameViaImplicitRules("door", AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
-        assertEquals(Door.class, compClass);
-    }
 
-    @Test
-    public void testgetComplexPropertyColleClassNameViaImplicitRules() {
-        Class<?> compClass = setter.getClassNameViaImplicitRules("window", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION, defaultComponentRegistry);
-        assertEquals(Window.class, compClass);
-    }
 
     @Test
     public void testPropertyCollection() {
@@ -191,28 +179,7 @@ public class PropertySetterTest {
         assertEquals(HouseColor.BLUE, house.getHouseColor());
     }
 
-    @Test
-    public void testDefaultClassAnnonation() {
-        Method relevantMethod = setter.getRelevantMethod("SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY);
-        assertNotNull(relevantMethod);
-        Class<?> spClass = setter.getDefaultClassNameByAnnonation("SwimmingPool", relevantMethod);
-        assertEquals(SwimmingPoolImpl.class, spClass);
 
-        Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules("SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
-        assertEquals(SwimmingPoolImpl.class, classViaImplicitRules);
-    }
-
-    @Test
-    public void testDefaultClassAnnotationForLists() {
-        Method relevantMethod = setter.getRelevantMethod("LargeSwimmingPool", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION);
-        assertNotNull(relevantMethod);
-        Class<?> spClass = setter.getDefaultClassNameByAnnonation("LargeSwimmingPool", relevantMethod);
-        assertEquals(LargeSwimmingPoolImpl.class, spClass);
-
-        Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules("LargeSwimmingPool", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION,
-                        defaultComponentRegistry);
-        assertEquals(LargeSwimmingPoolImpl.class, classViaImplicitRules);
-    }
 
     @Test
     public void charset() {
@@ -231,11 +198,13 @@ public class PropertySetterTest {
     @Test
     public void bridgeMethodsShouldBeIgnored() {
         Orange orange = new Orange();
-        
+
         PropertySetter orangeSetter = new PropertySetter(new BeanDescriptionCache(context), orange);
-        assertEquals(AggregationType.AS_BASIC_PROPERTY, orangeSetter.computeAggregationType(Citrus.PRECARP_PROPERTY_NAME));
-        assertEquals(AggregationType.AS_BASIC_PROPERTY, orangeSetter.computeAggregationType(Citrus.PREFIX_PROPERTY_NAME));
-        
+        assertEquals(AggregationType.AS_BASIC_PROPERTY,
+                orangeSetter.computeAggregationType(Citrus.PRECARP_PROPERTY_NAME));
+        assertEquals(AggregationType.AS_BASIC_PROPERTY,
+                orangeSetter.computeAggregationType(Citrus.PREFIX_PROPERTY_NAME));
+
         StatusPrinter.print(context);
         checker.assertIsWarningOrErrorFree();
     }

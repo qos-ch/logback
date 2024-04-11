@@ -19,7 +19,7 @@ import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.action.PreconditionValidator;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 /**
@@ -30,27 +30,27 @@ import ch.qos.logback.core.model.Model;
 public class LoggerAction extends BaseModelAction {
 
     @Override
-    protected boolean validPreconditions(InterpretationContext ic, String name, Attributes attributes) {
-    	PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
-    	validator.validateNameAttribute();
-    	return validator.isValid();
+    protected boolean validPreconditions(SaxEventInterpretationContext ic, String name, Attributes attributes) {
+        PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
+        validator.validateNameAttribute();
+        return validator.isValid();
     }
 
-	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
 
-		LoggerModel loggerModel = new LoggerModel();
-		
-		
-		String nameStr = attributes.getValue(NAME_ATTRIBUTE);
-		loggerModel.setName(nameStr);
-		
-		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
-		loggerModel.setLevel(levelStr);
-	    
-		String additivityStr = attributes.getValue(JoranConstants.ADDITIVITY_ATTRIBUTE);
-		loggerModel.setAdditivity(additivityStr);
-	    
-		return loggerModel;
-	}
+        LoggerModel loggerModel = new LoggerModel();
+
+        String nameStr = attributes.getValue(NAME_ATTRIBUTE);
+        loggerModel.setName(nameStr);
+
+        String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
+        loggerModel.setLevel(levelStr);
+
+        String additivityStr = attributes.getValue(JoranConstants.ADDITIVITY_ATTRIBUTE);
+        loggerModel.setAdditivity(additivityStr);
+
+        return loggerModel;
+    }
 }

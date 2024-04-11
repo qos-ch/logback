@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,10 +13,11 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static ch.qos.logback.core.CoreConstants.UNBOUND_HISTORY;
+import static ch.qos.logback.core.CoreConstants.UNBOUNDED_HISTORY;
 import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -33,10 +34,11 @@ import ch.qos.logback.core.util.FileSize;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
- * powerful. It allows the roll over to be made based on time. It is possible to
- * specify that the roll over occur once per day, per week or per month.
+ * powerful. It allows the rollover to be made based on time. It is possible to
+ * specify that the rollover occur once per day, per week or per month.
  * 
- * <p>For more information, please refer to the online manual at
+ * <p>
+ * For more information, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -51,7 +53,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     Future<?> compressionFuture;
     Future<?> cleanUpFuture;
 
-    private int maxHistory = UNBOUND_HISTORY;
+    private int maxHistory = UNBOUNDED_HISTORY;
     protected FileSize totalSizeCap = new FileSize(UNBOUNDED_TOTAL_SIZE_CAP);
 
     private ArchiveRemover archiveRemover;
@@ -78,7 +80,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         compressor.setContext(context);
 
         // wcs : without compression suffix
-        fileNamePatternWithoutCompSuffix = new FileNamePattern(Compressor.computeFileNameStrWithoutCompSuffix(fileNamePatternStr, compressionMode), this.context);
+        fileNamePatternWithoutCompSuffix = new FileNamePattern(
+                Compressor.computeFileNameStrWithoutCompSuffix(fileNamePatternStr, compressionMode), this.context);
 
         addInfo("Will use the pattern " + fileNamePatternWithoutCompSuffix + " for the active file");
 
@@ -88,7 +91,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         }
 
         if (timeBasedFileNamingAndTriggeringPolicy == null) {
-            timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
+            timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<>();
         }
         timeBasedFileNamingAndTriggeringPolicy.setContext(context);
         timeBasedFileNamingAndTriggeringPolicy.setTimeBasedRollingPolicy(this);
@@ -102,17 +105,17 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         // the maxHistory property is given to TimeBasedRollingPolicy instead of to
         // the TimeBasedFileNamingAndTriggeringPolicy. This makes it more convenient
         // for the user at the cost of inconsistency here.
-        if (maxHistory != UNBOUND_HISTORY) {
+        if (maxHistory != UNBOUNDED_HISTORY) {
             archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
             archiveRemover.setMaxHistory(maxHistory);
             archiveRemover.setTotalSizeCap(totalSizeCap.getSize());
             if (cleanHistoryOnStart) {
                 addInfo("Cleaning on start up");
-                Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
+                Instant now = Instant.ofEpochMilli(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
                 cleanUpFuture = archiveRemover.cleanAsynchronously(now);
             }
         } else if (!isUnboundedTotalSizeCap()) {
-            addWarn("'maxHistory' is not set, ignoring 'totalSizeCap' option with value ["+totalSizeCap+"]");
+            addWarn("'maxHistory' is not set, ignoring 'totalSizeCap' option with value [" + totalSizeCap + "]");
         }
 
         super.start();
@@ -148,7 +151,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         return FileFilterUtil.afterLastSlash(slashified);
     }
 
-    public void setTimeBasedFileNamingAndTriggeringPolicy(TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering) {
+    public void setTimeBasedFileNamingAndTriggeringPolicy(
+            TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedTriggering) {
         this.timeBasedFileNamingAndTriggeringPolicy = timeBasedTriggering;
     }
 
@@ -168,17 +172,19 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         if (compressionMode == CompressionMode.NONE) {
             if (getParentsRawFileProperty() != null) {
                 renameUtil.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
-            } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty == null }
+            } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty ==
+              // null }
         } else {
             if (getParentsRawFileProperty() == null) {
-                compressionFuture = compressor.asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
+                compressionFuture = compressor.asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName,
+                        elapsedPeriodStem);
             } else {
                 compressionFuture = renameRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
             }
         }
 
         if (archiveRemover != null) {
-            Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
+            Instant now = Instant.ofEpochMilli(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
             this.cleanUpFuture = archiveRemover.cleanAsynchronously(now);
         }
     }
@@ -197,17 +203,19 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
      * file equals the file name for the current period as computed by the
      * <b>FileNamePattern</b> option.
      * 
-     * <p>The RollingPolicy must know whether it is responsible for changing the
-     * name of the active file or not. If the active file name is set by the user
-     * via the configuration file, then the RollingPolicy must let it like it is.
-     * If the user does not specify an active file name, then the RollingPolicy
-     * generates one.
+     * <p>
+     * The RollingPolicy must know whether it is responsible for changing the name
+     * of the active file or not. If the active file name is set by the user via the
+     * configuration file, then the RollingPolicy must let it like it is. If the
+     * user does not specify an active file name, then the RollingPolicy generates
+     * one.
      * 
-     * <p> To be sure that the file name used by the parent class has been
-     * generated by the RollingPolicy and not specified by the user, we keep track
-     * of the last generated name object and compare its reference to the parent
-     * file name. If they match, then the RollingPolicy knows it's responsible for
-     * the change of the file name.
+     * <p>
+     * To be sure that the file name used by the parent class has been generated by
+     * the RollingPolicy and not specified by the user, we keep track of the last
+     * generated name object and compare its reference to the parent file name. If
+     * they match, then the RollingPolicy knows it's responsible for the change of
+     * the file name.
      * 
      */
     public String getActiveFileName() {
@@ -219,6 +227,13 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         }
     }
 
+    /**
+     * Delegates to the underlying timeBasedFileNamingAndTriggeringPolicy.
+     *
+     * @param activeFile A reference to the currently active log file.
+     * @param event      A reference to the current event.
+     * @return
+     */
     public boolean isTriggeringEvent(File activeFile, final E event) {
         return timeBasedFileNamingAndTriggeringPolicy.isTriggeringEvent(activeFile, event);
     }
@@ -235,8 +250,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     /**
      * Set the maximum number of archive files to keep.
      * 
-     * @param maxHistory
-     *                number of archive files to keep
+     * @param maxHistory number of archive files to keep
      */
     public void setMaxHistory(int maxHistory) {
         this.maxHistory = maxHistory;
@@ -247,7 +261,9 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     }
 
     /**
-     * Should archive removal be attempted on application start up? Default is false.
+     * Should archive removal be attempted on application start up? Default is
+     * false.
+     * 
      * @since 1.0.1
      * @param cleanHistoryOnStart
      */
@@ -257,11 +273,11 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
 
     @Override
     public String toString() {
-        return "c.q.l.core.rolling.TimeBasedRollingPolicy@"+this.hashCode();
+        return "c.q.l.core.rolling.TimeBasedRollingPolicy@" + this.hashCode();
     }
 
     public void setTotalSizeCap(FileSize totalSizeCap) {
-        addInfo("setting totalSizeCap to "+totalSizeCap.toString());
+        addInfo("setting totalSizeCap to " + totalSizeCap.toString());
         this.totalSizeCap = totalSizeCap;
     }
 }

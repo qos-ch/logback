@@ -13,19 +13,18 @@
  */
 package ch.qos.logback.classic.corpusTest;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Random;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.classic.corpus.RandomUtil;
+import org.junit.jupiter.api.Test;
 
 public class RandomUtilTest {
     long now = System.currentTimeMillis();
 
-    @Before
+    @BeforeEach
     public void setup() {
         System.out.println(RandomUtilTest.class.getName() + " now=" + now);
     }
@@ -45,7 +44,7 @@ public class RandomUtilTest {
         }
         double avg = average(valArray);
 
-        assertEquals(EXPECTED_AVERAGE, avg, 0.3);
+        Assertions.assertEquals(EXPECTED_AVERAGE, avg, 0.3);
     }
 
     public double average(int[] va) {

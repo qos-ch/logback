@@ -20,6 +20,9 @@ import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_WEEK;
 import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_DAY;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -62,9 +65,9 @@ public class RollingCalendar extends GregorianCalendar {
         return periodicityType;
     }
 
-    // This method computes the roll over period by looping over the
+    // This method computes the roll-over period by looping over the
     // periods, starting with the shortest, and stopping when the r0 is
-    // different from from r1, where r0 is the epoch formatted according
+    // different from r1, where r0 is the epoch formatted according
     // the datePattern (supplied by the user) and r1 is the
     // epoch+nextMillis(i) formatted according to datePattern. All date
     // formatting is done in GMT and not local format because the test
@@ -75,17 +78,19 @@ public class RollingCalendar extends GregorianCalendar {
         GregorianCalendar calendar = new GregorianCalendar(GMT_TIMEZONE, Locale.getDefault());
 
         // set sate to 1970-01-01 00:00:00 GMT
-        Date epoch = new Date(0);
-
+        Instant epoch = Instant.ofEpochMilli(0);
+        ZoneId gmtZone = ZoneId.of("UTC");
         if (datePattern != null) {
             for (PeriodicityType i : PeriodicityType.VALID_ORDERED_LIST) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
-                simpleDateFormat.setTimeZone(GMT_TIMEZONE); // all date formatting done in GMT
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern).withZone(gmtZone);
 
-                String r0 = simpleDateFormat.format(epoch);
+                //SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
+                //simpleDateFormat.setTimeZone(GMT_TIMEZONE); // all date formatting done in GMT
 
-                Date next = innerGetEndOfThisPeriod(calendar, i, epoch);
-                String r1 = simpleDateFormat.format(next);
+                String r0 = dtf.format(epoch);
+
+                Instant next = innerGetEndOfThisPeriod(calendar, i, epoch);
+                String r1 = dtf.format(next);
 
                 // System.out.println("Type = "+i+", r0 = "+r0+", r1 = "+r1);
                 if ((r0 != null) && (r1 != null) && !r0.equals(r1)) {
@@ -219,12 +224,13 @@ public class RollingCalendar extends GregorianCalendar {
         return yearDiff * 12 + monthDiff;
     }
 
-    static private Date innerGetEndOfThisPeriod(Calendar cal, PeriodicityType periodicityType, Date now) {
-        return innerGetEndOfNextNthPeriod(cal, periodicityType, now, 1);
+    static private Instant innerGetEndOfThisPeriod(Calendar cal, PeriodicityType periodicityType, Instant instant) {
+        return innerGetEndOfNextNthPeriod(cal, periodicityType, instant, 1);
     }
 
-    static private Date innerGetEndOfNextNthPeriod(Calendar cal, PeriodicityType periodicityType, Date now, int numPeriods) {
-        cal.setTime(now);
+    static private Instant innerGetEndOfNextNthPeriod(Calendar cal, PeriodicityType periodicityType, Instant instant,
+            int numPeriods) {
+        cal.setTimeInMillis(instant.toEpochMilli());
         switch (periodicityType) {
         case TOP_OF_MILLISECOND:
             cal.add(Calendar.MILLISECOND, numPeriods);
@@ -278,30 +284,31 @@ public class RollingCalendar extends GregorianCalendar {
             throw new IllegalStateException("Unknown periodicity type.");
         }
 
-        return cal.getTime();
+        return Instant.ofEpochMilli(cal.getTimeInMillis());
     }
 
-    public Date getEndOfNextNthPeriod(Date now, int periods) {
-        return innerGetEndOfNextNthPeriod(this, this.periodicityType, now, periods);
+    public Instant getEndOfNextNthPeriod(Instant instant, int periods) {
+        return innerGetEndOfNextNthPeriod(this, this.periodicityType, instant, periods);
     }
 
-    public Date getNextTriggeringDate(Date now) {
-        return getEndOfNextNthPeriod(now, 1);
+    public Instant getNextTriggeringDate(Instant instant) {
+        return getEndOfNextNthPeriod(instant, 1);
     }
 
     public long getStartOfCurrentPeriodWithGMTOffsetCorrection(long now, TimeZone timezone) {
-        Date toppedDate;
+        Instant toppedInstant;
 
         // there is a bug in Calendar which prevents it from
         // computing the correct DST_OFFSET when the time changes
         {
             Calendar aCal = Calendar.getInstance(timezone);
             aCal.setTimeInMillis(now);
-            toppedDate = getEndOfNextNthPeriod(aCal.getTime(), 0);
+            Instant instant = Instant.ofEpochMilli(aCal.getTimeInMillis());
+            toppedInstant = getEndOfNextNthPeriod(instant, 0);
         }
         Calendar secondCalendar = Calendar.getInstance(timezone);
-        secondCalendar.setTimeInMillis(toppedDate.getTime());
+        secondCalendar.setTimeInMillis(toppedInstant.toEpochMilli());
         long gmtOffset = secondCalendar.get(Calendar.ZONE_OFFSET) + secondCalendar.get(Calendar.DST_OFFSET);
-        return toppedDate.getTime() + gmtOffset;
+        return toppedInstant.toEpochMilli() + gmtOffset;
     }
 }

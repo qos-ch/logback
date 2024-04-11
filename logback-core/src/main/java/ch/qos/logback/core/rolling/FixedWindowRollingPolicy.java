@@ -32,8 +32,8 @@ import ch.qos.logback.core.rolling.helper.*;
  */
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
     static final String FNP_NOT_SET = "The \"FileNamePattern\" property must be set before using FixedWindowRollingPolicy. ";
-    static final String PRUDENT_MODE_UNSUPPORTED = "See also "+CODES_URL+"#tbr_fnp_prudent_unsupported";
-    static final String SEE_PARENT_FN_NOT_SET = "Please refer to "+CODES_URL+"#fwrp_parentFileName_not_set";
+    static final String PRUDENT_MODE_UNSUPPORTED = "See also " + CODES_URL + "#tbr_fnp_prudent_unsupported";
+    static final String SEE_PARENT_FN_NOT_SET = "Please refer to " + CODES_URL + "#fwrp_parentFileName_not_set";
     int maxIndex;
     int minIndex;
     RenameUtil util = new RenameUtil();
@@ -91,7 +91,8 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
         IntegerTokenConverter itc = fileNamePattern.getIntegerTokenConverter();
 
         if (itc == null) {
-            throw new IllegalStateException("FileNamePattern [" + fileNamePattern.getPattern() + "] does not contain a valid IntegerToken");
+            throw new IllegalStateException(
+                    "FileNamePattern [" + fileNamePattern.getPattern() + "] does not contain a valid IntegerToken");
         }
 
         if (compressionMode == CompressionMode.ZIP) {
@@ -104,8 +105,9 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     }
 
     /**
-     * Subclasses can override this method to increase the max window size, if required.  This is to
-     * address LOGBACK-266.
+     * Subclasses can override this method to increase the max window size, if
+     * required. This is to address LOGBACK-266.
+     * 
      * @return
      */
     protected int getMaxWindowSize() {
@@ -135,7 +137,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
             for (int i = maxIndex - 1; i >= minIndex; i--) {
                 String toRenameStr = fileNamePattern.convertInt(i);
                 File toRename = new File(toRenameStr);
-                // no point in trying to rename an inexistent file
+                // no point in trying to rename a nonexistent file
                 if (toRename.exists()) {
                     util.rename(toRenameStr, fileNamePattern.convertInt(i + 1));
                 } else {
@@ -152,7 +154,8 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
                 compressor.compress(getActiveFileName(), fileNamePattern.convertInt(minIndex), null);
                 break;
             case ZIP:
-                compressor.compress(getActiveFileName(), fileNamePattern.convertInt(minIndex), zipEntryFileNamePattern.convert(new Date()));
+                compressor.compress(getActiveFileName(), fileNamePattern.convertInt(minIndex),
+                        zipEntryFileNamePattern.convert(new Date()));
                 break;
             }
         }

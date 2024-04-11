@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,176 +13,89 @@
  */
 package ch.qos.logback.core.util;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusManager;
+
 import java.io.PrintStream;
-import java.util.Iterator;
 import java.util.List;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.helpers.ThrowableToStringArray;
-import ch.qos.logback.core.status.*;
-
-import static ch.qos.logback.core.status.StatusUtil.filterStatusListByTimeThreshold;
-
+/**
+ * This class print status messages of a given {@link Context}. However, all its methods are
+ * static. Use {@link StatusPrinter2} instead
+ *
+ * @deprecated replaced by {@link StatusPrinter2}
+ */
 public class StatusPrinter {
 
-    private static PrintStream ps = System.out;
-
-    static CachingDateFormatter cachingDateFormat = new CachingDateFormatter("HH:mm:ss,SSS");
+    private final static StatusPrinter2 SINGLETON = new StatusPrinter2();
 
     public static void setPrintStream(PrintStream printStream) {
-        ps = printStream;
+        SINGLETON.setPrintStream(printStream);
     }
 
     /**
-     * Print the contents of the context statuses, but only if they contain
-     * warnings or errors.
+     * Print the contents of the context statuses, but only if they contain warnings
+     * or errors.
      *
-     * @param context
+     * @param context a context to print
      */
     public static void printInCaseOfErrorsOrWarnings(Context context) {
-        printInCaseOfErrorsOrWarnings(context, 0);
+        SINGLETON.printInCaseOfErrorsOrWarnings(context, 0);
     }
 
     /**
-     * Print the contents of the context status, but only if they contain
-     * warnings or errors occurring later then the threshold.
+     * Print the contents of the context status, but only if they contain warnings
+     * or errors occurring later than the threshold.
      *
-     * @param context
+     * @param context a context to print
+     * @param threshold filter events later than the threshold
      */
     public static void printInCaseOfErrorsOrWarnings(Context context, long threshold) {
-        if (context == null) {
-            throw new IllegalArgumentException("Context argument cannot be null");
-        }
-
-        StatusManager sm = context.getStatusManager();
-        if (sm == null) {
-            ps.println("WARN: Context named \"" + context.getName() + "\" has no status manager");
-        } else {
-            StatusUtil statusUtil = new StatusUtil(context);
-            if (statusUtil.getHighestLevel(threshold) >= ErrorStatus.WARN) {
-                print(sm, threshold);
-            }
-        }
+        SINGLETON.printInCaseOfErrorsOrWarnings(context, threshold);
     }
 
     /**
-     * Print the contents of the context statuses, but only if they contain
-     * errors.
+     * Print the contents of the context statuses, but only if they contain errors.
      *
-     * @param context
+     * @param context a context to print
      */
     public static void printIfErrorsOccured(Context context) {
-        if (context == null) {
-            throw new IllegalArgumentException("Context argument cannot be null");
-        }
-
-        StatusManager sm = context.getStatusManager();
-        if (sm == null) {
-            ps.println("WARN: Context named \"" + context.getName() + "\" has no status manager");
-        } else {
-            StatusUtil statusUtil = new StatusUtil(context);
-            if (statusUtil.getHighestLevel(0) == ErrorStatus.ERROR) {
-                print(sm);
-            }
-        }
+        SINGLETON.printIfErrorsOccured(context);
     }
 
     /**
      * Print the contents of the context's status data.
      *
-     * @param context
+     * @param context a context to print
      */
     public static void print(Context context) {
-        print(context, 0);
+        SINGLETON.print(context, 0);
     }
 
     /**
-    * Print context's status data with a timestamp higher than the threshold.
-    * @param context
-    */
+     * Print context's status data with a timestamp higher than the threshold.
+     * 
+     * @param context a context to print
+     * @param threshold filter events later than the threshold
+     */
     public static void print(Context context, long threshold) {
-        if (context == null) {
-            throw new IllegalArgumentException("Context argument cannot be null");
-        }
-
-        StatusManager sm = context.getStatusManager();
-        if (sm == null) {
-            ps.println("WARN: Context named \"" + context.getName() + "\" has no status manager");
-        } else {
-            print(sm, threshold);
-        }
+        SINGLETON.print(context, threshold);
     }
 
     public static void print(StatusManager sm) {
-        print(sm, 0);
+        SINGLETON.print(sm, 0);
     }
 
     public static void print(StatusManager sm, long threshold) {
-        StringBuilder sb = new StringBuilder();
-        List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
-        buildStrFromStatusList(sb, filteredList);
-        ps.println(sb.toString());
+        SINGLETON.print(sm, threshold);
     }
 
     public static void print(List<Status> statusList) {
-        StringBuilder sb = new StringBuilder();
-        buildStrFromStatusList(sb, statusList);
-        ps.println(sb.toString());
-    }
-
-    private static void buildStrFromStatusList(StringBuilder sb, List<Status> statusList) {
-        if (statusList == null)
-            return;
-        for (Status s : statusList) {
-            buildStr(sb, "", s);
-        }
-    }
-
-    // private static void buildStrFromStatusManager(StringBuilder sb, StatusManager sm) {
-    // }
-
-    private static void appendThrowable(StringBuilder sb, Throwable t) {
-        String[] stringRep = ThrowableToStringArray.convert(t);
-
-        for (String s : stringRep) {
-            if (s.startsWith(CoreConstants.CAUSED_BY)) {
-                // nothing
-            } else if (Character.isDigit(s.charAt(0))) {
-                // if line resembles "48 common frames omitted"
-                sb.append("\t... ");
-            } else {
-                // most of the time. just add a tab+"at"
-                sb.append("\tat ");
-            }
-            sb.append(s).append(CoreConstants.LINE_SEPARATOR);
-        }
+        SINGLETON.print(statusList);
     }
 
     public static void buildStr(StringBuilder sb, String indentation, Status s) {
-        String prefix;
-        if (s.hasChildren()) {
-            prefix = indentation + "+ ";
-        } else {
-            prefix = indentation + "|-";
-        }
-
-        if (cachingDateFormat != null) {
-            String dateStr = cachingDateFormat.format(s.getDate());
-            sb.append(dateStr).append(" ");
-        }
-        sb.append(prefix).append(s).append(CoreConstants.LINE_SEPARATOR);
-
-        if (s.getThrowable() != null) {
-            appendThrowable(sb, s.getThrowable());
-        }
-        if (s.hasChildren()) {
-            Iterator<Status> ite = s.iterator();
-            while (ite.hasNext()) {
-                Status child = ite.next();
-                buildStr(sb, indentation + "  ", child);
-            }
-        }
+        SINGLETON.buildStr(sb, indentation, s);
     }
-
 }

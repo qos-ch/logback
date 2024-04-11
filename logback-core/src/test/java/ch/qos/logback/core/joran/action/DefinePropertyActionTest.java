@@ -13,22 +13,18 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.util.HashMap;
+import java.util.function.Supplier;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.ImplicitModel;
@@ -36,11 +32,16 @@ import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.DefineModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Test {@link DefinePropertyAction}.
@@ -59,62 +60,60 @@ public class DefinePropertyActionTest {
     Context context = new ContextBase();
     StatusChecker checker = new StatusChecker(context);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("top"), new TopElementAction());
-        rulesMap.put(new ElementSelector("top/define"), new DefinePropertyAction());
-        
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("top"), TopElementAction::new);
+        rulesMap.put(new ElementSelector("top/define"), DefinePropertyAction::new);
+
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
+            
             @Override
-            protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+            protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
-
-                return defaultProcessor;
             }
         };
         simpleConfigurator.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
     @Test
     public void good() throws JoranException {
         simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + GOOD_XML);
-        InterpretationContext ic = simpleConfigurator.getInterpreter().getInterpretationContext();
-        String inContextFoo = ic.getProperty("foo");
+        ModelInterpretationContext mic = simpleConfigurator.getModelInterpretationContext();
+        String inContextFoo = mic.getProperty("foo");
         assertEquals("monster", inContextFoo);
     }
 
     @Test
     public void noName() throws JoranException {
-     try {
-    	 simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
-     } finally {
-    	 StatusPrinter.print(context);
-     }
+        try {
+            simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
+        } finally {
+            StatusPrinter.print(context);
+        }
         // get from context
         String inContextFoo = context.getProperty("foo");
         assertNull(inContextFoo);
         // check context errors
-      
-        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\] near line 2");
+
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\]");
     }
 
     @Test
     public void noClass() throws JoranException {
         simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
         String inContextFoo = context.getProperty("foo");
-       
+
         StatusPrinter.print(context);
         assertNull(inContextFoo);
-        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\] near line 2");
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\]");
     }
 
     @Test
@@ -127,7 +126,7 @@ public class DefinePropertyActionTest {
         checker.assertContainsMatch(Status.ERROR, "Could not create an PropertyDefiner of type");
     }
 
-    @Ignore // on certain hosts this test takes 5 seconds to complete
+    @Disabled // on certain hosts this test takes 5 seconds to complete
     @Test
     public void canonicalHostNameProperty() throws JoranException {
         String configFileAsStr = DEFINE_INPUT_DIR + "canonicalHostname.xml";

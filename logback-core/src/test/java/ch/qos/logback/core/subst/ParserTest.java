@@ -13,194 +13,203 @@
  */
 package ch.qos.logback.core.subst;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import ch.qos.logback.core.spi.ScanException;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import org.junit.Test;
-
-import ch.qos.logback.core.spi.ScanException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Created with IntelliJ IDEA. User: ceki Date: 05.08.12 Time: 00:15 To change
- * this template use File | Settings | File Templates.
+ *
  */
 public class ParserTest {
 
-	@Test
-	public void literal() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("abc");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.LITERAL, "abc");
-		assertEquals(witness, node);
-	}
+    @Test
+    public void literal() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("abc");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.LITERAL, "abc");
+        assertEquals(witness, node);
+    }
 
-	@Test
-	public void literalWithAccolade0() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("{}");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.LITERAL, "{");
-		witness.next = new Node(Node.Type.LITERAL, "}");
-		assertEquals(witness, node);
-	}
+    @Test
+    public void literalWithAccolade0() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("{}");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.LITERAL, "{");
+        witness.next = new Node(Node.Type.LITERAL, "}");
+        assertEquals(witness, node);
+    }
 
-	@Test
-	public void literalWithAccolade1() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("%x{a}");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.LITERAL, "%x");
-		Node t = witness.next = new Node(Node.Type.LITERAL, "{");
-		t.next = new Node(Node.Type.LITERAL, "a");
-		t = t.next;
-		t.next = new Node(Node.Type.LITERAL, "}");
-		assertEquals(witness, node);
-	}
+    @Test
+    public void literalWithAccolade1() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("%x{a}");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.LITERAL, "%x");
+        Node t = witness.next = new Node(Node.Type.LITERAL, "{");
+        t.next = new Node(Node.Type.LITERAL, "a");
+        t = t.next;
+        t.next = new Node(Node.Type.LITERAL, "}");
+        assertEquals(witness, node);
+    }
 
-	@Test
-	public void literalWithTwoAccolades() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("%x{y} %a{b} c");
+    @Test
+    public void literalWithTwoAccolades() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("%x{y} %a{b} c");
 
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.LITERAL, "%x");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.LITERAL, "%x");
 
-		Node t = witness.next = new Node(Node.Type.LITERAL, "{");
-		t.next = new Node(Node.Type.LITERAL, "y");
-		t = t.next;
+        Node t = witness.next = new Node(Node.Type.LITERAL, "{");
+        t.next = new Node(Node.Type.LITERAL, "y");
+        t = t.next;
 
-		t.next = new Node(Node.Type.LITERAL, "}");
-		t = t.next;
+        t.next = new Node(Node.Type.LITERAL, "}");
+        t = t.next;
 
-		t.next = new Node(Node.Type.LITERAL, " %a");
-		t = t.next;
+        t.next = new Node(Node.Type.LITERAL, " %a");
+        t = t.next;
 
-		t.next = new Node(Node.Type.LITERAL, "{");
-		t = t.next;
+        t.next = new Node(Node.Type.LITERAL, "{");
+        t = t.next;
 
-		t.next = new Node(Node.Type.LITERAL, "b");
-		t = t.next;
+        t.next = new Node(Node.Type.LITERAL, "b");
+        t = t.next;
 
-		t.next = new Node(Node.Type.LITERAL, "}");
-		t = t.next;
+        t.next = new Node(Node.Type.LITERAL, "}");
+        t = t.next;
 
-		t.next = new Node(Node.Type.LITERAL, " c");
+        t.next = new Node(Node.Type.LITERAL, " c");
 
-		node.dump();
-		System.out.println("");
-		assertEquals(witness, node);
-	}
+        node.dump();
+        System.out.println("");
+        assertEquals(witness, node);
+    }
 
-	@Test
-	public void variable() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("${abc}");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "abc"));
-		assertEquals(witness, node);
-	}
+    @Test
+    public void variable() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("${abc}");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "abc"));
+        assertEquals(witness, node);
+    }
 
-	@Test
-	public void literalVariableLiteral() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("a${b}c");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.LITERAL, "a");
-		witness.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
-		witness.next.next = new Node(Node.Type.LITERAL, "c");
-		assertEquals(witness, node);
-	}
+    @Test
+    public void literalVariableLiteral() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("a${b}c");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.LITERAL, "a");
+        witness.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+        witness.next.next = new Node(Node.Type.LITERAL, "c");
+        assertEquals(witness, node);
+    }
 
-	// /LOGBACK-744
-	@Test
-	public void withColon() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("a:${b}");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.LITERAL, "a");
-		Node t = witness.next = new Node(Node.Type.LITERAL, ":");
-		t.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
-		assertEquals(witness, node);
-	}
+    // /LOGBACK-744
+    @Test
+    public void withColon() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("a:${b}");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.LITERAL, "a");
+        Node t = witness.next = new Node(Node.Type.LITERAL, ":");
+        t.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+        assertEquals(witness, node);
+    }
 
-	@Test
-	public void withNoClosingBraces() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("a${b");
-		Parser parser = new Parser(tokenizer.tokenize());
-		try {
-			parser.parse();
-		} catch (IllegalArgumentException e) {
-			assertEquals("All tokens consumed but was expecting \"}\"", e.getMessage());
-			return;
-		}
-		fail();
-	}
+    @Test
+    public void withNoClosingBraces() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("a${b");
+        Parser parser = new Parser(tokenizer.tokenize());
+        try {
+            parser.parse();
+        } catch (IllegalArgumentException e) {
+            assertEquals("All tokens consumed but was expecting \"}\"", e.getMessage());
+            return;
+        }
+        fail();
+    }
 
-	@Test
-	public void nested() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("a${b${c}}d");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.LITERAL, "a");
-		Node bLiteralNode = new Node(Node.Type.LITERAL, "b");
-		Node cLiteralNode = new Node(Node.Type.LITERAL, "c");
-		Node bVariableNode = new Node(Node.Type.VARIABLE, bLiteralNode);
-		Node cVariableNode = new Node(Node.Type.VARIABLE, cLiteralNode);
-		bLiteralNode.next = cVariableNode;
+    @Test
+    public void nested() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("a${b${c}}d");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.LITERAL, "a");
+        Node bLiteralNode = new Node(Node.Type.LITERAL, "b");
+        Node cLiteralNode = new Node(Node.Type.LITERAL, "c");
+        Node bVariableNode = new Node(Node.Type.VARIABLE, bLiteralNode);
+        Node cVariableNode = new Node(Node.Type.VARIABLE, cLiteralNode);
+        bLiteralNode.next = cVariableNode;
 
-		witness.next = bVariableNode;
-		witness.next.next = new Node(Node.Type.LITERAL, "d");
-		assertEquals(witness, node);
-	}
+        witness.next = bVariableNode;
+        witness.next.next = new Node(Node.Type.LITERAL, "d");
+        assertEquals(witness, node);
+    }
 
-	@Test
-	public void withDefault() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("${b:-c}");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
-		Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
-		witness.defaultPart = new Node(Node.Type.LITERAL, "c");
-		assertEquals(witness, node);
-	}
+    @Test
+    public void withDefault() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("${b:-c}");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+        witness.defaultPart = new Node(Node.Type.LITERAL, "c");
+        assertEquals(witness, node);
+    }
 
-	@Test
-	public void defaultSeparatorOutsideOfAVariable() throws ScanException {
-		Tokenizer tokenizer = new Tokenizer("{a:-b}");
-		Parser parser = new Parser(tokenizer.tokenize());
-		Node node = parser.parse();
+    @Test
+    public void withEmptryDefault() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("${b:-}");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+        witness.defaultPart = new Node(Node.Type.LITERAL, "");
+        assertEquals(witness, node);
+    }
 
-		dump(node);
-		Node witness = new Node(Node.Type.LITERAL, "{");
-		Node t = witness.next = new Node(Node.Type.LITERAL, "a");
 
-		t.next = new Node(Node.Type.LITERAL, ":-");
-		t = t.next;
+    @Test
+    public void defaultSeparatorOutsideOfAVariable() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("{a:-b}");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
 
-		t.next = new Node(Node.Type.LITERAL, "b");
-		t = t.next;
+        dump(node);
+        Node witness = new Node(Node.Type.LITERAL, "{");
+        Node t = witness.next = new Node(Node.Type.LITERAL, "a");
 
-		t.next = new Node(Node.Type.LITERAL, "}");
+        t.next = new Node(Node.Type.LITERAL, ":-");
+        t = t.next;
 
-		assertEquals(witness, node);
-	}
+        t.next = new Node(Node.Type.LITERAL, "b");
+        t = t.next;
 
-	@Test
-	public void emptyTokenListDoesNotThrowNullPointerException() throws ScanException {
-		// An empty token list would be returned from Tokenizer.tokenize()
-		// if it were constructed with an empty string. The parser should
-		// be able to handle this.
-		Parser parser = new Parser(new ArrayList<Token>());
-		parser.parse();
-	}
+        t.next = new Node(Node.Type.LITERAL, "}");
 
-	private void dump(Node node) {
-		while (node != null) {
-			System.out.println(node.toString());
-			node = node.next;
-		}
-	}
+        assertEquals(witness, node);
+    }
+
+    @Test
+    public void emptyTokenListDoesNotThrowNullPointerException() throws ScanException {
+        // An empty token list would be returned from Tokenizer.tokenize()
+        // if it were constructed with an empty string. The parser should
+        // be able to handle this.
+        Parser parser = new Parser(new ArrayList<Token>());
+        parser.parse();
+    }
+
+    private void dump(Node node) {
+        while (node != null) {
+            System.out.println(node.toString());
+            node = node.next;
+        }
+    }
 
 }

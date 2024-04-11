@@ -24,8 +24,9 @@ import ch.qos.logback.core.status.WarnStatus;
 /**
  * Sets a skeleton implementation for appenders.
  * 
- * <p> For more information about this appender, please refer to the online
- * manual at http://logback.qos.ch/manual/appenders.html#AppenderBase
+ * <p>
+ * For more information about this appender, please refer to the online manual
+ * at http://logback.qos.ch/manual/appenders.html#AppenderBase
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
