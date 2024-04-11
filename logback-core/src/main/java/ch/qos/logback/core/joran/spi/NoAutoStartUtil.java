@@ -24,7 +24,7 @@ public class NoAutoStartUtil {
     /**
      * Returns true if the class of the object 'o' passed as parameter is *not*
      * marked with the NoAutoStart annotation. Return true otherwise.
-     * 
+     *
      * @param o
      * @return true for classes not marked with the NoAutoStart annotation
      */
@@ -48,7 +48,6 @@ public class NoAutoStartUtil {
 	 * <p>The algorithm operates as follows:
 	 * <ol>
 	 * <li>Search for the annotation on the given class and return it if found.
-	 * <li>Recursively search through all annotations that the given class declares.
 	 * <li>Recursively search through all interfaces that the given class declares.
 	 * <li>Recursively search through the superclass hierarchy of the given class.
 	 * </ol>
@@ -62,7 +61,7 @@ public class NoAutoStartUtil {
 	private static <A extends Annotation> A findAnnotation(Class<?> clazz, Class<A> annotationType) {
 		return findAnnotation(clazz, annotationType, new HashSet<>());
 	}
-	
+
 	/**
 	 * Perform the search algorithm for {@link #findAnnotation(Class, Class)},
 	 * avoiding endless recursion by tracking which annotations have already
@@ -75,20 +74,11 @@ public class NoAutoStartUtil {
 	@SuppressWarnings("unchecked")
 	private static <A extends Annotation> A findAnnotation(Class<?> clazz, Class<A> annotationType, Set<Annotation> visited) {
 
-		Annotation[] anns = clazz.getDeclaredAnnotations();
-		for (Annotation ann : anns) {
-			if (ann.annotationType() == annotationType) {
-				return (A) ann;
-			}
+		Annotation foundAnnotation = clazz.getAnnotation(annotationType);
+		if(foundAnnotation != null) {
+			return (A) foundAnnotation;
 		}
-		for (Annotation ann : anns) {
-			if (visited.add(ann)) {
-				A annotation = findAnnotation(ann.annotationType(), annotationType, visited);
-				if (annotation != null) {
-					return annotation;
-				}
-			}
-		}
+
 
 		for (Class<?> ifc : clazz.getInterfaces()) {
 			A annotation = findAnnotation(ifc, annotationType, visited);

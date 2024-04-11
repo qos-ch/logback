@@ -20,7 +20,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -83,25 +82,5 @@ public class NoAutoStartUtilTest {
     
     private static class ComponentWithAncestorImplementingInterfaceWithNoAutoStart extends ComponentWithNoAutoStartOnInterface {	
     }
-    
-    
 
-    /*
-     * Custom annotation annotated with @NoAutoStart
-     */
-    @Test
-    public void noAutoStartAsMetaAnnotation() {
-    	ComponentWithMetaAnnotation o = new ComponentWithMetaAnnotation();
-        assertFalse(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
-    }
-    
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    @NoAutoStart
-    public @interface MetaNoAutoStart {
-    }
-    
-    @MetaNoAutoStart
-    private static class ComponentWithMetaAnnotation {
-    }
 }
