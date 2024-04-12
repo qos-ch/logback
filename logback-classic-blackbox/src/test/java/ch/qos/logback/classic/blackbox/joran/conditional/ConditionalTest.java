@@ -30,6 +30,7 @@ import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
+import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,7 @@ public class ConditionalTest {
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
     Logger logger = loggerContext.getLogger(this.getClass().getName());
+    StatusPrinter2 statusPrinter2 = new StatusPrinter2();
 
     StatusUtil checker = new StatusUtil(loggerContext);
     int diff = RandomUtil.getPositiveInt();
@@ -132,7 +134,7 @@ public class ConditionalTest {
         String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX
                 + "conditional/conditionalIncludeExistingFile.xml";
         configure(configFileAsStr);
-        StatusPrinter.print(loggerContext);
+        //statusPrinter2.print(loggerContext);
 
         ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");
         assertNotNull(consoleAppender);
@@ -152,6 +154,22 @@ public class ConditionalTest {
         assertTrue(checker.isErrorFree(0));
     }
 
+    // https://jira.qos.ch/browse/LOGBACK-1732
+    @Test
+    public void conditionalInclusionWithVariableDefinition() throws JoranException, IOException, InterruptedException {
+
+        String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX
+                + "conditional/includeWithVariableAndConditional.xml";
+        configure(configFileAsStr);
+
+        statusPrinter2.print(loggerContext);
+
+        ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");
+        assertNotNull(consoleAppender);
+        assertTrue(checker.isErrorFree(0));
+    }
+
+
     private AppenderTracker<ILoggingEvent> getAppenderTracker() {
         SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
         return ha.getAppenderTracker();
@@ -161,7 +179,7 @@ public class ConditionalTest {
     @Test
     public void nestedWithinIfThen() throws JoranException {
         configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/siftNestedWithinIfThen.xml");
-        StatusPrinter.print(loggerContext);
+        //statusPrinter2.print(loggerContext);
         String msg = "nestedWithinIfThen";
         logger.debug(msg);
         Appender<ILoggingEvent> appender = getAppenderTracker().find("ifThenDefault");
@@ -172,4 +190,6 @@ public class ConditionalTest {
         assertEquals(msg, eventList.get(0).getMessage());
         checker.isWarningOrErrorFree(0);
     }
+
+
 }

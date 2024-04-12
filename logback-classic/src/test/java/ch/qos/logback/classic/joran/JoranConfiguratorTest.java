@@ -27,6 +27,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
@@ -51,6 +52,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.slf4j.event.KeyValuePair;
+import org.slf4j.spi.MDCAdapter;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -72,6 +74,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class JoranConfiguratorTest {
 
     LoggerContext loggerContext = new LoggerContext();
+    MDCAdapter mdcAdapter = new LogbackMDCAdapter();
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     StatusPrinter2 statusPrinter2 = new StatusPrinter2();
@@ -79,6 +82,7 @@ public class JoranConfiguratorTest {
     int diff = RandomUtil.getPositiveInt();
 
     void configure(String file) throws JoranException {
+        loggerContext.setMDCAdapter(mdcAdapter);
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(loggerContext);
         loggerContext.putProperty("diff", "" + diff);
@@ -673,15 +677,15 @@ public class JoranConfiguratorTest {
     }
 
 
+    // See LOGBACK-1746
     @Test
     public void inclusionWithVariables() throws JoranException  {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "include/topLevel0.xml");
-
         Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-        statusPrinter2.print(loggerContext);
+        //statusPrinter2.print(loggerContext);
         assertEquals(Level.ERROR, root.getLevel());
     }
-    
+
     // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46697
     @Test
     public void ossFuzz_46697() throws JoranException  {
