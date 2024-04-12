@@ -7,7 +7,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.5.5</version>
+  <version>1.5.6-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -48,7 +48,7 @@
 
   <properties>
     <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
-    <project.build.outputTimestamp>2024-04-12T16:26:00Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-04-12T17:15:23Z</project.build.outputTimestamp>
 
     <!-- minimal JDK version at runtime -->
     <jdk.version>11</jdk.version>
