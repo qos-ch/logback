@@ -383,13 +383,62 @@
         </executions>
       </plugin>
 
-      <!--
       <plugin>
-        <groupId>org.simplify4u.plugins</groupId>
-        <artifactId>pgpverify-maven-plugin</artifactId>
-        <version>1.16.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-cli</id>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
+
+        <configuration>
+          <linksource>true</linksource>
+          <doclint>none</doclint>
+          <skippedModules>
+            logback-core-blackbox,logback-classic-blackbox,logback-examples
+          </skippedModules>
+          <additionalOptions>
+            <additionalOption>-Xdoclint:none</additionalOption>
+          </additionalOptions>
+
+          <links>
+            <link>
+              http://docs.oracle.com/javase/7/docs/api/
+            </link>
+          </links>
+
+          <groups>
+            <group>
+              <title>Logback Core</title>
+              <packages>ch.qos.logback.core:ch.qos.logback.core.*
+              </packages>
+            </group>
+            <group>
+              <title>Logback Classic</title>
+              <packages>
+                ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
+              </packages>
+            </group>
+          </groups>
+        </configuration>
       </plugin>
-      -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${maven-jxr-plugin.version}</version>
+        <configuration>
+          <aggregate>true</aggregate>
+          <javadocDir>target/site/apidocs/</javadocDir>
+          <linkJavadoc>true</linkJavadoc>
+        </configuration>
+      </plugin>
+
+
     </plugins>
   </build>
 
@@ -417,61 +466,9 @@
       </plugin>
       -->
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>${maven-jxr-plugin.version}</version>
-        <configuration>
-          <aggregate>true</aggregate>
-          <javadocDir>target/site/apidocs/</javadocDir>
-          <linkJavadoc>true</linkJavadoc>
-        </configuration>
-      </plugin>
+
       
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        
-        <configuration>                                
-          <aggregate>true</aggregate>
-          <linkJavadoc>true</linkJavadoc>
-          <linksource>true</linksource>
-          <doclint>none</doclint>
-          <sourceFileExcludes>
-            <sourceFileExclude>**/module-info.java</sourceFileExclude>
-          </sourceFileExcludes>
-          <links>
-            <link>
-              http://docs.oracle.com/javase/7/docs/api/
-            </link>
-          </links>
-          
-          <groups>
-            <group>
-              <title>Logback Core</title>
-              <packages>ch.qos.logback.core:ch.qos.logback.core.*
-              </packages>
-            </group>
-            <group>
-              <title>Logback Classic</title>
-              <packages>
-                ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
-              </packages>
-            </group>
-            <group>
-              <title>Logback Access</title>
-              <packages>ch.qos.logback.access:ch.qos.logback.access.*
-              </packages>
-            </group>
-            <group>
-              <title>Examples</title>
-              <packages>chapter*:joran*</packages>
-            </group>
-          </groups>                  
-        </configuration>
-      </plugin>
-      
+
             
     </plugins>
   </reporting>
