@@ -13,9 +13,11 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.Converter;
@@ -81,7 +83,21 @@ public class Parser<E> extends ContextAwareBase {
      * @return
      */
     public Converter<E> compile(final Node top, Map<String, String> converterMap) {
-        Compiler<E> compiler = new Compiler<E>(top, converterMap);
+        return compile(top, converterMap, Collections.emptyMap());
+    }
+
+    /**
+     * When the parsing step is done, the Node list can be transformed into a
+     * converter chain.
+     *
+     * @param top
+     * @param converterMap
+     * @param converterSupplierMap
+     * @return
+     */
+    public Converter<E> compile(final Node top, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<E>>> converterSupplierMap) {
+        Compiler<E> compiler = new Compiler<E>(top, converterMap, converterSupplierMap);
         compiler.setContext(context);
         // compiler.setStatusManager(statusManager);
         return compiler.compile();
