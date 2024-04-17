@@ -162,13 +162,27 @@ public class ConditionalTest {
                 + "conditional/includeWithVariableAndConditional.xml";
         configure(configFileAsStr);
 
-        statusPrinter2.print(loggerContext);
+        //statusPrinter2.print(loggerContext);
 
         ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");
         assertNotNull(consoleAppender);
         assertTrue(checker.isErrorFree(0));
     }
 
+
+    // https://github.com/qos-ch/logback/issues/805
+    @Test
+    public void includedWithNestedConditional() throws JoranException {
+
+        String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX
+                + "conditional/includeWithInnerConditional.xml";
+
+        configure(configFileAsStr);
+        //statusPrinter2.print(loggerContext);
+        ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");
+        assertNotNull(consoleAppender);
+        assertTrue(checker.isErrorFree(0));
+    }
 
     private AppenderTracker<ILoggingEvent> getAppenderTracker() {
         SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
@@ -190,6 +204,7 @@ public class ConditionalTest {
         assertEquals(msg, eventList.get(0).getMessage());
         checker.isWarningOrErrorFree(0);
     }
+
 
 
 }

@@ -117,24 +117,25 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
             return actionSupplier;
         }
 
-        actionSupplier = matchActionsWithoutTransparentParts(elementPath);
-        if(actionSupplier != null) {
-            return actionSupplier;
-        }
-
-        return matchActionsWithRenamedParts(elementPath);
-
+        return matchActionsWithoutTransparentPartsAndRenamedParts(elementPath);
     }
 
-    private Supplier<Action> matchActionsWithoutTransparentParts(ElementPath elementPath) {
+    private Supplier<Action> matchActionsWithoutTransparentPartsAndRenamedParts(ElementPath elementPath) {
         ElementPath cleanedElementPath = removeTransparentPathParts(elementPath);
-        return internalMatchAction(cleanedElementPath);
+        ElementPath renamePathParts = renamePathParts(cleanedElementPath);
+
+        return internalMatchAction(renamePathParts);
     }
 
-    private Supplier<Action> matchActionsWithRenamedParts(ElementPath elementPath) {
-        ElementPath renamedElementPath = renamePathParts(elementPath);
-        return internalMatchAction(renamedElementPath);
-    }
+//    private Supplier<Action> matchActionsWithoutTransparentParts(ElementPath elementPath) {
+//        ElementPath cleanedElementPath = removeTransparentPathParts(elementPath);
+//        return internalMatchAction(cleanedElementPath);
+//    }
+//
+//    private Supplier<Action> matchActionsWithRenamedParts(ElementPath elementPath) {
+//        ElementPath renamedElementPath = renamePathParts(elementPath);
+//        return internalMatchAction(renamedElementPath);
+//    }
 
     private Supplier<Action> internalMatchAction(ElementPath elementPath) {
         Supplier<Action> actionSupplier;
