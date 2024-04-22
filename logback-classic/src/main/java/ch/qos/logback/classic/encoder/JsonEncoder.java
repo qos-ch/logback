@@ -15,9 +15,7 @@
 package ch.qos.logback.classic.encoder;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
-import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.EncoderBase;
 import org.slf4j.Marker;
@@ -73,8 +71,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     public static final String THROWABLE_ATTR_NAME = "throwable";
 
-    private static final String CYCLIC_THROWABLE_ATTR_NAME = "cyclic";
-
     public static final String CAUSE_ATTR_NAME = "cause";
 
     public static final String SUPPRESSED_ATTR_NAME = "suppressed";
@@ -83,25 +79,23 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     public static final String CLASS_NAME_ATTR_NAME = "className";
     public static final String METHOD_NAME_ATTR_NAME = "methodName";
-    private static final String FILE_NAME_ATTR_NAME = "fileName";
-    private static final String LINE_NUMBER_ATTR_NAME = "lineNumber";
 
     public static final String STEP_ARRAY_NAME_ATTRIBUTE = "stepArray";
 
-    private static final char OPEN_OBJ = '{';
-    private static final char CLOSE_OBJ = '}';
-    private static final char OPEN_ARRAY = '[';
-    private static final char CLOSE_ARRAY = ']';
+    static final char OPEN_OBJ = '{';
+    static final char CLOSE_OBJ = '}';
+    static final char OPEN_ARRAY = '[';
+    static final char CLOSE_ARRAY = ']';
 
-    private static final char QUOTE = DOUBLE_QUOTE_CHAR;
+    static final char QUOTE = DOUBLE_QUOTE_CHAR;
     private static final char SP = ' ';
     private static final char ENTRY_SEPARATOR = COLON_CHAR;
 
     private static final String COL_SP = ": ";
 
-    private static final String QUOTE_COL = "\":";
+    static final String QUOTE_COL = "\":";
 
-    private static final char VALUE_SEPARATOR = COMMA_CHAR;
+    static final char VALUE_SEPARATOR = COMMA_CHAR;
 
     private boolean withSequenceNumber = true;
 
@@ -119,6 +113,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     private boolean withMessage = true;
     private boolean withArguments = true;
     private boolean withThrowable = true;
+    private boolean withPlainStackTrace = false;
     private boolean withFormattedMessage = false;
 
 
@@ -191,7 +186,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
             appendArgumentArray(sb, event);
 
         if (withThrowable)
-            appendThrowableProxy(sb, THROWABLE_ATTR_NAME, event.getThrowableProxy());
+            ThrowableEncoder.appendThrowableProxy(sb, event.getThrowableProxy(), withPlainStackTrace);
 
         sb.append(CLOSE_OBJ);
         sb.append(CoreConstants.JSON_LINE_SEPARATOR);
@@ -239,105 +234,11 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_OBJ);
     }
 
-    private void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp) {
-
-        // in the nominal case, attributeName != null. However, attributeName will be null for suppressed
-        // IThrowableProxy array, in which case no attribute name is needed
-        if (attributeName != null) {
-            sb.append(QUOTE).append(attributeName).append(QUOTE_COL);
-            if (itp == null) {
-                sb.append(NULL_STR);
-                return;
-            }
-        }
-
-        sb.append(OPEN_OBJ);
-
-        appenderMember(sb, CLASS_NAME_ATTR_NAME, nullSafeStr(itp.getClassName()));
-
-        sb.append(VALUE_SEPARATOR);
-        appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(itp.getMessage()));
-
-        if (itp.isCyclic()) {
-            sb.append(VALUE_SEPARATOR);
-            appenderMember(sb, CYCLIC_THROWABLE_ATTR_NAME, jsonEscape("true"));
-        }
-
-        sb.append(VALUE_SEPARATOR);
-        appendSTEPArray(sb, itp.getStackTraceElementProxyArray(), itp.getCommonFrames());
-
-        if (itp.getCommonFrames() != 0) {
-            sb.append(VALUE_SEPARATOR);
-            appenderMemberWithIntValue(sb, COMMON_FRAMES_COUNT_ATTR_NAME, itp.getCommonFrames());
-        }
-
-        IThrowableProxy cause = itp.getCause();
-        if (cause != null) {
-            sb.append(VALUE_SEPARATOR);
-            appendThrowableProxy(sb, CAUSE_ATTR_NAME, cause);
-        }
-
-        IThrowableProxy[] suppressedArray = itp.getSuppressed();
-        if (suppressedArray != null && suppressedArray.length != 0) {
-            sb.append(VALUE_SEPARATOR);
-            sb.append(QUOTE).append(SUPPRESSED_ATTR_NAME).append(QUOTE_COL);
-            sb.append(OPEN_ARRAY);
-            boolean first = true;
-            for (IThrowableProxy suppressedITP : suppressedArray) {
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(VALUE_SEPARATOR);
-                }
-                appendThrowableProxy(sb, null, suppressedITP);
-            }
-            sb.append(CLOSE_ARRAY);
-        }
-
-        sb.append(CLOSE_OBJ);
-
-    }
-
-    private void appendSTEPArray(StringBuilder sb, StackTraceElementProxy[] stepArray, int commonFrames) {
-        sb.append(QUOTE).append(STEP_ARRAY_NAME_ATTRIBUTE).append(QUOTE_COL).append(OPEN_ARRAY);
-
-        int len = stepArray != null ? stepArray.length : 0;
-
-        if (commonFrames >= len) {
-            commonFrames = 0;
-        }
-
-        for (int i = 0; i < len - commonFrames; i++) {
-            if (i != 0)
-                sb.append(VALUE_SEPARATOR);
-
-            StackTraceElementProxy step = stepArray[i];
-
-            sb.append(OPEN_OBJ);
-            StackTraceElement ste = step.getStackTraceElement();
-
-            appenderMember(sb, CLASS_NAME_ATTR_NAME, nullSafeStr(ste.getClassName()));
-            sb.append(VALUE_SEPARATOR);
-
-            appenderMember(sb, METHOD_NAME_ATTR_NAME, nullSafeStr(ste.getMethodName()));
-            sb.append(VALUE_SEPARATOR);
-
-            appenderMember(sb, FILE_NAME_ATTR_NAME, nullSafeStr(ste.getFileName()));
-            sb.append(VALUE_SEPARATOR);
-
-            appenderMemberWithIntValue(sb, LINE_NUMBER_ATTR_NAME, ste.getLineNumber());
-            sb.append(CLOSE_OBJ);
-
-        }
-
-        sb.append(CLOSE_ARRAY);
-    }
-
-    private void appenderMember(StringBuilder sb, String key, String value) {
+    static void appenderMember(StringBuilder sb, String key, String value) {
         sb.append(QUOTE).append(key).append(QUOTE_COL).append(QUOTE).append(value).append(QUOTE);
     }
 
-    private void appenderMemberWithIntValue(StringBuilder sb, String key, int value) {
+    static void appenderMemberWithIntValue(StringBuilder sb, String key, int value) {
         sb.append(QUOTE).append(key).append(QUOTE_COL).append(value);
     }
 
@@ -405,13 +306,13 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         return jsonEscapeString(o.toString());
     }
 
-    private String nullSafeStr(String s) {
+    static String nullSafeStr(String s) {
         if (s == null)
             return NULL_STR;
         return s;
     }
 
-    private String jsonEscape(String s) {
+    static String jsonEscape(String s) {
         if (s == null)
             return NULL_STR;
         return jsonEscapeString(s);
@@ -512,8 +413,15 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         this.withThrowable = withThrowable;
     }
 
+    /**
+     * @param withPlainStackTrace
+     * @since 1.5.7
+     */
+    public void setWithPlainStackTrace(boolean withPlainStackTrace) {
+        this.withPlainStackTrace = withPlainStackTrace;
+    }
+
     public void setWithFormattedMessage(boolean withFormattedMessage) {
         this.withFormattedMessage = withFormattedMessage;
     }
-
 }
