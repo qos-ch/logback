@@ -5,6 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
+  
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
   <version>1.5.7-SNAPSHPOT</version>
@@ -43,6 +44,7 @@
     <module>logback-core-blackbox</module>
     <module>logback-classic</module>
     <module>logback-classic-blackbox</module>
+    <module>logback-access</module>
     <module>logback-examples</module>
   </modules>
 

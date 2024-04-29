@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactoryFriend;
 
 import ch.qos.logback.classic.testUtil.StringPrintStream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InvocationTest {
@@ -18,6 +19,8 @@ public class InvocationTest {
     private final PrintStream oldErr = System.err;
     final String loggerName = this.getClass().getName();
     StringPrintStream sps = new StringPrintStream(oldErr, true);
+
+    String CONNECTED_WITH_MESSAGE = "SLF4J(I): Connected with provider of type [ch.qos.logback.classic.spi.LogbackServiceProvider]";
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -37,7 +40,8 @@ public class InvocationTest {
         Logger logger = LoggerFactory.getLogger(this.getClass());
         logger.debug("Hello world.");
 
-        assertTrue(sps.stringList.isEmpty());
+        assertEquals(1, sps.stringList.size());
+        assertEquals(CONNECTED_WITH_MESSAGE, sps.stringList.get(0));
 
     }
 
