@@ -61,6 +61,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedFileNamingAndTriggeringPolicy;
 
     boolean cleanHistoryOnStart = false;
+    boolean cleanLogsByLastModifiedDate = false;
 
     public void start() {
         // set the LR for our utility object
@@ -109,6 +110,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
             archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
             archiveRemover.setMaxHistory(maxHistory);
             archiveRemover.setTotalSizeCap(totalSizeCap.getSize());
+            archiveRemover.setCleanLogsByLastModifiedDate(cleanLogsByLastModifiedDate);
             if (cleanHistoryOnStart) {
                 addInfo("Cleaning on start up");
                 Instant now = Instant.ofEpochMilli(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
@@ -269,6 +271,17 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
      */
     public void setCleanHistoryOnStart(boolean cleanHistoryOnStart) {
         this.cleanHistoryOnStart = cleanHistoryOnStart;
+    }
+
+
+    /**
+     * Should archive removal use a file's last modified date to determine deletion?
+     * Default is false.
+     *
+     * @param cleanLogsByLastModifiedDate
+     */
+    public void setCleanLogsByLastModifiedDate(boolean cleanLogsByLastModifiedDate){
+        this.cleanLogsByLastModifiedDate = cleanLogsByLastModifiedDate;
     }
 
     @Override
