@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.util;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -100,5 +101,20 @@ public class FileSize {
 
         return inGB + " GB";
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        FileSize fileSize = (FileSize) o;
+        return size == fileSize.size;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(size);
     }
 }

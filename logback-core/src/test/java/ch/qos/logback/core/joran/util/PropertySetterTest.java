@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
+import ch.qos.logback.core.util.FileSize;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -134,6 +135,16 @@ public class PropertySetterTest {
     }
 
     @Test
+    public void addValueOfTest() {
+        setter.addBasicProperty("fileSize", "1GB");
+        setter.addBasicProperty("fileSize", "10KB");
+
+        assertEquals(2, house.fileSizes.size());
+        assertEquals(FileSize.valueOf("1GB"), house.fileSizes.get(0));
+        assertEquals(FileSize.valueOf("10KB"), house.fileSizes.get(1));
+    }
+
+        @Test
     public void testComplexCollection() {
         Window w1 = new Window();
         w1.handle = 10;

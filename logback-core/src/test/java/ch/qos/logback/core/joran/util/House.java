@@ -40,6 +40,7 @@ public class House {
     List<String> adjectiveList = new ArrayList<String>();
     List<Window> windowList = new ArrayList<Window>();
     List<SwimmingPool> largePoolList = new ArrayList<SwimmingPool>();
+    List<FileSize> fileSizes = new ArrayList();
 
     Orange orange;
 
@@ -107,6 +108,10 @@ public class House {
 
     public void addWindow(Window w) {
         windowList.add(w);
+    }
+
+    public void addFileSize(FileSize fs) {
+        fileSizes.add(fs);
     }
 
     public void addAdjective(String s) {
