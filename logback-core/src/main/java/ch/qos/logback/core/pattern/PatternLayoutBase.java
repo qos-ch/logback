@@ -13,8 +13,10 @@
  */
 package ch.qos.logback.core.pattern;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
@@ -32,7 +34,10 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     String pattern;
     protected PostCompileProcessor<E> postCompileProcessor;
 
+    // instance converters whose value is a class name
     Map<String, String> instanceConverterMap = new HashMap<String, String>();
+    // instance converters whose value is a supplier function
+    Map<String, Supplier<Converter<E>>> instanceConverterSupplierMap = new HashMap<String, Supplier<Converter<E>>>();
     protected boolean outputPatternAsHeader = false;
 
     /**
@@ -42,6 +47,16 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
      * @return A map associating pattern words to the names of converter classes
      */
     abstract public Map<String, String> getDefaultConverterMap();
+
+    /**
+     * Concrete implementations of this class may override this for elaborating the
+     * mapping between pattern words and converters.
+     * 
+     * @return A map associating pattern words to the supplier of converter instances
+     */
+    public Map<String, Supplier<Converter<E>>> getDefaultConverterSupplierMap() {
+        return Collections.emptyMap();
+    }
 
     /**
      * Returns a map where the default converter map is merged with the map
@@ -71,6 +86,24 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         return effectiveMap;
     }
 
+    /**
+     * Returns a map where the default converter supplier map is merged with the
+     * instance converter supplier map
+     */
+    public Map<String, Supplier<Converter<E>>> getEffectiveConverterSupplierMap() {
+        Map<String, Supplier<Converter<E>>> effectiveMap = new HashMap<String, Supplier<Converter<E>>>();
+
+        // add the least specific map fist
+        Map<String, Supplier<Converter<E>>> defaultMap = getDefaultConverterSupplierMap();
+        if (defaultMap != null) {
+            effectiveMap.putAll(defaultMap);
+        }
+
+        // set the most specific map last
+        effectiveMap.putAll(getInstanceConverterSupplierMap());
+        return effectiveMap;
+    }
+
     public void start() {
         if (pattern == null || pattern.length() == 0) {
             addError("Empty or null pattern.");
@@ -82,7 +115,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
                 p.setContext(getContext());
             }
             Node t = p.parse();
-            this.head = p.compile(t, getEffectiveConverterMap());
+            this.head = p.compile(t, getEffectiveConverterMap(), getEffectiveConverterSupplierMap());
             if (postCompileProcessor != null) {
                 postCompileProcessor.process(context, head);
             }
@@ -133,6 +166,10 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
     public Map<String, String> getInstanceConverterMap() {
         return instanceConverterMap;
+    }
+
+    public Map<String, Supplier<Converter<E>>> getInstanceConverterSupplierMap() {
+        return instanceConverterSupplierMap;
     }
 
     protected String getPresentationHeaderPrefix() {
