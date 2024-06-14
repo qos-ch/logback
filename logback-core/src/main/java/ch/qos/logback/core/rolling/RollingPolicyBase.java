@@ -51,6 +51,9 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
         } else if (fileNamePatternStr.endsWith(".zip")) {
             addInfo("Will use zip compression");
             compressionMode = CompressionMode.ZIP;
+        } else if (fileNamePatternStr.endsWith(".xz")) {
+            addInfo("Will use xz compression");
+            compressionMode = CompressionMode.XZ;
         } else {
             addInfo("No compression will be used");
             compressionMode = CompressionMode.NONE;
