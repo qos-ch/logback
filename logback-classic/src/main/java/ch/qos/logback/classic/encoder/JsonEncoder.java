@@ -37,7 +37,7 @@ import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
 /**
  *
  *
- * http://ndjson.org/ https://datatracker.ietf.org/doc/html/rfc8259
+ * https://jsonlines.org/ https://datatracker.ietf.org/doc/html/rfc8259
  */
 public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     static final boolean DO_NOT_ADD_QUOTE_KEY = false;
