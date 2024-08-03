@@ -18,24 +18,23 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.EnvUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RollingCalendarTest {
 
     String dailyPattern = "yyyy-MM-dd";
 
+
     @BeforeEach
     public void setUp() {
 
-        // Most surprisingly, in certain environments (e.g. Windows 7), setting the
-        // default locale
-        // allows certain tests to pass which otherwise fail.
+        // Due to fist day of week differences, tests may fail
+        // certain locales, namely GB.
         //
         // These tests are:
         //
@@ -47,55 +46,58 @@ public class RollingCalendarTest {
         // assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
         // }
         //
+    }
 
-        Locale oldLocale = Locale.getDefault();
-        Locale.setDefault(oldLocale);
+    void set_EN_US_Locale() {
+        Locale usEn_Locale = Locale.forLanguageTag("en-US");
+        Locale.setDefault(usEn_Locale);
     }
 
     @AfterEach
     public void tearDown() {
+
     }
 
     @Test
     public void testPeriodicity() {
         {
             RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_HH_mm_ss");
-            Assertions.assertEquals(PeriodicityType.TOP_OF_SECOND, rc.getPeriodicityType());
+            assertEquals(PeriodicityType.TOP_OF_SECOND, rc.getPeriodicityType());
         }
 
         {
             RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_HH_mm");
-            Assertions.assertEquals(PeriodicityType.TOP_OF_MINUTE, rc.getPeriodicityType());
+            assertEquals(PeriodicityType.TOP_OF_MINUTE, rc.getPeriodicityType());
         }
 
         {
             RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_HH");
-            Assertions.assertEquals(PeriodicityType.TOP_OF_HOUR, rc.getPeriodicityType());
+            assertEquals(PeriodicityType.TOP_OF_HOUR, rc.getPeriodicityType());
         }
 
         {
             RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_hh");
-            Assertions.assertEquals(PeriodicityType.TOP_OF_HOUR, rc.getPeriodicityType());
+            assertEquals(PeriodicityType.TOP_OF_HOUR, rc.getPeriodicityType());
         }
 
         {
             RollingCalendar rc = new RollingCalendar("yyyy-MM-dd");
-            Assertions.assertEquals(PeriodicityType.TOP_OF_DAY, rc.getPeriodicityType());
+            assertEquals(PeriodicityType.TOP_OF_DAY, rc.getPeriodicityType());
         }
 
         {
             RollingCalendar rc = new RollingCalendar("yyyy-MM");
-            Assertions.assertEquals(PeriodicityType.TOP_OF_MONTH, rc.getPeriodicityType());
+            assertEquals(PeriodicityType.TOP_OF_MONTH, rc.getPeriodicityType());
         }
 
         {
             RollingCalendar rc = new RollingCalendar("yyyy-ww");
-            Assertions.assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
+            assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
         }
 
         {
             RollingCalendar rc = new RollingCalendar("yyyy-W");
-            Assertions.assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
+            assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
         }
     }
 
@@ -109,7 +111,7 @@ public class RollingCalendarTest {
             long now = 1223325293589L; // Mon Oct 06 22:34:53 CEST 2008
             Instant result = rc.getEndOfNextNthPeriod(Instant.ofEpochMilli(now), p);
             long expected = now - (now % (MILLIS_IN_HOUR)) + p * MILLIS_IN_HOUR;
-            Assertions.assertEquals(expected, result.toEpochMilli());
+            assertEquals(expected, result.toEpochMilli());
         }
     }
 
@@ -126,7 +128,7 @@ public class RollingCalendarTest {
 
             long origin = now - ((now + offset) % (MILLIS_IN_DAY));
             long expected = origin + p * MILLIS_IN_DAY;
-            Assertions.assertEquals(expected, result.toEpochMilli(), "p=" + p);
+            assertEquals(expected, result.toEpochMilli(), "p=" + p);
         }
     }
 
@@ -147,7 +149,7 @@ public class RollingCalendarTest {
 
     private void checkPeriodBarriersCrossed(String pattern, long start, long end, int count) {
         RollingCalendar rc = new RollingCalendar(pattern);
-        Assertions.assertEquals(count, rc.periodBarriersCrossed(start, end));
+        assertEquals(count, rc.periodBarriersCrossed(start, end));
     }
 
     @Test
@@ -177,12 +179,20 @@ public class RollingCalendarTest {
 //            checkCollisionFreeness("yyyy-MM-uu", false);
 //        }
 
-        // weekly
-        checkCollisionFreeness("yyyy-MM-W", true);
-        dumpCurrentLocale(Locale.getDefault());
-        checkCollisionFreeness("yyyy-W", false);
-        checkCollisionFreeness("yyyy-ww", true);
-        checkCollisionFreeness("ww", false);
+
+        Locale oldLocale = Locale.getDefault();
+        try {
+            set_EN_US_Locale();
+            // weekly
+            checkCollisionFreeness("yyyy-MM-W", true);
+            dumpCurrentLocale(Locale.getDefault());
+            checkCollisionFreeness("yyyy-W", false);
+            checkCollisionFreeness("yyyy-ww", true);
+            checkCollisionFreeness("ww", false);
+        } finally {
+            if(oldLocale != null)
+                Locale.setDefault(oldLocale);
+        }
     }
 
     private void dumpCurrentLocale(Locale locale) {
@@ -192,11 +202,7 @@ public class RollingCalendarTest {
 
     private void checkCollisionFreeness(String pattern, boolean expected) {
         RollingCalendar rc = new RollingCalendar(pattern);
-        if (expected) {
-            Assertions.assertTrue(rc.isCollisionFree());
-        } else {
-            Assertions.assertFalse(rc.isCollisionFree());
-        }
+        assertEquals(expected, rc.isCollisionFree());
     }
 
     @Test
@@ -206,7 +212,7 @@ public class RollingCalendarTest {
         long start = 1485456418969L;
         // Fri Jan 27 19:46:58 CET 2017, GMT offset = -1h
         long end = start + CoreConstants.MILLIS_IN_ONE_DAY;
-        Assertions.assertEquals(1, rc.periodBarriersCrossed(start, end));
+        assertEquals(1, rc.periodBarriersCrossed(start, end));
     }
 
     @Test
@@ -217,7 +223,7 @@ public class RollingCalendarTest {
         // Mon Mar 27 00:02:03 CEST 2017, GMT offset = -2h
         long end = 1490565723333L;
 
-        Assertions.assertEquals(1, rc.periodBarriersCrossed(start, end));
+        assertEquals(1, rc.periodBarriersCrossed(start, end));
     }
 
     @Test
@@ -227,7 +233,7 @@ public class RollingCalendarTest {
         long start = 1509228123333L;// 1490482923333L+217*CoreConstants.MILLIS_IN_ONE_DAY-CoreConstants.MILLIS_IN_ONE_HOUR;
         // Mon Oct 30 00:02:03 CET 2017, GMT offset = -1h
         long end = 1509228123333L + 25 * CoreConstants.MILLIS_IN_ONE_HOUR;
-        Assertions.assertEquals(1, rc.periodBarriersCrossed(start, end));
+        assertEquals(1, rc.periodBarriersCrossed(start, end));
     }
 
     @Test
@@ -240,7 +246,7 @@ public class RollingCalendarTest {
         // Mon Mar 27 00:05:18 CEST 2017, GMT offset = +2h
         long end = 1490565918333L;
         System.out.println(new Date(end));
-        Assertions.assertEquals(1, rc.periodBarriersCrossed(start, end));
+        assertEquals(1, rc.periodBarriersCrossed(start, end));
 
     }
 }

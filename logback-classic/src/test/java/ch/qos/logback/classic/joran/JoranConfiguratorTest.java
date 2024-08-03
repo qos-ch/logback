@@ -647,7 +647,7 @@ public class JoranConfiguratorTest {
         //StatusPrinter.print(loggerContext);
         final ListAppender<ILoggingEvent> listAppender= (ListAppender<ILoggingEvent>) root.getAppender("LIST");
         assertNotNull(listAppender);
-        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[sequenceNumberGenerator\\]");
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\]. See element \\[sequenceNumberGenerator\\]");
     }
 
         @Test
