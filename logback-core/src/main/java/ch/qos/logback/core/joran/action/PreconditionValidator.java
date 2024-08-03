@@ -24,15 +24,15 @@ import ch.qos.logback.core.util.OptionHelper;
 public class PreconditionValidator extends ContextAwareBase {
 
     boolean valid = true;
-    SaxEventInterpretationContext intercon;
+    SaxEventInterpretationContext seic;
     Attributes attributes;
     String tag;
 
-    public PreconditionValidator(ContextAware origin, SaxEventInterpretationContext intercon, String name,
+    public PreconditionValidator(ContextAware origin, SaxEventInterpretationContext seic, String name,
             Attributes attributes) {
         super(origin);
         this.setContext(origin.getContext());
-        this.intercon = intercon;
+        this.seic = seic;
         this.tag = name;
         this.attributes = attributes;
     }
@@ -43,7 +43,7 @@ public class PreconditionValidator extends ContextAwareBase {
         
         if(attributes.getLength() != 0) {
             addError("Element [" + tag + "] should have no attributes, near line "
-                    + Action.getLineNumber(intercon));
+                    + Action.getLineNumber(seic));
             this.valid = false;
         }
         return this;
@@ -51,30 +51,61 @@ public class PreconditionValidator extends ContextAwareBase {
 
     
     public PreconditionValidator validateClassAttribute() {
-        return generic(Action.CLASS_ATTRIBUTE);
+        return validateGivenAttribute(Action.CLASS_ATTRIBUTE);
     }
 
     public PreconditionValidator validateNameAttribute() {
-        return generic(Action.NAME_ATTRIBUTE);
+        return validateGivenAttribute(Action.NAME_ATTRIBUTE);
     }
 
     public PreconditionValidator validateValueAttribute() {
-        return generic(JoranConstants.VALUE_ATTR);
+        return validateGivenAttribute(JoranConstants.VALUE_ATTR);
     }
 
     public PreconditionValidator validateRefAttribute() {
-        return generic(JoranConstants.REF_ATTRIBUTE);
+        return validateGivenAttribute(JoranConstants.REF_ATTRIBUTE);
     }
 
-    public PreconditionValidator generic(String attributeName) {
+    public boolean isInvalidAttribute(String attributeName) {
         String attributeValue = attributes.getValue(attributeName);
-        if (OptionHelper.isNullOrEmptyOrAllSpaces(attributeValue)) {
-            addError("Missing attribute [" + attributeName + "] in element [" + tag + "] near line "
-                    + Action.getLineNumber(intercon));
+        return OptionHelper.isNullOrEmptyOrAllSpaces(attributeValue);
+    }
+
+    public PreconditionValidator validateGivenAttribute(String attributeName) {
+        boolean invalid = isInvalidAttribute(attributeName);
+        if (invalid) {
+            addMissingAttributeError(attributeName);
             this.valid = false;
         }
         return this;
     }
+
+
+
+    /**
+     *
+     * @deprecated replaced by {@link #validateGivenAttribute(String)}
+     */
+    @Deprecated
+    public PreconditionValidator generic(String attributeName) {
+        return validateGivenAttribute(attributeName);
+    }
+
+    public void addMissingAttributeError(String attributeName) {
+        addError("Missing attribute [" + attributeName + "]. " + getLocationSuffix());
+    }
+
+    public String getLocationSuffix() {
+        return "See element [" + tag + "] near line " + Action.getLineNumber(seic);
+    }
+
+//    public void addWarning(String msg) {
+//        super.addWarn(msg + getLocationSuffix());
+//    }
+//
+//    public void addError(String msg) {
+//        super.addError(msg + getLocationSuffix());
+//    }
 
     public boolean isValid() {
         return valid;

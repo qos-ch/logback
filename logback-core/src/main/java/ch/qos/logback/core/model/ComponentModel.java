@@ -16,7 +16,7 @@ package ch.qos.logback.core.model;
 import java.util.Objects;
 
 /**
- * Abstract representation of configuration elements
+ * Abstract representation of configuration elements which have class names and are instantiated.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3.0

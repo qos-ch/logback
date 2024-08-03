@@ -46,8 +46,8 @@ public class InsertFromJNDIAction extends BaseModelAction {
     @Override
     protected boolean validPreconditions(SaxEventInterpretationContext seic, String name, Attributes attributes) {
         PreconditionValidator validator = new PreconditionValidator(this, seic, name, attributes);
-        validator.generic(ENV_ENTRY_NAME_ATTR);
-        validator.generic(AS_ATTR);
+        validator.validateGivenAttribute(ENV_ENTRY_NAME_ATTR);
+        validator.validateGivenAttribute(AS_ATTR);
 
         return validator.isValid();
     }

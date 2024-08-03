@@ -13,18 +13,55 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.xml.sax.Attributes;
-
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
+import ch.qos.logback.core.model.ConversionRuleModel;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.util.OptionHelper;
+import org.xml.sax.Attributes;
 
-public class ConversionRuleAction extends Action {
-    boolean inError = false;
+import java.util.HashMap;
+import java.util.Map;
+
+import static ch.qos.logback.core.joran.JoranConstants.CONVERSION_WORD_ATTRIBUTE;
+
+public class ConversionRuleAction extends BaseModelAction {
+
+    static public String CONVERTER_CLASS_ATTRIBUTE = "converterClass";
+
+
+    @Override
+    protected boolean validPreconditions(SaxEventInterpretationContext seic, String name, Attributes attributes) {
+        PreconditionValidator pv = new PreconditionValidator(this, seic, name, attributes);
+
+        boolean invalidConverterClassAttribute = pv.isInvalidAttribute(CONVERTER_CLASS_ATTRIBUTE);
+        boolean invalidClassAttribute = pv.isInvalidAttribute(CONVERTER_CLASS_ATTRIBUTE);
+
+        if(!invalidConverterClassAttribute) {
+            pv.addWarn("["+CONVERTER_CLASS_ATTRIBUTE +"] attribute is deprecated and replaced by ["+CLASS_ATTRIBUTE+
+                    "]. "+pv.getLocationSuffix());
+        }
+        boolean missingClass = invalidClassAttribute && invalidConverterClassAttribute;
+        if(missingClass) {
+            pv.addMissingAttributeError(CLASS_ATTRIBUTE);
+            return false;
+        }
+        pv.validateGivenAttribute(CONVERSION_WORD_ATTRIBUTE);
+        return pv.isValid();
+    }
+
+
+
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        ConversionRuleModel conversionRuleModel = new ConversionRuleModel();
+        conversionRuleModel.setConversionWord(attributes.getValue(CONVERSION_WORD_ATTRIBUTE));
+        conversionRuleModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+
+        return conversionRuleModel;
+    }
 
     /**
      * Instantiates a layout of the given class and sets its name.
@@ -36,7 +73,7 @@ public class ConversionRuleAction extends Action {
         inError = false;
 
         String errorMsg;
-        String conversionWord = attributes.getValue(JoranConstants.CONVERSION_WORD_ATTRIBUTE);
+        String conversionWord = attributes.getValue(CONVERSION_WORD_ATTRIBUTE);
         String converterClass = attributes.getValue(JoranConstants.CONVERTER_CLASS_ATTRIBUTE);
 
         if (OptionHelper.isNullOrEmptyOrAllSpaces(conversionWord)) {
@@ -71,6 +108,7 @@ public class ConversionRuleAction extends Action {
             addError(errorMsg);
         }
     }
+
 
     /**
      * Once the children elements are also parsed, now is the time to activate the
