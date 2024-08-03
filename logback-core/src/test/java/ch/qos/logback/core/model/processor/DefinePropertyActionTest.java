@@ -1,6 +1,6 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,11 +11,14 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.joran.action;
+package ch.qos.logback.core.model.processor;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
 
+import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.DefinePropertyAction;
+import ch.qos.logback.core.joran.action.TopElementAction;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -29,11 +32,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.TopModel;
-import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.DefineModelHandler;
-import ch.qos.logback.core.model.processor.ImplicitModelHandler;
-import ch.qos.logback.core.model.processor.ModelInterpretationContext;
-import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
@@ -103,7 +101,7 @@ public class DefinePropertyActionTest {
         assertNull(inContextFoo);
         // check context errors
 
-        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\]");
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\]. See element \\[define\\]");
     }
 
     @Test
@@ -113,7 +111,7 @@ public class DefinePropertyActionTest {
 
         StatusPrinter.print(context);
         assertNull(inContextFoo);
-        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\]");
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\]. See element \\[define\\]");
     }
 
     @Test
