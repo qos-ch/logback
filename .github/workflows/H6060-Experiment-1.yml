@@ -141,8 +141,36 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Create CycloneDX SBOM
+      - name: Create CycloneDX SBOM - ${{ matrix.os }}
         uses: seansmith39/H6060-Experiment-Resources/.github/actions/java/java-cyclonedx-sbom@main
         with:
           build-directory: target
           artifact-name: cyclonedx-sbom-java-${{ matrix.os }}
+
+  security_tool_analysis:
+    name: Security Tool Analysis
+    needs: [ create-dependency-tree, create-cyclonedx-sbom ]
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-2022, macos-14 ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Perform Security Tool Analysis - ${{ matrix.os }}
+        uses: seansmith39/H6060-Experiment-Resources/.github/workflows/experiment-1-java.yml@Run_Experiment_On_Matrix
+        with:
+            sast-codeql-enabled: ${{ github.event.inputs.sast-codeql-enabled }}
+            sast-deepsource-enabled: ${{ github.event.inputs.sast-deepsource-enabled }}
+            sast-horusec-enabled: ${{ github.event.inputs.sast-horusec-enabled }}
+            sast-semgrep-enabled: ${{ github.event.inputs.sast-semgrep-enabled }}
+            sast-snyk-code-enabled: ${{ github.event.inputs.sast-snyk-code-enabled }}
+            sast-sonarqube-enabled: ${{ github.event.inputs.sast-sonarqube-enabled }}
+            sca-eclipse-steady-enabled: ${{ github.event.inputs.sca-eclipse-steady-enabled }}
+            sca-grype-enabled: ${{ github.event.inputs.sca-grype-enabled }}
+            sca-owasp-dependency-check-enabled: ${{ github.event.inputs.sca-owasp-dependency-check-enabled }}
+            sca-snyk-enabled: ${{ github.event.inputs.sca-snyk-enabled }}
+            project-name: H6060-Experiment-1-Logback
+            build-artifact: java-build-${{ matrix.os }}
+            build-directory: target
