@@ -1,9 +1,6 @@
 name: H6060 Experiment 1 - Logback
 
 on:
-  push:
-    branches:
-      - Add_Experiment_Git_Workflow
   workflow_dispatch:
     inputs:
       sast-codeql-enabled:
