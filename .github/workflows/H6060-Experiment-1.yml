@@ -1,0 +1,97 @@
+name: H6060 Experiment 1 - Logback
+
+on:
+  push:
+    branches:
+      - Add_Experiment_Git_Workflow
+  workflow_dispatch:
+    inputs:
+      sast-codeql-enabled:
+        description: Enable CodeQL scan (SAST)
+        type: boolean
+        required: false
+        default: true
+
+      sast-deepsource-enabled:
+        description: Enable Deepsource scan (SAST)
+        type: boolean
+        required: false
+        default: true
+
+      sast-horusec-enabled:
+        description: Enable Horusec scan (SAST)
+        type: boolean
+        required: false
+        default: true
+
+      sast-semgrep-enabled:
+        description: Enable Semgrep scan (SAST)
+        type: boolean
+        required: false
+        default: true
+
+      sast-snyk-code-enabled:
+        description: Enable Snyk Code scan (SAST)
+        type: boolean
+        required: false
+        default: true
+
+      sast-sonarqube-enabled:
+        description: Enable SonarQube scan (SAST)
+        type: boolean
+        required: false
+        default: true
+
+      sca-eclipse-steady-enabled:
+        description: Enable Eclipse Steady scan (SCA)
+        type: boolean
+        required: false
+        default: true
+
+      sca-grype-enabled:
+        description: Enable Grype scan (SCA)
+        type: boolean
+        required: false
+        default: true
+
+      sca-owasp-dependency-check-enabled:
+        description: Enable OWASP Dependency Check scan (SCA)
+        type: boolean
+        required: false
+        default: true
+
+      sca-snyk-enabled:
+        description: Enable Snyk scan (SCA)
+        type: boolean
+        required: false
+        default: true
+
+defaults:
+  run:
+    shell: bash
+
+permissions: write-all
+
+jobs:
+  build-application:
+    name: Build Application
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-2022, macos-14 ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build Logback Application
+        uses: seansmith39/H6060-Experiment-Resources/.github/actions/java/java-build@main
+        with:
+          build-command: mvn -Dmaven.test.skip=true clean install
+          build-directory: "**/target"
+          artifact-name: java-build-${{ matrix.os }}
