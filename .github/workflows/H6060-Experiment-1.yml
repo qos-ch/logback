@@ -114,3 +114,35 @@ jobs:
         uses: seansmith39/H6060-Experiment-Resources/.github/actions/java/java-dependency-tree@main
         with:
           artifact-name: dependency-tree-${{ matrix.os }}
+
+  create-cyclonedx-sbom:
+    name: Create CycloneDX Dependency Tree
+    needs: build-application
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04, windows-2022, macos-14 ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifact
+        uses: dawidd6/action-download-artifact@v3.1.4
+        with:
+          name: java-build-${{ matrix.os }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: in_progress
+          commit: ${{ github.event.workflow_run.head_commit.id }}
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.1
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Create CycloneDX SBOM
+        uses: seansmith39/H6060-Experiment-Resources/.github/actions/java/java-cyclonedx-sbom@main
+        with:
+          build-directory: target
+          artifact-name: cyclonedx-sbom-java-${{ matrix.os }}
