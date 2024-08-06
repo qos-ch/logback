@@ -16,9 +16,11 @@ package ch.qos.logback.core.rolling;
 import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -338,10 +340,10 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         checkDirPatternCompliance(maxHistory + 1);
     }
 
-    void logTwiceAndStop(long currentTime, String fileNamePattern, int maxHistory, long durationInMillis) {
+    void logTwiceAndStop(long currentTime, String fileNamePattern, int maxHistory, long durationInMillis, boolean cleanLogsByLastModifiedDate) {
         ConfigParameters params = new ConfigParameters(currentTime).fileNamePattern(fileNamePattern)
                 .maxHistory(maxHistory);
-        buildRollingFileAppender(params, DO_CLEAN_HISTORY_ON_START);
+        buildRollingFileAppender(params, DO_CLEAN_HISTORY_ON_START, cleanLogsByLastModifiedDate);
         rfa.doAppend("Hello ----------------------------------------------------------" + new Date(currentTime));
         currentTime += durationInMillis / 2;
         add(tbrp.compressionFuture);
@@ -359,7 +361,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         String fileNamePattern = randomOutputDir + "clean-%d{" + DAILY_HOUR_PATTERN + "}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory, MILLIS_IN_HOUR);
+            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory, MILLIS_IN_HOUR, DO_NOT_CLEAN_LOGS_BY_LAST_MODIFIED_DATE);
             simulatedTime += MILLIS_IN_HOUR;
         }
         checkFileCount(expectedCountWithoutFolders(maxHistory));
@@ -379,7 +381,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         String fileNamePattern = randomOutputDir + "clean-%d{HH}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logTwiceAndStop(now, fileNamePattern, maxHistory, MILLIS_IN_DAY);
+            logTwiceAndStop(now, fileNamePattern, maxHistory, MILLIS_IN_DAY, DO_NOT_CLEAN_LOGS_BY_LAST_MODIFIED_DATE);
             now = now + MILLIS_IN_HOUR;
         }
         checkFileCount(expectedCountWithoutFolders(maxHistory));
@@ -391,7 +393,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         String fileNamePattern = randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory, MILLIS_IN_DAY);
+            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory, MILLIS_IN_DAY, DO_NOT_CLEAN_LOGS_BY_LAST_MODIFIED_DATE);
             simulatedTime += MILLIS_IN_DAY;
         }
         checkFileCount(expectedCountWithoutFolders(maxHistory));
@@ -403,10 +405,30 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         String fileNamePattern = randomOutputDir + "clean-%d{yyyy-MM-dd-HH}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory, MILLIS_IN_HOUR);
+            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory, MILLIS_IN_HOUR, DO_NOT_CLEAN_LOGS_BY_LAST_MODIFIED_DATE);
             simulatedTime += MILLIS_IN_HOUR;
         }
         checkFileCount(expectedCountWithoutFolders(maxHistory));
+    }
+
+    @Test
+    public void cleanLogsByLastModifiedDateWithHourDayPattern() throws IOException {
+        long simulatedTime = WED_2016_03_23_T_230705_CET;
+        String fileNamePattern = randomOutputDir + "clean-%d{yyyy-MM-dd-HH}.txt";
+        int maxHistory = 3;
+        logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory, MILLIS_IN_HOUR, DO_CLEAN_LOGS_BY_LAST_MODIFIED_DATE);
+        simulatedTime += MILLIS_IN_HOUR;
+        File fileToDelete = new File(randomOutputDir + "clean-0000-00-00-00.txt");
+        if (!fileToDelete.exists()) {
+            assertTrue(fileToDelete.createNewFile());
+        }
+        assertTrue(fileToDelete.setLastModified(0));
+        for (int i = 0; i <= 2; i++) {
+            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory, MILLIS_IN_HOUR, DO_CLEAN_LOGS_BY_LAST_MODIFIED_DATE);
+            simulatedTime += MILLIS_IN_HOUR;
+        }
+        checkFileCount(expectedCountWithoutFolders(maxHistory));
+        assertFalse(fileToDelete.exists());
     }
 
     int expectedCountWithoutFolders(int maxHistory) {
@@ -422,7 +444,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         return result;
     }
 
-    void buildRollingFileAppender(ConfigParameters cp, boolean cleanHistoryOnStart) {
+    void buildRollingFileAppender(ConfigParameters cp, boolean cleanHistoryOnStart, boolean cleanLogsByLastModifiedDate) {
         rfa.setContext(context);
         rfa.setEncoder(encoder);
         tbrp.setContext(context);
@@ -431,6 +453,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         tbrp.setTotalSizeCap(new FileSize(cp.sizeCap));
         tbrp.setParent(rfa);
         tbrp.setCleanHistoryOnStart(cleanHistoryOnStart);
+        tbrp.setCleanLogsByLastModifiedDate(cleanLogsByLastModifiedDate);
         tbrp.timeBasedFileNamingAndTriggeringPolicy = tbfnatp;
         tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(cp.simulatedTime);
         tbrp.start();
@@ -440,10 +463,13 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
 
     boolean DO_CLEAN_HISTORY_ON_START = true;
     boolean DO_NOT_CLEAN_HISTORY_ON_START = false;
+    boolean DO_CLEAN_LOGS_BY_LAST_MODIFIED_DATE = true;
+    boolean DO_NOT_CLEAN_LOGS_BY_LAST_MODIFIED_DATE = false;
+
 
     long logOverMultiplePeriods(ConfigParameters cp) {
 
-        buildRollingFileAppender(cp, DO_NOT_CLEAN_HISTORY_ON_START);
+        buildRollingFileAppender(cp, DO_NOT_CLEAN_HISTORY_ON_START, DO_NOT_CLEAN_LOGS_BY_LAST_MODIFIED_DATE);
 
         int runLength = cp.simulatedNumberOfPeriods * ticksPerPeriod;
         int startInactivityIndex = cp.startInactivity * ticksPerPeriod;
