@@ -20,25 +20,21 @@ import ch.qos.logback.core.pattern.Converter123;
 import ch.qos.logback.core.pattern.ConverterHello;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 //import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CompilerTest {
 
-    Map<String, String> converterMap = new HashMap<String, String>();
     Context context = new ContextBase();
-
-    @BeforeEach
-    public void setUp() {
-        converterMap.put("OTT", Converter123.class.getName());
-        converterMap.put("hello", ConverterHello.class.getName());
-        converterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
-    }
 
     String write(final Converter<Object> head, Object event) {
         StringBuilder buf = new StringBuilder();
@@ -50,22 +46,70 @@ public class CompilerTest {
         return buf.toString();
     }
 
-    @Test
-    public void testLiteral() throws Exception {
+    /**
+     * Choose and invoke one of the p.compile methods depending on whether
+     * the converterSupplierMap is null
+     */
+    Converter<Object> compile(Parser<Object> p, Node t,
+            Map<String, String> converterMap, 
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) {
+        if (converterSupplierMap == null) {
+            // null supplier map so call the 2 arg method
+            return p.compile(t, converterMap);
+        } else {
+            // non-null supplier map so call the 3 arg method
+            return p.compile(t, converterMap, converterSupplierMap);
+        }
+    }
+
+    /**
+     * ParameterizedTest source to run the test with different combinations
+     * of arguments
+     */
+    protected static Stream<Arguments> converterMapArgs() {
+        // converters whose value is class names
+        Map<String, String> converterMap = new HashMap<String, String>();
+        converterMap.put("OTT", Converter123.class.getName());
+        converterMap.put("hello", ConverterHello.class.getName());
+        converterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
+
+        // only the default converters whose value is class names 
+        Map<String, String> onlyDefaultConverterMap = new HashMap<String, String>();
+        onlyDefaultConverterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
+
+        // converters whose value is supplier functions
+        Map<String, Supplier<Converter<Object>>> converterSupplierMap = new HashMap<String, Supplier<Converter<Object>>>();
+        converterSupplierMap.put("OTT", Converter123::new);
+        converterSupplierMap.put("hello", ConverterHello::new);
+
+        return Stream.of(
+                    Arguments.of("converterMap, null converterSupplierMap", converterMap, null),
+                    Arguments.of("converterMap, empty converterSupplierMap", converterMap, Collections.emptyMap()),
+                    Arguments.of("onlyDefaultConverterMap, converterSupplierMap", onlyDefaultConverterMap, converterSupplierMap)
+                );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("converterMapArgs")
+    public void testLiteral(String label, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) throws Exception {
         Parser<Object> p = new Parser<Object>("hello");
         Node t = p.parse();
-        Converter<Object> head = p.compile(t, converterMap);
+        Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
         String result = write(head, new Object());
         assertEquals("hello", result);
     }
 
-    @Test
-    public void testBasic() throws Exception {
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("converterMapArgs")
+    public void testBasic(String label, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) throws Exception {
         {
             Parser<Object> p = new Parser<Object>("abc %hello");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc Hello", result);
         }
@@ -73,31 +117,35 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("abc %hello %OTT");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc Hello 123", result);
         }
     }
 
-    @Test
-    public void converterStart() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("converterMapArgs")
+    public void converterStart(String label, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) throws Exception {
         {
             Parser<Object> p = new Parser<Object>("abc %hello");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc Hello", result);
         }
     }
 
-    @Test
-    public void testFormat() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("converterMapArgs")
+    public void testFormat(String label, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) throws Exception {
         {
             Parser<Object> p = new Parser<Object>("abc %7hello");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc   Hello", result);
         }
@@ -106,7 +154,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("abc %-7hello");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc Hello  ", result);
         }
@@ -115,7 +163,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("abc %.3hello");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc llo", result);
         }
@@ -124,7 +172,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("abc %.-3hello");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc Hel", result);
         }
@@ -133,7 +181,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("abc %4.5OTT");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc  123", result);
         }
@@ -141,7 +189,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("abc %-4.5OTT");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc 123 ", result);
         }
@@ -149,7 +197,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("abc %3.4hello");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc ello", result);
         }
@@ -157,19 +205,21 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("abc %-3.-4hello");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("abc Hell", result);
         }
     }
 
-    @Test
-    public void testComposite() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("converterMapArgs")
+    public void testComposite(String label, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) throws Exception {
         // {
         // Parser<Object> p = new Parser<Object>("%(ABC)");
         // p.setContext(context);
         // Node t = p.parse();
-        // Converter<Object> head = p.compile(t, converterMap);
+        // Converter<Object> head = p.compile(t, converterMap, converterSupplierMap);
         // String result = write(head, new Object());
         // assertEquals("ABC", result);
         // }
@@ -178,7 +228,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("%(ABC %hello)");
             p.setContext(c);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             // StatusPrinter.print(c);
             assertEquals("ABC Hello", result);
@@ -187,19 +237,21 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("%(ABC %hello)");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("ABC Hello", result);
         }
     }
 
-    @Test
-    public void testCompositeFormatting() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("converterMapArgs")
+    public void testCompositeFormatting(String label, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) throws Exception {
         {
             Parser<Object> p = new Parser<Object>("xyz %4.10(ABC)");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("xyz  ABC", result);
         }
@@ -208,7 +260,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("xyz %-4.10(ABC)");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("xyz ABC ", result);
         }
@@ -217,7 +269,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("xyz %.2(ABC %hello)");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("xyz lo", result);
         }
@@ -226,7 +278,7 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("xyz %.-2(ABC)");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("xyz AB", result);
         }
@@ -235,29 +287,33 @@ public class CompilerTest {
             Parser<Object> p = new Parser<Object>("xyz %30.30(ABC %20hello)");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("xyz       ABC                Hello", result);
         }
     }
 
-    @Test
-    public void testUnknownWord() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("converterMapArgs")
+    public void testUnknownWord(String label, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) throws Exception {
         Parser<Object> p = new Parser<Object>("%unknown");
         p.setContext(context);
         Node t = p.parse();
-        p.compile(t, converterMap);
+        compile(p, t, converterMap, converterSupplierMap);
         StatusChecker checker = new StatusChecker(context.getStatusManager());
         checker.assertContainsMatch("\\[unknown] is not a valid conversion word");
     }
 
-    @Test
-    public void testWithNopEscape() throws Exception {
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("converterMapArgs")
+    public void testWithNopEscape(String label, Map<String, String> converterMap,
+            Map<String, Supplier<Converter<Object>>> converterSupplierMap) throws Exception {
         {
             Parser<Object> p = new Parser<Object>("xyz %hello\\_world");
             p.setContext(context);
             Node t = p.parse();
-            Converter<Object> head = p.compile(t, converterMap);
+            Converter<Object> head = compile(p, t, converterMap, converterSupplierMap);
             String result = write(head, new Object());
             assertEquals("xyz Helloworld", result);
         }
