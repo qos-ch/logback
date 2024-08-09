@@ -32,7 +32,7 @@ public class ConversionRuleModel extends ComponentModel {
     }
 
     public String getConverterClass() {
-        return className;
+        return getClassName();
     }
 
     public void setConverterClass(String converterClass) {

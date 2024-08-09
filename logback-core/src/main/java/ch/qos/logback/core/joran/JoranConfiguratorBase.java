@@ -129,30 +129,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
 
     @Override
     protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
-        // code moved to ModelClassToModelHandlerLinkerBase
-        // the code below is inactive
-        defaultProcessor.addHandler(ImportModel.class, ImportModelHandler::makeInstance);
-
-        defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler::makeInstance);
-        defaultProcessor.addHandler(SequenceNumberGeneratorModel.class, SequenceNumberGeneratorModelHandler::makeInstance);
-
-        defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler::makeInstance);
-        defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
-        defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
-
-        
-        defaultProcessor.addHandler(ParamModel.class, ParamModelHandler::makeInstance);
-        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
-        defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler::makeInstance);
-        defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler::makeInstance);
-        defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
-        
-        defaultProcessor.addHandler(IfModel.class, IfModelHandler::makeInstance);
-        defaultProcessor.addHandler(ThenModel.class, ThenModelHandler::makeInstance);
-        defaultProcessor.addHandler(ElseModel.class, ElseModelHandler::makeInstance);
-        
-        defaultProcessor.addHandler(SiftModel.class, SiftModelHandler::makeInstance);
-        
+        // Please note that code previously here moved to ModelClassToModelHandlerLinkerBase
     }
 
 }
