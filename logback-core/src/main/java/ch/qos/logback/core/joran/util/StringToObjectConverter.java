@@ -13,13 +13,19 @@
  */
 package ch.qos.logback.core.joran.util;
 
+import java.io.Console;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.ContextAwareBase;
+
+import static ch.qos.logback.core.CoreConstants.CONSOLE;
+import static ch.qos.logback.core.CoreConstants.NULL_STR;
 
 /**
  * Utility class which can convert string into objects.
@@ -27,7 +33,7 @@ import ch.qos.logback.core.spi.ContextAware;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class StringToObjectConverter {
+public class StringToObjectConverter  {
 
     private static final Class<?>[] STRING_CLASS_PARAMETER = new Class[] { String.class };
 
@@ -51,7 +57,7 @@ public class StringToObjectConverter {
      * Convert <code>val</code> a String parameter to an object of a given type.
      */
     @SuppressWarnings("unchecked")
-    public static Object convertArg(ContextAware ca, String val, Class<?> type) {
+    static public Object convertArg(ContextAware ca, String val, Class<?> type) {
         if (val == null) {
             return null;
         }
@@ -88,6 +94,12 @@ public class StringToObjectConverter {
     }
 
     static private Charset convertToCharset(ContextAware ca, String val) {
+
+        if (NULL_STR.equalsIgnoreCase(val)) {
+            ca.addInfo("Converting the string \"null\" as Charset.defaultCharset()");
+            return Charset.defaultCharset();
+        }
+
         try {
             return Charset.forName(val);
         } catch (UnsupportedCharsetException e) {

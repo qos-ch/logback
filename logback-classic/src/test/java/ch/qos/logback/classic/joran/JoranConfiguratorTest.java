@@ -46,6 +46,7 @@ import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
+import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.Disabled;
@@ -738,6 +739,18 @@ public class JoranConfiguratorTest {
         checker.assertContainsMatch(Status.INFO, "Setting zoneId to \"Australia/Perth\"");
         checker.assertContainsMatch(Status.INFO, "Setting locale to \"en_AU\"");
         //StatusPrinter.print(loggerContext);
+    }
+
+    @Test
+    public void consoleCharsetTest() throws JoranException  {
+        if(EnvUtil.isJDK21OrHigher()) {
+            configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "consoleCharset.xml");
+            checker.assertContainsMatch(Status.INFO, "About to instantiate property definer of type \\[ch.qos.logback.core.property.ConsoleCharsetPropertyDefiner\\]");
+            checker.assertContainsMatch(Status.WARN, "System.console\\(\\) returned null. Cannot compute console's charset, returning");
+            checker.assertContainsMatch("Setting property consoleCharset=null in scope LOCAL" );
+            checker.assertContainsMatch("Converting the string \\\"null. as Charset.defaultCharset\\(\\)");
+            //StatusPrinter.print(loggerContext);
+        }
     }
 
     @Test

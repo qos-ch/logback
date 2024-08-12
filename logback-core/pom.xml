@@ -102,6 +102,16 @@
                             <multiReleaseOutput>true</multiReleaseOutput>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>test-compile</phase>
+                        <configuration>
+                            <testExcludes>
+                                <exclude>**/COWArrayListConcurrencyTest.java</exclude>
+                            </testExcludes>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

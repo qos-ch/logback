@@ -285,8 +285,4 @@ public class PropertySetter extends ContextAwareBase {
         return aggregationAssessor.getClassNameViaImplicitRules(name, aggregationType, registry);
     }
 
-
-
-
-
-    }
+}

@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.joran;
 
+import ch.qos.logback.core.CoreConstants;
+
 /**
  *
  * This class contains constants used by Joran components.
@@ -37,7 +39,8 @@ public abstract class JoranConstants {
     public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
     public static final String INHERITED = "INHERITED";
-    public static final String NULL = "NULL";
+    // all usages in the project are case-insensitive. Elsewhere this might not be the case hence the toUpperCase call
+    public static final String NULL = CoreConstants.NULL_STR.toUpperCase();
     static final Class<?>[] ONE_STRING_PARAM = new Class[] { String.class };
 
     public static final String APPENDER_BAG = "APPENDER_BAG";
