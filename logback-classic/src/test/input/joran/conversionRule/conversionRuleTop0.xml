@@ -1,0 +1,15 @@
+<configuration>
+
+
+  <appender name="LIST" class="ch.qos.logback.core.testUtil.StringListAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%sample - %msg</Pattern>
+    </layout>
+  </appender>
+
+  <include file="src/test/input/joran/conversionRule/conversionRuleIncluded.xml"/>
+
+  <root level="debug">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>

@@ -1,0 +1,16 @@
+<configuration>
+
+
+  <appender name="LIST" class="ch.qos.logback.core.testUtil.StringListAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%sample - %msg</Pattern>
+    </layout>
+  </appender>
+
+  <conversionRule conversionWord="sample"
+                  converterClass="ch.qos.logback.classic.pattern.SampleConverter" />
+
+  <root level="debug">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>

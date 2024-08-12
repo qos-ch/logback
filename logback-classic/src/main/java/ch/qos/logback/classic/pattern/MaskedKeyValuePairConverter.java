@@ -30,6 +30,8 @@ import static ch.qos.logback.classic.pattern.KeyValuePairConverter.*;
  * Assuming the specified key is k2, and the kvp list of an event contains {k1, v1}, {k2, v2}, the String output
  * will be "k1=v1 k2=XXX", without the quotes.
  *
+ * Value quotes can be specified as the first option, e.g %maskedKvp{SINGLE, k1}
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.5.7
  */

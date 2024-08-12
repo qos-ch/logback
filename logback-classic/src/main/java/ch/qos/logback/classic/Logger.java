@@ -72,7 +72,7 @@ public final class Logger
     /**
      * It is assumed that once the 'aai' variable is set to a non-null value, it
      * will never be reset to null. it is further assumed that only place where the
-     * 'aai'ariable is set is within the addAppender method. This method is
+     * 'aai variable is set is within the addAppender method. This method is
      * synchronized on 'this' (Logger) protecting against simultaneous
      * re-configuration of this logger (a very unlikely scenario).
      * 

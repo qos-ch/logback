@@ -237,6 +237,30 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     }
 
     @Test
+    public void testConversionRuleAtEnd() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/conversionRuleAtEnd.xml");
+        root.getAppender("LIST");
+        String msg = "testConversionRuleAtEnd";
+        logger.debug(msg);
+        StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(sla);
+        assertEquals(1, sla.strList.size());
+        assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
+    }
+
+    @Test
+    public void testConversionRuleInIncluded() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/conversionRuleTop0.xml");
+        root.getAppender("LIST");
+        String msg = "testConversionRuleInIncluded";
+        logger.debug(msg);
+        StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(sla);
+        assertEquals(1, sla.strList.size());
+        assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
+    }
+
+    @Test
     public void smokeReplace() {
         pl.setPattern("%replace(a1234b){'\\d{4}', 'XXXX'}");
         pl.start();
