@@ -12,6 +12,8 @@ module logback.classic.blackbox {
     requires org.junit.jupiter.engine;
     requires org.slf4j;
 
+    requires java.logging;
+
     exports ch.qos.logback.classic.blackbox.boolex;
 
     exports ch.qos.logback.classic.blackbox.joran;

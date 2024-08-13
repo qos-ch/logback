@@ -19,6 +19,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.jul.JULHelper;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -27,6 +28,8 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,7 +41,7 @@ public class BlackboxJoranConfiguratorTest {
     LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-    //StatusChecker checker = new StatusChecker(loggerContext);
+    StatusChecker checker = new StatusChecker(loggerContext);
     int diff = RandomUtil.getPositiveInt();
 
     void configure(String file) throws JoranException {
@@ -144,5 +147,45 @@ public class BlackboxJoranConfiguratorTest {
         StatusPrinter.print(loggerContext);
 
     }
+
+    @Test
+    public void levelChangePropagator0() throws JoranException, IOException, InterruptedException {
+        String loggerName = "changePropagator0" + diff;
+        java.util.logging.Logger.getLogger(loggerName).setLevel(java.util.logging.Level.INFO);
+        String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator0.xml";
+        configure(configFileAsStr);
+
+        checker.assertIsErrorFree();
+        verifyJULLevel(loggerName, null);
+        verifyJULLevel("a.b.c." + diff, Level.WARN);
+        verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
+    }
+
+    @Test
+    public void levelChangePropagator1() throws JoranException, IOException, InterruptedException {
+        String loggerName = "changePropagator1" + diff;
+        java.util.logging.Logger logger1 = java.util.logging.Logger.getLogger(loggerName);
+        logger1.setLevel(java.util.logging.Level.INFO);
+        verifyJULLevel(loggerName, Level.INFO);
+        String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator1.xml";
+        configure(configFileAsStr);
+
+        checker.assertIsErrorFree();
+        verifyJULLevel(loggerName, Level.INFO); //
+        verifyJULLevel("a.b.c." + diff, Level.WARN);
+        verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
+    }
+
+    void verifyJULLevel(String loggerName, Level expectedLevel) {
+        java.util.logging.Logger julLogger = JULHelper.asJULLogger(loggerName);
+        java.util.logging.Level julLevel = julLogger.getLevel();
+
+        if (expectedLevel == null) {
+            assertNull(julLevel);
+        } else {
+            assertEquals(JULHelper.asJULLevel(expectedLevel), julLevel);
+        }
+    }
+
 
 }

@@ -13,14 +13,8 @@
  */
 package ch.qos.logback.classic.joran;
 
-import ch.qos.logback.classic.AsyncAppender;
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.classic.ClassicTestConstants;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.*;
 import ch.qos.logback.classic.joran.serializedModel.HardenedModelInputStream;
-import ch.qos.logback.classic.jul.JULHelper;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -42,7 +36,6 @@ import ch.qos.logback.core.spi.ErrorCodes;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
-import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
@@ -56,7 +49,6 @@ import org.slf4j.event.KeyValuePair;
 import org.slf4j.spi.MDCAdapter;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,11 +58,7 @@ import static ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityCheck
 import static ch.qos.logback.core.model.processor.ImplicitModelHandler.IGNORING_UNKNOWN_PROP;
 import static ch.qos.logback.core.model.processor.ShutdownHookModelHandler.RENAME_WARNING;
 import static ch.qos.logback.core.testUtil.CoreTestConstants.OUTPUT_DIR_PREFIX;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JoranConfiguratorTest {
 
@@ -394,45 +382,7 @@ public class JoranConfiguratorTest {
         checker.assertIsErrorFree();
     }
 
-    void verifyJULLevel(String loggerName, Level expectedLevel) {
-        java.util.logging.Logger julLogger = JULHelper.asJULLogger(loggerName);
-        java.util.logging.Level julLevel = julLogger.getLevel();
 
-        if (expectedLevel == null) {
-            assertNull(julLevel);
-        } else {
-            assertEquals(JULHelper.asJULLevel(expectedLevel), julLevel);
-        }
-
-    }
-
-    @Test
-    public void levelChangePropagator0() throws JoranException, IOException, InterruptedException {
-        String loggerName = "changePropagator0" + diff;
-        java.util.logging.Logger.getLogger(loggerName).setLevel(java.util.logging.Level.INFO);
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator0.xml";
-        configure(configFileAsStr);
-
-        checker.assertIsErrorFree();
-        verifyJULLevel(loggerName, null);
-        verifyJULLevel("a.b.c." + diff, Level.WARN);
-        verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
-    }
-
-    @Test
-    public void levelChangePropagator1() throws JoranException, IOException, InterruptedException {
-        String loggerName = "changePropagator1" + diff;
-        java.util.logging.Logger logger1 = java.util.logging.Logger.getLogger(loggerName);
-        logger1.setLevel(java.util.logging.Level.INFO);
-        verifyJULLevel(loggerName, Level.INFO);
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator1.xml";
-        configure(configFileAsStr);
-
-        checker.assertIsErrorFree();
-        verifyJULLevel(loggerName, Level.INFO); //
-        verifyJULLevel("a.b.c." + diff, Level.WARN);
-        verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
-    }
 
     @Disabled // because slow
     @Test
