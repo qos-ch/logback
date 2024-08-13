@@ -60,6 +60,13 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
+    public static final String MAIL_SMTP_HOST_PK = "mail.smtp.host";
+    public static final String MAIL_SMTP_PORT_PK = "mail.smtp.port";
+    public static final String MAIL_SMTP_LOCALHOST_PK = "mail.smtp.localhost";
+    public static final String MAIL_SMTP_AUTH_PK = "mail.smtp.auth";
+    public static final String MAIL_SMTP_STARTTLS_ENABLE_PK = "mail.smtp.starttls.enable";
+    public static final String MAIL_TRANSPORT_PROTOCOL_PK = "mail.transport.protocol";
+    public static final String MAIL_SMTP_SSL_ENABLE_PK = "mail.smtp.ssl.enable";
     static InternetAddress[] EMPTY_IA_ARRAY = new InternetAddress[0];
     // ~ 14 days
     static final long MAX_DELAY_BETWEEN_STATUS_MESSAGES = 1228800 * CoreConstants.MILLIS_IN_ONE_SECOND;
@@ -146,19 +153,20 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     private Session buildSessionFromProperties() {
         Properties props = new Properties(OptionHelper.getSystemProperties());
         if (smtpHost != null) {
-            props.put("mail.smtp.host", smtpHost);
+            props.put(MAIL_SMTP_HOST_PK, smtpHost);
         }
-        props.put("mail.smtp.port", Integer.toString(smtpPort));
+
+        props.put(MAIL_SMTP_PORT_PK, Integer.toString(smtpPort));
 
         if (localhost != null) {
-            props.put("mail.smtp.localhost", localhost);
+            props.put(MAIL_SMTP_LOCALHOST_PK, localhost);
         }
 
         LoginAuthenticator loginAuthenticator = null;
 
         if (!OptionHelper.isNullOrEmptyOrAllSpaces(username)) {
             loginAuthenticator = new LoginAuthenticator(username, password);
-            props.put("mail.smtp.auth", "true");
+            props.put(MAIL_SMTP_AUTH_PK, "true");
         }
 
         if (isSTARTTLS() && isSSL()) {
@@ -166,11 +174,11 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         } else {
             if (isSTARTTLS()) {
                 // see also http://jira.qos.ch/browse/LOGBACK-193
-                props.put("mail.smtp.starttls.enable", "true");
-                props.put("mail.transport.protocol", "true");
+                props.put(MAIL_SMTP_STARTTLS_ENABLE_PK, "true");
+                props.put(MAIL_TRANSPORT_PROTOCOL_PK, "true");
             }
             if (isSSL()) {
-                props.put("mail.smtp.ssl.enable", "true");
+                props.put(MAIL_SMTP_SSL_ENABLE_PK, "true");
             }
         }
 
