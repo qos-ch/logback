@@ -13,18 +13,14 @@
  */
 package ch.qos.logback.core.joran.util;
 
-import java.io.Console;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.spi.ContextAware;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.spi.ContextAware;
-import ch.qos.logback.core.spi.ContextAwareBase;
-
-import static ch.qos.logback.core.CoreConstants.CONSOLE;
 import static ch.qos.logback.core.CoreConstants.NULL_STR;
 
 /**

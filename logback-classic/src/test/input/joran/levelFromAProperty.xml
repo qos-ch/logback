@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Logback: the reliable, generic, fast and flexible logging framework.
+  ~ Copyright (C) 1999-2024, QOS.ch. All rights reserved.
+  ~
+  ~ This program and the accompanying materials are dual-licensed under
+  ~ either the terms of the Eclipse Public License v1.0 as published by
+  ~ the Eclipse Foundation
+  ~
+  ~   or (per the licensee's choosing)
+  ~
+  ~ under the terms of the GNU Lesser General Public License version 2.1
+  ~ as published by the Free Software Foundation.
+  -->
+
+<!DOCTYPE configuration>
+
+<configuration>
+    <import class="ch.qos.logback.core.read.ListAppender"/>
+    <import class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+<!--    <statusListener class="OnConsoleStatusListener"/>-->
+
+
+    <appender name="LIST_ROOT" class="ListAppender"/>
+
+    <variable name="ROOT_LEVEL" value="TRACE"/>
+    <variable name="LOGGER_A_LEVEL" value="WARN"/>
+    <variable name="LOGGER_NESTED_LEVEL" value="ERROR"/>
+
+    <logger name="A" level="${LOGGER_A_LEVEL}"/>
+
+    <logger name="A_SYS" level="${LOGGER_A_SYS_LEVEL}"/>
+
+    <logger name="NESTED">
+        <level value="${LOGGER_NESTED_LEVEL}" />
+    </logger>
+
+    <logger name="NESTED_SYS">
+        <level value="${LOGGER_NESTED_SYS_LEVEL}" />
+    </logger>
+
+    <root level="${ROOT_LEVEL}">
+        <appender-ref ref="LIST_ROOT"/>
+    </root>
+</configuration>

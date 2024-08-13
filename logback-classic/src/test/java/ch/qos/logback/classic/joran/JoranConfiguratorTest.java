@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -121,7 +121,7 @@ public class JoranConfiguratorTest {
         String msg = "hello world";
         logger.warn(msg);
     }
-    
+
     @Test
     public void simpleListWithImports() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleListWithImports.xml");
@@ -225,31 +225,31 @@ public class JoranConfiguratorTest {
     @Test
     public void missingConfigurationElement() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/noConfig.xml");
-        
-        String msg1 = "Exception in body\\(\\) method for action \\["+ParamAction.class.getName()+"\\]";
+
+        String msg1 = "Exception in body\\(\\) method for action \\[" + ParamAction.class.getName() + "\\]";
         checker.assertContainsMatch(Status.ERROR, msg1);
-        
+
         String msg2 = "current model is null. Is <configuration> element missing?";
-        checker.assertContainsException(ActionException.class, msg2 );
+        checker.assertContainsException(ActionException.class, msg2);
     }
 
     @Test
     public void ignoreUnknownProperty() throws JoranException {
-        
+
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/unknownProperty.xml");
-        String msg = IGNORING_UNKNOWN_PROP+" \\[a\\] in \\[ch.qos.logback.classic.LoggerContext\\]";
+        String msg = IGNORING_UNKNOWN_PROP + " \\[a\\] in \\[ch.qos.logback.classic.LoggerContext\\]";
         checker.assertContainsMatch(Status.WARN, msg);
     }
-    
+
     // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46995
     @Test
     public void complexCollectionWihhNoKnownClass() throws JoranException {
-        
-       configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/nestedComplexWithNoKnownClass.xml");
-       String msg = "Could not find an appropriate class for property \\[listener\\]";
-       checker.assertContainsMatch(Status.ERROR, msg);
+
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/nestedComplexWithNoKnownClass.xml");
+        String msg = "Could not find an appropriate class for property \\[listener\\]";
+        checker.assertContainsMatch(Status.ERROR, msg);
     }
-    
+
     @Test
     public void turboFilter() throws JoranException {
         // Although this test uses turbo filters, it only checks
@@ -294,7 +294,6 @@ public class JoranConfiguratorTest {
         assertEquals(Level.WARN, back.getLevel());
         assertEquals("hello", back.getMessage());
     }
-
 
 
     @Test
@@ -452,7 +451,7 @@ public class JoranConfiguratorTest {
         configure(configFileAsStr);
         checker.assertContainsMatch(Status.WARN,
                 "Appender named \\[EMAIL\\] not referenced. Skipping further processing.");
-        checker.assertNoMatch(IGNORING_UNKNOWN_PROP+" \\[evaluator\\]");
+        checker.assertNoMatch(IGNORING_UNKNOWN_PROP + " \\[evaluator\\]");
     }
 
     @Test
@@ -546,7 +545,7 @@ public class JoranConfiguratorTest {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1674.xml";
         configure(configFileAsStr);
         checker.assertContainsMatch(Status.WARN, NESTED_APPENDERS_WARNING);
-        checker.assertContainsMatch(Status.WARN,"Appender at line ");
+        checker.assertContainsMatch(Status.WARN, "Appender at line ");
     }
 
     @Test
@@ -622,13 +621,13 @@ public class JoranConfiguratorTest {
         assertNotNull(listAppender);
         assertTrue(listAppender.isStarted());
         checker.assertContainsMatch(Status.WARN,
-                IGNORING_UNKNOWN_PROP+" \\[inexistent\\] in \\[ch.qos.logback.core.read.ListAppender\\]");
+                IGNORING_UNKNOWN_PROP + " \\[inexistent\\] in \\[ch.qos.logback.core.read.ListAppender\\]");
     }
 
     @Test
     public void sequenceNumberGenerator() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "sequenceNumberGenerator.xml");
-        final ListAppender<ILoggingEvent> listAppender= (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
         assertNotNull(listAppender);
 
         logger.atDebug().setMessage("hello").log();
@@ -646,12 +645,12 @@ public class JoranConfiguratorTest {
     public void sequenceNumberGenerator_missingClass() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "sequenceNumberGenerator-missingClass.xml");
         //StatusPrinter.print(loggerContext);
-        final ListAppender<ILoggingEvent> listAppender= (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
         assertNotNull(listAppender);
         checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\]. See element \\[sequenceNumberGenerator\\]");
     }
 
-        @Test
+    @Test
     public void kvp() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/kvp.xml");
 
@@ -680,7 +679,7 @@ public class JoranConfiguratorTest {
 
     // See LOGBACK-1746
     @Test
-    public void inclusionWithVariables() throws JoranException  {
+    public void inclusionWithVariables() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "include/topLevel0.xml");
         Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         //statusPrinter2.print(loggerContext);
@@ -689,9 +688,9 @@ public class JoranConfiguratorTest {
 
     // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46697
     @Test
-    public void ossFuzz_46697() throws JoranException  {
+    public void ossFuzz_46697() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-46697.xml");
-         
+
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.EMPTY_MODEL_STACK);
     }
 
@@ -700,14 +699,14 @@ public class JoranConfiguratorTest {
     // escape sequences for the 'value' attribute named 'value'. After
     // analysis this was deemed superfluous.
     @Test
-    public void ossFuzz_47093() throws JoranException  {
+    public void ossFuzz_47093() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47093.xml");
         assertEquals("a\\t", loggerContext.getProperty("fuzz-47093-a"));
         assertEquals("a\\\\", loggerContext.getProperty("fuzz-47093-b"));
     }
 
     @Test
-    public void ossFuzz_41117() throws JoranException  {
+    public void ossFuzz_41117() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117.xml");
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
         checker.assertErrorCount(2);
@@ -715,26 +714,26 @@ public class JoranConfiguratorTest {
     }
 
     @Test
-    public void ossFuzz_41117_bis() throws JoranException  {
+    public void ossFuzz_41117_bis() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117-bis.xml");
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
     }
 
     @Test
-    public void ossFuzz_41117_bis2() throws JoranException  {
+    public void ossFuzz_41117_bis2() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117-bis2.xml");
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
     }
 
     @Test
-    public void ossFuzz_47293() throws JoranException  {
+    public void ossFuzz_47293() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47293.xml");
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.MISSING_IF_EMPTY_MODEL_STACK);
     }
 
 
     @Test
-    public void dateConverterWithLocale() throws JoranException  {
+    public void dateConverterWithLocale() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "dateWithLocale.xml");
         checker.assertContainsMatch(Status.INFO, "Setting zoneId to \"Australia/Perth\"");
         checker.assertContainsMatch(Status.INFO, "Setting locale to \"en_AU\"");
@@ -742,20 +741,56 @@ public class JoranConfiguratorTest {
     }
 
     @Test
-    public void consoleCharsetTest() throws JoranException  {
-        if(EnvUtil.isJDK21OrHigher()) {
+    public void consoleCharsetTest() throws JoranException {
+        if (EnvUtil.isJDK21OrHigher()) {
             configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "consoleCharset.xml");
             checker.assertContainsMatch(Status.INFO, "About to instantiate property definer of type \\[ch.qos.logback.core.property.ConsoleCharsetPropertyDefiner\\]");
             checker.assertContainsMatch(Status.WARN, "System.console\\(\\) returned null. Cannot compute console's charset, returning");
-            checker.assertContainsMatch("Setting property consoleCharset=null in scope LOCAL" );
+            checker.assertContainsMatch("Setting property consoleCharset=null in scope LOCAL");
             checker.assertContainsMatch("Converting the string \\\"null. as Charset.defaultCharset\\(\\)");
             //StatusPrinter.print(loggerContext);
         }
     }
 
     @Test
+    public void levelFromAPropertyTest() throws JoranException {
+
+
+        String loggerASysLevelKey = "LOGGER_A_SYS_LEVEL";
+        String loggerNestedSysLevelKey = "LOGGER_NESTED_SYS_LEVEL";
+        System.setProperty(loggerASysLevelKey, "WARN");
+        System.setProperty(loggerNestedSysLevelKey, "ERROR");
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "levelFromAProperty.xml");
+
+
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+
+
+        Logger loggerA = loggerContext.getLogger("A");
+        Logger loggerA_SYS = loggerContext.getLogger("A_SYS");
+
+        Logger loggerNESTED = loggerContext.getLogger("NESTED");
+
+        Logger loggerNESTED_SYS = loggerContext.getLogger("NESTED_SYS");
+
+
+        assertEquals(Level.TRACE, root.getLevel());
+        assertEquals(Level.WARN, loggerA.getLevel());
+        assertEquals(Level.WARN, loggerA_SYS.getLevel());
+
+        assertEquals(Level.ERROR, loggerNESTED.getLevel());
+        assertEquals(Level.ERROR, loggerNESTED_SYS.getLevel());
+
+        checker.assertContainsMatch(Status.INFO, "value \\\"WARN\\\" substituted for \\\"\\$\\{LOGGER_A_LEVEL\\}\\\"");
+
+        System.clearProperty(loggerASysLevelKey);
+        System.clearProperty(loggerNestedSysLevelKey);
+
+    }
+
+    @Test
     public void modelSerialization() throws JoranException, IOException, ClassNotFoundException {
-        String outputPath = OUTPUT_DIR_PREFIX+"minimal_"+diff+ MODEL_CONFIG_FILE_EXTENSION;
+        String outputPath = OUTPUT_DIR_PREFIX + "minimal_" + diff + MODEL_CONFIG_FILE_EXTENSION;
 
         loggerContext.putProperty("targetModelFile", outputPath);
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "model/minimal.xml");
@@ -775,23 +810,18 @@ public class JoranConfiguratorTest {
 
         assertEquals(2, configurationModel.getSubModels().size());
 
-        SerializeModelModel smm = (SerializeModelModel)  configurationModel.getSubModels().get(0);
+        SerializeModelModel smm = (SerializeModelModel) configurationModel.getSubModels().get(0);
         assertEquals("${targetModelFile}", smm.getFile());
 
 
-        LoggerModel loggerModel = (LoggerModel)  configurationModel.getSubModels().get(1);
+        LoggerModel loggerModel = (LoggerModel) configurationModel.getSubModels().get(1);
         assertEquals("ModelSerializationTest", loggerModel.getName());
 
         //    <serializeModel file="${targetModelFile}"/>
         //    <logger name="ModelSerializationTest" level="DEBUG"/>
 
 
-
     }
-
-
-
-
 
 
     // reproduction requires placing a binary properties file. Probably not worth the effort.

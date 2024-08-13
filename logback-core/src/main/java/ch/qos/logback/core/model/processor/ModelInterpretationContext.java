@@ -163,7 +163,12 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
     }
 
     public String subst(String ref)  {
-        return variableSubstitutionsHelper.subst(ref);
+
+        String substituted = variableSubstitutionsHelper.subst(ref);
+        if(ref != null && !ref.equals(substituted)) {
+            addInfo("value \""+substituted+"\" substituted for \""+ref+"\"");
+        }
+        return substituted;
     }
 
 
