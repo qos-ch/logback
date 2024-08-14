@@ -22,7 +22,7 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
 
 /**
- * Similar to AppenderBase except that derived appenders need to handle thread
+ * Similar to {@link AppenderBase} except that derived appenders need to handle thread
  * synchronization on their own.
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -30,7 +30,7 @@ import ch.qos.logback.core.status.WarnStatus;
  */
 abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase implements Appender<E> {
 
-    protected boolean started = false;
+    protected volatile boolean started = false;
 
     // using a ThreadLocal instead of a boolean add 75 nanoseconds per
     // doAppend invocation. This is tolerable as doAppend takes at least a few

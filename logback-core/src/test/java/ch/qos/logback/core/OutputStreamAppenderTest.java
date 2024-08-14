@@ -82,8 +82,8 @@ public class OutputStreamAppenderTest {
 
     public void headerFooterCheck(String fileHeader, String presentationHeader, String presentationFooter,
             String fileFooter) {
-        OutputStreamAppender<Object> wa = new OutputStreamAppender<Object>();
-        wa.setContext(context);
+        OutputStreamAppender<Object> osa = new OutputStreamAppender<Object>();
+        osa.setContext(context);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         SamplePatternLayout<Object> spl = new SamplePatternLayout<Object>();
@@ -99,16 +99,17 @@ public class OutputStreamAppenderTest {
         encoder.setLayout(spl);
         encoder.setContext(context);
 
-        wa.setEncoder(encoder);
-        wa.setOutputStream(baos);
-        wa.start();
+        osa.setEncoder(encoder);
+        osa.setOutputStream(baos);
+        osa.start();
 
-        wa.stop();
+        osa.stop();
         String result = baos.toString();
 
         String expectedHeader = emtptyIfNull(fileHeader) + emtptyIfNull(presentationHeader);
 
         System.out.println(result);
+
         Assertions.assertTrue(result.startsWith(expectedHeader), result);
 
         String expectedFooter = emtptyIfNull(presentationFooter) + emtptyIfNull(fileFooter);

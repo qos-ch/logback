@@ -77,9 +77,17 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             addStatus(new ErrorStatus("No output stream set for the appender named \"" + name + "\".", this));
             errors++;
         }
+
+        if (encoder == null) {
+            addWarn("Encoder has not been set. Cannot invoke its init method.");
+            errors++;
+        }
+
+
         // only error free appenders should be activated
         if (errors == 0) {
             super.start();
+            encoderInit();
         }
     }
 
@@ -164,12 +172,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             // close any previously opened output stream
             closeOutputStream();
             this.outputStream = outputStream;
-            if (encoder == null) {
-                addWarn("Encoder has not been set. Cannot invoke its init method.");
-                return;
-            }
 
-            encoderInit();
         } finally {
             streamWriteLock.unlock();
         }
@@ -198,8 +201,11 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             return;
 
         streamWriteLock.lock();
+
         try {
-            writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
+            if(isStarted()) {
+                writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
+            }
         } finally {
             streamWriteLock.unlock();
         }

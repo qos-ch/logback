@@ -22,7 +22,9 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
 
 /**
- * Sets a skeleton implementation for appenders.
+ * <p>Sets a skeleton implementation for appenders.</p>
+ *
+ * <p>It is coarsely synchronized in its {@link #doAppend(E)} method.</p>
  * 
  * <p>
  * For more information about this appender, please refer to the online manual
