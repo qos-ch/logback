@@ -61,6 +61,19 @@ public class CoreConstants {
     public static final String ISO8601_STR = "ISO8601";
     public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
 
+    /**
+     * Keyword for setting a strict ISO8601 pattern which includes 'T' between the date and the time
+     *
+     * @since 1.5.7
+     */
+    public static final String STRICT_STR = "STRICT";
+    /**
+     * Strict ISO8601 pattern which includes 'T' between the date and the time
+     * @since 15.7
+     */
+    public static final String STRICT_ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ss,SSS";
+
+
     public static final String FILE_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HHmm";
     public static final String DAILY_DATE_PATTERN = "yyyy-MM-dd";
 

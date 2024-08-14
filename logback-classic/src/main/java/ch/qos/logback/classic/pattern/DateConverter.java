@@ -30,12 +30,17 @@ public class DateConverter extends ClassicConverter {
     public void start() {
 
         String datePattern = getFirstOption();
+
         if (datePattern == null) {
             datePattern = CoreConstants.ISO8601_PATTERN;
         }
 
         if (datePattern.equals(CoreConstants.ISO8601_STR)) {
             datePattern = CoreConstants.ISO8601_PATTERN;
+        }
+
+        if (datePattern.equals(CoreConstants.STRICT_STR)) {
+            datePattern = CoreConstants.STRICT_ISO8601_PATTERN;
         }
 
         List<String> optionList = getOptionList();

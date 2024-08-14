@@ -13,11 +13,7 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.classic.ClassicTestConstants;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.*;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
@@ -31,13 +27,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MarkerFactory;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConverterTest {
 
@@ -45,7 +40,7 @@ public class ConverterTest {
     LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     Logger logger = loggerContext.getLogger(ConverterTest.class);
     LoggingEvent le;
-    List<String> optionList = new ArrayList<String>();
+    //List<String> optionList = new ArrayList<String>();
 
     // The LoggingEvent is massaged with an FCQN of FormattingConverter. This
     // forces the returned caller information to match the caller stack for
@@ -77,7 +72,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("78", buf.toString());
+            assertEquals("73", buf.toString());
         }
     }
 
@@ -134,8 +129,7 @@ public class ConverterTest {
 
         {
             DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
-            this.optionList.add("3");
-            converter.setOptionList(this.optionList);
+            converter.setOptionList(List.of("3"));
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
         }
@@ -152,8 +146,7 @@ public class ConverterTest {
 
         {
             ClassicConverter converter = new LoggerConverter();
-            this.optionList.add("20");
-            converter.setOptionList(this.optionList);
+            converter.setOptionList(List.of("20"));
             converter.start();
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
@@ -162,9 +155,7 @@ public class ConverterTest {
 
         {
             DynamicConverter<ILoggingEvent> converter = new LoggerConverter();
-            this.optionList.clear();
-            this.optionList.add("0");
-            converter.setOptionList(this.optionList);
+            converter.setOptionList(List.of("0"));
             converter.start();
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
@@ -175,8 +166,7 @@ public class ConverterTest {
     @Test
     public void testVeryLongLoggerName() {
         ClassicConverter converter = new LoggerConverter();
-        this.optionList.add("5");
-        converter.setOptionList(this.optionList);
+        converter.setOptionList(List.of("5"));
         converter.start();
         StringBuilder buf = new StringBuilder();
 
@@ -239,9 +229,7 @@ public class ConverterTest {
 
         {
             DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.add("2");
-            this.optionList.add("XXX");
-            converter.setOptionList(this.optionList);
+            converter.setOptionList(List.of("2", "XXX"));
             converter.start();
 
             StringBuilder buf = new StringBuilder();
@@ -255,11 +243,7 @@ public class ConverterTest {
 
         {
             DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.clear();
-            this.optionList.add("2");
-            this.optionList.add("XXX");
-            this.optionList.add("*");
-            converter.setOptionList(this.optionList);
+            converter.setOptionList(List.of("2", "XXX", "*"));
             converter.start();
 
             StringBuilder buf = new StringBuilder();
@@ -272,11 +256,7 @@ public class ConverterTest {
         }
         {
             DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.clear();
-            this.optionList.add("2");
-            this.optionList.add("XXX");
-            this.optionList.add("+");
-            converter.setOptionList(this.optionList);
+            converter.setOptionList(List.of("2", "XXX", "*"));
             converter.start();
 
             StringBuilder buf = new StringBuilder();
@@ -290,11 +270,7 @@ public class ConverterTest {
 
         {
             DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.clear();
-            this.optionList.add("2");
-            this.optionList.add("XXX");
-            this.optionList.add("*");
-            converter.setOptionList(this.optionList);
+            converter.setOptionList(List.of("2", "XXX", "*"));
             converter.start();
 
             StringBuilder buf = new StringBuilder();
@@ -307,16 +283,10 @@ public class ConverterTest {
 
         {
             DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.clear();
-            
+
             boolean jdk18 = EnvUtil.isJDK18OrHigher();
             // jdk 18EA creates a different stack trace
-            if(jdk18) {
-               this.optionList.add("2..3");
-            } else {
-                this.optionList.add("4..5");
-            }
-            converter.setOptionList(this.optionList);
+            converter.setOptionList(jdk18 ? List.of("2..3") : List.of("4..5"));
             converter.start();
 
             StringBuilder buf = new StringBuilder();
@@ -352,9 +322,7 @@ public class ConverterTest {
     @Test
     public void testSyslogStart() throws Exception {
         DynamicConverter<ILoggingEvent> converter = new SyslogStartConverter();
-        this.optionList.clear();
-        this.optionList.add("MAIL");
-        converter.setOptionList(this.optionList);
+        converter.setOptionList(List.of("MAIL"));
         converter.start();
 
         ILoggingEvent event = makeLoggingEvent(null);
@@ -371,9 +339,7 @@ public class ConverterTest {
         logbackMDCAdapter.clear();
         logbackMDCAdapter.put("someKey", "someValue");
         MDCConverter converter = new MDCConverter();
-        this.optionList.clear();
-        this.optionList.add("someKey");
-        converter.setOptionList(optionList);
+        converter.setOptionList(List.of("someKey"));
         converter.start();
 
         ILoggingEvent event = makeLoggingEvent(null);
@@ -401,9 +367,7 @@ public class ConverterTest {
     public void contextProperty() {
         PropertyConverter converter = new PropertyConverter();
         converter.setContext(loggerContext);
-        List<String> ol = new ArrayList<String>();
-        ol.add("k");
-        converter.setOptionList(ol);
+        converter.setOptionList(List.of("k"));
         converter.start();
         loggerContext.setName("aValue");
         loggerContext.putProperty("k", "v");
@@ -426,5 +390,31 @@ public class ConverterTest {
         event.setSequenceNumber(123);
         assertEquals("123", converter.convert(event));
         StatusPrinter.print(loggerContext);
+    }
+
+    @Test
+    void dateConverterTest() {
+        dateConverterChecker(List.of("STRICT", "GMT"), "2024-08-14T15:29:25,956");
+        dateConverterChecker(List.of("ISO8601", "GMT"), "2024-08-14 15:29:25,956");
+        dateConverterChecker(List.of("ISO8601", "UTC"), "2024-08-14 15:29:25,956");
+        dateConverterChecker(List.of("yyyy-MM-EE", "UTC", "fr-CH"), "2024-08-mer.");
+
+    }
+
+    void dateConverterChecker(List<String> options, String expected) {
+        DateConverter dateConverter = new DateConverter();
+        dateConverter.setOptionList(options) ;
+        dateConverter.setContext(loggerContext);
+        dateConverter.start();
+
+        assertTrue(dateConverter.isStarted());
+        LoggingEvent event = makeLoggingEvent(null);
+
+        // 2024-08-14T1Z:29:25,956 GMT
+        long millis = 1_723_649_365_956L; //System.currentTimeMillis();
+        Instant now = Instant.ofEpochMilli(millis);
+        event.setInstant(now);
+        String result = dateConverter.convert(event);
+        assertEquals(expected, result);
     }
 }
