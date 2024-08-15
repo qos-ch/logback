@@ -86,7 +86,28 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
     }
 
     private JoranConfigurator makeAnotherInstance() {
-        JoranConfigurator jc = new JoranConfigurator();
+        JoranConfigurator me = this;
+        JoranConfigurator jc = new JoranConfigurator() {
+            @Override
+            protected void sanityCheck(Model topModel) {
+                me.sanityCheck(topModel);
+            }
+
+            @Override
+            protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
+                me.addModelHandlerAssociations(defaultProcessor);
+            }
+
+            @Override
+            public void addElementSelectorAndActionAssociations(RuleStore rs) {
+                me.addElementSelectorAndActionAssociations(rs);
+            }
+
+            @Override
+            public void processModel(Model model) {
+                me.processModel(model);
+            }
+        };
         jc.setContext(context);
         return jc;
     }
