@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static ch.qos.logback.core.CoreConstants.MODEL_CONFIG_FILE_EXTENSION;
 
@@ -81,8 +82,12 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
             mc2mhl.link(defaultProcessor);
 
             // disallow simultaneous configurations of the same context
-            synchronized (context.getConfigurationLock()) {
+            ReentrantLock configurationLock   = context.getConfigurationLock();
+            try {
+                configurationLock.lock();
                 defaultProcessor.process(model);
+            } finally {
+                configurationLock.unlock();
             }
         } else {
             throw new LogbackException(

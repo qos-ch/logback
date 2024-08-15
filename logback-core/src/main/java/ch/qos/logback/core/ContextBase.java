@@ -23,12 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.spi.ConfigurationEventListener;
 import ch.qos.logback.core.spi.LifeCycle;
-import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.spi.SequenceNumberGenerator;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
@@ -47,7 +47,7 @@ public class ContextBase implements Context, LifeCycle {
     Map<String, String> propertyMap = new HashMap<String, String>();
     Map<String, Object> objectMap = new ConcurrentHashMap<>();
 
-    LogbackLock configurationLock = new LogbackLock();
+    protected ReentrantLock configurationLock = new ReentrantLock();
 
     final private List<ConfigurationEventListener> configurationEventListenerList = new CopyOnWriteArrayList<>();
 
@@ -61,7 +61,8 @@ public class ContextBase implements Context, LifeCycle {
     private LifeCycleManager lifeCycleManager;
     private SequenceNumberGenerator sequenceNumberGenerator;
 
-    private boolean started;
+    // 'started' is used to mitigate race conditions in stop() and possibly other methods, hence the volatile qualifier.
+    private volatile boolean started;
 
     public ContextBase() {
         initCollisionMaps();
@@ -223,7 +224,7 @@ public class ContextBase implements Context, LifeCycle {
         return birthTime;
     }
 
-    public Object getConfigurationLock() {
+    public ReentrantLock getConfigurationLock() {
         return configurationLock;
     }
 
@@ -337,8 +338,12 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     @Override
+    public void removeConfigurationEventListener(ConfigurationEventListener listener) {
+        configurationEventListenerList.remove(listener);
+    }
+
+    @Override
     public void fireConfigurationEvent(ConfigurationEvent configurationEvent) {
-        //System.out.println("xxxx fireConfigurationEvent  of "+configurationEvent);
         configurationEventListenerList.forEach( l -> l.listen(configurationEvent));
     }
 }

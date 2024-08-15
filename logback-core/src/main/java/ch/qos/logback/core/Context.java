@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.locks.ReentrantLock;
 
 import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.spi.ConfigurationEventListener;
@@ -107,7 +108,7 @@ public interface Context extends PropertyContainer {
     /**
      * Object used for synchronization purposes. INTENDED FOR INTERNAL USAGE.
      */
-    Object getConfigurationLock();
+    ReentrantLock getConfigurationLock();
 
     /**
      * Returns the ScheduledExecutorService for this context.
@@ -169,12 +170,17 @@ public interface Context extends PropertyContainer {
      * <p>The propagation of {@link ConfigurationEvent configuration events} is intended for internal testing
      * as well as some coordination between configurators.</p>
      *
-     *
      * @param listener
      * @since 1.3.6/1.4.6
      */
     void addConfigurationEventListener(ConfigurationEventListener listener);
 
+    /**
+     * Remove an existing ConfigurationEventListener
+     * @param listener
+     * @since 1.5.7
+     */
+    default void removeConfigurationEventListener(ConfigurationEventListener listener) {};
     /**
      * Fire {@link ConfigurationEvent} by invoking {@link #addConfigurationEventListener registered listeners}.
      *

@@ -33,7 +33,7 @@ class ChangeDetectedListener  implements ConfigurationEventListener {
     public void listen(ConfigurationEvent configurationEvent) {
         switch (configurationEvent.getEventType()) {
         case CHANGE_DETECTED:
-            System.out.println(this.toString() + "#listen Change detected" + " count="+countDownLatch.getCount());
+            System.out.println(this.toString() + "#listen Change detected " + configurationEvent +" count="+countDownLatch.getCount());
 
             countDownLatch.countDown();
             Object data = configurationEvent.getData();

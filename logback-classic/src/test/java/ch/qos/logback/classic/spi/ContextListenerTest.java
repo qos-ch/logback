@@ -26,47 +26,48 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ContextListenerTest {
 
-    LoggerContext context;
+    LoggerContext loggerContext;
     BasicContextListener listener;
 
     @BeforeEach
     public void setUp() throws Exception {
-        context = new LoggerContext();
+        loggerContext = new LoggerContext();
+        loggerContext.start();
         listener = new BasicContextListener();
-        context.addListener(listener);
+        loggerContext.addListener(listener);
     }
 
     @Test
     public void testNotifyOnReset() {
-        context.reset();
+        loggerContext.reset();
         assertEquals(UpdateType.RESET, listener.updateType);
-        assertEquals(listener.context, context);
+        assertEquals(listener.context, loggerContext);
     }
 
     @Test
-    public void testNotifyOnStopResistant() {
+    public void testResistantListener_NotifyOnStop() {
         listener.setResetResistant(true);
-        context.stop();
+        loggerContext.stop();
         assertEquals(UpdateType.STOP, listener.updateType);
-        assertEquals(listener.context, context);
+        assertEquals(listener.context, loggerContext);
     }
 
     @Test
-    public void testNotifyOnStopNotResistant() {
-        context.stop();
+    public void testNotResistantListener_NotifyOnStop() {
+        loggerContext.stop();
         assertEquals(UpdateType.RESET, listener.updateType);
-        assertEquals(listener.context, context);
+        assertEquals(listener.context, loggerContext);
     }
 
     @Test
     public void testNotifyOnStart() {
-        context.start();
+        loggerContext.start();
         assertEquals(UpdateType.START, listener.updateType);
-        assertEquals(listener.context, context);
+        assertEquals(listener.context, loggerContext);
     }
 
     void checkLevelChange(String loggerName, Level level) {
-        Logger logger = context.getLogger(loggerName);
+        Logger logger = loggerContext.getLogger(loggerName);
         logger.setLevel(level);
 
         assertEquals(UpdateType.LEVEL_CHANGE, listener.updateType);

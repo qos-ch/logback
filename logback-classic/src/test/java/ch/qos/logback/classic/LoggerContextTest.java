@@ -1,35 +1,29 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic;
 
-import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.status.StatusManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
+
+import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LoggerContextTest {
     LoggerContext lc;
@@ -251,8 +245,8 @@ public class LoggerContextTest {
         assertNotNull(fileCollisions);
         assertTrue(fileCollisions.isEmpty());
 
-        Map<String, FileNamePattern> filenamePatternCollisionMap = (Map<String, FileNamePattern>) lc
-                .getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
+        Map<String, FileNamePattern> filenamePatternCollisionMap = (Map<String, FileNamePattern>) lc.getObject(
+                        CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         assertNotNull(filenamePatternCollisionMap);
         assertTrue(filenamePatternCollisionMap.isEmpty());
     }

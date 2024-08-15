@@ -22,6 +22,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.hook.ShutdownHook;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -71,6 +73,29 @@ public class ContextUtil extends ContextAwareBase {
         if (!frameworkPackages.contains(packageName)) {
             frameworkPackages.add(packageName);
         }
+    }
+
+    /**
+     * Add a shutdown hook thread with the JVM runtime.
+     *
+     * If a previous shutdown hook thread was registered, it is replaced.
+     * @param hook
+     * @since 1.5.7
+     */
+    public void addOrReplaceShutdownHook(ShutdownHook hook) {
+        Runtime runtime = Runtime.getRuntime();
+
+        Thread oldShutdownHookTread = (Thread) context.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
+        if(oldShutdownHookTread != null) {
+            addInfo("Removing old shutdown hook from JVM runtime");
+            runtime.removeShutdownHook(oldShutdownHookTread);
+        }
+
+        Thread hookThread = new Thread(hook, "Logback shutdown hook [" + context.getName() + "]");
+        addInfo("Registering shutdown hook with JVM runtime.");
+        context.putObject(CoreConstants.SHUTDOWN_HOOK_THREAD, hookThread);
+        runtime.addShutdownHook(hookThread);
+
     }
 
 }

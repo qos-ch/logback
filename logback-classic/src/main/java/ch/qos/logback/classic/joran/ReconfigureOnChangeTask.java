@@ -30,7 +30,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
 
 import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationChangeDetectorRunningEvent;
-import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationEndedEvent;
+import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationEndedSuccessfullyEvent;
 
 public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnable {
 
@@ -92,6 +92,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         StatusUtil statusUtil = new StatusUtil(context);
         Model failsafeTop = jc.recallSafeConfiguration();
         URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
+        addInfo("Resetting loggerContext ["+lc.getName()+"]");
         lc.reset();
         long threshold = System.currentTimeMillis();
         try {
@@ -129,8 +130,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
                 joranConfigurator.processModel(failsafeTop);
                 addInfo(RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
                 joranConfigurator.registerSafeConfiguration(failsafeTop);
-                context.fireConfigurationEvent(newConfigurationEndedEvent(this));
-                addInfo("after registerSafeConfiguration");
+                context.fireConfigurationEvent(newConfigurationEndedSuccessfullyEvent(this));
             } catch (Exception e) {
                 addError("Unexpected exception thrown by a configuration considered safe.", e);
             }

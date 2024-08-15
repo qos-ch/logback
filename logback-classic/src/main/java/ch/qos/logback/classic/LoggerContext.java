@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.locks.ReentrantLock;
 
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -57,7 +58,9 @@ import org.slf4j.spi.MDCAdapter;
  */
 public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCycle {
 
-    /** Default setting of packaging data in stack traces */
+    /**
+     * Default setting of packaging data in stack traces
+     */
     public static final boolean DEFAULT_PACKAGING_DATA = false;
 
     final Logger root;
@@ -73,7 +76,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     SequenceNumberGenerator sequenceNumberGenerator = null; // by default there is no SequenceNumberGenerator
 
     MDCAdapter mdcAdapter;
-
 
     private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
 
@@ -91,6 +93,10 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         initEvaluatorMap();
         size = 1;
         this.frameworkPackages = new ArrayList<String>();
+        // In 1.5.7, the stop() method assumes that at some point the context has been started
+        // since earlier versions of logback did not mandate calling the start method
+        // we need to call in the constructor
+        this.start();
     }
 
     void initEvaluatorMap() {
@@ -116,8 +122,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         super.setName(name);
         updateLoggerContextVO();
     }
-
-
 
     public final Logger getLogger(final Class<?> clazz) {
         return getLogger(clazz.getName());
@@ -194,9 +198,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
 
     final void noAppenderDefinedWarning(final Logger logger) {
         if (noAppenderWarning++ == 0) {
-            getStatusManager().add(new WarnStatus(
-                    "No appenders present in context [" + getName() + "] for logger [" + logger.getName() + "].",
-                    logger));
+            getStatusManager().add(new WarnStatus("No appenders present in context [" + getName() + "] for logger [" + logger.getName() + "].", logger));
         }
     }
 
@@ -219,17 +221,24 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         return packagingDataEnabled;
     }
 
-    private void cancelScheduledTasks() {
-        for (ScheduledFuture<?> sf : scheduledFutures) {
-            sf.cancel(false);
+    void cancelScheduledTasks() {
+
+        try {
+            configurationLock.lock();
+
+            for (ScheduledFuture<?> sf : scheduledFutures) {
+                sf.cancel(false);
+            }
+            scheduledFutures.clear();
+        } finally {
+            configurationLock.unlock();
         }
-        scheduledFutures.clear();
     }
 
     private void resetStatusListenersExceptResetResistant() {
         StatusManager sm = getStatusManager();
         for (StatusListener sl : sm.getCopyOfStatusListenerList()) {
-            if(!sl.isResetResistant()) {
+            if (!sl.isResetResistant()) {
                 sm.remove(sl);
             }
         }
@@ -254,29 +263,28 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         turboFilterList.clear();
     }
 
-    final FilterReply getTurboFilterChainDecision_0_3OrMore(final Marker marker, final Logger logger, final Level level,
-            final String format, final Object[] params, final Throwable t) {
+    final FilterReply getTurboFilterChainDecision_0_3OrMore(final Marker marker, final Logger logger, final Level level, final String format,
+                    final Object[] params, final Throwable t) {
         if (turboFilterList.size() == 0) {
             return FilterReply.NEUTRAL;
         }
         return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, params, t);
     }
 
-    final FilterReply getTurboFilterChainDecision_1(final Marker marker, final Logger logger, final Level level,
-            final String format, final Object param, final Throwable t) {
+    final FilterReply getTurboFilterChainDecision_1(final Marker marker, final Logger logger, final Level level, final String format, final Object param,
+                    final Throwable t) {
         if (turboFilterList.size() == 0) {
             return FilterReply.NEUTRAL;
         }
         return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, new Object[] { param }, t);
     }
 
-    final FilterReply getTurboFilterChainDecision_2(final Marker marker, final Logger logger, final Level level,
-            final String format, final Object param1, final Object param2, final Throwable t) {
+    final FilterReply getTurboFilterChainDecision_2(final Marker marker, final Logger logger, final Level level, final String format, final Object param1,
+                    final Object param2, final Throwable t) {
         if (turboFilterList.size() == 0) {
             return FilterReply.NEUTRAL;
         }
-        return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format,
-                new Object[] { param1, param2 }, t);
+        return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, new Object[] { param1, param2 }, t);
     }
 
     // === start listeners ==============================================
@@ -340,10 +348,21 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     public void stop() {
-        reset();
-        fireOnStop();
-        resetAllListeners();
-        super.stop();
+        if (!isStarted())
+            return;
+
+        try {
+            configurationLock.lock();
+            if (!isStarted())
+                return;
+
+            reset();
+            fireOnStop();
+            resetAllListeners();
+            super.stop();
+        } finally {
+            configurationLock.unlock();
+        }
     }
 
     /**
@@ -395,7 +414,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         return frameworkPackages;
     }
 
-
     @Override
     public void setSequenceNumberGenerator(SequenceNumberGenerator sng) {
         this.sequenceNumberGenerator = sng;
@@ -411,7 +429,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     public void setMDCAdapter(MDCAdapter anAdapter) {
-        if(this.mdcAdapter !=  null) {
+        if (this.mdcAdapter != null) {
             StatusManager sm = getStatusManager();
             sm.add(new WarnStatus("mdcAdapter being reset a second time", this));
         }

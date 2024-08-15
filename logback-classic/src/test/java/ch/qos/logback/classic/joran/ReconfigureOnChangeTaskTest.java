@@ -39,7 +39,6 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.WarnStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Logger;
@@ -185,6 +184,7 @@ public class ReconfigureOnChangeTaskTest {
     @Test
     @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
     public void fallbackToSafe_FollowedByRecovery() throws IOException, JoranException, InterruptedException {
+        addInfo("Start fallbackToSafe_FollowedByRecovery", this);
         String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_fallbackToSafe-" + diff + ".xml";
         File topLevelFile = new File(path);
         writeToFile(topLevelFile,
@@ -193,30 +193,33 @@ public class ReconfigureOnChangeTaskTest {
         addResetResistantOnConsoleStatusListener();
         configure(topLevelFile);
 
-        long afterFirstConfiguration = System.currentTimeMillis();
         CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
-        CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneListener();
+        CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneSuccessfullyListener();
 
         String badXML = "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>";
         writeToFile(topLevelFile, badXML);
         changeDetectedLatch.await();
         configurationDoneLatch.await();
-        addInfo("Woke from configurationDoneLatch.await()", this);
 
         statusChecker.assertContainsMatch(Status.ERROR, CoreConstants.XML_PARSING);
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
         statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
 
+        // clear required for checks down below
         loggerContext.getStatusManager().clear();
 
-        addInfo("after loggerContext.getStatusManager().clear() ", this);
-        CountDownLatch secondConfigEndedLatch = registerNewReconfigurationDoneListener();
+        addInfo("RECOVERY - Writing error-free config file  ", this);
+        CountDownLatch secondConfigEndedLatch = registerNewReconfigurationDoneSuccessfullyListener();
 
+        // recovery
         writeToFile(topLevelFile,
                 "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
 
-        secondConfigEndedLatch.await();
+
         try {
+            addInfo("Awaiting secondConfigEndedLatch ", this);
+            secondConfigEndedLatch.await(5, TimeUnit.SECONDS);
+            addInfo("after secondConfigEndedLatch.await ", this);
             statusChecker.assertIsErrorFree();
             statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
         } finally {
@@ -263,7 +266,7 @@ public class ReconfigureOnChangeTaskTest {
         System.out.println("===================================================");
 
         CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
-        CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneListener(roct);
+        CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneSuccessfullyListener(roct);
 
         writeToFile(innerFile, "<included>\n<root>\n</included>");
         changeDetectedLatch.await();
@@ -276,7 +279,7 @@ public class ReconfigureOnChangeTaskTest {
 
         loggerContext.getStatusManager().clear();
 
-        CountDownLatch secondDoneLatch = registerNewReconfigurationDoneListener();
+        CountDownLatch secondDoneLatch = registerNewReconfigurationDoneSuccessfullyListener();
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
         secondDoneLatch.await();
 
@@ -285,11 +288,11 @@ public class ReconfigureOnChangeTaskTest {
 
     }
 
-    CountDownLatch registerNewReconfigurationDoneListener() {
-        return registerNewReconfigurationDoneListener(null);
+    CountDownLatch registerNewReconfigurationDoneSuccessfullyListener() {
+        return registerNewReconfigurationDoneSuccessfullyListener(null);
     }
 
-    CountDownLatch registerNewReconfigurationDoneListener(ReconfigureOnChangeTask roct) {
+    CountDownLatch registerNewReconfigurationDoneSuccessfullyListener(ReconfigureOnChangeTask roct) {
         CountDownLatch latch = new CountDownLatch(1);
         ReconfigurationDoneListener reconfigurationDoneListener = new ReconfigurationDoneListener(latch, roct);
         loggerContext.addConfigurationEventListener(reconfigurationDoneListener);
@@ -367,9 +370,6 @@ public class ReconfigureOnChangeTaskTest {
         File file = new File(SCAN_LOGBACK_474_FILE_AS_STR);
         addResetResistantOnConsoleStatusListener();
         configure(file);
-
-        // ReconfigureOnChangeTask roct = waitForReconfigureOnChangeTaskToRun();
-        System.out.println(" ------------ creating ReconfigureOnChangeTaskHarness");
 
         int expectedResets = 2;
         ReconfigureOnChangeTaskHarness harness = new ReconfigureOnChangeTaskHarness(loggerContext, expectedResets);

@@ -12,8 +12,7 @@
 package ch.qos.logback.core.joran;
 
 import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
-import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationEndedEvent;
-import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationStartedEvent;
+import static ch.qos.logback.core.spi.ConfigurationEvent.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +21,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.xml.sax.InputSource;
 
@@ -182,8 +182,11 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
             addInfo("Registering current configuration as safe fallback point");
             registerSafeConfiguration(top);
+            context.fireConfigurationEvent(newConfigurationEndedSuccessfullyEvent(this));
+        } else {
+            context.fireConfigurationEvent(newConfigurationEndedWithXMLParsingErrorsEvent(this));
         }
-        context.fireConfigurationEvent(newConfigurationEndedEvent(this));
+
 
     }
 
@@ -212,8 +215,13 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         addModelHandlerAssociations(defaultProcessor);
 
         // disallow simultaneous configurations of the same context
-        synchronized (context.getConfigurationLock()) {
+        ReentrantLock configurationLock   = context.getConfigurationLock();
+
+        try {
+            configurationLock.lock();
             defaultProcessor.process(model);
+        } finally {
+            configurationLock.unlock();
         }
     }
 

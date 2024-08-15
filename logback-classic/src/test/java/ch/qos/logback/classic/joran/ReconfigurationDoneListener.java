@@ -23,6 +23,7 @@ class ReconfigurationDoneListener implements ConfigurationEventListener {
     CountDownLatch countDownLatch;
 
     ReconfigureOnChangeTask roct;
+
     ReconfigurationDoneListener(CountDownLatch countDownLatch,  ReconfigureOnChangeTask aRoct) {
         this.countDownLatch = countDownLatch;
         this.roct = aRoct;
@@ -31,7 +32,7 @@ class ReconfigurationDoneListener implements ConfigurationEventListener {
     @Override
     public void listen(ConfigurationEvent configurationEvent) {
         switch (configurationEvent.getEventType()) {
-        case CONFIGURATION_ENDED:
+            case CONFIGURATION_ENDED_SUCCESSFULLY:
             if(roct == null) {
                 countDownLatch.countDown();
             } else {
