@@ -127,9 +127,9 @@
                         --add-reads ch.qos.logback.core=ALL-UNNAMED
                     </argLine>
                     <parallel>classes</parallel>
-                    <threadCount>8</threadCount>
+                    <threadCount>20</threadCount>
                     <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->
-                    <forkCount>1</forkCount>
+                    <forkCount>5</forkCount>
                     <reuseForks>true</reuseForks>
                     <reportFormat>plain</reportFormat>
                     <trimStackTrace>false</trimStackTrace>
