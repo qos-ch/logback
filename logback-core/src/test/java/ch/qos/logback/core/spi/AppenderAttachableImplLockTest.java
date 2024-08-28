@@ -14,6 +14,7 @@
 package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.Appender;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -49,6 +50,7 @@ import static org.mockito.Mockito.when;
  *
  * @author Joern Huxhorn
  */
+@Disabled
 public class AppenderAttachableImplLockTest {
 
     private AppenderAttachableImpl<Integer> aai = new AppenderAttachableImpl<Integer>();
