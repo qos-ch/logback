@@ -47,6 +47,10 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
         started = true;
     }
 
+    public boolean isTriggeringEvent(final File activeFile, final E event, long currentFilePosition) {
+        return isTriggeringEvent(activeFile, event);
+    }
+
     public boolean isTriggeringEvent(File activeFile, final E event) {
         long currentTime = getCurrentTime();
         long localNextCheck = atomicNextCheck.get();

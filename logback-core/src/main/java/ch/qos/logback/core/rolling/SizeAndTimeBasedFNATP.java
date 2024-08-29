@@ -15,7 +15,6 @@ import static ch.qos.logback.core.CoreConstants.MANUAL_URL_PREFIX;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.Date;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.NoAutoStart;
@@ -25,7 +24,6 @@ import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
-import ch.qos.logback.core.util.DefaultInvocationGate;
 import ch.qos.logback.core.util.InvocationGate;
 import ch.qos.logback.core.util.SimpleInvocationGate;
 
@@ -148,6 +146,11 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     @Override
     public boolean isTriggeringEvent(File activeFile, final E event) {
+        return isTriggeringEvent(activeFile, event, UNKNOWN_FILE_POSITION);
+    }
+
+    @Override
+    public boolean isTriggeringEvent(File activeFile, final E event, long currentFilePosition) {
 
         long currentTime = getCurrentTime();
         long localNextCheck = atomicNextCheck.get();
@@ -158,17 +161,17 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             atomicNextCheck.set(nextCheckCandidate);
             Instant instantInElapsedPeriod = dateInCurrentPeriod;
             elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(
-                    instantInElapsedPeriod, currentPeriodsCounter);
+                instantInElapsedPeriod, currentPeriodsCounter);
             currentPeriodsCounter = 0;
             setDateInCurrentPeriod(currentTime);
 
             return true;
         }
 
-        return checkSizeBasedTrigger(activeFile, currentTime);
+        return checkSizeBasedTrigger(activeFile, currentTime, currentFilePosition);
     }
 
-    private boolean checkSizeBasedTrigger(File activeFile, long currentTime) {
+    private boolean checkSizeBasedTrigger(File activeFile, long currentTime, long currentFilePosition) {
         // next check for roll-over based on size
         if (invocationGate.isTooSoon(currentTime)) {
             return false;
@@ -182,10 +185,11 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             addWarn("maxFileSize = null");
             return false;
         }
-        if (activeFile.length() >= maxFileSize.getSize()) {
+        long activeFileLength = currentFilePosition == UNKNOWN_FILE_POSITION ? activeFile.length() : currentFilePosition;
+        if (activeFileLength >= maxFileSize.getSize()) {
 
             elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod,
-                    currentPeriodsCounter);
+                currentPeriodsCounter);
             currentPeriodsCounter++;
             return true;
         }
@@ -204,7 +208,7 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
     @Override
     public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
         return tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod,
-                currentPeriodsCounter);
+            currentPeriodsCounter);
     }
 
     public void setMaxFileSize(FileSize aMaxFileSize) {
