@@ -31,5 +31,7 @@ public interface ArchiveRemover extends ContextAware {
 
     void setTotalSizeCap(long totalSizeCap);
 
+    void setCleanLogsByLastModifiedDate(boolean cleanLogsByLastModifiedDate);
+
     Future<?> cleanAsynchronously(Instant now);
 }

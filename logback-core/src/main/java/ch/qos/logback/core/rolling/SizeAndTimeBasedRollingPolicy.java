@@ -14,11 +14,14 @@
 package ch.qos.logback.core.rolling;
 
 import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP.Usage;
+import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
 
 public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> {
 
     FileSize maxFileSize;
+
+    Duration checkIncrement = null;
 
     @Override
     public void start() {
@@ -28,6 +31,10 @@ public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> 
             return;
         } else {
             addInfo("Archive files will be limited to [" + maxFileSize + "] each.");
+        }
+
+        if (checkIncrement != null) {
+            sizeAndTimeBasedFNATP.setCheckIncrement(checkIncrement);
         }
 
         sizeAndTimeBasedFNATP.setMaxFileSize(maxFileSize);
@@ -45,6 +52,10 @@ public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> 
 
     public void setMaxFileSize(FileSize aMaxFileSize) {
         this.maxFileSize = aMaxFileSize;
+    }
+
+    public void setCheckIncrement(Duration checkIncrement) {
+        this.checkIncrement = checkIncrement;
     }
 
     @Override
