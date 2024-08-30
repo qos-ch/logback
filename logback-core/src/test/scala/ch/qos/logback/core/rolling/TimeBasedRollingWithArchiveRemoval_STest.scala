@@ -125,27 +125,27 @@ class TimeBasedRollingWithArchiveRemoval_STest {
   }
 
   @Test def dailySizeBasedRollover {
-    var sizeAndTimeBasedFNATP: SizeAndTimeBasedFNATP[AnyRef] = new SizeAndTimeBasedFNATP[AnyRef]
-    sizeAndTimeBasedFNATP.setMaxFileSize("10000")
-    tbfnatp = sizeAndTimeBasedFNATP
+    var sizeAndTimeBasedFileNamingAndTriggeringPolicy: SizeAndTimeBasedFNATP[AnyRef] = new SizeAndTimeBasedFNATP[AnyRef]
+    sizeAndTimeBasedFileNamingAndTriggeringPolicy.setMaxFileSize("10000")
+    tbfnatp = sizeAndTimeBasedFileNamingAndTriggeringPolicy
     slashCount = computeSlashCount(DAILY_DATE_PATTERN)
     logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i.zip", MILLIS_IN_DAY, 5, 5 * 4)
     checkPatternCompliance(5 + 1 + slashCount, "\\d{4}-\\d{2}-\\d{2}-clean(\\.\\d)(.zip)?")
   }
 
   @Test def dailyChronologSizeBasedRollover {
-    var sizeAndTimeBasedFNATP: SizeAndTimeBasedFNATP[AnyRef] = new SizeAndTimeBasedFNATP[AnyRef]
-    sizeAndTimeBasedFNATP.setMaxFileSize("10000")
-    tbfnatp = sizeAndTimeBasedFNATP
+    var sizeAndTimeBasedFileNamingAndTriggeringPolicy: SizeAndTimeBasedFNATP[AnyRef] = new SizeAndTimeBasedFNATP[AnyRef]
+    sizeAndTimeBasedFileNamingAndTriggeringPolicy.setMaxFileSize("10000")
+    tbfnatp = sizeAndTimeBasedFileNamingAndTriggeringPolicy
     slashCount = 1
     logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip", MILLIS_IN_DAY, 5, 5 * 4)
     checkDirPatternCompliance(6)
   }
 
   @Test def dailyChronologSizeBasedRolloverWithSecondPhase {
-    var sizeAndTimeBasedFNATP: SizeAndTimeBasedFNATP[AnyRef] = new SizeAndTimeBasedFNATP[AnyRef]
-    sizeAndTimeBasedFNATP.setMaxFileSize("10000")
-    tbfnatp = sizeAndTimeBasedFNATP
+    var sizeAndTimeBasedFileNamingAndTriggeringPolicy: SizeAndTimeBasedFNATP[AnyRef] = new SizeAndTimeBasedFNATP[AnyRef]
+    sizeAndTimeBasedFileNamingAndTriggeringPolicy.setMaxFileSize("10000")
+    tbfnatp = sizeAndTimeBasedFileNamingAndTriggeringPolicy
     slashCount = 1
     val maxHistory = 5
     val simulatedNumberOfPeriods = maxHistory * 4

@@ -753,7 +753,7 @@ ch.qos.logback.core.rolling.RollingFileAppender
 ch.qos.logback.core.rolling.RollingPolicy
 ch.qos.logback.core.rolling.RollingPolicyBase
 ch.qos.logback.core.rolling.RolloverFailure
-ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP
+ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy
 ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy
 ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy
 ch.qos.logback.core.rolling.TimeBasedFileNamingAndTriggeringPolicy

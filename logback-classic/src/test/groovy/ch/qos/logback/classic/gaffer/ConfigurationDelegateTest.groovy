@@ -41,7 +41,7 @@ import ch.qos.logback.classic.net.SMTPAppender
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP
+import ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy
 import ch.qos.logback.core.joran.action.TimestampAction
 
 /**
@@ -255,7 +255,7 @@ class ConfigurationDelegateTest {
       file = logFile
       rollingPolicy(TimeBasedRollingPolicy) {
         fileNamePattern = "mylog-%d{yyyy-MM-dd}.%i.txt"
-        timeBasedFileNamingAndTriggeringPolicy(SizeAndTimeBasedFNATP) {
+        timeBasedFileNamingAndTriggeringPolicy(SizeAndTimeBasedFileNamingAndTriggeringPolicy) {
           if(asString)   
             maxFileSize = "100MB"
           else 

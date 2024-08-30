@@ -26,7 +26,7 @@ import ch.qos.logback.core.util.StatusPrinter
  * @author Ceki G&uuml;c&uuml;
  */
 class SizeAndTimeBasedFNATP_STest extends RollingScaffolding {
-  private var sizeAndTimeBasedFNATP: SizeAndTimeBasedFNATP[AnyRef] = null
+  private var sizeAndTimeBasedFileNamingAndTriggeringPolicy: SizeAndTimeBasedFNATP[AnyRef] = null
   private val rfa1: RollingFileAppender[AnyRef] = new RollingFileAppender[AnyRef]
   private val tbrp1: TimeBasedRollingPolicy[AnyRef] = new TimeBasedRollingPolicy[AnyRef]
   private val rfa2: RollingFileAppender[AnyRef] = new RollingFileAppender[AnyRef]
@@ -51,10 +51,10 @@ class SizeAndTimeBasedFNATP_STest extends RollingScaffolding {
   }
 
   private def initPolicies(rfa: RollingFileAppender[AnyRef], tbrp: TimeBasedRollingPolicy[AnyRef], filenamePattern: String, sizeThreshold: Int, givenTime: Long, lastCheck: Long): Unit = {
-    sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP[AnyRef]
+    sizeAndTimeBasedFileNamingAndTriggeringPolicy = new SizeAndTimeBasedFNATP[AnyRef]
     tbrp.setContext(context)
-    sizeAndTimeBasedFNATP.setMaxFileSize("" + sizeThreshold)
-    tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP)
+    sizeAndTimeBasedFileNamingAndTriggeringPolicy.setMaxFileSize("" + sizeThreshold)
+    tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFileNamingAndTriggeringPolicy)
     tbrp.setFileNamePattern(filenamePattern)
     tbrp.setParent(rfa)
     tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(givenTime)

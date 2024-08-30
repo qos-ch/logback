@@ -14,6 +14,8 @@
 package ch.qos.logback.core.rolling;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 import ch.qos.logback.core.spi.LifeCycle;
 
@@ -26,6 +28,17 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 
 public interface TriggeringPolicy<E> extends LifeCycle {
+
+    /**
+     *  Return the {@link LengthCounter} instance associated with this triggering
+     *  policy. The returned value may be null.
+     *
+     * @return a LengthCounter instance, may be null
+     * @since 1.5.8
+     */
+    default LengthCounter getLengthCounter() {
+        return null;
+    }
 
     /**
      * Should roll-over be triggered at this time?

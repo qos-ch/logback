@@ -17,7 +17,6 @@ import static ch.qos.logback.core.CoreConstants.CODES_URL;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
@@ -32,7 +31,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * Base implementation of {@link TimeBasedFileNamingAndTriggeringPolicy}.
  *
  * <p>See also derived classes {@link DefaultTimeBasedFileNamingAndTriggeringPolicy} and
- * {@link SizeAndTimeBasedFNATP}.
+ * {@link SizeAndTimeBasedFileNamingAndTriggeringPolicy}.
  *
  * </p>
  *

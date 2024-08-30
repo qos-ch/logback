@@ -266,15 +266,15 @@ public class RollingFileAppender<E> extends FileAppender<E> {
      */
     @SuppressWarnings("unchecked")
     public void setRollingPolicy(RollingPolicy policy) {
-        if (rollingPolicy instanceof TriggeringPolicy) {
+        if (this.rollingPolicy instanceof TriggeringPolicy) {
             String className = rollingPolicy.getClass().getSimpleName();
             addWarn("A rolling policy of type " + className + " was already set.");
             addWarn("Note that " + className + " doubles as a TriggeringPolicy");
             addWarn("See also "+RFA_RESET_RP_OR_TP);
         }
-        rollingPolicy = policy;
-        if (rollingPolicy instanceof TriggeringPolicy) {
-            triggeringPolicy = (TriggeringPolicy<E>) policy;
+        this.rollingPolicy = policy;
+        if (this.rollingPolicy instanceof TriggeringPolicy) {
+            this.triggeringPolicy = (TriggeringPolicy<E>) policy;
         }
 
     }

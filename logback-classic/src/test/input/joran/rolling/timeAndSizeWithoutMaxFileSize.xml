@@ -10,7 +10,7 @@
 			<fileNamePattern>c:/tmp/logs/rolling-test-%d{yyyy-MM-dd}.%i.log
 			</fileNamePattern>
 			<timeBasedFileNamingAndTriggeringPolicy
-				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP" />
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFileNamingAndTriggeringPolicy" />
 			<maxHistory>30</maxHistory>
 			<cleanHistoryOnStart>true</cleanHistoryOnStart>
 		</rollingPolicy>

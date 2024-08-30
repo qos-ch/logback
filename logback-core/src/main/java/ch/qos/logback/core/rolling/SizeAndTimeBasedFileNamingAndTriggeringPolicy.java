@@ -15,7 +15,6 @@ import static ch.qos.logback.core.CoreConstants.MANUAL_URL_PREFIX;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.Date;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.NoAutoStart;
@@ -25,21 +24,18 @@ import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
-import ch.qos.logback.core.util.DefaultInvocationGate;
-import ch.qos.logback.core.util.InvocationGate;
-import ch.qos.logback.core.util.SimpleInvocationGate;
 
 /**
  * This class implement {@link TimeBasedFileNamingAndTriggeringPolicy}
  * interface extending {@link TimeBasedFileNamingAndTriggeringPolicyBase}. This class is intended to be nested
- * within a {@link SizeAndTimeBasedFNATP} instance.  However, it can also be instantiated directly for testing purposes.
+ * within a {@link SizeAndTimeBasedFileNamingAndTriggeringPolicy} instance.  However, it can also be instantiated directly for testing purposes.
  *
  * @author Ceki G&uuml;lc&uuml;
  *
  * @param <E>
  */
 @NoAutoStart
-public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
+public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
     enum Usage {
         EMBEDDED, DIRECT
@@ -55,15 +51,19 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     private final Usage usage;
 
-    InvocationGate invocationGate = new SimpleInvocationGate();
+    //InvocationGate invocationGate = new SimpleInvocationGate();
 
-    public SizeAndTimeBasedFNATP() {
+    public SizeAndTimeBasedFileNamingAndTriggeringPolicy() {
         this(Usage.DIRECT);
     }
 
-    public SizeAndTimeBasedFNATP(Usage usage) {
+    public SizeAndTimeBasedFileNamingAndTriggeringPolicy(Usage usage) {
         this.usage = usage;
     }
+
+    public LengthCounter lengthCounter = new LengthCounterBase();
+
+
 
     @Override
     public void start() {
@@ -83,8 +83,8 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             withErrors();
         }
 
-        if (checkIncrement != null)
-            invocationGate = new SimpleInvocationGate(checkIncrement);
+        //if (checkIncrement != null)
+        //    invocationGate = new SimpleInvocationGate(checkIncrement);
 
         if (!validateDateAndIntegerTokens()) {
             withErrors();
@@ -161,18 +161,21 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
                     instantInElapsedPeriod, currentPeriodsCounter);
             currentPeriodsCounter = 0;
             setDateInCurrentPeriod(currentTime);
-
+            lengthCounter.reset();
             return true;
         }
 
-        return checkSizeBasedTrigger(activeFile, currentTime);
+        boolean result = checkSizeBasedTrigger(activeFile, currentTime);
+        if(result)
+            lengthCounter.reset();
+        return result;
     }
 
     private boolean checkSizeBasedTrigger(File activeFile, long currentTime) {
         // next check for roll-over based on size
-        if (invocationGate.isTooSoon(currentTime)) {
-            return false;
-        }
+        //if (invocationGate.isTooSoon(currentTime)) {
+        //    return false;
+        //}
 
         if (activeFile == null) {
             addWarn("activeFile == null");
@@ -182,11 +185,15 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             addWarn("maxFileSize = null");
             return false;
         }
-        if (activeFile.length() >= maxFileSize.getSize()) {
+
+
+
+        if (lengthCounter.getLength() >= maxFileSize.getSize()) {
 
             elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod,
                     currentPeriodsCounter);
             currentPeriodsCounter++;
+
             return true;
         }
 
@@ -211,4 +218,8 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         this.maxFileSize = aMaxFileSize;
     }
 
+    @Override
+    public LengthCounter getLengthCounter() {
+        return lengthCounter;
+    }
 }

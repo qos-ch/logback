@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
 import ch.qos.logback.core.util.Duration;
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +34,7 @@ import ch.qos.logback.core.util.FileSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
-    private SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = null;
+    private SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object> sizeAndTimeBasedFNATP = null;
     private RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
     private TimeBasedRollingPolicy<Object> tbrp1 = new TimeBasedRollingPolicy<Object>();
     private RollingFileAppender<Object> rfa2 = new RollingFileAppender<Object>();
@@ -61,7 +60,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
 
     private void initPolicies(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp,
             String filenamePattern, int sizeThreshold, long givenTime, long lastCheck) {
-        sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
+        sizeAndTimeBasedFNATP = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
         sizeAndTimeBasedFNATP.setCheckIncrement(Duration.buildByMilliseconds(10));
         tbrp.setContext(context);
         sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(sizeThreshold));
