@@ -30,10 +30,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.time.temporal.ChronoUnit;
 
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -265,7 +267,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     @Test
     public void dailySizeBasedRolloverWithoutCap() {
         SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
-        sizeAndTimeBasedFNATP.invocationGate = fixedRateInvocationGate;
+        //sizeAndTimeBasedFNATP.invocationGate = fixedRateInvocationGate;
 
         sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(10000));
         tbfnatp = sizeAndTimeBasedFNATP;
@@ -279,9 +281,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     @Test
     public void dailySizeBasedRolloverWithSizeCap() {
         SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
-        sizeAndTimeBasedFNATP.invocationGate = new FixedRateInvocationGate(ticksPerPeriod / 8);
-        long bytesPerPeriod = 17000;
-        long fileSize = (bytesPerPeriod) / 5;
+
+        long fileSize = 3400;
         int expectedFileCount = 10;
         long sizeCap = expectedFileCount * fileSize;
         sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(fileSize));
@@ -303,14 +304,23 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
                 return s0.compareTo(s1);
             }
         });
-        checkFileCount(expectedFileCount - 1);
+
+        //StatusPrinter.print(context);
+        //foundFiles.forEach(f -> System.out.println(""+f+ " "+f.length()));
+        LongAdder la = new LongAdder();
+        foundFiles.forEach(f -> la.add(f.length()));
+        //System.out.println("Sum: "+la.sum());
+
+        assertTrue(la.sum() < sizeCap);
+
+        checkFileCount(expectedFileCount + 1);
     }
 
     @Test
     public void dailyChronologSizeBasedRollover() {
         SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object> sizeAndTimeBasedFileNamingAndTriggeringPolicy = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
         sizeAndTimeBasedFileNamingAndTriggeringPolicy.setMaxFileSize(new FileSize(10000));
-        sizeAndTimeBasedFileNamingAndTriggeringPolicy.invocationGate = fixedRateInvocationGate;
+        //sizeAndTimeBasedFileNamingAndTriggeringPolicy.invocationGate = fixedRateInvocationGate;
         tbfnatp = sizeAndTimeBasedFileNamingAndTriggeringPolicy;
         slashCount = 1;
         String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip";
@@ -323,7 +333,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     public void dailyChronologSizeBasedRolloverWithSecondPhase() {
         SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object> sizeAndTimeBasedFileNamingAndTriggeringPolicy = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
         sizeAndTimeBasedFileNamingAndTriggeringPolicy.setMaxFileSize(new FileSize(10000));
-        sizeAndTimeBasedFileNamingAndTriggeringPolicy.invocationGate = fixedRateInvocationGate;
+        //sizeAndTimeBasedFileNamingAndTriggeringPolicy.invocationGate = fixedRateInvocationGate;
         tbfnatp = sizeAndTimeBasedFileNamingAndTriggeringPolicy;
         this.slashCount = 1;
         String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i";

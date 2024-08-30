@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -29,17 +29,13 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
         super(fileNamePattern, rc);
     }
 
+    @Override
     protected File[] getFilesInPeriod(Instant instantOfPeriodToClean) {
         File archive0 = new File(fileNamePattern.convertMultipleArguments(instantOfPeriodToClean, 0));
         File parentDir = getParentDir(archive0);
         String stemRegex = createStemRegex(instantOfPeriodToClean);
         File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(parentDir, stemRegex);
         return matchingFileArray;
-    }
-
-    private String createStemRegex(final Instant instantOfPeriodToClean) {
-        String regex = fileNamePattern.toRegexForFixedDate(instantOfPeriodToClean);
-        return FileFilterUtil.afterLastSlash(regex);
     }
 
     @Override
@@ -77,6 +73,11 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
                     return NO_INDEX;
             }
         });
+    }
+
+    private String createStemRegex(final Instant instantOfPeriodToClean) {
+        String regex = fileNamePattern.toRegexForFixedDate(instantOfPeriodToClean);
+        return FileFilterUtil.afterLastSlash(regex);
     }
 
 }

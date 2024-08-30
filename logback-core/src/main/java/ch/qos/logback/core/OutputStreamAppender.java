@@ -21,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+import ch.qos.logback.core.rolling.LengthCounter;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.status.ErrorStatus;
 
@@ -205,10 +206,14 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         try {
             if(isStarted()) {
                 writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
+                updateByteCount(byteArray);
             }
         } finally {
             streamWriteLock.unlock();
         }
+    }
+
+    protected void updateByteCount(byte[] byteArray) {
     }
 
     /**

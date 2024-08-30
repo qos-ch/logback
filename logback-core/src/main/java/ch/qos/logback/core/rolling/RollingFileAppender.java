@@ -130,9 +130,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
 
     private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(FileNamePattern fileNamePattern) {
         boolean collisionsDetected = false;
-        @SuppressWarnings("unchecked")
-        Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context.getObject(
-                CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
+        @SuppressWarnings("unchecked") Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context.getObject(
+                        CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         if (map == null) {
             return collisionsDetected;
         }
@@ -270,7 +269,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             String className = rollingPolicy.getClass().getSimpleName();
             addWarn("A rolling policy of type " + className + " was already set.");
             addWarn("Note that " + className + " doubles as a TriggeringPolicy");
-            addWarn("See also "+RFA_RESET_RP_OR_TP);
+            addWarn("See also " + RFA_RESET_RP_OR_TP);
         }
         this.rollingPolicy = policy;
         if (this.rollingPolicy instanceof TriggeringPolicy) {
@@ -284,11 +283,28 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             String className = triggeringPolicy.getClass().getSimpleName();
             addWarn("A triggering policy of type " + className + " was already set.");
             addWarn("Note that " + className + " doubles as a RollingPolicy");
-            addWarn("See also "+RFA_RESET_RP_OR_TP);
+            addWarn("See also " + RFA_RESET_RP_OR_TP);
         }
         triggeringPolicy = policy;
         if (policy instanceof RollingPolicy) {
             rollingPolicy = (RollingPolicy) policy;
         }
     }
+
+    @Override
+    protected void updateByteCount(byte[] byteArray) {
+
+        LengthCounter lengthCounter = getLengthCounter();
+        if (lengthCounter == null)
+            return;
+
+        if (byteArray != null && byteArray.length > 0) {
+            lengthCounter.add(byteArray.length);
+        }
+    }
+
+    private LengthCounter getLengthCounter() {
+        return triggeringPolicy.getLengthCounter();
+    }
+
 }
