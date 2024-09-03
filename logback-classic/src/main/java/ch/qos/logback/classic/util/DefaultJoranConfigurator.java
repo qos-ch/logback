@@ -98,6 +98,7 @@ public class DefaultJoranConfigurator extends ContextAwareBase implements Config
                 if (result != null) {
                     return result;
                 }
+                // if the above fails, try to find as a file
                 File f = new File(logbackConfigFile);
                 if (f.exists() && f.isFile()) {
                     try {

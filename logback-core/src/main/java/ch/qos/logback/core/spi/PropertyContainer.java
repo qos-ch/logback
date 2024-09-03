@@ -29,10 +29,6 @@ public interface PropertyContainer {
         if (props == null) {
             return;
         }
-        for (Object keyObject : props.keySet()) {
-            String key = (String) keyObject;
-            String val = props.getProperty(key);
-            addSubstitutionProperty(key, val);
-        }
+        props.forEach((k, v) -> addSubstitutionProperty((String) k, (String) v));
     }
 }

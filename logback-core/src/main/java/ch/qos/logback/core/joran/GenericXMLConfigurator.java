@@ -58,8 +58,8 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         try {
             informContextOfURLUsedForConfiguration(getContext(), url);
             URLConnection urlConnection = url.openConnection();
-            // per http://jira.qos.ch/browse/LBCORE-105
-            // per http://jira.qos.ch/browse/LBCORE-127
+            // per http://jira.qos.ch/browse/LOGBACK-117  LBCORE-105
+            // per http://jira.qos.ch/browse/LOGBACK-163  LBCORE-127
             urlConnection.setUseCaches(false);
 
             in = urlConnection.getInputStream();

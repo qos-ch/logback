@@ -104,7 +104,7 @@ public class TrivialConfiguratorTest {
     }
 
     @Test
-    public void lbcore105() throws IOException, JoranException {
+    public void LOGBACK_117() throws IOException, JoranException {
         String jarEntry = "buzz.xml";
         File jarFile = makeRandomJarFile();
         fillInJarFile(jarFile, jarEntry);
@@ -118,7 +118,7 @@ public class TrivialConfiguratorTest {
     }
 
     @Test
-    public void lbcore127() throws IOException, JoranException {
+    public void LOGBACK_163() throws IOException, JoranException {
         String jarEntry = "buzz.xml";
         String jarEntry2 = "lightyear.xml";
 
