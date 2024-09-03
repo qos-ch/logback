@@ -23,8 +23,6 @@ import ch.qos.logback.core.util.CachingDateFormatter;
 
 public class DateConverter extends ClassicConverter {
 
-    long lastTimestamp = -1;
-    String timestampStrCache = null;
     CachingDateFormatter cachingDateFormatter = null;
 
     public void start() {
@@ -33,13 +31,9 @@ public class DateConverter extends ClassicConverter {
 
         if (datePattern == null) {
             datePattern = CoreConstants.ISO8601_PATTERN;
-        }
-
-        if (datePattern.equals(CoreConstants.ISO8601_STR)) {
+        } else if (datePattern.equals(CoreConstants.ISO8601_STR)) {
             datePattern = CoreConstants.ISO8601_PATTERN;
-        }
-
-        if (datePattern.equals(CoreConstants.STRICT_STR)) {
+        }  else if (datePattern.equals(CoreConstants.STRICT_STR)) {
             datePattern = CoreConstants.STRICT_ISO8601_PATTERN;
         }
 
@@ -60,6 +54,7 @@ public class DateConverter extends ClassicConverter {
         }
         try {
             // if zoneId is null, the CachingDateFormatter will use the ZoneId.systemDefault()
+            // if locale is null, the CachingDateFormatter will use the Locale.getDefault()
             cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId, locale);
         } catch (IllegalArgumentException e) {
             addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);

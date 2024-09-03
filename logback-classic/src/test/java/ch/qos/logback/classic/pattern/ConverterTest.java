@@ -394,14 +394,16 @@ public class ConverterTest {
 
     @Test
     void dateConverterTest() {
-        dateConverterChecker(List.of("STRICT", "GMT"), "2024-08-14T15:29:25,956");
-        dateConverterChecker(List.of("ISO8601", "GMT"), "2024-08-14 15:29:25,956");
-        dateConverterChecker(List.of("ISO8601", "UTC"), "2024-08-14 15:29:25,956");
-        dateConverterChecker(List.of("yyyy-MM-EE", "UTC", "fr-CH"), "2024-08-mer.");
+        // 2024-08-14T1Z:29:25,956 GMT
+        long millis = 1_723_649_365_956L;
+        dateConverterChecker(millis, List.of("STRICT", "GMT"), "2024-08-14T15:29:25,956");
+        dateConverterChecker(millis, List.of("ISO8601", "GMT"), "2024-08-14 15:29:25,956");
+        dateConverterChecker(millis, List.of("ISO8601", "UTC"), "2024-08-14 15:29:25,956");
+        dateConverterChecker(millis, List.of("yyyy-MM-EE", "UTC", "fr-CH"), "2024-08-mer.");
 
     }
 
-    void dateConverterChecker(List<String> options, String expected) {
+    void dateConverterChecker(long millis, List<String> options, String expected) {
         DateConverter dateConverter = new DateConverter();
         dateConverter.setOptionList(options) ;
         dateConverter.setContext(loggerContext);
@@ -410,8 +412,6 @@ public class ConverterTest {
         assertTrue(dateConverter.isStarted());
         LoggingEvent event = makeLoggingEvent(null);
 
-        // 2024-08-14T1Z:29:25,956 GMT
-        long millis = 1_723_649_365_956L; //System.currentTimeMillis();
         Instant now = Instant.ofEpochMilli(millis);
         event.setInstant(now);
         String result = dateConverter.convert(event);
