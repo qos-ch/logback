@@ -61,7 +61,7 @@ public class PropertyConfigurator extends ContextAwareBase {
         super.setContext(context);
     }
 
-    void doConfigure(URL url) throws JoranException {
+    public void doConfigure(URL url) throws JoranException {
         try {
             URLConnection urlConnection = url.openConnection();
             // per http://jira.qos.ch/browse/LOGBACK-117
@@ -76,7 +76,7 @@ public class PropertyConfigurator extends ContextAwareBase {
         }
     }
 
-    void doConfigure(String filename) throws JoranException {
+    public void doConfigure(String filename) throws JoranException {
         try(FileInputStream fileInputStream = new FileInputStream(filename)) {
             doConfigure(fileInputStream);
         } catch (IOException e) {
@@ -84,7 +84,7 @@ public class PropertyConfigurator extends ContextAwareBase {
         }
     }
 
-    void doConfigure(InputStream inputStream) throws JoranException {
+    public void doConfigure(InputStream inputStream) throws JoranException {
         Properties props = new Properties();
         try {
             props.load(inputStream);

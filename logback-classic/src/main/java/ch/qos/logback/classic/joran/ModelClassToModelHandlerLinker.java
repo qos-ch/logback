@@ -14,18 +14,8 @@
 
 package ch.qos.logback.classic.joran;
 
-import ch.qos.logback.classic.model.ConfigurationModel;
-import ch.qos.logback.classic.model.ContextNameModel;
-import ch.qos.logback.classic.model.LevelModel;
-import ch.qos.logback.classic.model.LoggerContextListenerModel;
-import ch.qos.logback.classic.model.LoggerModel;
-import ch.qos.logback.classic.model.RootLoggerModel;
-import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
-import ch.qos.logback.classic.model.processor.ContextNameModelHandler;
-import ch.qos.logback.classic.model.processor.LevelModelHandler;
-import ch.qos.logback.classic.model.processor.LoggerContextListenerModelHandler;
-import ch.qos.logback.classic.model.processor.LoggerModelHandler;
-import ch.qos.logback.classic.model.processor.RootLoggerModelHandler;
+import ch.qos.logback.classic.model.*;
+import ch.qos.logback.classic.model.processor.*;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.ModelClassToModelHandlerLinkerBase;
 import ch.qos.logback.core.model.AppenderModel;
@@ -63,6 +53,7 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
         defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler::makeInstance);
         defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler::makeInstance);
 
+        defaultProcessor.addHandler(PropertyConfiguratorModel.class, PropertyConfiguratorModelHandler::makeInstance);
         defaultProcessor.addHandler(InsertFromJNDIModel.class, InsertFromJNDIModelHandler::makeInstance);
 
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);

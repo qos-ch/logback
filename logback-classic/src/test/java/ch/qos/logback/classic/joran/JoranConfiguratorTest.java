@@ -693,6 +693,16 @@ public class JoranConfiguratorTest {
     }
 
     @Test
+    public void propertyConfiguratorSmoke() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "propertyConfigurator/smoke.xml");
+        Logger com_foo_Logger = loggerContext.getLogger("com.toto");
+        StatusPrinter.print(loggerContext);
+        assertEquals(Level.WARN, com_foo_Logger.getLevel());
+
+
+    }
+
+    @Test
     public void consoleCharsetTest() throws JoranException {
         if (EnvUtil.isJDK21OrHigher()) {
             configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "consoleCharset.xml");
