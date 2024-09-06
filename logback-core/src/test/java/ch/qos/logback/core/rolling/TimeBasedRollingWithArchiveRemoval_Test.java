@@ -460,16 +460,15 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         int endInactivityIndex = startInactivityIndex + cp.numInactivityPeriods * ticksPerPeriod;
         long tickDuration = cp.periodDurationInMillis / ticksPerPeriod;
 
+
+        System.out.println("--------------");
+        System.out.println("["+buildMessageString(new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()), 21)+"]");
+        System.out.println("--------------");
+
         for (int i = 0; i <= runLength; i++) {
             Date currentDate = new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
             if (i < startInactivityIndex || i > endInactivityIndex) {
-                StringBuilder sb = new StringBuilder("Hello");
-                String currentDateStr = currentDate.toString();
-                String iAsString = Integer.toString(i);
-                sb.append(currentDateStr);
-                SpacePadder.spacePad(sb, 66 + (3 - iAsString.length() - currentDateStr.length()));
-                sb.append(iAsString);
-                rfa.doAppend(sb.toString());
+                rfa.doAppend(buildMessageString(currentDate, i));
             }
 
             tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(
@@ -491,6 +490,16 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         // System.out.println("Current time at end of loop: "+new
         // Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
         return tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime();
+    }
+
+    private static String buildMessageString(Date currentDate, int i) {
+        StringBuilder sb = new StringBuilder("Hello");
+        String currentDateStr = currentDate.toString();
+        String iAsString = Integer.toString(i);
+        sb.append(currentDateStr);
+        SpacePadder.spacePad(sb, 66 + (3 - iAsString.length() - currentDateStr.length()));
+        sb.append(iAsString);
+        return sb.toString();
     }
 
     void fillWithChar(StringBuffer sb, char c, int count) {
