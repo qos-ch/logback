@@ -18,6 +18,7 @@ import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
+import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.ContextUtil;
@@ -83,6 +84,8 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 
         ContextUtil contextUtil = new ContextUtil(context);
         contextUtil.addGroovyPackages(lc.getFrameworkPackages());
+
+
     }
 
     protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
@@ -92,5 +95,13 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
         }
     }
 
+    protected void postProcessScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
 
+    }
+
+    @Override
+    public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        ConfigurationModel configurationModel = (ConfigurationModel) model;
+
+    }
 }

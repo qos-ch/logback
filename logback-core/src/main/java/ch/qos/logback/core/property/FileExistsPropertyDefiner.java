@@ -14,12 +14,13 @@
 package ch.qos.logback.core.property;
 
 import ch.qos.logback.core.PropertyDefinerBase;
+import ch.qos.logback.core.joran.action.PropertyAction;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.io.File;
 
 /**
- * In conjunction with {@link ch.qos.logback.core.joran.action.PropertyAction}
+ * In conjunction with {@link PropertyAction}
  * sets the named variable to "true" if the file specified by
  * {@link #setPath(String) path} property exists, to "false" otherwise.
  *

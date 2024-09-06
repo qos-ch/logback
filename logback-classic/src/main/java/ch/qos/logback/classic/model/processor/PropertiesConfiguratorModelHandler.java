@@ -15,11 +15,10 @@
 package ch.qos.logback.classic.model.processor;
 
 import ch.qos.logback.classic.joran.PropertyConfigurator;
-import ch.qos.logback.classic.model.PropertyConfiguratorModel;
+import ch.qos.logback.classic.model.PropertiesConfiguratorModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ResourceModel;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
@@ -30,20 +29,22 @@ import ch.qos.logback.core.util.OptionHelper;
 import java.io.InputStream;
 import java.net.URL;
 
-public class PropertyConfiguratorModelHandler extends ResourceHandlerBase {
+public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
     boolean inError = false;
 
-    public PropertyConfiguratorModelHandler(Context context) {
+    static final boolean CREATE_CWL_IF_NOT_ALREADY_CREATED = true;
+
+    public PropertiesConfiguratorModelHandler(Context context) {
         super(context);
     }
 
-    static public PropertyConfiguratorModelHandler makeInstance(Context context, ModelInterpretationContext mic) {
-        return new PropertyConfiguratorModelHandler(context);
+    static public PropertiesConfiguratorModelHandler makeInstance(Context context, ModelInterpretationContext mic) {
+        return new PropertiesConfiguratorModelHandler(context);
     }
 
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-        PropertyConfiguratorModel propertyConfiguratorModel = (PropertyConfiguratorModel) model;
+        PropertiesConfiguratorModel propertyConfiguratorModel = (PropertiesConfiguratorModel) model;
 
         this.optional = OptionHelper.toBoolean(propertyConfiguratorModel.getOptional(), false);
 
@@ -76,7 +77,7 @@ public class PropertyConfiguratorModelHandler extends ResourceHandlerBase {
         if (inputURL == null)
             return null;
 
-        ConfigurationWatchListUtil.addToWatchList(context, inputURL);
+        ConfigurationWatchListUtil.addToWatchList(context, inputURL, CREATE_CWL_IF_NOT_ALREADY_CREATED);
         return openURL(inputURL);
     }
 

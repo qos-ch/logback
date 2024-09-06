@@ -694,9 +694,9 @@ public class JoranConfiguratorTest {
 
     @Test
     public void propertyConfiguratorSmoke() throws JoranException {
-        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "propertyConfigurator/smoke.xml");
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "propertiesConfigurator/smoke.xml");
         Logger com_foo_Logger = loggerContext.getLogger("com.toto");
-        StatusPrinter.print(loggerContext);
+        //StatusPrinter.print(loggerContext);
         assertEquals(Level.WARN, com_foo_Logger.getLevel());
 
 

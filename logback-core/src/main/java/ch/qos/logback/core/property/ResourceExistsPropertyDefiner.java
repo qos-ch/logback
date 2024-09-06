@@ -14,13 +14,14 @@
 package ch.qos.logback.core.property;
 
 import ch.qos.logback.core.PropertyDefinerBase;
+import ch.qos.logback.core.joran.action.PropertyAction;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.net.URL;
 
 /**
- * In conjunction with {@link ch.qos.logback.core.joran.action.PropertyAction}
+ * In conjunction with {@link PropertyAction}
  * sets the named variable to "true" if the {@link #setResource(String)
  * resource} specified by the user is available on the class path, "false"
  * otherwise.

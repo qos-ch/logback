@@ -22,6 +22,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,12 +77,16 @@ public class PropertyConfigurator extends ContextAwareBase {
         }
     }
 
-    public void doConfigure(String filename) throws JoranException {
-        try(FileInputStream fileInputStream = new FileInputStream(filename)) {
+    public void doConfigure(File file) throws JoranException {
+        try(FileInputStream fileInputStream = new FileInputStream(file)) {
             doConfigure(fileInputStream);
         } catch (IOException e) {
-            throw new JoranException("Failed to load file "+filename, e);
+            throw new JoranException("Failed to load file "+file, e);
         }
+    }
+
+    public void doConfigure(String filename) throws JoranException {
+        doConfigure(new File(filename));
     }
 
     public void doConfigure(InputStream inputStream) throws JoranException {

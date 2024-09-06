@@ -28,7 +28,7 @@ import java.net.URL;
  */
 public class ConfigurationWatchListUtil {
 
-    final static ConfigurationWatchListUtil origin = new ConfigurationWatchListUtil();
+    final static ConfigurationWatchListUtil ORIGIN = new ConfigurationWatchListUtil();
 
     private ConfigurationWatchListUtil() {
     }
@@ -40,14 +40,25 @@ public class ConfigurationWatchListUtil {
     public static void setMainWatchURL(Context context, URL url) {
         ConfigurationWatchList cwl = getConfigurationWatchList(context);
         if (cwl == null) {
-            cwl = new ConfigurationWatchList();
-            cwl.setContext(context);
-            context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST, cwl);
+            cwl = registerNewConfigurationWatchListWithContext(context);
         } else {
             cwl.clear();
         }
         // setConfigurationWatchListResetFlag(context, true);
         cwl.setMainURL(url);
+    }
+
+    /**
+     * Returns true if there are watchable files, false otherwise.
+     * @return true if there are watchable files,  false otherwise.
+     * @since 1.5.8
+     */
+    public static boolean watchPredicateFulfilled(Context context) {
+        ConfigurationWatchList cwl = getConfigurationWatchList(context);
+        if (cwl == null) {
+            return false;
+        }
+        return cwl.watchPredicateFulfilled();
     }
 
     public static URL getMainWatchURL(Context context) {
@@ -60,27 +71,43 @@ public class ConfigurationWatchListUtil {
     }
 
     public static void addToWatchList(Context context, URL url) {
-        ConfigurationWatchList cwl = getConfigurationWatchList(context);
-        if (cwl == null) {
-            addWarn(context, "Null ConfigurationWatchList. Cannot add " + url);
-        } else {
-            addInfo(context, "Adding [" + url + "] to configuration watch list.");
-            cwl.addToWatchList(url);
-        }
+        addToWatchList(context, url, false);
     }
 
-//    public static boolean wasConfigurationWatchListReset(Context context) {
-//        Object o = context.getObject(CoreConstants.CONFIGURATION_WATCH_LIST_RESET);
-//        if (o == null)
-//            return false;
-//        else {
-//            return ((Boolean) o).booleanValue();
-//        }
-//    }
+    public static void addToWatchList(Context context, URL url, boolean createCWL) {
+        ConfigurationWatchList cwl = getConfigurationWatchList(context);
+        if(cwl == null) {
+            if(createCWL && isWatchable(url)) {
+                cwl = registerNewConfigurationWatchListWithContext(context);
+            } else {
+                addWarn(context, "Null ConfigurationWatchList. Cannot add " + url);
+                return;
+            }
+        }
 
-//    public static void setConfigurationWatchListResetFlag(Context context, boolean val) {
-//        context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST_RESET, new Boolean(val));
-//    }
+        addInfo(context, "Adding [" + url + "] to configuration watch list.");
+        cwl.addToWatchList(url);
+
+    }
+
+    private static ConfigurationWatchList registerNewConfigurationWatchListWithContext(Context context) {
+        ConfigurationWatchList cwl = new ConfigurationWatchList();
+        cwl.setContext(context);
+        addInfo(context, "Registering  ConfigurationWatchList with context");
+        context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST, cwl);
+        return cwl;
+    }
+
+    private static boolean isWatchable(URL url) {
+        if(url == null) {
+            return false;
+        }
+
+        String protocol = url.getProtocol();
+        return  "file".equalsIgnoreCase(protocol);
+    }
+
+
 
     public static ConfigurationWatchList getConfigurationWatchList(Context context) {
         return (ConfigurationWatchList) context.getObject(CoreConstants.CONFIGURATION_WATCH_LIST);
@@ -98,10 +125,10 @@ public class ConfigurationWatchListUtil {
     }
 
     static void addInfo(Context context, String msg) {
-        addStatus(context, new InfoStatus(msg, origin));
+       addStatus(context, new InfoStatus(msg, ORIGIN));
     }
 
-    static void addWarn(Context context, String msg) {
-        addStatus(context, new WarnStatus(msg, origin));
+     static void addWarn(Context context, String msg) {
+        addStatus(context, new WarnStatus(msg, ORIGIN));
     }
 }

@@ -21,6 +21,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ch.qos.logback.core.CoreConstants.PROPERTIES_FILE_EXTENSION;
+
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -56,6 +58,24 @@ public class ConfigurationWatchList extends ContextAwareBase {
             addAsFileToWatch(mainURL);
     }
 
+    public boolean watchPredicateFulfilled() {
+        if(hasMainURLAndNonEmptyFileList()) {
+            return  true;
+        }
+
+        return fileWatchListContainsProperties();
+
+    }
+
+    private boolean hasMainURLAndNonEmptyFileList() {
+        return mainURL != null && !fileWatchList.isEmpty();
+    }
+
+    private boolean fileWatchListContainsProperties() {
+        return fileWatchList.stream().anyMatch(file -> file.getName().endsWith(PROPERTIES_FILE_EXTENSION));
+
+    }
+
     private void addAsFileToWatch(URL url) {
         File file = convertToFile(url);
         if (file != null) {
@@ -63,6 +83,11 @@ public class ConfigurationWatchList extends ContextAwareBase {
             lastModifiedList.add(file.lastModified());
         }
     }
+
+    /**
+     * Add the url but only if it is file://.
+     * @param url should be a file
+     */
 
     public void addToWatchList(URL url) {
         addAsFileToWatch(url);
@@ -76,18 +101,21 @@ public class ConfigurationWatchList extends ContextAwareBase {
         return new ArrayList<File>(fileWatchList);
     }
 
-    public boolean changeDetected() {
+    public File changeDetected() {
         int len = fileWatchList.size();
+
         for (int i = 0; i < len; i++) {
             long lastModified = lastModifiedList.get(i);
             File file = fileWatchList.get(i);
-            if (lastModified != file.lastModified()) {
-                return true;
+            long actualModificationDate = file.lastModified();
+
+            if (lastModified != actualModificationDate) {
+                // update modification date in case this instance is reused
+                lastModifiedList.set(i, actualModificationDate);
+                return file;
             }
         }
-        return false;
-        // return (lastModified != fileToScan.lastModified() && lastModified !=
-        // SENTINEL);
+        return null;
     }
 
     @SuppressWarnings("deprecation")
@@ -101,4 +129,12 @@ public class ConfigurationWatchList extends ContextAwareBase {
         }
     }
 
+    /**
+     * Returns true if there are watchable files, false otherwise.
+     * @return true if there are watchable files,  false otherwise.
+     * @since 1.5.8
+     */
+    public boolean hasAtLeastOneWatchableFile() {
+        return !fileWatchList.isEmpty();
+    }
 }

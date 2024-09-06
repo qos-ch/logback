@@ -38,7 +38,9 @@ import ch.qos.logback.core.status.StatusUtil;
  * Reconfigure a LoggerContext when the configuration file changes.
  *
  * @author Ceki Gulcu
+ * @deprecated replaced by {@link ch.qos.logback.classic.joran.ReconfigureOnChangeTask}
  */
+@Deprecated
 public class ReconfigureOnChangeFilter extends TurboFilter {
 
     /**
@@ -162,7 +164,8 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     protected boolean changeDetected(long now) {
         if (now >= nextCheck) {
             updateNextCheck(now);
-            return configurationWatchList.changeDetected();
+            File file = configurationWatchList.changeDetected();
+            return file != null;
         }
         return false;
     }

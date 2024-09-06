@@ -22,7 +22,7 @@
 
     <variable name="JO_PREFIX" value="src/test/input/joran" />
 
-    <propertyConfigurator file="${JO_PREFIX}/propertyConfigurator/smoke.properties" />
+    <propertiesConfigurator file="${JO_PREFIX}/propertiesConfigurator/smoke.properties" />
 
     <root level="debug">
         <appender-ref ref="LIST" />

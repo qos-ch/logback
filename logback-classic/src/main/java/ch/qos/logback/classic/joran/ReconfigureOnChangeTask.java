@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.joran;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -29,6 +30,7 @@ import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
 
+import static ch.qos.logback.core.CoreConstants.PROPERTIES_FILE_EXTENSION;
 import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationChangeDetectorRunningEvent;
 import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationEndedSuccessfullyEvent;
 
@@ -58,17 +60,25 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
             addInfo("Empty watch file list. Disabling ");
             return;
         }
-
-        if (!configurationWatchList.changeDetected()) {
+        File changedFile = configurationWatchList.changeDetected();
+        if (changedFile == null) {
             return;
         }
         context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectedEvent(this));
-        cancelFutureInvocationsOfThisTaskInstance();
-
-        URL mainConfigurationURL = configurationWatchList.getMainURL();
 
         addInfo(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
         addInfo(CoreConstants.RESET_MSG_PREFIX + "named [" + context.getName() + "]");
+
+        if(changedFile.getName().endsWith(PROPERTIES_FILE_EXTENSION)) {
+            runPropertiesConfigurator(changedFile);
+            // no further processing
+            return;
+        }
+
+        // ========
+
+        cancelFutureInvocationsOfThisTaskInstance();
+        URL mainConfigurationURL = configurationWatchList.getMainURL();
 
         LoggerContext lc = (LoggerContext) context;
         if (mainConfigurationURL.toString().endsWith("xml")) {
@@ -77,6 +87,17 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
             addError("Groovy configuration disabled due to Java 9 compilation issues.");
         }
         //fireDoneReconfiguring();
+    }
+
+    private void runPropertiesConfigurator(File changedFile) {
+        addInfo("Will run PropertyConfigurator on "+changedFile.getAbsolutePath());
+        PropertyConfigurator propertyConfigurator = new PropertyConfigurator();
+        propertyConfigurator.setContext(context);
+        try {
+            propertyConfigurator.doConfigure(changedFile);
+        } catch (JoranException e) {
+            addError("Failed to reload "+ changedFile);
+        }
     }
 
     private void cancelFutureInvocationsOfThisTaskInstance() {

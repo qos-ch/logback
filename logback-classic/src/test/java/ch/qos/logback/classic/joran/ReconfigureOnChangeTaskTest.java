@@ -22,21 +22,20 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.model.processor.ConfigurationModelHandlerFull;
 import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.spi.ConfigurationEventListener;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -85,6 +84,7 @@ public class ReconfigureOnChangeTaskTest {
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass());
     StatusChecker statusChecker = new StatusChecker(loggerContext);
+    StatusPrinter2 statusPrinter2 = new StatusPrinter2();
 
     @BeforeAll
     static public void classSetup() {
@@ -115,6 +115,7 @@ public class ReconfigureOnChangeTaskTest {
         configure(file);
         List<File> fileList = getConfigurationWatchList(loggerContext);
         assertThatListContainsFile(fileList, file);
+        statusPrinter2.print(loggerContext);
         checkThatTaskHasRan();
         checkThatTaskCanBeStopped();
     }
@@ -158,27 +159,54 @@ public class ReconfigureOnChangeTaskTest {
         assertThatListContainsFile(fileList, innerFile);
     }
 
+    @Test
+    public void propertiesConfigurationTest() throws IOException, JoranException, InterruptedException {
+        String loggerName = "abc";
+        String propertiesFileStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "roct-" + diff + ".properties";
+        File propertiesFile = new File(propertiesFileStr);
+        String configurationStr = "<configuration scan=\"true\" scanPeriod=\"1 millisecond\"><propertiesConfigurator file=\"" + propertiesFileStr + "\"/></configuration>";
+        writeToFile(propertiesFile, PropertyConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=INFO");
+        configure(asBAIS(configurationStr));
+        Logger abcLogger = loggerContext.getLogger(loggerName);
+        assertEquals(Level.INFO, abcLogger.getLevel());
+        Thread.sleep(100);
+        writeToFile(propertiesFile, PropertyConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=WARN");
+        Thread.sleep(200);
+        assertEquals(Level.WARN, abcLogger.getLevel());
+
+        Thread.sleep(100);
+        writeToFile(propertiesFile, PropertyConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=ERROR");
+        Thread.sleep(200);
+        assertEquals(Level.ERROR, abcLogger.getLevel());
+
+
+
+        statusPrinter2.print(loggerContext);
+
+    }
+
     // See also http://jira.qos.ch/browse/LOGBACK-338
     @Test
     @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
-    public void reconfigurationIsNotPossibleInTheAbsenceOfATopFile()
-            throws IOException, JoranException, InterruptedException {
+    public void reconfigurationIsNotPossibleInTheAbsenceOfATopFile() throws IOException, JoranException, InterruptedException {
 
         ReconfigurationTaskRegisteredConfigEventListener listener = new ReconfigurationTaskRegisteredConfigEventListener();
         loggerContext.addConfigurationEventListener(listener);
         String configurationStr = "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include resource=\"asResource/inner1.xml\"/></configuration>";
-        configure(new ByteArrayInputStream(configurationStr.getBytes("UTF-8")));
+        configure(asBAIS(configurationStr));
 
-        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(
-                loggerContext);
+        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
         assertNull(configurationWatchList);
-        // assertNull(configurationWatchList.getMainURL());
-
-        statusChecker.containsMatch(Status.WARN, "Due to missing top level");
-        //StatusPrinter.print(loggerContext);
+        assertFalse(ConfigurationWatchListUtil.watchPredicateFulfilled(loggerContext));
+        statusChecker.containsMatch(Status.WARN, ConfigurationModelHandlerFull.FAILED_WATCH_PREDICATE_MESSAGE_1);
+        StatusPrinter.print(loggerContext);
 
         assertFalse(listener.changeDetectorRegisteredEventOccurred);
         assertEquals(0, loggerContext.getCopyOfScheduledFutures().size());
+    }
+
+    private static ByteArrayInputStream asBAIS(String configurationStr) throws UnsupportedEncodingException {
+        return new ByteArrayInputStream(configurationStr.getBytes("UTF-8"));
     }
 
     @Test
@@ -187,8 +215,7 @@ public class ReconfigureOnChangeTaskTest {
         addInfo("Start fallbackToSafe_FollowedByRecovery", this);
         String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_fallbackToSafe-" + diff + ".xml";
         File topLevelFile = new File(path);
-        writeToFile(topLevelFile,
-                "<configuration scan=\"true\" scanPeriod=\"25 millisecond\"><root level=\"ERROR\"/></configuration> ");
+        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"25 millisecond\"><root level=\"ERROR\"/></configuration> ");
 
         addResetResistantOnConsoleStatusListener();
         configure(topLevelFile);
@@ -212,9 +239,7 @@ public class ReconfigureOnChangeTaskTest {
         CountDownLatch secondConfigEndedLatch = registerNewReconfigurationDoneSuccessfullyListener();
 
         // recovery
-        writeToFile(topLevelFile,
-                "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
-
+        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
 
         try {
             addInfo("Awaiting secondConfigEndedLatch ", this);
@@ -228,7 +253,7 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     private void addResetResistantOnConsoleStatusListener() {
-        if(1==1)
+        if (1 == 1)
             return;
         OnConsoleStatusListener ocs = new OnConsoleStatusListener();
         ocs.setContext(loggerContext);
@@ -239,16 +264,12 @@ public class ReconfigureOnChangeTaskTest {
 
     @Test
     @Timeout(value = TIMEOUT_LONG, unit = TimeUnit.SECONDS)
-    public void fallbackToSafeWithIncludedFile_FollowedByRecovery()
-            throws IOException, JoranException, InterruptedException, ExecutionException {
-        String topLevelFileAsStr =
-                CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff + ".xml";
-        String innerFileAsStr =
-                CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_inner-" + diff + ".xml";
+    public void fallbackToSafeWithIncludedFile_FollowedByRecovery() throws IOException, JoranException, InterruptedException, ExecutionException {
+        String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff + ".xml";
+        String innerFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_inner-" + diff + ".xml";
         File topLevelFile = new File(topLevelFileAsStr);
         writeToFile(topLevelFile,
-                "<configuration xdebug=\"true\" scan=\"true\" scanPeriod=\"5 millisecond\"><include file=\""
-                        + innerFileAsStr + "\"/></configuration> ");
+                        "<configuration xdebug=\"true\" scan=\"true\" scanPeriod=\"5 millisecond\"><include file=\"" + innerFileAsStr + "\"/></configuration> ");
 
         File innerFile = new File(innerFileAsStr);
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
@@ -257,11 +278,9 @@ public class ReconfigureOnChangeTaskTest {
         ReconfigurationTaskRegisteredConfigEventListener roctRegisteredListener = new ReconfigurationTaskRegisteredConfigEventListener();
         loggerContext.addConfigurationEventListener(roctRegisteredListener);
 
-
         configure(topLevelFile);
 
         ReconfigureOnChangeTask roct = roctRegisteredListener.reconfigureOnChangeTask;
-
 
         System.out.println("===================================================");
 
@@ -299,14 +318,12 @@ public class ReconfigureOnChangeTaskTest {
         return latch;
     }
 
-
     CountDownLatch registerChangeDetectedListener() {
         CountDownLatch latch = new CountDownLatch(1);
         ChangeDetectedListener changeDetectedListener = new ChangeDetectedListener(latch);
         loggerContext.addConfigurationEventListener(changeDetectedListener);
         return latch;
     }
-
 
     class RunMethodInvokedListener implements ConfigurationEventListener {
         CountDownLatch countDownLatch;
@@ -344,7 +361,7 @@ public class ReconfigureOnChangeTaskTest {
 
     private RunnableWithCounterAndDone[] buildRunnableArray(File configFile, UpdateType updateType) {
         RunnableWithCounterAndDone[] rArray = new RunnableWithCounterAndDone[THREAD_COUNT];
-        rArray[0] = new Updater(configFile, updateType);
+        rArray[0] = new UpdaterRunnable(this, configFile, updateType);
         for (int i = 1; i < THREAD_COUNT; i++) {
             rArray[i] = new LoggingRunnable(logger);
         }
@@ -423,80 +440,6 @@ public class ReconfigureOnChangeTaskTest {
         boolean success = file.setLastModified(System.currentTimeMillis() + RandomUtil.getPositiveInt());
         if (!success) {
             addWarn("failed to setLastModified on file " + file, this);
-        }
-    }
-
-    class Updater extends RunnableWithCounterAndDone {
-        File configFile;
-        UpdateType updateType;
-
-        // it actually takes time for Windows to propagate file modification changes
-        // values below 100 milliseconds can be problematic the same propagation
-        // latency occurs in Linux but is even larger (>600 ms)
-        // final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 60;
-
-        final int sleepBetweenUpdates = 100;
-
-        Updater(File configFile, UpdateType updateType) {
-            this.configFile = configFile;
-            this.updateType = updateType;
-        }
-
-        Updater(File configFile) {
-            this(configFile, UpdateType.TOUCH);
-        }
-
-        public void run() {
-            while (!isDone()) {
-                try {
-                    Thread.sleep(sleepBetweenUpdates);
-                } catch (InterruptedException e) {
-                }
-                if (isDone()) {
-                    ReconfigureOnChangeTaskTest.this.addInfo("Exiting Updater.run()", this);
-                    return;
-                }
-                counter++;
-                ReconfigureOnChangeTaskTest.this.addInfo("Touching [" + configFile + "]", this);
-                switch (updateType) {
-                case TOUCH:
-                    touchFile();
-                    break;
-                case MALFORMED:
-                    try {
-                        malformedUpdate();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        fail("malformedUpdate failed");
-                    }
-                    break;
-                case MALFORMED_INNER:
-                    try {
-                        malformedInnerUpdate();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        fail("malformedInnerUpdate failed");
-                    }
-                }
-            }
-            ReconfigureOnChangeTaskTest.this.addInfo("Exiting Updater.run()", this);
-        }
-
-        private void malformedUpdate() throws IOException {
-            writeToFile(configFile,
-                    "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" + "  <root level=\"ERROR\">\n"
-                            + "</configuration>");
-        }
-
-        private void malformedInnerUpdate() throws IOException {
-            writeToFile(configFile, "<included>\n" + "  <root>\n" + "</included>");
-        }
-
-        void touchFile() {
-
-            boolean result = configFile.setLastModified(System.currentTimeMillis());
-            if (!result)
-                addWarn(this.getClass().getName() + ".touchFile on " + configFile.toString() + " FAILED", this);
         }
     }
 

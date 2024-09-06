@@ -17,7 +17,9 @@ import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
+import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.util.Duration;
@@ -32,50 +34,60 @@ import java.util.concurrent.TimeUnit;
  * This is a subclass of {@link ConfigurationModelHandler} offering configuration reloading support.
  *
  */
-public class ConfigurationModelHandlerFull extends  ConfigurationModelHandler {
+public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
+
+    public static String FAILED_WATCH_PREDICATE_MESSAGE_1 = "Missing watchable .xml or .properties files.";
+    public static String FAILED_WATCH_PREDICATE_MESSAGE_2 = "Watching .xml files requires that the main configuration file is reachable as a URL";
 
     public ConfigurationModelHandlerFull(Context context) {
         super(context);
     }
 
-
-
     static public ModelHandlerBase makeInstance2(Context context, ModelInterpretationContext mic) {
         return new ConfigurationModelHandlerFull(context);
     }
 
+    @Override
+    protected void processScanAttrib( ModelInterpretationContext mic, ConfigurationModel configurationModel) {
 
-    protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
+    }
+
+    @Override
+    public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        ConfigurationModel configurationModel = (ConfigurationModel) model;
+        postProcessScanAttrib(mic, configurationModel);
+    }
+
+    protected void postProcessScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
         String scanStr = mic.subst(configurationModel.getScanStr());
         if (!OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
 
             ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
-            URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
-            if (mainURL == null) {
-                addWarn("Due to missing top level configuration file, reconfiguration on change (configuration file scanning) cannot be done.");
+            boolean watchPredicateFulfilled = ConfigurationWatchListUtil.watchPredicateFulfilled(context);
+            if (!watchPredicateFulfilled) {
+                addWarn(FAILED_WATCH_PREDICATE_MESSAGE_1);
+                addWarn(FAILED_WATCH_PREDICATE_MESSAGE_2);
                 return;
             }
             ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
             rocTask.setContext(context);
 
-            addInfo("Registering a new ReconfigureOnChangeTask "+ rocTask);
+            addInfo("Registering a new ReconfigureOnChangeTask " + rocTask);
 
             context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectorRegisteredEvent(rocTask));
 
             String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
             Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
 
-            addInfo("Will scan for changes in [" + mainURL + "] ");
+            addInfo("Will scan for changes in [" + ConfigurationWatchListUtil.getConfigurationWatchList(context) + "] ");
             // Given that included files are encountered at a later phase, the complete list
-            // of files
-            // to scan can only be determined when the configuration is loaded in full.
+            // of files to scan can only be determined when the configuration is loaded in full.
             // However, scan can be active if mainURL is set. Otherwise, when changes are
-            // detected
-            // the top level config file cannot be accessed.
+            // detected the top level config file cannot be accessed.
             addInfo("Setting ReconfigureOnChangeTask scanning period to " + duration);
 
-            ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask,
-                    duration.getMilliseconds(), duration.getMilliseconds(), TimeUnit.MILLISECONDS);
+            ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask, duration.getMilliseconds(), duration.getMilliseconds(),
+                            TimeUnit.MILLISECONDS);
             rocTask.setScheduredFuture(scheduledFuture);
             context.addScheduledFuture(scheduledFuture);
         }
@@ -99,5 +111,4 @@ public class ConfigurationModelHandlerFull extends  ConfigurationModelHandler {
         }
         return duration;
     }
-
 }

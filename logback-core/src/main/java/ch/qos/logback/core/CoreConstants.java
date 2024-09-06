@@ -242,4 +242,8 @@ public class CoreConstants {
     public static final String LOGBACK_CLASSIC_VERSION_MESSAGE = "This is logback-classic version ";
     public static final char JSON_LINE_SEPARATOR = '\n';
     final public static String MODEL_CONFIG_FILE_EXTENSION = ".scmo";
+    /**
+     * since 1.5.8
+     */
+    final public static String PROPERTIES_FILE_EXTENSION = ".properties";
 }

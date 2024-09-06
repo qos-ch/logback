@@ -14,20 +14,19 @@
 
 package ch.qos.logback.classic.joran.action;
 
-import ch.qos.logback.classic.model.PropertyConfiguratorModel;
+import ch.qos.logback.classic.model.PropertiesConfiguratorModel;
 import ch.qos.logback.core.joran.action.ResourceAction;
-import ch.qos.logback.core.model.IncludeModel;
 
 /**
- * Build an {@link PropertyConfiguratorModel} instance from SAX events.
+ * Build an {@link PropertiesConfiguratorModel} instance from SAX events.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.5.8
  */
-public class PropertyConfiguratorAction extends ResourceAction {
+public class PropertiesConfiguratorAction extends ResourceAction {
 
-    protected PropertyConfiguratorModel makeNewResourceModel() {
-        return new PropertyConfiguratorModel();
+    protected PropertiesConfiguratorModel makeNewResourceModel() {
+        return new PropertiesConfiguratorModel();
     }
 
 }

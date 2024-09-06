@@ -18,7 +18,6 @@ import ch.qos.logback.classic.joran.sanity.IfNestedWithinSecondPhaseElementSC;
 import ch.qos.logback.classic.model.processor.ConfigurationModelHandlerFull;
 import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.joran.GenericXMLConfigurator;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
@@ -27,7 +26,6 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
@@ -58,7 +56,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         rs.addRule(new ElementSelector("configuration/root/appender-ref"), () -> new AppenderRefAction());
 
         rs.addRule(new ElementSelector("configuration/include"), () -> new IncludeAction());
-        rs.addRule(new ElementSelector("configuration/propertyConfigurator"), () -> new PropertyConfiguratorAction());
+        rs.addRule(new ElementSelector("configuration/propertiesConfigurator"), () -> new PropertiesConfiguratorAction());
+
         rs.addRule(new ElementSelector("configuration/consolePlugin"), () -> new ConsolePluginAction());
 
         rs.addRule(new ElementSelector("configuration/receiver"), () -> new ReceiverAction());

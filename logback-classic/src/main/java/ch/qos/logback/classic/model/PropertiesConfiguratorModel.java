@@ -16,7 +16,7 @@ package ch.qos.logback.classic.model;
 
 import ch.qos.logback.core.model.ResourceModel;
 
-public class PropertyConfiguratorModel extends ResourceModel {
+public class PropertiesConfiguratorModel extends ResourceModel {
 
     private static final long serialVersionUID = -2009536798661734346L;
 }
