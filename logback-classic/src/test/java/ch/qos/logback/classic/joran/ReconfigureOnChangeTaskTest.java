@@ -187,8 +187,6 @@ public class ReconfigureOnChangeTaskTest {
         configurationDoneLatch1.await();
         assertEquals(Level.ERROR, abcLogger.getLevel());
 
-
-
         statusPrinter2.print(loggerContext);
 
     }

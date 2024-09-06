@@ -273,8 +273,8 @@
                 --add-opens ch.qos.logback.classic/ch.qos.logback.classic.jsonTest=ALL-UNNAMED
               </argLine>
               <parallel>classes</parallel>
-              <threadCount>20</threadCount>
-              <forkCount>5</forkCount>
+              <threadCount>8</threadCount>
+              <forkCount>1C</forkCount>
               <reuseForks>true</reuseForks>
               <reportFormat>plain</reportFormat>
               <trimStackTrace>false</trimStackTrace>
