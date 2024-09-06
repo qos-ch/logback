@@ -168,8 +168,8 @@ public class SMTPAppender_GreenTest {
         ExecutorService es = loggerContext.getExecutorService();
         es.shutdown();
         boolean terminated = es.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS);
+
         // this assertion may be needlessly strict, skipped on MacOS
-        System.getProperty("os.name");
         if(!terminated && !EnvUtil.isMacOs()) {
             fail("executor elapsed before accorded delay " + System.getProperty("os.name"));
         }

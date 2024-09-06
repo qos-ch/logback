@@ -128,7 +128,7 @@ public class EnvUtil {
 
     public static boolean isMacOs() {
         String os = System.getProperty("os.name");
-        return os.contains("mac");
+        return os.toLowerCase().contains("mac");
     }
 
     public static boolean isWindows() {
