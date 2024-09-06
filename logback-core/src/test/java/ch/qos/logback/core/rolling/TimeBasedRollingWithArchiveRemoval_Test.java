@@ -305,11 +305,11 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
             }
         });
 
-        //StatusPrinter.print(context);
-        //foundFiles.forEach(f -> System.out.println(""+f+ " "+f.length()));
+        StatusPrinter.print(context);
+        foundFiles.forEach(f -> System.out.println(""+f+ " "+f.length()));
         LongAdder la = new LongAdder();
         foundFiles.forEach(f -> la.add(f.length()));
-        //System.out.println("Sum: "+la.sum());
+        System.out.println("Sum: "+la.sum());
 
         assertTrue(la.sum() < sizeCap);
 
