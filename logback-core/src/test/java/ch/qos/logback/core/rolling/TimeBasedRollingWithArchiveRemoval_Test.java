@@ -460,11 +460,6 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         int endInactivityIndex = startInactivityIndex + cp.numInactivityPeriods * ticksPerPeriod;
         long tickDuration = cp.periodDurationInMillis / ticksPerPeriod;
 
-
-        System.out.println("--------------");
-        System.out.println("["+buildMessageString(new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()), 21)+"]");
-        System.out.println("--------------");
-
         for (int i = 0; i <= runLength; i++) {
             Date currentDate = new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
             if (i < startInactivityIndex || i > endInactivityIndex) {
@@ -497,7 +492,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         String currentDateStr = currentDate.toString();
         String iAsString = Integer.toString(i);
         sb.append(currentDateStr);
-        SpacePadder.spacePad(sb, 66 + (3 - iAsString.length() - currentDateStr.length()));
+        SpacePadder.spacePad(sb, 68 + (3 - iAsString.length() - currentDateStr.length() - CoreConstants.LINE_SEPARATOR_LEN));
         sb.append(iAsString);
         return sb.toString();
     }
