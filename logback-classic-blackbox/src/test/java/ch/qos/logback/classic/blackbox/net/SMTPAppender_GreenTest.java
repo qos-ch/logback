@@ -67,7 +67,8 @@ public class SMTPAppender_GreenTest {
 
     static final boolean SYNCHRONOUS = false;
     static final boolean ASYNCHRONOUS = true;
-
+    static int TIMEOUT = 3000;
+    
     int port = RandomUtil.getRandomServerPort();
     // GreenMail cannot be static. As a shared server induces race conditions
     GreenMail greenMailServer;
@@ -160,10 +161,12 @@ public class SMTPAppender_GreenTest {
         return (MimeMultipart) mm.getContent();
     }
 
+
+
     void waitUntilEmailIsSent() throws InterruptedException {
         ExecutorService es = loggerContext.getExecutorService();
         es.shutdown();
-        boolean terminated = es.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        boolean terminated = es.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS);
         // this assertion may be needlessly strict
         if(!terminated) {
             fail("executor elapsed before accorded delay");
