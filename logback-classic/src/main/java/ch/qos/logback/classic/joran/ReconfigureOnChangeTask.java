@@ -31,8 +31,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
 
 import static ch.qos.logback.core.CoreConstants.PROPERTIES_FILE_EXTENSION;
-import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationChangeDetectorRunningEvent;
-import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationEndedSuccessfullyEvent;
+import static ch.qos.logback.core.spi.ConfigurationEvent.*;
 
 public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnable {
 
@@ -75,7 +74,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
             return;
         }
 
-        // ========
+        // ======== fuller processing below
 
         cancelFutureInvocationsOfThisTaskInstance();
         URL mainConfigurationURL = configurationWatchList.getMainURL();
@@ -95,6 +94,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         propertyConfigurator.setContext(context);
         try {
             propertyConfigurator.doConfigure(changedFile);
+            context.fireConfigurationEvent(newPartialConfigurationEndedSuccessfullyEvent(this));
         } catch (JoranException e) {
             addError("Failed to reload "+ changedFile);
         }

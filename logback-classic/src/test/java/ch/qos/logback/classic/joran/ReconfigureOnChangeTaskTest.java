@@ -159,6 +159,7 @@ public class ReconfigureOnChangeTaskTest {
         assertThatListContainsFile(fileList, innerFile);
     }
 
+    @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
     @Test
     public void propertiesConfigurationTest() throws IOException, JoranException, InterruptedException {
         String loggerName = "abc";
@@ -169,14 +170,21 @@ public class ReconfigureOnChangeTaskTest {
         configure(asBAIS(configurationStr));
         Logger abcLogger = loggerContext.getLogger(loggerName);
         assertEquals(Level.INFO, abcLogger.getLevel());
-        Thread.sleep(100);
+
+        CountDownLatch changeDetectedLatch0 = registerChangeDetectedListener();
+        CountDownLatch configurationDoneLatch0 = registerPartialConfigurationEndedSuccessfullyEventListener();
+
         writeToFile(propertiesFile, PropertyConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=WARN");
-        Thread.sleep(200);
+        changeDetectedLatch0.await();
+        configurationDoneLatch0.await();
         assertEquals(Level.WARN, abcLogger.getLevel());
 
-        Thread.sleep(100);
+
+        CountDownLatch changeDetectedLatch1 = registerChangeDetectedListener();
+        CountDownLatch configurationDoneLatch1 = registerPartialConfigurationEndedSuccessfullyEventListener();
         writeToFile(propertiesFile, PropertyConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=ERROR");
-        Thread.sleep(200);
+        changeDetectedLatch1.await();
+        configurationDoneLatch1.await();
         assertEquals(Level.ERROR, abcLogger.getLevel());
 
 
@@ -315,6 +323,13 @@ public class ReconfigureOnChangeTaskTest {
         CountDownLatch latch = new CountDownLatch(1);
         ReconfigurationDoneListener reconfigurationDoneListener = new ReconfigurationDoneListener(latch, roct);
         loggerContext.addConfigurationEventListener(reconfigurationDoneListener);
+        return latch;
+    }
+
+    CountDownLatch registerPartialConfigurationEndedSuccessfullyEventListener() {
+        CountDownLatch latch = new CountDownLatch(1);
+        PartialConfigurationEndedSuccessfullyEventListener listener = new PartialConfigurationEndedSuccessfullyEventListener(latch);
+        loggerContext.addConfigurationEventListener(listener);
         return latch;
     }
 
