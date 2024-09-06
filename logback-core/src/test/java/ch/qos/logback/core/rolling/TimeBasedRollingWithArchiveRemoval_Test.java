@@ -14,14 +14,17 @@
 package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
+import static ch.qos.logback.core.CoreConstants.STRICT_ISO8601_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -55,6 +58,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
 
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
+
+    DateTimeFormatter STRICT_DATE_PARSER = DateTimeFormatter.ofPattern(STRICT_ISO8601_PATTERN);
 
     // by default tbfnatp is an instance of
     // DefaultTimeBasedFileNamingAndTriggeringPolicy
@@ -290,7 +295,9 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         this.slashCount = computeSlashCount(DAILY_DATE_PATTERN);
 
         // 2016-03-05 00:14:39 CET
-        long simulatedTime = 1457133279186L;
+        //long simulatedTime = 1457133279186L;
+        long simulatedTime = getSimulatedTimeFromString("2016-03-05T00:14:39,186");
+
         ConfigParameters params = new ConfigParameters(simulatedTime);
         String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i";
         params.maxHistory(60).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(10).sizeCap(sizeCap);
@@ -311,9 +318,21 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         foundFiles.forEach(f -> la.add(f.length()));
         System.out.println("Sum: "+la.sum());
 
+        // adding fileSize to sizeCap may make sense
         assertTrue(la.sum() < sizeCap);
 
         checkFileCount(expectedFileCount + 1);
+    }
+
+    /**
+     * The returned millis is based on local time
+     * @param dateStr
+     * @return
+     */
+    private long getSimulatedTimeFromString(String dateStr) {
+        LocalDateTime localDateTime = LocalDateTime.parse(dateStr, STRICT_DATE_PARSER);
+        long simulatedTime = localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return simulatedTime;
     }
 
     @Test
