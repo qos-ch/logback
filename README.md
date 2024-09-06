@@ -78,11 +78,12 @@ looks forward to your contribution. Please follow this process:
 6. Submit a pull request to logback from your commit page on GitHub.
 
 
+<!--
 # Continuous integration build status
 
 | Branch | Last results |
 | ------ | -------------|
 | master | ![CI master](https://github.com/qos-ch/logback/actions/workflows/main.yml/badge.svg) |
-
+-->
 
 
