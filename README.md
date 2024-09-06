@@ -83,6 +83,6 @@ looks forward to your contribution. Please follow this process:
 | Branch | Last results |
 | ------ | -------------|
 | master | ![CI master](https://github.com/qos-ch/logback/actions/workflows/main.yml/badge.svg) |
-| 1.3 branch | ![CI 1.3 branch](https://github.com/qos-ch/logback/actions/workflows/main.yml/badge.svg?branch=branch_1.3.x) |
+
 
 
