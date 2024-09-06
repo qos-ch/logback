@@ -93,7 +93,6 @@ public class ConfigurationWatchListUtil {
     private static ConfigurationWatchList registerNewConfigurationWatchListWithContext(Context context) {
         ConfigurationWatchList cwl = new ConfigurationWatchList();
         cwl.setContext(context);
-        addInfo(context, "Registering  ConfigurationWatchList with context");
         context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST, cwl);
         return cwl;
     }
