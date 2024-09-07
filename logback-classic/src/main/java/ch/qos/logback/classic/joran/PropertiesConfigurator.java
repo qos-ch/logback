@@ -18,9 +18,11 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.ErrorCodes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,8 +33,9 @@ import java.net.URLConnection;
 import java.util.*;
 
 import static ch.qos.logback.core.CoreConstants.DOT;
+import static ch.qos.logback.core.joran.JoranConstants.NULL;
 
-public class PropertyConfigurator extends ContextAwareBase {
+public class PropertiesConfigurator extends ContextAwareBase {
 
     static Comparator<String> LENGTH_COMPARATOR = new Comparator<String>() {
         @Override
@@ -78,10 +81,10 @@ public class PropertyConfigurator extends ContextAwareBase {
     }
 
     public void doConfigure(File file) throws JoranException {
-        try(FileInputStream fileInputStream = new FileInputStream(file)) {
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
             doConfigure(fileInputStream);
         } catch (IOException e) {
-            throw new JoranException("Failed to load file "+file, e);
+            throw new JoranException("Failed to load file " + file, e);
         }
     }
 
@@ -103,7 +106,7 @@ public class PropertyConfigurator extends ContextAwareBase {
     }
 
     private void close(InputStream inputStream) throws JoranException {
-        if(inputStream != null) {
+        if (inputStream != null) {
             try {
                 inputStream.close();
             } catch (IOException e) {
@@ -139,10 +142,20 @@ public class PropertyConfigurator extends ContextAwareBase {
         }
     }
 
-    private void setLevel(String loggerName, String val) {
+    private void setLevel(String loggerName, String levelStr) {
         Logger logger = getLoggerContext().getLogger(loggerName);
-        Level level = Level.toLevel(val);
-        logger.setLevel(level);
+
+        if (JoranConstants.INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
+            if (Logger.ROOT_LOGGER_NAME.equalsIgnoreCase(loggerName)) {
+                addError(ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
+            } else {
+                addInfo("Setting level of logger [" + loggerName + "] to null, i.e. INHERITED");
+                logger.setLevel(null);
+            }
+        } else {
+            Level level = Level.toLevel(levelStr);
+            logger.setLevel(level);
+        }
     }
 
     private Map<String, String> extractVariablesMap(Properties properties) {

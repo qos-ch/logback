@@ -14,7 +14,6 @@
 package ch.qos.logback.classic.joran;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -90,10 +89,10 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
 
     private void runPropertiesConfigurator(File changedFile) {
         addInfo("Will run PropertyConfigurator on "+changedFile.getAbsolutePath());
-        PropertyConfigurator propertyConfigurator = new PropertyConfigurator();
-        propertyConfigurator.setContext(context);
+        PropertiesConfigurator propertiesConfigurator = new PropertiesConfigurator();
+        propertiesConfigurator.setContext(context);
         try {
-            propertyConfigurator.doConfigure(changedFile);
+            propertiesConfigurator.doConfigure(changedFile);
             context.fireConfigurationEvent(newPartialConfigurationEndedSuccessfullyEvent(this));
         } catch (JoranException e) {
             addError("Failed to reload "+ changedFile);

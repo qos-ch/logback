@@ -166,7 +166,7 @@ public class ReconfigureOnChangeTaskTest {
         String propertiesFileStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "roct-" + diff + ".properties";
         File propertiesFile = new File(propertiesFileStr);
         String configurationStr = "<configuration scan=\"true\" scanPeriod=\"1 millisecond\"><propertiesConfigurator file=\"" + propertiesFileStr + "\"/></configuration>";
-        writeToFile(propertiesFile, PropertyConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=INFO");
+        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=INFO");
         configure(asBAIS(configurationStr));
         Logger abcLogger = loggerContext.getLogger(loggerName);
         assertEquals(Level.INFO, abcLogger.getLevel());
@@ -174,7 +174,7 @@ public class ReconfigureOnChangeTaskTest {
         CountDownLatch changeDetectedLatch0 = registerChangeDetectedListener();
         CountDownLatch configurationDoneLatch0 = registerPartialConfigurationEndedSuccessfullyEventListener();
 
-        writeToFile(propertiesFile, PropertyConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=WARN");
+        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=WARN");
         changeDetectedLatch0.await();
         configurationDoneLatch0.await();
         assertEquals(Level.WARN, abcLogger.getLevel());
@@ -182,7 +182,7 @@ public class ReconfigureOnChangeTaskTest {
 
         CountDownLatch changeDetectedLatch1 = registerChangeDetectedListener();
         CountDownLatch configurationDoneLatch1 = registerPartialConfigurationEndedSuccessfullyEventListener();
-        writeToFile(propertiesFile, PropertyConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=ERROR");
+        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=ERROR");
         changeDetectedLatch1.await();
         configurationDoneLatch1.await();
         assertEquals(Level.ERROR, abcLogger.getLevel());

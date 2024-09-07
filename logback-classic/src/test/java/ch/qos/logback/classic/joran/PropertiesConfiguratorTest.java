@@ -25,11 +25,11 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class PropertyConfiguratorTest {
+class PropertiesConfiguratorTest {
 
     LoggerContext lc = new LoggerContext();
     Properties props = new Properties();
-    PropertyConfigurator pc = new PropertyConfigurator();
+    PropertiesConfigurator pc = new PropertiesConfigurator();
     StatusPrinter2 statusPrinter2 = new StatusPrinter2();
     @BeforeEach
     public void setup() throws Exception {
@@ -39,8 +39,8 @@ class PropertyConfiguratorTest {
     @Test
     public void smoke() {
         String TOTO_STR = "toto";
-        props.setProperty(PropertyConfigurator.LOGBACK_ROOT_LOGGER_PREFIX, Level.INFO.levelStr);
-        props.setProperty(PropertyConfigurator.LOGBACK_LOGGER_PREFIX + TOTO_STR, Level.ERROR.levelStr);
+        props.setProperty(PropertiesConfigurator.LOGBACK_ROOT_LOGGER_PREFIX, Level.INFO.levelStr);
+        props.setProperty(PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + TOTO_STR, Level.ERROR.levelStr);
         pc.doConfigure(props);
 
         Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -60,8 +60,8 @@ class PropertyConfiguratorTest {
 
         props.setProperty(ROOT_LEVEL_STR, Level.INFO.levelStr);
         System.setProperty("totoLevel", Level.ERROR.levelStr);
-        props.setProperty(PropertyConfigurator.LOGBACK_ROOT_LOGGER_PREFIX, asVar(ROOT_LEVEL_STR));
-        props.setProperty(PropertyConfigurator.LOGBACK_LOGGER_PREFIX + TOTO_STR, asVar(TOTO_LEVEL_STR));
+        props.setProperty(PropertiesConfigurator.LOGBACK_ROOT_LOGGER_PREFIX, asVar(ROOT_LEVEL_STR));
+        props.setProperty(PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + TOTO_STR, asVar(TOTO_LEVEL_STR));
         pc.doConfigure(props);
 
         Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);

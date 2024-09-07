@@ -14,7 +14,7 @@
 
 package ch.qos.logback.classic.model.processor;
 
-import ch.qos.logback.classic.joran.PropertyConfigurator;
+import ch.qos.logback.classic.joran.PropertiesConfigurator;
 import ch.qos.logback.classic.model.PropertiesConfiguratorModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -61,10 +61,10 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
 
         addInfo("Reading configuration from ["+getAttribureInUse()+"]");
 
-        PropertyConfigurator propertyConfigurator = new PropertyConfigurator();
-        propertyConfigurator.setContext(mic.getContext());
+        PropertiesConfigurator propertiesConfigurator = new PropertiesConfigurator();
+        propertiesConfigurator.setContext(mic.getContext());
         try {
-            propertyConfigurator.doConfigure(in);
+            propertiesConfigurator.doConfigure(in);
         } catch (JoranException e) {
             addError("Could not configure from "+getAttribureInUse());
             throw new ModelHandlerException(e);
