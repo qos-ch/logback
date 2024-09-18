@@ -13,9 +13,12 @@
  */
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.util.Duration;
+import ch.qos.logback.core.util.FileSize;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Appender;
@@ -27,6 +30,14 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.Collections;
+import java.util.List;
 //import ch.qos.logback.core.util.StatusPrinter;
 
 public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
@@ -37,13 +48,14 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
     int diff = RandomUtil.getPositiveInt();
     String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
+    DummyEncoder<Object> encoder;
 
     @BeforeEach
     public void setUp() throws Exception {
         // noStartTest fails if the context is set in setUp
         // rfa.setContext(context);
-
-        rfa.setEncoder(new DummyEncoder<Object>());
+        encoder = new DummyEncoder<>();
+        rfa.setEncoder(encoder);
         rfa.setName("test");
         tbrp.setContext(context);
         tbrp.setParent(rfa);
@@ -258,6 +270,56 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         Assertions.assertFalse(appender1.isStarted());
         StatusChecker checker = new StatusChecker(context);
         checker.assertContainsMatch(Status.ERROR, "'FileNamePattern' option has the same value");
+    }
+
+    @Test
+    @DisplayName("Checks header and footer are written when the files are rolled")
+    public void testHeaderFooterWritten() throws IOException, InterruptedException {
+        for (int i = 0; i < 8; i++) {
+            File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "header-" + i + ".log");
+            file.deleteOnExit();
+        }
+        encoder.setFileHeader("HEADER");
+        encoder.setFileFooter("FOOTER");
+        rfa.setContext(context);
+        FixedWindowRollingPolicy fixedWindowRollingPolicy = new FixedWindowRollingPolicy();
+        fixedWindowRollingPolicy.setContext(context);
+        fixedWindowRollingPolicy.setParent(rfa);
+        fixedWindowRollingPolicy.setMaxIndex(3);
+        String fileNamePattern = CoreTestConstants.OUTPUT_DIR_PREFIX + "header-%i.log";
+        fixedWindowRollingPolicy.setFileNamePattern(fileNamePattern);
+        rfa.setRollingPolicy(fixedWindowRollingPolicy);
+        rfa.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX + "header-0.log");
+        fixedWindowRollingPolicy.start();
+        rfa.setImmediateFlush(true);
+        SizeBasedTriggeringPolicy<Object> sbtp = new SizeBasedTriggeringPolicy<>();
+        sbtp.setMaxFileSize(new FileSize(10));
+        sbtp.setCheckIncrement(Duration.buildByMilliseconds(10));
+
+        rfa.setTriggeringPolicy(sbtp);
+        rfa.getTriggeringPolicy().start();
+        rfa.start();
+
+        for (int i = 0; i < 100; i++) {
+            rfa.doAppend("data" + i);
+            File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "header-" + fixedWindowRollingPolicy.getMaxIndex() + ".log");
+            if (file.exists()) {
+                break;
+            }
+            Thread.sleep(5);
+        }
+        rfa.stop();
+
+        for (int i = 0; i < fixedWindowRollingPolicy.getMaxIndex(); i++) {
+            File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "header-" + i + ".log");
+            Assertions.assertTrue(file.exists());
+            List<String> lines = Files.readAllLines(file.toPath());
+            Assertions.assertTrue(lines.size() > 2, "At least 2 lines per file are expected in " + file);
+            Assertions.assertEquals("HEADER", lines.get(0));
+            Assertions.assertEquals("FOOTER", lines.get(lines.size() - 1));
+            Assertions.assertEquals(1, Collections.frequency(lines, "HEADER"));
+            Assertions.assertEquals(1, Collections.frequency(lines, "FOOTER"));
+        }
     }
 
 }

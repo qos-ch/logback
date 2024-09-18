@@ -174,6 +174,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             closeOutputStream();
             this.outputStream = outputStream;
 
+            // after opening we have to output the header
+            encoderInit();
         } finally {
             streamWriteLock.unlock();
         }
