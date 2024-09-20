@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JsonEscapeUtilTest {
 
     @Test
-    public void smokeTestEscapeCodes() {
+    public void smokeTestEscapeCodesUnder32() {
         assertEquals("\\u0001", JsonEscapeUtil.ESCAPE_CODES[1]);
         assertEquals("\\u0005", JsonEscapeUtil.ESCAPE_CODES[5]);
         assertEquals("\\b", JsonEscapeUtil.ESCAPE_CODES[8]);
@@ -48,6 +48,22 @@ class JsonEscapeUtilTest {
         System.out.println(input);
         assertEquals("{\\nhello: "+'\\'+'"'+"wo\\nrld\\\"}", JsonEscapeUtil.jsonEscapeString(input));
     }
+
+    @Test
+    public void testBackslash() {
+        String input = "{x:com\\foo}";
+        System.out.println(input);
+        assertEquals("{x:com\\\\foo}", JsonEscapeUtil.jsonEscapeString(input));
+    }
+
+    @Test
+    public void testForwardslash() {
+        String input = "{x:com/foo}";
+        System.out.println(input);
+        assertEquals("{x:com\\/foo}", JsonEscapeUtil.jsonEscapeString(input));
+    }
+
+
 
     @Test
     public void testEscapingTab() {

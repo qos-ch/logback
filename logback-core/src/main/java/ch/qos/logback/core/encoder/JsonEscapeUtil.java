@@ -24,15 +24,15 @@ public class JsonEscapeUtil {
 
     // From RFC-8259 page 5
 
-    //  %x22 /          ; "    quotation mark  U+0022
-    //  %x5C /          ; \    reverse solidus U+005C
-    //  %x2F /          ; /    solidus         U+002F
+    //  "    quotation mark  U+0022 -- escaped as \"
+    //  \    reverse solidus U+005C -- escaped as \\
+    //  /    solidus         U+002F -- escaped as \/
 
-    //  %x62 /          ; b    backspace       U+0008
-    //  %x74 /          ; t    tab             U+0009
-    //  %x6E /          ; n    line feed       U+000A
-    //  %x66 /          ; f    form feed       U+000C
-    //  %x72 /          ; r    carriage return U+000D
+    //  backspace       U+0008  -- escaped as \b
+    //  tab             U+0009  -- escaped as \t
+    //  line feed       U+000A  -- escaped as \n
+    //  form feed       U+000C -- escaped as \f
+    //  carriage return U+000D -- escaped as \r
 
     static {
         for (char c = 0; c < ESCAPE_CODES_COUNT; c++) {
@@ -80,13 +80,19 @@ public class JsonEscapeUtil {
     //  %x22 /          ; "    quotation mark  U+0022
     //  %x5C /          ; \    reverse solidus U+005C
 
+    //  "    quotation mark  U+0022 -- escaped as \"
+    //  \    reverse solidus U+005C -- escaped as \\
+    //  /    solidus         U+002F -- escaped as \/
+
     static String getObligatoryEscapeCode(char c) {
         if (c < 32)
             return ESCAPE_CODES[c];
         if (c == 0x22)
             return "\\\"";
-        if (c == 0x5C)
+        if (c == 0x2F)
             return "\\/";
+        if (c == 0x5C)
+            return "\\\\";
 
         return null;
     }
