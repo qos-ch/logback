@@ -77,9 +77,6 @@ public class JsonEscapeUtil {
         return sb.toString();
     }
 
-    //  %x22 /          ; "    quotation mark  U+0022
-    //  %x5C /          ; \    reverse solidus U+005C
-
     //  "    quotation mark  U+0022 -- escaped as \"
     //  \    reverse solidus U+005C -- escaped as \\
     //  /    solidus         U+002F -- escaped as \/
