@@ -45,7 +45,11 @@ public final class Level implements java.io.Serializable {
     public static final Integer ALL_INTEGER = ALL_INT;
 
     /**
-     * The <code>OFF</code> is used to turn off logging.
+     * The <code>OFF</code> is used to turn off logging. It is intended to be used
+     * for logging system configuration.
+     *
+     * Warning: it should never be passed as an argument to logger methods
+     * in a regular log statement.
      */
     public static final Level OFF = new Level(OFF_INT, "OFF");
 
@@ -79,7 +83,18 @@ public final class Level implements java.io.Serializable {
     public static final Level TRACE = new Level(TRACE_INT, "TRACE");
 
     /**
-     * The <code>ALL</code> is used to turn on all logging.
+     * <p>The <code>ALL</code> is used to turn on all logging. The <code>ALL</code> level is vestigial from
+     * log4j 1.x.
+     * </p>
+     *
+     * <p>In logback, where the Level class is final, logging can be turned on for all levels by setting
+     * a logger's level to <code>TRACE</code>.
+     * </p>
+     *
+     * <p>Thus, the <code>ALL</code> level is marked as deprecated.
+     * </p>
+     *
+     * @deprecated with no replacement
      */
     public static final Level ALL = new Level(ALL_INT, "ALL");
 
