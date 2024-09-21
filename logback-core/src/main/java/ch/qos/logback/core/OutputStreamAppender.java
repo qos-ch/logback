@@ -136,7 +136,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     protected void closeOutputStream() {
         if (this.outputStream != null) {
             try {
-                // before closing we have to output out layout's footer
+                // before closing we have to output out encooder's footer
                 encoderClose();
                 this.outputStream.close();
                 this.outputStream = null;
@@ -204,6 +204,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         streamWriteLock.lock();
 
         try {
+            // guard against appender having been stop() in parallel
+            // note that the encoding step is performed outside the protection of the streamWriteLock
             if(isStarted()) {
                 writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
                 updateByteCount(byteArray);
