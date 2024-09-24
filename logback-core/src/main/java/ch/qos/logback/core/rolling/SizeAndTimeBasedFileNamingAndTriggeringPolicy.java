@@ -201,11 +201,11 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
     }
 
     public Duration getCheckIncrement() {
-        return checkIncrement;
+        return null;
     }
 
     public void setCheckIncrement(Duration checkIncrement) {
-        this.checkIncrement = checkIncrement;
+       addWarn("Since version 1.5.8, 'checkIncrement' property has no effect");
     }
 
     @Override

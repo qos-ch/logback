@@ -15,6 +15,7 @@ package ch.qos.logback.core.rolling;
 
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
+import ch.qos.logback.core.util.FileUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -275,10 +276,13 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     @Test
     @DisplayName("Checks header and footer are written when the files are rolled")
     public void testHeaderFooterWritten() throws IOException, InterruptedException {
-        for (int i = 0; i < 8; i++) {
-            File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "header-" + i + ".log");
-            file.deleteOnExit();
-        }
+
+        String folderPrefix = CoreTestConstants.OUTPUT_DIR_PREFIX+diff+"/";
+        String namePrefix = folderPrefix+"header-";
+        File folderFile = new File(folderPrefix);
+        FileUtil.createMissingParentDirectories(folderFile);
+
+
         encoder.setFileHeader("HEADER");
         encoder.setFileFooter("FOOTER");
         rfa.setContext(context);
@@ -286,10 +290,10 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         fixedWindowRollingPolicy.setContext(context);
         fixedWindowRollingPolicy.setParent(rfa);
         fixedWindowRollingPolicy.setMaxIndex(3);
-        String fileNamePattern = CoreTestConstants.OUTPUT_DIR_PREFIX + "header-%i.log";
+        String fileNamePattern = namePrefix + "%i.log";
         fixedWindowRollingPolicy.setFileNamePattern(fileNamePattern);
         rfa.setRollingPolicy(fixedWindowRollingPolicy);
-        rfa.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX + "header-0.log");
+        rfa.setFile(namePrefix+"0.log");
         fixedWindowRollingPolicy.start();
         rfa.setImmediateFlush(true);
         SizeBasedTriggeringPolicy<Object> sbtp = new SizeBasedTriggeringPolicy<>();
@@ -302,7 +306,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
         for (int i = 0; i < 100; i++) {
             rfa.doAppend("data" + i);
-            File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "header-" + fixedWindowRollingPolicy.getMaxIndex() + ".log");
+            File file = new File(namePrefix + fixedWindowRollingPolicy.getMaxIndex() + ".log");
             if (file.exists()) {
                 break;
             }
@@ -311,7 +315,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         rfa.stop();
 
         for (int i = 0; i < fixedWindowRollingPolicy.getMaxIndex(); i++) {
-            File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "header-" + i + ".log");
+            File file = new File(namePrefix + i + ".log");
             Assertions.assertTrue(file.exists());
             List<String> lines = Files.readAllLines(file.toPath());
             Assertions.assertTrue(lines.size() > 2, "At least 2 lines per file are expected in " + file);
