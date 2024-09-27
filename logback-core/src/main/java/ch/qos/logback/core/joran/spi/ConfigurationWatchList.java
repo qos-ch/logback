@@ -16,8 +16,10 @@ package ch.qos.logback.core.joran.spi;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,11 +120,16 @@ public class ConfigurationWatchList extends ContextAwareBase {
         return null;
     }
 
-    @SuppressWarnings("deprecation")
     File convertToFile(URL url) {
         String protocol = url.getProtocol();
         if ("file".equals(protocol)) {
-            return new File(URLDecoder.decode(url.getFile()));
+            try  {
+                return new File(URLDecoder.decode(url.getFile(), Charset.defaultCharset().name()));
+            } catch (UnsupportedEncodingException e) {
+                // This can't (?) happen, and if it did, we would not see this message
+                addInfo("Invalid defaultCharset encoding");
+                return null;
+            }
         } else {
             addInfo("URL [" + url + "] is not of type file");
             return null;
