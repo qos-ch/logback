@@ -119,7 +119,6 @@ public class IncludeModelHandler extends ResourceHandlerBase {
         URL inputURL = getInputURL(mic, includeModel);
         if (inputURL == null)
             return null;
-
         ConfigurationWatchListUtil.addToWatchList(context, inputURL);
         return openURL(inputURL);
     }

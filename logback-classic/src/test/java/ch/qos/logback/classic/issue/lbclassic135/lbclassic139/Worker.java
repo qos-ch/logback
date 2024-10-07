@@ -16,7 +16,7 @@ package ch.qos.logback.classic.issue.lbclassic135.lbclassic139;
 import org.slf4j.Logger;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 
 /**
  * 

@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.contention;
 
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
+
 /**
  * Useful scaffolding to measure the throughput of certain operations when
  * invoked by multiple threads.

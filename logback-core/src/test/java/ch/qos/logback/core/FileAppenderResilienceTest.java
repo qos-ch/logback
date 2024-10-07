@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.recovery.RecoveryCoordinator;
 import ch.qos.logback.core.recovery.RecoveryListener;

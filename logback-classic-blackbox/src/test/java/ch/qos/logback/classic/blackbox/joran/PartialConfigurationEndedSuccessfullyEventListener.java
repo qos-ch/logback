@@ -1,6 +1,6 @@
 /*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -12,38 +12,30 @@
  * as published by the Free Software Foundation.
  */
 
-package ch.qos.logback.classic.joran;
+package ch.qos.logback.classic.blackbox.joran;
 
 import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.spi.ConfigurationEventListener;
 
 import java.util.concurrent.CountDownLatch;
 
-class ReconfigurationDoneListener implements ConfigurationEventListener {
+class PartialConfigurationEndedSuccessfullyEventListener implements ConfigurationEventListener {
+
     CountDownLatch countDownLatch;
 
-    ReconfigureOnChangeTask roct;
-
-    ReconfigurationDoneListener(CountDownLatch countDownLatch,  ReconfigureOnChangeTask aRoct) {
+    PartialConfigurationEndedSuccessfullyEventListener(CountDownLatch countDownLatch) {
         this.countDownLatch = countDownLatch;
-        this.roct = aRoct;
     }
 
     @Override
     public void listen(ConfigurationEvent configurationEvent) {
         switch (configurationEvent.getEventType()) {
-            case CONFIGURATION_ENDED_SUCCESSFULLY:
-            if(roct == null) {
-                countDownLatch.countDown();
-            } else {
-                Object data = configurationEvent.getData();
-                if(data instanceof ReconfigureOnChangeTask && roct == data) {
-                    countDownLatch.countDown();
-                }
-            }
+        case PARTIAL_CONFIGURATION_ENDED_SUCCESSFULLY:
+            //System.out.println(this.toString() + "#listen PARTIAL_CONFIGURATION_ENDED_SUCCESSFULLY detected " + configurationEvent +" count="+countDownLatch.getCount());
+
+            countDownLatch.countDown();
             break;
         default:
         }
-
     }
 }

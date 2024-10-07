@@ -16,7 +16,7 @@ package ch.qos.logback.core.issue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 
 /**
  * A runnable which behaves differently depending on the desired locking model.

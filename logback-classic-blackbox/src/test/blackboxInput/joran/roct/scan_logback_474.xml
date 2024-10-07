@@ -1,7 +1,7 @@
 
 <configuration scan="true" scanPeriod="25 millisecond">
 
-  <appender name="default" class="ch.qos.logback.classic.RecursivelyLoggingAppender474">
+  <appender name="default" class="ch.qos.logback.classic.blackbox.joran.RecursivelyLoggingAppender474">
   </appender>
 
   <logger name="Ignore" level="ERROR" additivity="false"/>

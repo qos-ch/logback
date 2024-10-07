@@ -14,8 +14,8 @@
 
 package ch.qos.logback.core.util;
 
-import ch.qos.logback.core.contention.AbstractMultiThreadedHarness;
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.AbstractMultiThreadedHarness;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

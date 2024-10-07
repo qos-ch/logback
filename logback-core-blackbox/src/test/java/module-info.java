@@ -1,5 +1,4 @@
 module ch.qos.logback.core.blackbox {
-    requires java.xml;
 
     requires ch.qos.logback.core;
 
@@ -11,6 +10,5 @@ module ch.qos.logback.core.blackbox {
 
     exports ch.qos.logback.core.blackbox.joran.conditional;
     exports ch.qos.logback.core.blackbox.joran;
-
     exports ch.qos.logback.core.blackbox.appender;
 }

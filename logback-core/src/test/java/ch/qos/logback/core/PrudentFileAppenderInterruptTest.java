@@ -22,7 +22,7 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.CoreTestConstants;

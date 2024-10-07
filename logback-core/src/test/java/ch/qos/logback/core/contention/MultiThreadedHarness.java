@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.contention;
 
+import ch.qos.logback.core.testUtil.AbstractMultiThreadedHarness;
+
 /**
  * Useful scaffolding/harness to start and processPriorToRemoval multiple
  * threads.

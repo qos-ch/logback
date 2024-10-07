@@ -14,9 +14,11 @@
 
 package ch.qos.logback.classic.joran;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,6 +72,27 @@ class PropertiesConfiguratorTest {
         assertEquals(Level.INFO, rootLogger.getLevel());
         assertEquals(Level.ERROR, totoLogger.getLevel());
 
+    }
+
+    @Test
+    void inheritedLevelString() {
+        String loggerName0 = "com.abc.some0";
+        String loggerName1 = "com.abc.some1";
+
+        Logger aLogger0 = lc.getLogger(loggerName0);
+        aLogger0.setLevel(Level.ERROR);
+
+        Logger aLogger1 = lc.getLogger(loggerName1);
+        aLogger1.setLevel(Level.WARN);
+
+
+        props.setProperty(PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName0, JoranConstants.INHERITED);
+        props.setProperty(PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName1, JoranConstants.NULL);
+        pc.doConfigure(props);
+
+        //statusPrinter2.print(lc);
+        assertEquals(null, aLogger0.getLevel());
+        assertEquals(null, aLogger1.getLevel());
     }
 
     String asVar(String v) {

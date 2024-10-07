@@ -174,8 +174,13 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             closeOutputStream();
             this.outputStream = outputStream;
 
-            // after opening we have to output the header
-            encoderInit();
+            // the first call to setOutputStream() is made on a non started appender
+            // However, in subsequent calls to setOutputStream() the appender will be in
+            // started state. In subsequent calls, in particular when opening a file after rollover,
+            // we have to output the header hence the call to encoderInit().
+            if(isStarted()) {
+                encoderInit();
+            }
         } finally {
             streamWriteLock.unlock();
         }

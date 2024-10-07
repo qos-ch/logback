@@ -43,7 +43,12 @@ public class PropertiesConfigurator extends ContextAwareBase {
             int len1 = o1 == null ? 0 : o1.length();
             int len2 = o2 == null ? 0 : o2.length();
             // longer strings first
-            return len2 - len1;
+            int diff = len2 - len1;
+            if (diff != 0) {
+                return diff;
+            } else {
+                return o2.compareTo(o1);
+            }
         }
     };
 
@@ -51,7 +56,7 @@ public class PropertiesConfigurator extends ContextAwareBase {
     static final String LOGBACK_ROOT_LOGGER_PREFIX = LOGBACK_PREFIX + DOT + "root";
     static final int LOGBACK_ROOT_LOGGER_PREFIX_LENGTH = LOGBACK_ROOT_LOGGER_PREFIX.length();
 
-    static final String LOGBACK_LOGGER_PREFIX = LOGBACK_PREFIX + DOT + "logger" + DOT;
+    public static final String LOGBACK_LOGGER_PREFIX = LOGBACK_PREFIX + DOT + "logger" + DOT;
     static final int LOGBACK_LOGGER_PREFIX_LENGTH = LOGBACK_LOGGER_PREFIX.length();
 
     VariableSubstitutionsHelper variableSubstitutionsHelper;
@@ -132,7 +137,6 @@ public class PropertiesConfigurator extends ContextAwareBase {
     }
 
     void configureLoggers(Map<String, String> instructionMap) {
-
         for (String key : instructionMap.keySet()) {
             if (key.startsWith(LOGBACK_LOGGER_PREFIX)) {
                 String loggerName = key.substring(LOGBACK_LOGGER_PREFIX_LENGTH);

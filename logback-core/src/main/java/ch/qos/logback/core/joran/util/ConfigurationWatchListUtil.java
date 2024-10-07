@@ -77,7 +77,7 @@ public class ConfigurationWatchListUtil {
     public static void addToWatchList(Context context, URL url, boolean createCWL) {
         ConfigurationWatchList cwl = getConfigurationWatchList(context);
         if(cwl == null) {
-            if(createCWL && isWatchable(url)) {
+            if(createCWL && ConfigurationWatchList.isWatchableProtocol(url)) {
                 cwl = registerNewConfigurationWatchListWithContext(context);
             } else {
                 addWarn(context, "Null ConfigurationWatchList. Cannot add " + url);
@@ -96,17 +96,6 @@ public class ConfigurationWatchListUtil {
         context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST, cwl);
         return cwl;
     }
-
-    private static boolean isWatchable(URL url) {
-        if(url == null) {
-            return false;
-        }
-
-        String protocol = url.getProtocol();
-        return  "file".equalsIgnoreCase(protocol);
-    }
-
-
 
     public static ConfigurationWatchList getConfigurationWatchList(Context context) {
         return (ConfigurationWatchList) context.getObject(CoreConstants.CONFIGURATION_WATCH_LIST);

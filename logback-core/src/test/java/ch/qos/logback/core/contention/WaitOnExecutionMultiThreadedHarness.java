@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.contention;
 
+import ch.qos.logback.core.testUtil.AbstractMultiThreadedHarness;
+
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class WaitOnExecutionMultiThreadedHarness extends AbstractMultiThreadedHarness {

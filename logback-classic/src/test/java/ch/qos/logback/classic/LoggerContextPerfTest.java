@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.corpus.CorpusModel;
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 
 @Disabled

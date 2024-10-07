@@ -1,6 +1,6 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,15 +11,15 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.issue.lbclassic135;
+package ch.qos.logback.classic.blackbox.issue.lbclassic135;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
-import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
+//import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 
 /**
  * Short sample code testing the throughput of a fair lock.
@@ -33,20 +33,20 @@ public class LoggingToFileThroughput {
 
     public static void main(String args[]) throws InterruptedException {
 
-        ThreadedThroughputCalculator tp = new ThreadedThroughputCalculator(OVERALL_DURATION_IN_MILLIS);
-        tp.printEnvironmentInfo("lbclassic135  LoggingToFileThrouhput");
-
-        LoggerContext lc = new LoggerContext();
-        Logger logger = buildLoggerContext(lc);
-
-        for (int i = 0; i < 2; i++) {
-            tp.execute(buildArray(logger));
-        }
-
-        RunnableWithCounterAndDone[] runnnableArray = buildArray(logger);
-        tp.execute(runnnableArray);
-        tp.printThroughput(runnnableArray, "File:   ");
-        lc.stop();
+//        ThreadedThroughputCalculator tp = new ThreadedThroughputCalculator(OVERALL_DURATION_IN_MILLIS);
+//        tp.printEnvironmentInfo("lbclassic135  LoggingToFileThrouhput");
+//
+//        LoggerContext lc = new LoggerContext();
+//        Logger logger = buildLoggerContext(lc);
+//
+//        for (int i = 0; i < 2; i++) {
+//            tp.execute(buildArray(logger));
+//        }
+//
+//        RunnableWithCounterAndDone[] runnnableArray = buildArray(logger);
+//        tp.execute(runnnableArray);
+//        tp.printThroughput(runnnableArray, "File:   ");
+//        lc.stop();
     }
 
     static Logger buildLoggerContext(LoggerContext lc) {

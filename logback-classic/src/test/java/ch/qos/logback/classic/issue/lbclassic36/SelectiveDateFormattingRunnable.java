@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 //import org.joda.time.format.DateTimeFormat;
 //import org.joda.time.format.DateTimeFormatter;
 
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 
 /**
  * A runnable which behaves differently depending on the desired locking model.

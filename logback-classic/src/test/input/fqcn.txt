@@ -322,8 +322,8 @@ ch.qos.logback.classic.html.XHTMLEntityResolver
 ch.qos.logback.classic.issue.lbclassic135.lbclassic139.Accessor
 ch.qos.logback.classic.issue.lbclassic135.lbclassic139.LB139_DeadlockTest
 ch.qos.logback.classic.issue.lbclassic135.lbclassic139.Worker
-ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable
-ch.qos.logback.classic.issue.lbclassic135.LoggingToFileThroughput
+ch.qos.logback.classic.blackbox.issue.lbclassic135.LoggingRunnable
+ch.qos.logback.classic.blackbox.issue.lbclassic135.LoggingToFileThroughput
 ch.qos.logback.classic.issue.lbclassic180.HtmlEscapedMessageConverter
 ch.qos.logback.classic.issue.lbclassic180.Main
 ch.qos.logback.classic.issue.lbclassic323.Barebones
@@ -353,7 +353,7 @@ ch.qos.logback.classic.jmx.JMXConfiguratorTest
 ch.qos.logback.classic.blackbox.joran.conditional.ConditionalTest
 ch.qos.logback.classic.joran.EvaluatorJoranTest
 ch.qos.logback.classic.joran.JoranConfiguratorTest
-ch.qos.logback.classic.joran.ReconfigureOnChangeTaskTest
+ch.qos.logback.classic.blackbox.joran.ReconfigureOnChangeTaskTest
 ch.qos.logback.classic.jul.LevelChangePropagatorTest
 ch.qos.logback.classic.layout.TTLLLayoutTest
 ch.qos.logback.classic.LevelTest
@@ -846,9 +846,9 @@ ch.qos.logback.core.testUtil.XTeeOutputStream
 ch.qos.logback.core.AsyncAppenderBaseTest
 ch.qos.logback.core.BasicStatusManagerTest
 ch.qos.logback.core.boolex.MatcherTest
-ch.qos.logback.core.contention.AbstractMultiThreadedHarness
+ch.qos.logback.core.testUtil.AbstractMultiThreadedHarness
 ch.qos.logback.core.contention.MultiThreadedHarness
-ch.qos.logback.core.contention.RunnableWithCounterAndDone
+ch.qos.logback.core.testUtil.RunnableWithCounterAndDone
 ch.qos.logback.core.contention.ThreadedThroughputCalculator
 ch.qos.logback.core.contention.WaitOnExecutionMultiThreadedHarness
 ch.qos.logback.core.ContextBaseTest

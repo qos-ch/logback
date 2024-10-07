@@ -11,28 +11,24 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.joran.spi;
+
+package ch.qos.logback.core.util;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Ceki G&uuml;lc&uuml;
- */
-public class ConfigurationWatchListTest {
+public class MD5Test {
 
     @Test
-    // See http://jira.qos.ch/browse/LBCORE-119
-    public void fileToURLAndBack() throws MalformedURLException {
-        File file = new File("a b.xml");
-        URL url = file.toURI().toURL();
-        ConfigurationWatchList cwl = new ConfigurationWatchList();
-        File back = cwl.convertToFile(url);
-        assertEquals(file.getName(), back.getName());
+    void smoke() throws NoSuchAlgorithmException {
+        MD5Util md5Util = new MD5Util();
+        byte[] hash = md5Util.md5Hash("toto");
+        String asHexStr = md5Util.asHexString(hash);
+        assertEquals("f71dbe52628a3f83a77ab494817525c6", asHexStr);
+        System.out.println(asHexStr);
+
     }
 }

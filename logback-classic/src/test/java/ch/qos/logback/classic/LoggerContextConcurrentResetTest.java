@@ -5,8 +5,8 @@ import java.util.concurrent.CyclicBarrier;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import ch.qos.logback.core.contention.AbstractMultiThreadedHarness;
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.AbstractMultiThreadedHarness;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import org.junit.jupiter.api.Timeout;
 

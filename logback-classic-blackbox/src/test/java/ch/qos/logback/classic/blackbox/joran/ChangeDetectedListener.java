@@ -12,28 +12,35 @@
  * as published by the Free Software Foundation.
  */
 
-package ch.qos.logback.classic.joran;
+package ch.qos.logback.classic.blackbox.joran;
 
+import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.spi.ConfigurationEventListener;
 
 import java.util.concurrent.CountDownLatch;
 
-class PartialConfigurationEndedSuccessfullyEventListener implements ConfigurationEventListener {
+class ChangeDetectedListener  implements ConfigurationEventListener {
 
     CountDownLatch countDownLatch;
 
-    PartialConfigurationEndedSuccessfullyEventListener(CountDownLatch countDownLatch) {
+    ReconfigureOnChangeTask reconfigureOnChangeTask;
+
+    ChangeDetectedListener(CountDownLatch countDownLatch) {
         this.countDownLatch = countDownLatch;
     }
 
     @Override
     public void listen(ConfigurationEvent configurationEvent) {
         switch (configurationEvent.getEventType()) {
-        case PARTIAL_CONFIGURATION_ENDED_SUCCESSFULLY:
-            System.out.println(this.toString() + "#listen PARTIAL_CONFIGURATION_ENDED_SUCCESSFULLY detected " + configurationEvent +" count="+countDownLatch.getCount());
+        case CHANGE_DETECTED:
+            //System.out.println(this.toString() + "#listen Change detected " + configurationEvent +" count="+countDownLatch.getCount());
 
             countDownLatch.countDown();
+            Object data = configurationEvent.getData();
+            if (data instanceof ReconfigureOnChangeTask) {
+                reconfigureOnChangeTask = (ReconfigureOnChangeTask) data;
+            }
             break;
         default:
         }

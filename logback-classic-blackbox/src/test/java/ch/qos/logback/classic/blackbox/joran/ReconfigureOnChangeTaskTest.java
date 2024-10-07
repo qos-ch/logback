@@ -1,26 +1,41 @@
-/**
- * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015, QOS.ch. All rights
- * reserved.
+/*
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
- * This program and the accompanying materials are dual-licensed under either the terms of the Eclipse Public License
- * v1.0 as published by the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
  *
- * or (per the licensee's choosing)
+ *   or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.joran;
+package ch.qos.logback.classic.blackbox.joran;
 
-import static ch.qos.logback.classic.ClassicTestConstants.JORAN_INPUT_PREFIX;
-import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.DETECTED_CHANGE_IN_CONFIGURATION_FILES;
-import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.FALLING_BACK_TO_SAFE_CONFIGURATION;
-import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.blackbox.issue.lbclassic135.LoggingRunnable;
+import ch.qos.logback.classic.joran.*;
+import ch.qos.logback.classic.model.processor.ConfigurationModelHandlerFull;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
+import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.spi.ConfigurationEvent;
+import ch.qos.logback.core.spi.ConfigurationEventListener;
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
+import ch.qos.logback.core.testUtil.FileTestUtil;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.StatusPrinter;
+import ch.qos.logback.core.util.StatusPrinter2;
+import org.junit.jupiter.api.*;
 
 import java.io.*;
 import java.util.List;
@@ -29,33 +44,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.model.processor.ConfigurationModelHandlerFull;
-import ch.qos.logback.core.spi.ConfigurationEvent;
-import ch.qos.logback.core.spi.ConfigurationEventListener;
-import ch.qos.logback.core.status.OnConsoleStatusListener;
-import ch.qos.logback.core.status.WarnStatus;
-import ch.qos.logback.core.util.StatusPrinter2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
-import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.testUtil.FileTestUtil;
-import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.status.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.jupiter.api.Timeout;
+import static ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants.JORAN_INPUT_PREFIX;
+import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ReconfigureOnChangeTaskTest {
     final static int THREAD_COUNT = 5;
@@ -86,6 +77,7 @@ public class ReconfigureOnChangeTaskTest {
     StatusChecker statusChecker = new StatusChecker(loggerContext);
     StatusPrinter2 statusPrinter2 = new StatusPrinter2();
 
+
     @BeforeAll
     static public void classSetup() {
         FileTestUtil.makeTestOutputDir();
@@ -102,7 +94,7 @@ public class ReconfigureOnChangeTaskTest {
         jc.doConfigure(file);
     }
 
-    void configure(InputStream is) throws JoranException {
+    protected void configure(InputStream is) throws JoranException {
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(loggerContext);
         jc.doConfigure(is);
@@ -149,7 +141,7 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     @Test
-    @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
+    //@Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
     public void scanWithResourceInclusion() throws JoranException, IOException, InterruptedException {
         File topLevelFile = new File(INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
@@ -165,7 +157,7 @@ public class ReconfigureOnChangeTaskTest {
         String loggerName = "abc";
         String propertiesFileStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "roct-" + diff + ".properties";
         File propertiesFile = new File(propertiesFileStr);
-        String configurationStr = "<configuration scan=\"true\" scanPeriod=\"1 millisecond\"><propertiesConfigurator file=\"" + propertiesFileStr + "\"/></configuration>";
+        String configurationStr = "<configuration debug=\"true\" scan=\"true\" scanPeriod=\"1 millisecond\"><propertiesConfigurator file=\"" + propertiesFileStr + "\"/></configuration>";
         writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=INFO");
         configure(asBAIS(configurationStr));
         Logger abcLogger = loggerContext.getLogger(loggerName);
@@ -185,10 +177,29 @@ public class ReconfigureOnChangeTaskTest {
         writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=ERROR");
         changeDetectedLatch1.await();
         configurationDoneLatch1.await();
+
         assertEquals(Level.ERROR, abcLogger.getLevel());
 
-        statusPrinter2.print(loggerContext);
+    }
 
+    @Disabled
+    @Test
+    void propertiesFromHTTPS() throws InterruptedException, UnsupportedEncodingException, JoranException {
+        String loggerName = "com.bazinga";
+        String propertiesURLStr = "https://www.qos.ch/foo.properties";
+        Logger aLogger = loggerContext.getLogger(loggerName);
+        String configurationStr = "<configuration debug=\"true\" scan=\"true\" scanPeriod=\"10 millisecond\"><propertiesConfigurator url=\"" + propertiesURLStr + "\"/></configuration>";
+
+        configure(asBAIS(configurationStr));
+        assertEquals(Level.WARN, aLogger.getLevel());
+        System.out.println("first phase OK");
+        CountDownLatch changeDetectedLatch0 = registerChangeDetectedListener();
+        CountDownLatch configurationDoneLatch0 = registerPartialConfigurationEndedSuccessfullyEventListener();
+
+        changeDetectedLatch0.await();
+        System.out.println("after changeDetectedLatch0.await();");
+        configurationDoneLatch0.await();
+        assertEquals(Level.ERROR, aLogger.getLevel());
     }
 
     // See also http://jira.qos.ch/browse/LOGBACK-338

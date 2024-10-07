@@ -12,9 +12,9 @@
  * as published by the Free Software Foundation.
  */
 
-package ch.qos.logback.classic.joran;
+package ch.qos.logback.classic.blackbox.joran;
 
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 
 import java.io.File;
 import java.io.IOException;

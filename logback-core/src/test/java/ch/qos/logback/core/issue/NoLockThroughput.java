@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.issue;
 
-import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
+import ch.qos.logback.core.testUtil.RunnableWithCounterAndDone;
 import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 import ch.qos.logback.core.issue.SelectiveLockRunnable.LockingModel;
 
