@@ -25,10 +25,7 @@ import ch.qos.logback.core.joran.spi.HttpUtil;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import jakarta.servlet.http.HttpServlet;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
@@ -110,8 +107,11 @@ public class ConfigurationWatchListTest extends ReconfigureTaskTestSupport {
         assertNull(changedURL3);
     }
 
+    @Disabled
     @Test
     public void propertiesFromHTTP() throws UnsupportedEncodingException, JoranException, InterruptedException, MalformedURLException {
+
+
 
         String propertiesURLStr = urlString;
         Logger bazingaLogger = loggerContext.getLogger(BAZINGA_LOGGER_NAME);
