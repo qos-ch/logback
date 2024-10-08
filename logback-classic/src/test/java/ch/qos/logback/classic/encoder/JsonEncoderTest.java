@@ -99,10 +99,8 @@ class JsonEncoderTest {
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
         //System.out.println(resultString);
-
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
-
     }
 
     @Test
@@ -219,7 +217,7 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-        System.out.println(resultString);
+        //System.out.println(resultString);
 
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
@@ -256,6 +254,23 @@ class JsonEncoderTest {
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
     }
+
+    @Test
+    void withThrowableDisabled() throws JsonProcessingException {
+        Throwable t = new RuntimeException("withThrowableDisabled");
+        LoggingEvent event = new LoggingEvent("in withThrowable test", logger, Level.WARN, "hello kvp", t, null);
+        jsonEncoder.setWithThrowable(false);
+        byte[] resultBytes = jsonEncoder.encode(event);
+        String resultString = new String(resultBytes, StandardCharsets.UTF_8);
+        //System.out.println(resultString);
+        JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
+
+        LoggingEvent eventWithNoThrowable = new LoggingEvent("in withThrowable test", logger, Level.WARN, "hello kvp", null, null);
+        eventWithNoThrowable.setTimeStamp(event.getTimeStamp());
+
+        compareEvents(eventWithNoThrowable, resultEvent);
+    }
+
 
     @Test
     void withThrowableHavingCause() throws JsonProcessingException {

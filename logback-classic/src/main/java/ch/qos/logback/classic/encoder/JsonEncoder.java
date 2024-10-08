@@ -23,6 +23,7 @@ import ch.qos.logback.core.encoder.EncoderBase;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -108,7 +109,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     private boolean withTimestamp = true;
     private boolean withNanoseconds = true;
 
-
     private boolean withLevel = true;
     private boolean withThreadName = true;
     private boolean withLoggerName = true;
@@ -120,7 +120,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     private boolean withArguments = true;
     private boolean withThrowable = true;
     private boolean withFormattedMessage = false;
-
 
     @Override
     public byte[] headerBytes() {
@@ -135,39 +134,40 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         if (withSequenceNumber) {
             appenderMemberWithLongValue(sb, SEQUENCE_NUMBER_ATTR_NAME, event.getSequenceNumber());
-            sb.append(VALUE_SEPARATOR);
         }
 
         if (withTimestamp) {
+            appendValueSeparator(sb, withSequenceNumber);
             appenderMemberWithLongValue(sb, TIMESTAMP_ATTR_NAME, event.getTimeStamp());
-            sb.append(VALUE_SEPARATOR);
         }
 
         if (withNanoseconds) {
+            appendValueSeparator(sb, withSequenceNumber, withTimestamp);
             appenderMemberWithLongValue(sb, NANOSECONDS_ATTR_NAME, event.getNanoseconds());
-            sb.append(VALUE_SEPARATOR);
         }
 
         if (withLevel) {
+            appendValueSeparator(sb, withNanoseconds, withSequenceNumber, withTimestamp);
             String levelStr = event.getLevel() != null ? event.getLevel().levelStr : NULL_STR;
             appenderMember(sb, LEVEL_ATTR_NAME, levelStr);
-            sb.append(VALUE_SEPARATOR);
         }
 
         if (withThreadName) {
+            appendValueSeparator(sb, withLevel, withNanoseconds, withSequenceNumber, withTimestamp);
             appenderMember(sb, THREAD_NAME_ATTR_NAME, jsonEscape(event.getThreadName()));
-            sb.append(VALUE_SEPARATOR);
         }
 
         if (withLoggerName) {
+            appendValueSeparator(sb, withThreadName, withLevel, withNanoseconds, withSequenceNumber, withTimestamp);
             appenderMember(sb, LOGGER_ATTR_NAME, event.getLoggerName());
-            sb.append(VALUE_SEPARATOR);
         }
 
         if (withContext) {
-            appendLoggerContext(sb, event.getLoggerContextVO());
+            // at this stage we assume that at least one field was written
             sb.append(VALUE_SEPARATOR);
+            appendLoggerContext(sb, event.getLoggerContextVO());
         }
+
         if (withMarkers)
             appendMarkers(sb, event);
 
@@ -178,17 +178,18 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
             appendKeyValuePairs(sb, event);
 
         if (withMessage) {
-            appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(event.getMessage()));
             sb.append(VALUE_SEPARATOR);
+            appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(event.getMessage()));
         }
 
         if (withFormattedMessage) {
-            appenderMember(sb, FORMATTED_MESSAGE_ATTR_NAME, jsonEscape(event.getFormattedMessage()));
             sb.append(VALUE_SEPARATOR);
+            appenderMember(sb, FORMATTED_MESSAGE_ATTR_NAME, jsonEscape(event.getFormattedMessage()));
         }
 
-        if (withArguments)
+        if (withArguments) {
             appendArgumentArray(sb, event);
+        }
 
         if (withThrowable)
             appendThrowableProxy(sb, THROWABLE_ATTR_NAME, event.getThrowableProxy());
@@ -196,6 +197,19 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_OBJ);
         sb.append(CoreConstants.JSON_LINE_SEPARATOR);
         return sb.toString().getBytes(UTF_8_CHARSET);
+    }
+
+    void appendValueSeparator(StringBuilder sb, boolean... subsequentConditionals) {
+        boolean enabled = false;
+        for (boolean subsequent : subsequentConditionals) {
+            if (subsequent) {
+                enabled = true;
+                break;
+            }
+        }
+
+        if (enabled)
+            sb.append(VALUE_SEPARATOR);
     }
 
     private void appendLoggerContext(StringBuilder sb, LoggerContextVO loggerContextVO) {
@@ -240,6 +254,13 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     }
 
     private void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp) {
+        appendThrowableProxy(sb, attributeName, itp, true);
+    }
+
+    private void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp, boolean appendValueSeparator) {
+
+        if (appendValueSeparator)
+            sb.append(VALUE_SEPARATOR);
 
         // in the nominal case, attributeName != null. However, attributeName will be null for suppressed
         // IThrowableProxy array, in which case no attribute name is needed
@@ -273,7 +294,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         IThrowableProxy cause = itp.getCause();
         if (cause != null) {
-            sb.append(VALUE_SEPARATOR);
             appendThrowableProxy(sb, CAUSE_ATTR_NAME, cause);
         }
 
@@ -282,14 +302,12 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
             sb.append(VALUE_SEPARATOR);
             sb.append(QUOTE).append(SUPPRESSED_ATTR_NAME).append(QUOTE_COL);
             sb.append(OPEN_ARRAY);
+
             boolean first = true;
             for (IThrowableProxy suppressedITP : suppressedArray) {
-                if (first) {
+                appendThrowableProxy(sb, null, suppressedITP, !first);
+                if (first)
                     first = false;
-                } else {
-                    sb.append(VALUE_SEPARATOR);
-                }
-                appendThrowableProxy(sb, null, suppressedITP);
             }
             sb.append(CLOSE_ARRAY);
         }
@@ -350,6 +368,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         if (kvpList == null || kvpList.isEmpty())
             return;
 
+        sb.append(VALUE_SEPARATOR);
         sb.append(QUOTE).append(KEY_VALUE_PAIRS_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_ARRAY);
         final int len = kvpList.size();
         for (int i = 0; i < len; i++) {
@@ -361,7 +380,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
             sb.append(CLOSE_OBJ);
         }
         sb.append(CLOSE_ARRAY);
-        sb.append(VALUE_SEPARATOR);
     }
 
     private void appendArgumentArray(StringBuilder sb, ILoggingEvent event) {
@@ -369,6 +387,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         if (argumentArray == null)
             return;
 
+        sb.append(VALUE_SEPARATOR);
         sb.append(QUOTE).append(ARGUMENT_ARRAY_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_ARRAY);
         final int len = argumentArray.length;
         for (int i = 0; i < len; i++) {
@@ -378,7 +397,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         }
         sb.append(CLOSE_ARRAY);
-        sb.append(VALUE_SEPARATOR);
     }
 
     private void appendMarkers(StringBuilder sb, ILoggingEvent event) {
@@ -386,6 +404,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         if (markerList == null)
             return;
 
+        sb.append(VALUE_SEPARATOR);
         sb.append(QUOTE).append(MARKERS_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_ARRAY);
         final int len = markerList.size();
         for (int i = 0; i < len; i++) {
@@ -395,8 +414,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         }
         sb.append(CLOSE_ARRAY);
-        sb.append(VALUE_SEPARATOR);
-
     }
 
     private String jsonEscapedToString(Object o) {
@@ -419,7 +436,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     private void appendMDC(StringBuilder sb, ILoggingEvent event) {
         Map<String, String> map = event.getMDCPropertyMap();
-
+        sb.append(VALUE_SEPARATOR);
         sb.append(QUOTE).append(MDC_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_OBJ);
         if (isNotEmptyMap(map)) {
             Set<Map.Entry<String, String>> entrySet = map.entrySet();
@@ -433,8 +450,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         }
         sb.append(CLOSE_OBJ);
-        sb.append(VALUE_SEPARATOR);
-
     }
 
     boolean isNotEmptyMap(Map map) {
