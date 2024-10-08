@@ -29,7 +29,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.StatusPrinter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -255,6 +255,22 @@ class JsonEncoderTest {
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
+    }
+
+    @Test
+    void withPlainStackTrace() throws IOException {
+        Throwable t = new RuntimeException("test", new IllegalStateException("test cause"));
+        LoggingEvent event = new LoggingEvent("in withThrowable test", logger, Level.WARN, "hello kvp", t, null);
+
+        jsonEncoder.setWithPlainStackTrace(true);
+        byte[] resultBytes = jsonEncoder.encode(event);
+        String resultString = new String(resultBytes, StandardCharsets.UTF_8).trim();
+
+        //testing the whole stack trace is brittle - depends on the tool used, e.g. is different in an IDE
+        //and contains line numbers that can easily change
+
+        assertThat(resultString).contains("\"java.lang.RuntimeException: test\\n\\tat ch.qos.logback.classic");
+        assertThat(resultString).contains("Caused by: java.lang.IllegalStateException: test cause\\n\\tat ch.qos.logback.classic");
     }
 
     @Test
