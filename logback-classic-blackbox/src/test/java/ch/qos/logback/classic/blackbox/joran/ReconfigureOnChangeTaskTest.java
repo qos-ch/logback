@@ -48,13 +48,11 @@ import static ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants.JORAN
 import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ReconfigureOnChangeTaskTest {
+public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
     final static int THREAD_COUNT = 5;
 
     final static int TIMEOUT = 4;
     final static int TIMEOUT_LONG = 10;
-
-    int diff = RandomUtil.getPositiveInt();
 
     // the space in the file name mandated by
     // http://jira.qos.ch/browse/LOGBACK-67
@@ -72,7 +70,6 @@ public class ReconfigureOnChangeTaskTest {
 
     private static final String SCAN_PERIOD_DEFAULT_FILE_AS_STR = JORAN_INPUT_PREFIX + "roct/scan_period_default.xml";
 
-    LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass());
     StatusChecker statusChecker = new StatusChecker(loggerContext);
     StatusPrinter2 statusPrinter2 = new StatusPrinter2();
@@ -92,12 +89,6 @@ public class ReconfigureOnChangeTaskTest {
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(loggerContext);
         jc.doConfigure(file);
-    }
-
-    protected void configure(InputStream is) throws JoranException {
-        JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(loggerContext);
-        jc.doConfigure(is);
     }
 
     @Test
@@ -141,7 +132,7 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     @Test
-    //@Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
+    @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
     public void scanWithResourceInclusion() throws JoranException, IOException, InterruptedException {
         File topLevelFile = new File(INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
@@ -157,7 +148,7 @@ public class ReconfigureOnChangeTaskTest {
         String loggerName = "abc";
         String propertiesFileStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "roct-" + diff + ".properties";
         File propertiesFile = new File(propertiesFileStr);
-        String configurationStr = "<configuration debug=\"true\" scan=\"true\" scanPeriod=\"1 millisecond\"><propertiesConfigurator file=\"" + propertiesFileStr + "\"/></configuration>";
+        String configurationStr = "<configuration debug=\"true\" scan=\"true\" scanPeriod=\"10 millisecond\"><propertiesConfigurator file=\"" + propertiesFileStr + "\"/></configuration>";
         writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName+"=INFO");
         configure(asBAIS(configurationStr));
         Logger abcLogger = loggerContext.getLogger(loggerName);
@@ -170,7 +161,6 @@ public class ReconfigureOnChangeTaskTest {
         changeDetectedLatch0.await();
         configurationDoneLatch0.await();
         assertEquals(Level.WARN, abcLogger.getLevel());
-
 
         CountDownLatch changeDetectedLatch1 = registerChangeDetectedListener();
         CountDownLatch configurationDoneLatch1 = registerPartialConfigurationEndedSuccessfullyEventListener();
@@ -220,10 +210,6 @@ public class ReconfigureOnChangeTaskTest {
 
         assertFalse(listener.changeDetectorRegisteredEventOccurred);
         assertEquals(0, loggerContext.getCopyOfScheduledFutures().size());
-    }
-
-    private static ByteArrayInputStream asBAIS(String configurationStr) throws UnsupportedEncodingException {
-        return new ByteArrayInputStream(configurationStr.getBytes("UTF-8"));
     }
 
     @Test
@@ -332,20 +318,6 @@ public class ReconfigureOnChangeTaskTest {
         CountDownLatch latch = new CountDownLatch(1);
         ReconfigurationDoneListener reconfigurationDoneListener = new ReconfigurationDoneListener(latch, roct);
         loggerContext.addConfigurationEventListener(reconfigurationDoneListener);
-        return latch;
-    }
-
-    CountDownLatch registerPartialConfigurationEndedSuccessfullyEventListener() {
-        CountDownLatch latch = new CountDownLatch(1);
-        PartialConfigurationEndedSuccessfullyEventListener listener = new PartialConfigurationEndedSuccessfullyEventListener(latch);
-        loggerContext.addConfigurationEventListener(listener);
-        return latch;
-    }
-
-    CountDownLatch registerChangeDetectedListener() {
-        CountDownLatch latch = new CountDownLatch(1);
-        ChangeDetectedListener changeDetectedListener = new ChangeDetectedListener(latch);
-        loggerContext.addConfigurationEventListener(changeDetectedListener);
         return latch;
     }
 
