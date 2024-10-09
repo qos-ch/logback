@@ -114,29 +114,42 @@ public class Tokenizer {
     private void handleLiteralState(char c, List<Token> tokenList, StringBuilder stringBuilder) {
         switch (c) {
         case CoreConstants.DOLLAR:
+            if (isEscaped(stringBuilder))
+                break;
             addLiteralToken(tokenList, stringBuilder);
             stringBuilder.setLength(0);
             state = TokenizerState.START_STATE;
-            break;
+            return;
         case CoreConstants.COLON_CHAR:
+            if (isEscaped(stringBuilder))
+                break;
             addLiteralToken(tokenList, stringBuilder);
             stringBuilder.setLength(0);
             state = TokenizerState.DEFAULT_VAL_STATE;
-            break;
+            return;
         case CoreConstants.CURLY_LEFT:
+            if (isEscaped(stringBuilder))
+                break;
             addLiteralToken(tokenList, stringBuilder);
             tokenList.add(Token.CURLY_LEFT_TOKEN);
             stringBuilder.setLength(0);
-            break;
+            return;
         case CoreConstants.CURLY_RIGHT:
+            if (isEscaped(stringBuilder))
+                break;
             addLiteralToken(tokenList, stringBuilder);
             tokenList.add(Token.CURLY_RIGHT_TOKEN);
             stringBuilder.setLength(0);
-            break;
-        default:
-            stringBuilder.append(c);
+            return;
         }
+        stringBuilder.append(c);
+    }
 
+    private boolean isEscaped(StringBuilder stringBuilder) {
+        boolean isEscaped = stringBuilder.length() > 0 && stringBuilder.charAt(stringBuilder.length() - 1) == CoreConstants.ESCAPE_CHAR;
+        if (isEscaped)
+            stringBuilder.setLength(stringBuilder.length() - 1);
+        return isEscaped;
     }
 
     private void addLiteralToken(List<Token> tokenList, StringBuilder stringBuilder) {
