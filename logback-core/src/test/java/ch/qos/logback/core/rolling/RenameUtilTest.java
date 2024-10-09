@@ -78,7 +78,7 @@ public class RenameUtilTest {
         String abstractFileName = "abstract_pathname-" + diff;
 
         String src = CoreTestConstants.OUTPUT_DIR_PREFIX + abstractFileName;
-        String target = abstractFileName + ".target";
+        String target = src + ".target";
 
         makeFile(src);
 
