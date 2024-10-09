@@ -34,6 +34,9 @@ import ch.qos.logback.core.CoreConstants;
  * @author Mikhail Mazursky
  */
 public class ExecutorServiceUtil {
+
+    private static final boolean NO_SECURITY_MANAGER = System.getSecurityManager() == null;
+
     private static final ThreadFactory THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE = new ThreadFactory() {
 
         private final AtomicInteger threadNumber = new AtomicInteger(1);
@@ -41,13 +44,18 @@ public class ExecutorServiceUtil {
         private final ThreadFactory defaultFactory = makeThreadFactory();
 
         /**
-         * A thread factory which may be a virtual thread factory the JDK supports it.
+         * A thread factory which may be a virtual thread factory if the JDK supports it
+         * and there is no security manager.
          *
          * @return
          */
         private ThreadFactory makeThreadFactory() {
-            ThreadFactory tf = Thread.ofVirtual().factory();
-            return tf;
+            if (NO_SECURITY_MANAGER) {
+                ThreadFactory tf = Thread.ofVirtual().factory();
+                return tf;
+            }
+
+            return Executors.defaultThreadFactory();
         }
 
         @Override
@@ -99,11 +107,15 @@ public class ExecutorServiceUtil {
 
     /**
      * An alternate implementation of {@linl #newThreadPoolExecutor} which returns a virtual thread per task executor
-     * when available.
+     * if the JDK supports it and there is no security manager.
      *
      * @since 1.3.12/1.4.12
      */
     static public ExecutorService newAlternateThreadPoolExecutor() {
-        return Executors.newVirtualThreadPerTaskExecutor();
+        if (NO_SECURITY_MANAGER) {
+            return Executors.newVirtualThreadPerTaskExecutor();
+        }
+
+        return newThreadPoolExecutor();
     }
 }
