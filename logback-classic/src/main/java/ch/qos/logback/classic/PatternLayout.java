@@ -25,17 +25,14 @@ import ch.qos.logback.core.pattern.color.*;
 import ch.qos.logback.core.pattern.parser.Parser;
 
 /**
- * <p>
  * A flexible layout configurable with pattern string. The goal of this class is
- * to {@link #format format} a {@link ILoggingEvent} and return the results in a
- * {#link String}. The format of the result depends on the <em>conversion
+ * to format a {@link ILoggingEvent} and return the results in a
+ * {@link String}. The format of the result depends on the <em>conversion
  * pattern</em>.
  * <p>
- * For more information about this layout, please refer to the online manual at
- * http://logback.qos.ch/manual/layouts.html#PatternLayout
- * 
+ * For more information about this layout, please refer to
+ * <a href="http://logback.qos.ch/manual/layouts.html#PatternLayout">the online manual</a>.
  */
-
 public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
     public static final Map<String, String> DEFAULT_CONVERTER_MAP = new HashMap<String, String>();
@@ -72,6 +69,10 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         DEFAULT_CONVERTER_MAP.put("t", ThreadConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("thread", ThreadConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(ThreadConverter.class.getName(), "thread");
+
+        DEFAULT_CONVERTER_MAP.put("tid", ThreadIdConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("threadId", ThreadIdConverter.class.getName());
+        CONVERTER_CLASS_TO_KEY_MAP.put(ThreadIdConverter.class.getName(), "threadId");
 
         DEFAULT_CONVERTER_MAP.put("lo", LoggerConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("logger", LoggerConverter.class.getName());
