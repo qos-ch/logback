@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -15,6 +15,8 @@ package ch.qos.logback.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
 
 import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.spi.LogbackLock;
@@ -28,14 +30,14 @@ public class BasicStatusManager implements StatusManager {
     public static final int MAX_HEADER_COUNT = 150;
     public static final int TAIL_SIZE = 150;
 
-    int count = 0;
+    final LongAdder count = new LongAdder();
 
     // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
     final protected List<Status> statusList = new ArrayList<Status>();
     final protected CyclicBuffer<Status> tailBuffer = new CyclicBuffer<Status>(TAIL_SIZE);
     final protected LogbackLock statusListLock = new LogbackLock();
 
-    int level = Status.INFO;
+    final AtomicInteger level = new AtomicInteger(Status.INFO);
 
     // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
     final protected List<StatusListener> statusListenerList = new ArrayList<StatusListener>();
@@ -57,10 +59,15 @@ public class BasicStatusManager implements StatusManager {
         // LBCORE-72: fire event before the count check
         fireStatusAddEvent(newStatus);
 
-        count++;
-        if (newStatus.getLevel() > level) {
-            level = newStatus.getLevel();
-        }
+        count.increment();
+        int newLevel = newStatus.getLevel();
+        int currentLevel;
+        do {
+            currentLevel = level.get();
+            if (newLevel <= currentLevel) {
+                break;
+            }
+        } while (!level.compareAndSet(currentLevel, newLevel));
 
         synchronized (statusListLock) {
             if (statusList.size() < MAX_HEADER_COUNT) {
@@ -90,18 +97,18 @@ public class BasicStatusManager implements StatusManager {
 
     public void clear() {
         synchronized (statusListLock) {
-            count = 0;
+            count.reset();
             statusList.clear();
             tailBuffer.clear();
         }
     }
 
     public int getLevel() {
-        return level;
+        return level.get();
     }
 
     public int getCount() {
-        return count;
+        return count.intValue();
     }
 
     /**
