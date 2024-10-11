@@ -24,6 +24,7 @@ import ch.qos.logback.core.model.ResourceModel;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.ResourceHandlerBase;
+import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.io.InputStream;
@@ -44,6 +45,21 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
 
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        detachedHandle(mic, model);
+    }
+
+    /**
+     *
+     * Used by {@link #handle(ModelInterpretationContext, Model)} as well as logback-tyler. Note the widening of the
+     * base from {@link ModelInterpretationContext} to {@link ContextAwarePropertyContainer}.
+     *
+     * @param capc
+     * @param model
+     * @throws ModelHandlerException
+     * @since 1.5.10
+     */
+    public void detachedHandle(ContextAwarePropertyContainer capc, Model model) throws ModelHandlerException {
+
         PropertiesConfiguratorModel propertyConfiguratorModel = (PropertiesConfiguratorModel) model;
 
         this.optional = OptionHelper.toBoolean(propertyConfiguratorModel.getOptional(), false);
@@ -53,27 +69,27 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
             return;
         }
 
-        InputStream in = getInputStream(mic, propertyConfiguratorModel);
-        if(in == null) {
+        InputStream in = getInputStream(capc, propertyConfiguratorModel);
+        if (in == null) {
             inError = true;
             return;
         }
 
-        addInfo("Reading configuration from ["+getAttribureInUse()+"]");
+        addInfo("Reading configuration from [" + getAttribureInUse() + "]");
 
         PropertiesConfigurator propertiesConfigurator = new PropertiesConfigurator();
-        propertiesConfigurator.setContext(mic.getContext());
+        propertiesConfigurator.setContext(capc.getContext());
         try {
             propertiesConfigurator.doConfigure(in);
         } catch (JoranException e) {
-            addError("Could not configure from "+getAttribureInUse());
+            addError("Could not configure from " + getAttribureInUse());
             throw new ModelHandlerException(e);
         }
 
     }
 
-    protected InputStream getInputStream(ModelInterpretationContext mic, ResourceModel resourceModel) {
-        URL inputURL = getInputURL(mic, resourceModel);
+    protected InputStream getInputStream(ContextAwarePropertyContainer capc, ResourceModel resourceModel) {
+        URL inputURL = getInputURL(capc, resourceModel);
         if (inputURL == null)
             return null;
 

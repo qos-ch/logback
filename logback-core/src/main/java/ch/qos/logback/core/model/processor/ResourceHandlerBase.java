@@ -16,6 +16,7 @@ package ch.qos.logback.core.model.processor;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.ResourceModel;
+import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -78,23 +79,23 @@ abstract public class ResourceHandlerBase extends ModelHandlerBase {
         return this.attributeInUse;
     }
 
-    protected URL getInputURL(ModelInterpretationContext mic, ResourceModel resourceModel) {
+    protected URL getInputURL(ContextAwarePropertyContainer contextAwarePropertyContainer, ResourceModel resourceModel) {
         String fileAttribute = resourceModel.getFile();
         String urlAttribute = resourceModel.getUrl();
         String resourceAttribute = resourceModel.getResource();
 
         if (!OptionHelper.isNullOrEmptyOrAllSpaces(fileAttribute)) {
-            this.attributeInUse = mic.subst(fileAttribute);
+            this.attributeInUse = contextAwarePropertyContainer.subst(fileAttribute);
             return filePathAsURL(attributeInUse);
         }
 
         if (!OptionHelper.isNullOrEmptyOrAllSpaces(urlAttribute)) {
-            this.attributeInUse = mic.subst(urlAttribute);
+            this.attributeInUse = contextAwarePropertyContainer.subst(urlAttribute);
             return attributeToURL(attributeInUse);
         }
 
         if (!OptionHelper.isNullOrEmptyOrAllSpaces(resourceAttribute)) {
-            this.attributeInUse = mic.subst(resourceAttribute);
+            this.attributeInUse = contextAwarePropertyContainer.subst(resourceAttribute);
             return resourceAsURL(attributeInUse);
         }
         // given preceding checkAttributes() check we cannot reach this line

@@ -48,7 +48,7 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
     }
 
     @Override
-    protected void processScanAttrib( ModelInterpretationContext mic, ConfigurationModel configurationModel) {
+    protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
 
     }
 
@@ -60,8 +60,22 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
 
     protected void postProcessScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
         String scanStr = mic.subst(configurationModel.getScanStr());
-        if (!OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
+        String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
+        detachedPostProcess(scanStr, scanPeriodStr);
+    }
 
+    /**
+     * This method is called from this class but also from logback-tyler.
+     *
+     * This method assumes that the variables scanStr and scanPeriodStr have undergone variable substitution
+     * as applicable to their current environment
+     *
+     * @param scanStr
+     * @param scanPeriodStr
+     * @since 1.5.0
+     */
+    public void detachedPostProcess(String scanStr, String scanPeriodStr) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
             ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
             boolean watchPredicateFulfilled = ConfigurationWatchListUtil.watchPredicateFulfilled(context);
             if (!watchPredicateFulfilled) {
@@ -76,7 +90,6 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
 
             context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectorRegisteredEvent(rocTask));
 
-            String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
             Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
 
             addInfo("Will scan for changes in [" + ConfigurationWatchListUtil.getConfigurationWatchList(context) + "] ");
@@ -91,6 +104,7 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
             rocTask.setScheduredFuture(scheduledFuture);
             context.addScheduledFuture(scheduledFuture);
         }
+
     }
 
     private Duration getDurationOfScanPeriodAttribute(String scanPeriodAttrib, Duration defaultDuration) {
