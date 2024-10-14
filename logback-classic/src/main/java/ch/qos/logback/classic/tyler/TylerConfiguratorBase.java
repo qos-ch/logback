@@ -17,8 +17,12 @@ package ch.qos.logback.classic.tyler;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.util.LevelUtil;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.GenericXMLConfigurator;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.util.PropertyModelHandlerHelper;
 import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -29,6 +33,7 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.StringUtil;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class TylerConfiguratorBase extends ContextAwareBase implements ContextAwarePropertyContainer {
 
@@ -64,13 +69,13 @@ public class TylerConfiguratorBase extends ContextAwareBase implements ContextAw
     }
 
     protected void setContextName(String name) {
-        if(StringUtil.isNullOrEmpty(name)) {
+        if (StringUtil.isNullOrEmpty(name)) {
             addError("Cannot set context name to null or empty string");
             return;
         }
         try {
             String substName = subst(name);
-            addInfo("Setting context name to ["+substName+"]");
+            addInfo("Setting context name to [" + substName + "]");
             context.setName(substName);
         } catch (IllegalStateException e) {
             addError("Failed to rename context as [" + name + "]");
@@ -152,5 +157,30 @@ public class TylerConfiguratorBase extends ContextAwareBase implements ContextAw
             return val;
         else
             return "";
+    }
+
+    private JoranConfigurator makeAnotherInstance() {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(context);
+        return jc;
+    }
+
+    /**
+     * Return a supplier which supplies an instance of {@link JoranConfigurator} set to
+     * the same context the context of 'this'.
+     * @since 1.5.11
+     */
+    @Override
+    public Supplier<? extends GenericXMLConfigurator> getConfiguratorSupplier() {
+        Supplier<? extends GenericXMLConfigurator> supplier = () -> this.makeAnotherInstance();
+        return supplier;
+    }
+
+    protected void processModelFromIncludedFile(Model modelFromIncludedFile) {
+        Supplier<? extends GenericXMLConfigurator > configuratorSupplier = this.getConfiguratorSupplier();
+        GenericXMLConfigurator genericXMLConfigurator = configuratorSupplier.get();
+        ConfigurationModel configururationModel = new ConfigurationModel();
+        configururationModel.addSubModel(modelFromIncludedFile);
+        genericXMLConfigurator.processModel(configururationModel);
     }
 }

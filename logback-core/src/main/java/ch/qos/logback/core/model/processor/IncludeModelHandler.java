@@ -22,6 +22,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
 import ch.qos.logback.core.spi.ErrorCodes;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
@@ -60,18 +61,35 @@ public class IncludeModelHandler extends ResourceHandlerBase {
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         IncludeModel includeModel = (IncludeModel) model;
+        Model modelFromIncludedFile = buildModelFromIncludedFile(mic, includeModel);
+        if (modelFromIncludedFile == null) {
+            warnIfRequired("Failed to build include model from included file");
+            return;
+        }
+        processModelFromIncludedFile(includeModel, modelFromIncludedFile);
+    }
+
+    /**
+     * This method is called by logback-tyler at TylerConfigurator run-time.
+     *
+     * @param capc
+     * @param includeModel
+     * @throws ModelHandlerException
+     * @since 1.5.11
+     */
+    public Model buildModelFromIncludedFile(ContextAwarePropertyContainer capc, IncludeModel includeModel) throws ModelHandlerException {
 
         this.optional = OptionHelper.toBoolean(includeModel.getOptional(), false);
 
         if (!checkAttributes(includeModel)) {
             inError = true;
-            return;
+            return null;
         }
 
-        InputStream in = getInputStream(mic, includeModel);
-        if(in == null) {
+        InputStream in = getInputStream(capc, includeModel);
+        if (in == null) {
             inError = true;
-            return;
+            return null;
         }
 
         SaxEventRecorder recorder = null;
@@ -82,31 +100,30 @@ public class IncludeModelHandler extends ResourceHandlerBase {
             List<SaxEvent> saxEvents = recorder.getSaxEventList();
             if (saxEvents.isEmpty()) {
                 addWarn("Empty sax event list");
-                return;
+                return null;
             }
 
-            Supplier<? extends GenericXMLConfigurator> jcSupplier = mic.getConfiguratorSupplier();
+            Supplier<? extends GenericXMLConfigurator> jcSupplier = capc.getConfiguratorSupplier();
             if (jcSupplier == null) {
                 addError("null configurator supplier. Abandoning inclusion of [" + attributeInUse + "]");
                 inError = true;
-                return;
+                return null;
             }
 
             GenericXMLConfigurator genericXMLConfigurator = jcSupplier.get();
             genericXMLConfigurator.getRuleStore().addPathPathMapping(INCLUDED_TAG, CONFIGURATION_TAG);
 
             Model modelFromIncludedFile = genericXMLConfigurator.buildModelFromSaxEventList(recorder.getSaxEventList());
-            if (modelFromIncludedFile == null) {
-                addError(ErrorCodes.EMPTY_MODEL_STACK);
-                return;
-            }
-
-            includeModel.getSubModels().addAll(modelFromIncludedFile.getSubModels());
-
+            return modelFromIncludedFile;
         } catch (JoranException e) {
             inError = true;
             addError("Error processing XML data in [" + attributeInUse + "]", e);
+            return null;
         }
+    }
+
+    private void processModelFromIncludedFile(IncludeModel includeModel, Model modelFromIncludedFile) {
+        includeModel.getSubModels().addAll(modelFromIncludedFile.getSubModels());
     }
 
     public SaxEventRecorder populateSaxEventRecorder(final InputStream inputStream) throws JoranException {
@@ -115,8 +132,8 @@ public class IncludeModelHandler extends ResourceHandlerBase {
         return recorder;
     }
 
-    private InputStream getInputStream(ModelInterpretationContext mic, IncludeModel includeModel) {
-        URL inputURL = getInputURL(mic, includeModel);
+    private InputStream getInputStream(ContextAwarePropertyContainer capc, IncludeModel includeModel) {
+        URL inputURL = getInputURL(capc, includeModel);
         if (inputURL == null)
             return null;
         ConfigurationWatchListUtil.addToWatchList(context, inputURL);

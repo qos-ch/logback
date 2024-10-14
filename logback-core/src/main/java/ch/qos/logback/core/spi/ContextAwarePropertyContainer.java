@@ -14,6 +14,10 @@
 
 package ch.qos.logback.core.spi;
 
+import ch.qos.logback.core.joran.GenericXMLConfigurator;
+
+import java.util.function.Supplier;
+
 /**
  * An interface extending both {@link PropertyContainer} and {@link ContextAware}
  *
@@ -30,4 +34,17 @@ public interface ContextAwarePropertyContainer extends PropertyContainer, Contex
      */
     String subst(String input);
 
+
+    /**
+     * Returns a supplier of {@link GenericXMLConfigurator} instance. The returned value may be null.
+     *
+     * <p>This method could/should have been part of a new interface. It is added here for reasons
+     * of commodity and not coherence.</p>
+     *
+     * @return a supplier of {@link GenericXMLConfigurator} instance, may be null
+     * @since 1.5.11
+     */
+    default public Supplier<? extends GenericXMLConfigurator> getConfiguratorSupplier() {
+        return null;
+    }
 }

@@ -289,6 +289,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
      *
      * @return a supplier of {@link GenericXMLConfigurator} instance, may be null
      */
+    @Override
     public Supplier<? extends GenericXMLConfigurator> getConfiguratorSupplier() {
         return this.configuratorSupplier;
     }
