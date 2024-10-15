@@ -49,12 +49,14 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
 
     @Override
     protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
-
+        // override parent to do nothing
     }
 
     @Override
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         ConfigurationModel configurationModel = (ConfigurationModel) model;
+        // post handling of scan attribute works even we need to watch for included files because the main url is
+        // set in GenericXMLConfigurator very early in the configuration process
         postProcessScanAttrib(mic, configurationModel);
     }
 

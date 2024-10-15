@@ -8,6 +8,7 @@ import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.model.InsertFromJNDIModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.util.PropertyModelHandlerHelper;
+import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
 import ch.qos.logback.core.util.JNDIUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -28,14 +29,22 @@ public class InsertFromJNDIModelHandler extends ModelHandlerBase {
 
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-        int errorCount = 0;
-
         InsertFromJNDIModel ifjm = (InsertFromJNDIModel) model;
+        detachedHandle(mic, ifjm);
+    }
 
-        String envEntryName = mic.subst(ifjm.getEnvEntryName());
-        String asKey = mic.subst(ifjm.getAs());
+    /**
+     *
+     * @param capc
+     * @param ifjm
+     * @since 1.5.11
+     */
+    public void detachedHandle(ContextAwarePropertyContainer capc, InsertFromJNDIModel ifjm) {
+        int errorCount = 0;
+        String envEntryName = capc.subst(ifjm.getEnvEntryName());
+        String asKey = capc.subst(ifjm.getAs());
 
-        String scopeStr = mic.subst(ifjm.getScopeStr());
+        String scopeStr = capc.subst(ifjm.getScopeStr());
         Scope scope = ActionUtil.stringToScope(scopeStr);
 
         String envEntryValue;
@@ -61,7 +70,7 @@ public class InsertFromJNDIModelHandler extends ModelHandlerBase {
                 addError("[" + envEntryName + "] has null or empty value");
             } else {
                 addInfo("Setting variable [" + asKey + "] to [" + envEntryValue + "] in [" + scope + "] scope");
-                PropertyModelHandlerHelper.setProperty(mic, asKey, envEntryValue, scope);
+                PropertyModelHandlerHelper.setProperty(capc, asKey, envEntryValue, scope);
             }
         } catch (NamingException e) {
             addError("Failed to lookup JNDI env-entry [" + envEntryName + "]");
