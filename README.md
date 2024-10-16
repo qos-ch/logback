@@ -8,6 +8,21 @@ The Logback documentation can be found on the [project
 web-site](https://logback.qos.ch/documentation.html) as well as under
 the docs/ folder of the logback distribution.
 
+# On the 1.5.x series
+
+The 1.5.x series is a direct descendant of and a drop-in replacement
+for the 1.4.x series. It differs from the 1.4.x series by the
+relocation of the logback-access module which was moved to its [own
+separate github repository](https://github.com/qos-ch/logback-access).
+
+Here is a summary of 1.5.x dependencies:
+
+|Logback version   |github branch   |SLF4J version  | JDK at runtime | JDK during build | Enterprise Edition (optional)|
+|------------------|----------------|---------------|----------------|------------------|------------------------------|
+| 1.5.x            | master         | 2.0.x         | 11             | 21            | Jakarta EE (jakarta.* namespace)|
+
+
+
 # Java EE and Jakarta EE versions
 
 Given that downstream users are likely to depend on either Java EE (in
