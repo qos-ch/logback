@@ -8,7 +8,7 @@ The Logback documentation can be found on the [project
 web-site](https://logback.qos.ch/documentation.html) as well as under
 the docs/ folder of the logback distribution.
 
-# On the 1.5.x series
+## On the 1.5.x series
 
 The 1.5.x series is a direct descendant of and a drop-in replacement
 for the 1.4.x series. It differs from the 1.4.x series by the
@@ -18,20 +18,13 @@ separate github repository](https://github.com/qos-ch/logback-access).
 Here is a summary of 1.5.x dependencies:
 
 |Logback version   |github branch   |SLF4J version  | JDK at runtime | JDK during build | Enterprise Edition (optional)|
-|------------------|----------------|---------------|----------------|------------------|------------------------------|
+|:---------------:|:--------:|:---------:|:-------:|:--------:|------------------------------|
 | 1.5.x            | master         | 2.0.x         | 11             | 21            | Jakarta EE (jakarta.* namespace)|
 
 
 
-# Java EE and Jakarta EE versions
-
-Given that downstream users are likely to depend on either Java EE (in
-the javax namespace) or on Jakarta EE (in the jakarta namespace) in
-their projects, it was deemed important for logback to support both EE
-alternatives.
-
-**Version 1.3.x supports Java EE, while version 1.4.x supports Jakarta EE.** 
-The two versions are feature identical.
+## INACTIVE - 1.3.x supports Java EE, while version 1.4.x supports Jakarta EE.
+The two versions are feature identical. However, They are no longer actively maintained.
 
 Both 1.3.x and 1.4.x series require SLF4J 2.0.x or later.
 
@@ -42,7 +35,7 @@ The 1.4.x series requires Java 11 at build time and at runtime.
 
 # Building logback
 
-Version 1.3.x requires Java 9 to compile and build.
+Version 1.5.x requires Java 21 to compile and build.
 
 More details on building logback is documented at:
 
@@ -51,11 +44,12 @@ More details on building logback is documented at:
 # In case of problems
 
 In case of problems please do not hesitate to post an e-mail message
-on the logback-user@qos.ch mailing list.  However, please do not
-directly e-mail logback developers. The answer to your question might
-be useful to other users. Moreover, there are many knowledgeable users
-on the logback-user mailing lists who can quickly answer your
-questions.
+on the logback-user@qos.ch mailing list. You may also post message on the 
+[github discussions](https://github.com/qos-ch/logback/discussions) forum. 
+However, please do not directly e-mail logback developers. 
+The answer to your question might be useful to other users. Moreover, 
+there are many knowledgeable users on the logback-user mailing lists 
+who can quickly answer your questions.
 
 # Urgent issues
 
@@ -66,20 +60,13 @@ followed up by a release.
 
 # Pull requests
 
-If you are interested in improving logback, great! The logback community
-looks forward to your contribution. Please follow this process:
+If you are interested in improving logback, that is great! The logback 
+community looks forward to your contribution. Please follow this process:
 
-1. Please file a [bug
-   report](https://logback.qos.ch/bugreport.html) before filing a pull requests. 
-   Note that pull requests wit an associated JIRA issue will get more attention. 
-   Moreover, your pull request is unlikely to be merged without an associated jira issue.
-   
-   Optional: Start a discussion on the [logback-dev mailing
-   list](https://logback.qos.ch/mailinglist.html) about your proposed
-   change.
-
-2. Fork qos-ch/logback. Ideally, create a new branch from your fork for
+1. Fork qos-ch/logback. Ideally, create a new branch from your fork for
    your contribution to make it easier to merge your changes back.
+
+2. Make the effort to explain the aim of your proposed change.
 
 3. Make your changes on the branch you hopefully created in Step 2. Be
    sure that your code passes existing unit tests.
@@ -92,6 +79,7 @@ looks forward to your contribution. Please follow this process:
 
 6. Submit a pull request to logback from your commit page on GitHub.
 
+7. Do not forget to explain your proposed changes.
 
 <!--
 # Continuous integration build status
