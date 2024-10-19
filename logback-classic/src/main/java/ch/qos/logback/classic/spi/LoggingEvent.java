@@ -436,7 +436,13 @@ public class LoggingEvent implements ILoggingEvent {
             return formattedMessage;
         }
         if (argumentArray != null) {
-            formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
+            if(throwableProxy == null) {
+                formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
+            } else {
+                // very rare case where the argument array ends with two exceptions
+                // See https://github.com/qos-ch/logback/issues/876
+                formattedMessage = MessageFormatter.arrayFormat(message, argumentArray, null).getMessage();
+            }
         } else {
             formattedMessage = message;
         }
