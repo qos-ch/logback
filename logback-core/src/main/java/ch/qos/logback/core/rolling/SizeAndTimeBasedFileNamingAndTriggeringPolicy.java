@@ -188,7 +188,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
 
 
 
-        if (lengthCounter.getLength() >= maxFileSize.getSize()) {
+        if (lengthCounter.getLength() >= maxFileSize.getSize() || activeFile.length() >= maxFileSize.getSize()) {
 
             elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod,
                     currentPeriodsCounter);
