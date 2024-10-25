@@ -38,7 +38,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
             return;
         if (tbrp.fileNamePattern.hasIntegerTokenCOnverter()) {
             addError("Filename pattern [" + tbrp.fileNamePattern
-                    + "] contains an integer token converter, i.e. %i, INCOMPATIBLE with this configuration. Remove it.");
+                    + "] contains an integer token converter, i.e. %i, INCOMPATIBLE with this configuration. Please remove it.");
             return;
         }
 

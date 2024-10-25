@@ -98,10 +98,13 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             }
         }
 
-        currentlyActiveFile = new File(getFile());
         addInfo("Active log file name: " + getFile());
+        currentlyActiveFile = new File(getFile());
+        initializeLengthCounter();
         super.start();
     }
+
+
 
     private boolean checkForFileAndPatternCollisions() {
         if (triggeringPolicy instanceof RollingPolicyBase) {
@@ -145,6 +148,14 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             map.put(getName(), fileNamePattern);
         }
         return collisionsDetected;
+    }
+
+    private void initializeLengthCounter() {
+        if(getLengthCounter() != null && currentlyActiveFile.exists()) {
+            long currentFileLength = currentlyActiveFile.length();
+            addInfo("Setting currentFileLength to "+currentFileLength+ " for "+currentlyActiveFile);
+            incrementByteCount(currentFileLength);
+        }
     }
 
     @Override
@@ -293,13 +304,18 @@ public class RollingFileAppender<E> extends FileAppender<E> {
 
     @Override
     protected void updateByteCount(byte[] byteArray) {
+        if(byteArray == null)
+            return;
+        incrementByteCount(byteArray.length);
+    }
 
+    void incrementByteCount(long increment) {
         LengthCounter lengthCounter = getLengthCounter();
         if (lengthCounter == null)
             return;
 
-        if (byteArray != null && byteArray.length > 0) {
-            lengthCounter.add(byteArray.length);
+        if (increment > 0) {
+            lengthCounter.add(increment);
         }
     }
 

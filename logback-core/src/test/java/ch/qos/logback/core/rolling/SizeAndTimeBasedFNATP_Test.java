@@ -15,12 +15,18 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.Duration;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +37,7 @@ import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
@@ -61,6 +68,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     private void initPolicies(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp,
             String filenamePattern, int sizeThreshold, long givenTime, long lastCheck) {
         sizeAndTimeBasedFNATP = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
+        sizeAndTimeBasedFNATP.setContext(context);
         sizeAndTimeBasedFNATP.setCheckIncrement(Duration.buildByMilliseconds(10));
         tbrp.setContext(context);
         sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(sizeThreshold));
@@ -241,6 +249,53 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         assertFalse(rfa1.isStarted());
         StatusChecker checker = new StatusChecker(context);
         checker.assertContainsMatch("The date format in FileNamePattern");
+    }
+
+    @Test
+    public void checkInitialFileSize_withFile() throws IOException {
+        String stem = "foo.log";
+        String testId = "checkDateCollision";
+        String fixedContent = "Hello world";
+        byte[] fixedContentBytes = fixedContent.getBytes();
+
+        String fileProperty = randomOutputDir + stem;
+        Files.createDirectories(Paths.get(randomOutputDir));
+        Files.write(Paths.get(fileProperty), fixedContentBytes);
+
+        initRollingFileAppender(rfa1, fileProperty);
+        sizeThreshold = 300;
+        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d-%i.txt", sizeThreshold,
+                        currentTime, 0);
+
+        //StatusPrinter.print(context);
+
+        assertEquals(fixedContentBytes.length, tbrp1.getLengthCounter().getLength());
+    }
+
+
+    @Test
+    public void checkInitialFileSize_withoutFile() throws IOException {
+        String testId = "checkInitialFileSize_withoutFile";
+        String fixedContent = "Hello world";
+        byte[] fixedContentBytes = fixedContent.getBytes();
+
+
+        CachingDateFormatter cdf = new CachingDateFormatter(CoreConstants.DAILY_DATE_PATTERN);
+        String nowString = cdf.format(currentTime);
+        String pathToFirstFile = randomOutputDir + testId + "-"+nowString+"-0.txt";
+
+        Files.createDirectories(Paths.get(randomOutputDir));
+        Files.write(Paths.get(pathToFirstFile), fixedContentBytes);
+
+
+        initRollingFileAppender(rfa1, null);
+        sizeThreshold = 300;
+        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d-%i.txt", sizeThreshold,
+                        currentTime, 0);
+
+        StatusPrinter.print(context);
+
+        assertEquals(fixedContentBytes.length, tbrp1.getLengthCounter().getLength());
     }
 
     // @Test

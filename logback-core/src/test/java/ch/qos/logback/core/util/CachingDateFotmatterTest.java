@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CachingDateFotmatterTest {
 
-    final static String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm";
+    private final static String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm";
 
     SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
     TimeZone perthTZ = TimeZone.getTimeZone("Australia/Perth");
