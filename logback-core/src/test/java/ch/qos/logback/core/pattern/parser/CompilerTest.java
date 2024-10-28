@@ -18,6 +18,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.Converter123;
 import ch.qos.logback.core.pattern.ConverterHello;
+import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 //import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,18 +26,19 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CompilerTest {
 
-    Map<String, String> converterMap = new HashMap<String, String>();
+    Map<String, Supplier<DynamicConverter>> converterMap = new HashMap<>();
     Context context = new ContextBase();
 
     @BeforeEach
     public void setUp() {
-        converterMap.put("OTT", Converter123.class.getName());
-        converterMap.put("hello", ConverterHello.class.getName());
+        converterMap.put("OTT", Converter123::new);
+        converterMap.put("hello", ConverterHello::new);
         converterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
     }
 

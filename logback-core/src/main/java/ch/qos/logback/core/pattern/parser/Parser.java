@@ -16,12 +16,10 @@ package ch.qos.logback.core.pattern.parser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.pattern.Converter;
-import ch.qos.logback.core.pattern.FormatInfo;
-import ch.qos.logback.core.pattern.IdentityCompositeConverter;
-import ch.qos.logback.core.pattern.ReplacingCompositeConverter;
+import ch.qos.logback.core.pattern.*;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -44,12 +42,12 @@ import ch.qos.logback.core.spi.ScanException;
 public class Parser<E> extends ContextAwareBase {
 
     public final static String MISSING_RIGHT_PARENTHESIS = CoreConstants.CODES_URL + "#missingRightParenthesis";
-    public final static Map<String, String> DEFAULT_COMPOSITE_CONVERTER_MAP = new HashMap<String, String>();
+    public final static Map<String, Supplier<DynamicConverter>> DEFAULT_COMPOSITE_CONVERTER_MAP = new HashMap<>();
     public final static String REPLACE_CONVERTER_WORD = "replace";
     static {
         DEFAULT_COMPOSITE_CONVERTER_MAP.put(Token.BARE_COMPOSITE_KEYWORD_TOKEN.getValue().toString(),
-                IdentityCompositeConverter.class.getName());
-        DEFAULT_COMPOSITE_CONVERTER_MAP.put(REPLACE_CONVERTER_WORD, ReplacingCompositeConverter.class.getName());
+                IdentityCompositeConverter::new);
+        DEFAULT_COMPOSITE_CONVERTER_MAP.put(REPLACE_CONVERTER_WORD, ReplacingCompositeConverter::new);
     }
 
     final List<Token> tokenList;
@@ -80,7 +78,7 @@ public class Parser<E> extends ContextAwareBase {
      * @param converterMap
      * @return
      */
-    public Converter<E> compile(final Node top, Map<String, String> converterMap) {
+    public Converter<E> compile(final Node top, Map<String, Supplier<DynamicConverter>> converterMap) {
         Compiler<E> compiler = new Compiler<E>(top, converterMap);
         compiler.setContext(context);
         // compiler.setStatusManager(statusManager);

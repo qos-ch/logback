@@ -35,8 +35,8 @@ public class EnsureExceptionHandlingTest {
     @BeforeEach
     public void setUp() {
         pl.setContext(lc);
-        pl.getInstanceConverterMap().put(XTH, XThrowableHandlingConverter.class.getName());
-        pl.getInstanceConverterMap().put(XCC, XCompositeConverter.class.getName());
+        pl.getInstanceConverterMap().put(XTH, XThrowableHandlingConverter::new);
+        pl.getInstanceConverterMap().put(XCC, XCompositeConverter::new);
     }
 
     ILoggingEvent makeLoggingEvent(String msg, Exception ex) {

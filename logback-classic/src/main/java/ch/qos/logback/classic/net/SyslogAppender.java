@@ -124,7 +124,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
     public Layout<ILoggingEvent> buildLayout() {
         PatternLayout layout = new PatternLayout();
-        layout.getInstanceConverterMap().put("syslogStart", SyslogStartConverter.class.getName());
+        layout.getInstanceConverterMap().put("syslogStart", SyslogStartConverter::new);
         if (suffixPattern == null) {
             suffixPattern = DEFAULT_SUFFIX_PATTERN;
         }
@@ -135,7 +135,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
 
     private void setupStackTraceLayout() {
-        stackTraceLayout.getInstanceConverterMap().put("syslogStart", SyslogStartConverter.class.getName());
+        stackTraceLayout.getInstanceConverterMap().put("syslogStart", SyslogStartConverter::new);
 
         stackTraceLayout.setPattern(getPrefixPattern() + stackTracePattern);
         stackTraceLayout.setContext(getContext());

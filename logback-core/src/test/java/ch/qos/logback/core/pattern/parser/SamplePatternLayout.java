@@ -15,21 +15,20 @@ package ch.qos.logback.core.pattern.parser;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import ch.qos.logback.core.pattern.Converter123;
-import ch.qos.logback.core.pattern.ConverterHello;
-import ch.qos.logback.core.pattern.PatternLayoutBase;
+import ch.qos.logback.core.pattern.*;
 
 public class SamplePatternLayout<E> extends PatternLayoutBase<E> {
 
-    Map<String, String> converterMap = new HashMap<String, String>();
+    Map<String, Supplier<DynamicConverter>> converterMap = new HashMap<>();
 
     public SamplePatternLayout() {
-        converterMap.put("OTT", Converter123.class.getName());
-        converterMap.put("hello", ConverterHello.class.getName());
+        converterMap.put("OTT", Converter123::new);
+        converterMap.put("hello", ConverterHello::new);
     }
 
-    public Map<String, String> getDefaultConverterMap() {
+    public Map<String, Supplier<DynamicConverter>> getDefaultConverterMap() {
         return converterMap;
     }
 

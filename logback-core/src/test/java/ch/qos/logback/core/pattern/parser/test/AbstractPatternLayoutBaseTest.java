@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.pattern.parser.test;
 
+import ch.qos.logback.core.pattern.color.ConverterSupplierByClassName;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
@@ -52,7 +53,10 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
     public void testConverterStart() {
         PatternLayoutBase<E> plb = getPatternLayoutBase();
         plb.setContext(getContext());
-        plb.getInstanceConverterMap().put("EX", getExceptionalConverterClassName());
+        String exceptionalConverterClassName = getExceptionalConverterClassName();
+        ConverterSupplierByClassName converterSupplierByClassName = new ConverterSupplierByClassName("EX", exceptionalConverterClassName);
+        converterSupplierByClassName.setContext(getContext());
+        plb.getInstanceConverterMap().put("EX", converterSupplierByClassName);
         plb.setPattern("%EX");
         plb.start();
         String result = plb.doLayout(getEventObject());

@@ -15,20 +15,23 @@ package ch.qos.logback.classic;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.classic.pattern.*;
 import ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.pattern.Converter;
+import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.color.*;
 import ch.qos.logback.core.pattern.parser.Parser;
 
 /**
  * <p>
- * A flexible layout configurable with pattern string. The goal of this class is
- * to {@link #format format} a {@link ILoggingEvent} and return the results in a
- * {#link String}. The format of the result depends on the <em>conversion
+ * A flexible layout configurable with pattern string. The main method in this class is
+ * to {@link #doLayout(ILoggingEvent)}. It returns the results as a
+ * {#link String}. The format and contents of the result depends on the <em>conversion
  * pattern</em>.
  * <p>
  * For more information about this layout, please refer to the online manual at
@@ -38,129 +41,129 @@ import ch.qos.logback.core.pattern.parser.Parser;
 
 public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
-    public static final Map<String, String> DEFAULT_CONVERTER_MAP = new HashMap<String, String>();
+    public static final Map<String, Supplier<DynamicConverter>> DEFAULT_CONVERTER_MAP = new HashMap<>();
     public static final Map<String, String> CONVERTER_CLASS_TO_KEY_MAP = new HashMap<String, String>();
 
     /**
      * @deprecated replaced by DEFAULT_CONVERTER_MAP
      */
-    public static final Map<String, String> defaultConverterMap = DEFAULT_CONVERTER_MAP;
+    public static final Map<String, Supplier<DynamicConverter>> defaultConverterMap = DEFAULT_CONVERTER_MAP;
 
     public static final String HEADER_PREFIX = "#logback.classic pattern: ";
 
     static {
         DEFAULT_CONVERTER_MAP.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
 
-        DEFAULT_CONVERTER_MAP.put("d", DateConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("date", DateConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("d", DateConverter::new);
+        DEFAULT_CONVERTER_MAP.put("date", DateConverter::new);
         // used by PrefixComposite converter
         CONVERTER_CLASS_TO_KEY_MAP.put(DateConverter.class.getName(), "date");
 
-        DEFAULT_CONVERTER_MAP.put("ms", MicrosecondConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("micros", MicrosecondConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("ms", MicrosecondConverter::new);
+        DEFAULT_CONVERTER_MAP.put("micros", MicrosecondConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(MicrosecondConverter.class.getName(), "micros");
 
-        DEFAULT_CONVERTER_MAP.put("r", RelativeTimeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("relative", RelativeTimeConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("r", RelativeTimeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("relative", RelativeTimeConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(RelativeTimeConverter.class.getName(), "relative");
 
-        DEFAULT_CONVERTER_MAP.put("level", LevelConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("le", LevelConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("p", LevelConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("level", LevelConverter::new);
+        DEFAULT_CONVERTER_MAP.put("le", LevelConverter::new);
+        DEFAULT_CONVERTER_MAP.put("p", LevelConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(LevelConverter.class.getName(), "level");
 
-        DEFAULT_CONVERTER_MAP.put("t", ThreadConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("thread", ThreadConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("t", ThreadConverter::new);
+        DEFAULT_CONVERTER_MAP.put("thread", ThreadConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(ThreadConverter.class.getName(), "thread");
 
-        DEFAULT_CONVERTER_MAP.put("lo", LoggerConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("logger", LoggerConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("c", LoggerConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("lo", LoggerConverter::new);
+        DEFAULT_CONVERTER_MAP.put("logger", LoggerConverter::new);
+        DEFAULT_CONVERTER_MAP.put("c", LoggerConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(LoggerConverter.class.getName(), "logger");
 
-        DEFAULT_CONVERTER_MAP.put("m", MessageConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("msg", MessageConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("message", MessageConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("m", MessageConverter::new);
+        DEFAULT_CONVERTER_MAP.put("msg", MessageConverter::new);
+        DEFAULT_CONVERTER_MAP.put("message", MessageConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(MessageConverter.class.getName(), "message");
 
-        DEFAULT_CONVERTER_MAP.put("C", ClassOfCallerConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("class", ClassOfCallerConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("C", ClassOfCallerConverter::new);
+        DEFAULT_CONVERTER_MAP.put("class", ClassOfCallerConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(ClassOfCallerConverter.class.getName(), "class");
 
-        DEFAULT_CONVERTER_MAP.put("M", MethodOfCallerConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("method", MethodOfCallerConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("M", MethodOfCallerConverter::new);
+        DEFAULT_CONVERTER_MAP.put("method", MethodOfCallerConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(MethodOfCallerConverter.class.getName(), "method");
 
-        DEFAULT_CONVERTER_MAP.put("L", LineOfCallerConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("line", LineOfCallerConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("L", LineOfCallerConverter::new);
+        DEFAULT_CONVERTER_MAP.put("line", LineOfCallerConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(LineOfCallerConverter.class.getName(), "line");
 
-        DEFAULT_CONVERTER_MAP.put("F", FileOfCallerConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("file", FileOfCallerConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("F", FileOfCallerConverter::new);
+        DEFAULT_CONVERTER_MAP.put("file", FileOfCallerConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(FileOfCallerConverter.class.getName(), "file");
 
-        DEFAULT_CONVERTER_MAP.put("X", MDCConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("mdc", MDCConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("X", MDCConverter::new);
+        DEFAULT_CONVERTER_MAP.put("mdc", MDCConverter::new);
 
-        DEFAULT_CONVERTER_MAP.put("ex", ThrowableProxyConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("exception", ThrowableProxyConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("rEx", RootCauseFirstThrowableProxyConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("rootException", RootCauseFirstThrowableProxyConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("throwable", ThrowableProxyConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("ex", ThrowableProxyConverter::new);
+        DEFAULT_CONVERTER_MAP.put("exception", ThrowableProxyConverter::new);
+        DEFAULT_CONVERTER_MAP.put("rEx", RootCauseFirstThrowableProxyConverter::new);
+        DEFAULT_CONVERTER_MAP.put("rootException", RootCauseFirstThrowableProxyConverter::new);
+        DEFAULT_CONVERTER_MAP.put("throwable", ThrowableProxyConverter::new);
 
-        DEFAULT_CONVERTER_MAP.put("xEx", ExtendedThrowableProxyConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("xException", ExtendedThrowableProxyConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("xThrowable", ExtendedThrowableProxyConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("xEx", ExtendedThrowableProxyConverter::new);
+        DEFAULT_CONVERTER_MAP.put("xException", ExtendedThrowableProxyConverter::new);
+        DEFAULT_CONVERTER_MAP.put("xThrowable", ExtendedThrowableProxyConverter::new);
 
-        DEFAULT_CONVERTER_MAP.put("nopex", NopThrowableInformationConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("nopexception", NopThrowableInformationConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("nopex", NopThrowableInformationConverter::new);
+        DEFAULT_CONVERTER_MAP.put("nopexception", NopThrowableInformationConverter::new);
 
-        DEFAULT_CONVERTER_MAP.put("cn", ContextNameConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("contextName", ContextNameConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("cn", ContextNameConverter::new);
+        DEFAULT_CONVERTER_MAP.put("contextName", ContextNameConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(ContextNameConverter.class.getName(), "contextName");
 
-        DEFAULT_CONVERTER_MAP.put("caller", CallerDataConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("caller", CallerDataConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(CallerDataConverter.class.getName(), "caller");
 
-        DEFAULT_CONVERTER_MAP.put("marker", MarkerConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("marker", MarkerConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(MarkerConverter.class.getName(), "marker");
 
-        DEFAULT_CONVERTER_MAP.put("kvp", KeyValuePairConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("kvp", KeyValuePairConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(KeyValuePairConverter.class.getName(), "kvp");
 
-        DEFAULT_CONVERTER_MAP.put("maskedKvp", MaskedKeyValuePairConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("maskedKvp", MaskedKeyValuePairConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(MaskedKeyValuePairConverter.class.getName(), "maskedKvp");
 
-        DEFAULT_CONVERTER_MAP.put("property", PropertyConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("property", PropertyConverter::new);
 
-        DEFAULT_CONVERTER_MAP.put("n", LineSeparatorConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("n", LineSeparatorConverter::new);
 
-        DEFAULT_CONVERTER_MAP.put("black", BlackCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("red", RedCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("green", GreenCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("yellow", YellowCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("blue", BlueCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("magenta", MagentaCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("cyan", CyanCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("white", WhiteCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("gray", GrayCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("boldRed", BoldRedCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("boldGreen", BoldGreenCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("boldYellow", BoldYellowCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("boldBlue", BoldBlueCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("boldMagenta", BoldMagentaCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("boldCyan", BoldCyanCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("boldWhite", BoldWhiteCompositeConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("highlight", HighlightingCompositeConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("black", BlackCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("red", RedCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("green", GreenCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("yellow", YellowCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("blue", BlueCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("magenta", MagentaCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("cyan", CyanCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("white", WhiteCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("gray", GrayCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("boldRed", BoldRedCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("boldGreen", BoldGreenCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("boldYellow", BoldYellowCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("boldBlue", BoldBlueCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("boldMagenta", BoldMagentaCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("boldCyan", BoldCyanCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("boldWhite", BoldWhiteCompositeConverter::new);
+        DEFAULT_CONVERTER_MAP.put("highlight", HighlightingCompositeConverter::new);
 
-        DEFAULT_CONVERTER_MAP.put("lsn", LocalSequenceNumberConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("lsn", LocalSequenceNumberConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(LocalSequenceNumberConverter.class.getName(), "lsn");
 
-        DEFAULT_CONVERTER_MAP.put("sn", SequenceNumberConverter.class.getName());
-        DEFAULT_CONVERTER_MAP.put("sequenceNumber", SequenceNumberConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("sn", SequenceNumberConverter::new);
+        DEFAULT_CONVERTER_MAP.put("sequenceNumber", SequenceNumberConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(SequenceNumberConverter.class.getName(), "sequenceNumber");
 
-        DEFAULT_CONVERTER_MAP.put("prefix", PrefixCompositeConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("prefix", PrefixCompositeConverter::new);
 
     }
 
@@ -168,7 +171,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         this.postCompileProcessor = new EnsureExceptionHandling();
     }
 
-    public Map<String, String> getDefaultConverterMap() {
+    public Map<String, Supplier<DynamicConverter>> getDefaultConverterMap() {
         return DEFAULT_CONVERTER_MAP;
     }
 

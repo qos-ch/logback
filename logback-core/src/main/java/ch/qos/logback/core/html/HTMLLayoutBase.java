@@ -15,6 +15,7 @@ package ch.qos.logback.core.html;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
@@ -22,6 +23,7 @@ import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
+import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.spi.ScanException;
@@ -95,17 +97,17 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         }
     }
 
-    protected abstract Map<String, String> getDefaultConverterMap();
+    protected abstract Map<String, Supplier<DynamicConverter>> getDefaultConverterMap();
 
     /**
      * Returns a map where the default converter map is merged with the map
      * contained in the context.
      */
-    public Map<String, String> getEffectiveConverterMap() {
-        Map<String, String> effectiveMap = new HashMap<String, String>();
+    public Map<String, Supplier<DynamicConverter>> getEffectiveConverterMap() {
+        Map<String, Supplier<DynamicConverter>> effectiveMap = new HashMap<>();
 
         // add the least specific map fist
-        Map<String, String> defaultMap = getDefaultConverterMap();
+        Map<String, Supplier<DynamicConverter>> defaultMap = getDefaultConverterMap();
         if (defaultMap != null) {
             effectiveMap.putAll(defaultMap);
         }
@@ -114,7 +116,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         Context context = getContext();
         if (context != null) {
             @SuppressWarnings("unchecked")
-            Map<String, String> contextMap = (Map<String, String>) context
+            Map<String, Supplier<DynamicConverter>> contextMap = (Map<String, Supplier<DynamicConverter>>) context
                     .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
             if (contextMap != null) {
                 effectiveMap.putAll(contextMap);

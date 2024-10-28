@@ -28,6 +28,7 @@ import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
@@ -251,6 +252,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     @Test
     public void testConversionRuleInIncluded() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/conversionRuleTop0.xml");
+        StatusPrinter.print(loggerContext);
         root.getAppender("LIST");
         String msg = "testConversionRuleInIncluded";
         logger.debug(msg);

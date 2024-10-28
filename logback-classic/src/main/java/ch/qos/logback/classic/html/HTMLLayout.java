@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.html;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.MDCConverter;
@@ -22,6 +23,8 @@ import ch.qos.logback.core.helpers.Transform;
 import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.html.IThrowableRenderer;
 import ch.qos.logback.core.pattern.Converter;
+import ch.qos.logback.core.pattern.DynamicConverter;
+
 import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 
 /**
@@ -70,7 +73,7 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
         }
     }
 
-    protected Map<String, String> getDefaultConverterMap() {
+    protected Map<String, Supplier<DynamicConverter>>  getDefaultConverterMap() {
         return PatternLayout.DEFAULT_CONVERTER_MAP;
     }
 

@@ -14,6 +14,7 @@
 package ch.qos.logback.core.pattern.parser;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.pattern.CompositeConverter;
 import ch.qos.logback.core.pattern.Converter;
@@ -28,9 +29,9 @@ class Compiler<E> extends ContextAwareBase {
     Converter<E> head;
     Converter<E> tail;
     final Node top;
-    final Map<String, String> converterMap;
+    final Map<String, Supplier<DynamicConverter>> converterMap;
 
-    Compiler(final Node top, final Map<String, String> converterMap) {
+    Compiler(final Node top, final Map<String, Supplier<DynamicConverter>> converterMap) {
         this.top = top;
         this.converterMap = converterMap;
     }
@@ -96,19 +97,12 @@ class Compiler<E> extends ContextAwareBase {
     @SuppressWarnings("unchecked")
     DynamicConverter<E> createConverter(SimpleKeywordNode kn) {
         String keyword = (String) kn.getValue();
-        String converterClassStr = (String) converterMap.get(keyword);
+        Supplier<DynamicConverter> supplier = converterMap.get(keyword);
 
-        if (converterClassStr != null) {
-            try {
-                return (DynamicConverter<E>) OptionHelper.instantiateByClassName(converterClassStr,
-                        DynamicConverter.class, context);
-            } catch (Exception e) {
-                addError("Failed to instantiate converter class [" + converterClassStr + "] for keyword [" + keyword
-                        + "]", e);
-                return null;
-            }
+        if (supplier != null) {
+                return supplier.get();
         } else {
-            addError("There is no conversion class registered for conversion word [" + keyword + "]");
+            addError("There is no conversion supplier registered for conversion word [" + keyword + "]");
             return null;
         }
     }
@@ -123,15 +117,13 @@ class Compiler<E> extends ContextAwareBase {
     @SuppressWarnings("unchecked")
     CompositeConverter<E> createCompositeConverter(CompositeNode cn) {
         String keyword = (String) cn.getValue();
-        String converterClassStr = (String) converterMap.get(keyword);
+        Supplier<DynamicConverter> supplier = (Supplier<DynamicConverter>) converterMap.get(keyword);
 
-        if (converterClassStr != null) {
+        if (supplier != null) {
             try {
-                return (CompositeConverter<E>) OptionHelper.instantiateByClassName(converterClassStr,
-                        CompositeConverter.class, context);
-            } catch (Exception e) {
-                addError("Failed to instantiate converter class [" + converterClassStr
-                        + "] as a composite converter for keyword [" + keyword + "]", e);
+                return (CompositeConverter) supplier.get();
+            } catch(ClassCastException e) {
+                addError("Failed to cast as CompositeConverter for keyword [" + keyword + "]", e);
                 return null;
             }
         } else {

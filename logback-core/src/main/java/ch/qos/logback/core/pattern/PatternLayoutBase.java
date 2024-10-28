@@ -15,6 +15,7 @@ package ch.qos.logback.core.pattern;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
@@ -32,7 +33,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     String pattern;
     protected PostCompileProcessor<E> postCompileProcessor;
 
-    Map<String, String> instanceConverterMap = new HashMap<String, String>();
+    Map<String, Supplier<DynamicConverter>> instanceConverterMap = new HashMap<>();
     protected boolean outputPatternAsHeader = false;
 
     /**
@@ -41,17 +42,17 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
      * 
      * @return A map associating pattern words to the names of converter classes
      */
-    abstract public Map<String, String> getDefaultConverterMap();
+    abstract public Map<String, Supplier<DynamicConverter>> getDefaultConverterMap();
 
     /**
      * Returns a map where the default converter map is merged with the map
      * contained in the context.
      */
-    public Map<String, String> getEffectiveConverterMap() {
-        Map<String, String> effectiveMap = new HashMap<String, String>();
+    public Map<String, Supplier<DynamicConverter>> getEffectiveConverterMap() {
+        Map<String, Supplier<DynamicConverter>> effectiveMap = new HashMap<>();
 
         // add the least specific map fist
-        Map<String, String> defaultMap = getDefaultConverterMap();
+        Map<String, Supplier<DynamicConverter>> defaultMap = getDefaultConverterMap();
         if (defaultMap != null) {
             effectiveMap.putAll(defaultMap);
         }
@@ -60,7 +61,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         Context context = getContext();
         if (context != null) {
             @SuppressWarnings("unchecked")
-            Map<String, String> contextMap = (Map<String, String>) context
+            Map<String, Supplier<DynamicConverter>> contextMap = (Map<String, Supplier<DynamicConverter>>) context
                     .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
             if (contextMap != null) {
                 effectiveMap.putAll(contextMap);
@@ -131,7 +132,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         return this.getClass().getName() + "(\"" + getPattern() + "\")";
     }
 
-    public Map<String, String> getInstanceConverterMap() {
+    public Map<String, Supplier<DynamicConverter>> getInstanceConverterMap() {
         return instanceConverterMap;
     }
 

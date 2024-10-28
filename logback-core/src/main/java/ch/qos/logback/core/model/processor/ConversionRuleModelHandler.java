@@ -18,10 +18,13 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.model.ConversionRuleModel;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.pattern.DynamicConverter;
+import ch.qos.logback.core.pattern.color.ConverterSupplierByClassName;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static ch.qos.logback.core.joran.JoranConstants.CONVERSION_WORD_ATTRIBUTE;
 
@@ -55,15 +58,17 @@ public class ConversionRuleModelHandler extends ModelHandlerBase {
 
 
         try {
-            Map<String, String> ruleRegistry = (Map<String, String>) context
+            Map<String, Supplier<DynamicConverter>> ruleRegistry = (Map<String, Supplier<DynamicConverter>>) context
                     .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
             if (ruleRegistry == null) {
-                ruleRegistry = new HashMap<String, String>();
+                ruleRegistry = new HashMap<>();
                 context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, ruleRegistry);
             }
             // put the new rule into the rule registry
             addInfo("registering conversion word " + conversionWord + " with class [" + converterClass + "]");
-            ruleRegistry.put(conversionWord, converterClass);
+            ConverterSupplierByClassName converterSupplierByClassName = new ConverterSupplierByClassName(conversionWord, converterClass);
+            converterSupplierByClassName.setContext(getContext());
+            ruleRegistry.put(conversionWord, converterSupplierByClassName);
         } catch (Exception oops) {
             inError = true;
             String errorMsg = "Could not add conversion rule to PatternLayout.";

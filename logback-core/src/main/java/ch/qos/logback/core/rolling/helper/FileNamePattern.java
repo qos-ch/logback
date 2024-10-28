@@ -17,10 +17,12 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
+import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.LiteralConverter;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
@@ -38,10 +40,10 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class FileNamePattern extends ContextAwareBase {
 
-    static final Map<String, String> CONVERTER_MAP = new HashMap<String, String>();
+    static final Map<String, Supplier<DynamicConverter>> CONVERTER_MAP = new HashMap<>();
     static {
-        CONVERTER_MAP.put(IntegerTokenConverter.CONVERTER_KEY, IntegerTokenConverter.class.getName());
-        CONVERTER_MAP.put(DateTokenConverter.CONVERTER_KEY, DateTokenConverter.class.getName());
+        CONVERTER_MAP.put(IntegerTokenConverter.CONVERTER_KEY, IntegerTokenConverter::new);
+        CONVERTER_MAP.put(DateTokenConverter.CONVERTER_KEY, DateTokenConverter::new);
     }
 
     String pattern;
