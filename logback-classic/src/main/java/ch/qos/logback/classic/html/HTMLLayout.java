@@ -73,8 +73,9 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
         }
     }
 
-    protected Map<String, Supplier<DynamicConverter>>  getDefaultConverterMap() {
-        return PatternLayout.DEFAULT_CONVERTER_MAP;
+    @Override
+    protected Map<String, Supplier<DynamicConverter>>  getDefaultConverterSupplierMap() {
+        return PatternLayout.DEFAULT_CONVERTER_SUPPLIER_MAP;
     }
 
     public String doLayout(ILoggingEvent event) {

@@ -21,6 +21,13 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.Status;
 
+/**
+ * As the name suggests, a DynamicConverter performs a conversion based on the parameter E
+ * given to the {@link #convert(E)} method. Almost all converters are derived from the
+ * DynamicConverter class.
+ *
+ * @param <E>
+ */
 abstract public class DynamicConverter<E> extends FormattingConverter<E> implements LifeCycle, ContextAware {
 
     ContextAwareBase cab = new ContextAwareBase(this);

@@ -21,14 +21,20 @@ import ch.qos.logback.core.pattern.*;
 
 public class SamplePatternLayout<E> extends PatternLayoutBase<E> {
 
-    Map<String, Supplier<DynamicConverter>> converterMap = new HashMap<>();
+    Map<String, Supplier<DynamicConverter>> converterSupplierMap = new HashMap<>();
+    Map<String, String> converterMap = new HashMap<>();
 
     public SamplePatternLayout() {
-        converterMap.put("OTT", Converter123::new);
-        converterMap.put("hello", ConverterHello::new);
+        converterSupplierMap.put("OTT", Converter123::new);
+        converterSupplierMap.put("hello", ConverterHello::new);
     }
 
-    public Map<String, Supplier<DynamicConverter>> getDefaultConverterMap() {
+    public Map<String, Supplier<DynamicConverter>> getDefaultConverterSupplierMap() {
+        return converterSupplierMap;
+    }
+
+    @Override
+    public Map<String, String> getDefaultConverterMap() {
         return converterMap;
     }
 

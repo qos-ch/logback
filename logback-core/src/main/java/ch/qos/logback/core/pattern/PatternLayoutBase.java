@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
+import ch.qos.logback.core.pattern.color.ConverterSupplierByClassName;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.spi.ScanException;
@@ -33,16 +34,39 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     String pattern;
     protected PostCompileProcessor<E> postCompileProcessor;
 
+    /**
+     * <p>It should be noted that the default converter map is a static variable. Thus, changes made
+     * through {@link #getDefaultConverterSupplierMap()} apply to all instances of this class.
+     * </p>
+     *
+     * <p>The {@link #getInstanceConverterMap} variable allows for very specific extensions
+     * without impacting other instances</p>
+     */
     Map<String, Supplier<DynamicConverter>> instanceConverterMap = new HashMap<>();
     protected boolean outputPatternAsHeader = false;
 
     /**
      * Concrete implementations of this class are responsible for elaborating the
-     * mapping between pattern words and converters.
+     * mapping between pattern words and supplying converter instances.
      * 
-     * @return A map associating pattern words to the names of converter classes
+     * @return A map associating pattern words to the names of converter suppliers
+     * @since 1.5.13
      */
-    abstract public Map<String, Supplier<DynamicConverter>> getDefaultConverterMap();
+     protected abstract Map<String, Supplier<DynamicConverter>> getDefaultConverterSupplierMap();
+
+    /**
+     * <p>BEWARE: The map of type String,String for mapping conversion words is deprecated.
+     * Use {@link #getDefaultConverterSupplierMap()} instead.</p>
+     *
+     * <p>Existing code such as getDefaultMap().put("k", X.class.getName()) should be replaced by
+     * getDefaultConverterSupplierMap().put("k", X::new) </p>
+     *
+     * <p>Note that values in the map will still be taken into account and processed correctly.</p>
+     *
+     * @return a map of keys and class names
+     */
+    @Deprecated
+    abstract public Map<String, String> getDefaultConverterMap();
 
     /**
      * Returns a map where the default converter map is merged with the map
@@ -52,10 +76,12 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         Map<String, Supplier<DynamicConverter>> effectiveMap = new HashMap<>();
 
         // add the least specific map fist
-        Map<String, Supplier<DynamicConverter>> defaultMap = getDefaultConverterMap();
-        if (defaultMap != null) {
-            effectiveMap.putAll(defaultMap);
+        Map<String, Supplier<DynamicConverter>> defaultConverterSupplierMap = getDefaultConverterSupplierMap();
+        if (defaultConverterSupplierMap != null) {
+            effectiveMap.putAll(defaultConverterSupplierMap);
         }
+
+        caterForLegacy_DefaultConverterMap(effectiveMap);
 
         // contextMap is more specific than the default map
         Context context = getContext();
@@ -70,6 +96,26 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         // set the most specific map last
         effectiveMap.putAll(instanceConverterMap);
         return effectiveMap;
+    }
+
+    /**
+     * Add class name values into the effective map to support external extensions
+     * and subclasses.
+     *
+     * @param effectiveMap
+     */
+    private void caterForLegacy_DefaultConverterMap(Map<String, Supplier<DynamicConverter>> effectiveMap) {
+        // this transformation is for backward compatibility of existing code
+        Map<String, String> defaultConverterMap = getDefaultConverterMap();
+        if(defaultConverterMap != null) {
+            for(Map.Entry<String, String> entry: defaultConverterMap.entrySet()) {
+                String key = entry.getKey().toString();
+                String converterClassName = entry.getValue();
+                ConverterSupplierByClassName converterSupplierByClassName = new ConverterSupplierByClassName(key, converterClassName);
+                converterSupplierByClassName.setContext(getContext());
+                effectiveMap.put(key, converterSupplierByClassName);
+            }
+        }
     }
 
     public void start() {

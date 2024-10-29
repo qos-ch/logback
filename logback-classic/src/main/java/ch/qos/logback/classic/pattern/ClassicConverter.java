@@ -17,7 +17,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.pattern.DynamicConverter;
 
 /**
- * This class serves the super-class of all converters in logback. It extends
+ * This class serves the super-class of almost all converters in logback-classic. It extends
  * {@link DynamicConverter}.
  *
  * @author Ceki Gulcu

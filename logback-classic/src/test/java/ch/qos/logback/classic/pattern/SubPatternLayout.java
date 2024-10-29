@@ -20,12 +20,16 @@ import java.util.Map;
 
 /**
  * Test backward compatibility support by virtue of correct compilation.
+ *
+ * See also SubPatternLayoutTest
  */
 public class SubPatternLayout extends PatternLayout {
 
+    static String DOOO = "dooo";
+
     SubPatternLayout() {
         Map<String, String> defaultConverterMap = getDefaultConverterMap();
-        defaultConverterMap.put("dooo", DateConverter.class.getName());
+        defaultConverterMap.put(DOOO, DateConverter.class.getName());
     }
 
 }

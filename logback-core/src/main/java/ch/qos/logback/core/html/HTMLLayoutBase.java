@@ -97,7 +97,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         }
     }
 
-    protected abstract Map<String, Supplier<DynamicConverter>> getDefaultConverterMap();
+    protected abstract Map<String, Supplier<DynamicConverter>> getDefaultConverterSupplierMap();
 
     /**
      * Returns a map where the default converter map is merged with the map
@@ -107,9 +107,9 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         Map<String, Supplier<DynamicConverter>> effectiveMap = new HashMap<>();
 
         // add the least specific map fist
-        Map<String, Supplier<DynamicConverter>> defaultMap = getDefaultConverterMap();
-        if (defaultMap != null) {
-            effectiveMap.putAll(defaultMap);
+        Map<String, Supplier<DynamicConverter>> defaultSupplierMap = getDefaultConverterSupplierMap();
+        if (defaultSupplierMap != null) {
+            effectiveMap.putAll(defaultSupplierMap);
         }
 
         // contextMap is more specific than the default map
