@@ -145,7 +145,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             }
         }
         if (name != null) {
-            map.put(getName(), fileNamePattern);
+            map.put(name, fileNamePattern);
         }
         return collisionsDetected;
     }
