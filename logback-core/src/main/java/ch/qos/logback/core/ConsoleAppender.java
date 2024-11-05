@@ -85,6 +85,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
     @Override
     public void start() {
+        addInfo("BEWARE: Writing to the console can be very slow. Avoid logging to the ");
+        addInfo("console in production, especially in high volume systems.");
         OutputStream targetStream = target.getStream();
         // enable jansi only if withJansi set to true
         if (withJansi) {
