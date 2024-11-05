@@ -53,6 +53,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     private final static String wrapSystemErr_METHOD_NAME = "wrapSystemErr";
     private final static Class<?>[] ARGUMENT_TYPES = { PrintStream.class };
 
+    private final static String CONSOLE_APPENDER_WARNING_URL = CoreConstants.CODES_URL+"#slowConsole";
+
     /**
      * Sets the value of the <b>Target</b> option. Recognized values are
      * "System.out" and "System.err". Any other value will be ignored.
@@ -86,7 +88,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     @Override
     public void start() {
         addInfo("BEWARE: Writing to the console can be very slow. Avoid logging to the ");
-        addInfo("console in production, especially in high volume systems.");
+        addInfo("console in production environments, especially in high volume systems.");
+        addInfo("See also "+CONSOLE_APPENDER_WARNING_URL);
         OutputStream targetStream = target.getStream();
         // enable jansi only if withJansi set to true
         if (withJansi) {

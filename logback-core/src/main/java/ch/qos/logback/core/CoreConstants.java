@@ -44,8 +44,8 @@ public class CoreConstants {
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static final int LINE_SEPARATOR_LEN = LINE_SEPARATOR.length();
 
-    public static final String CODES_URL = "http://logback.qos.ch/codes.html";
-    public static final String MANUAL_URL_PREFIX = "http://logback.qos.ch/manual/";
+    public static final String CODES_URL = "https://logback.qos.ch/codes.html";
+    public static final String MANUAL_URL_PREFIX = "https://logback.qos.ch/manual/";
     public static final String MORE_INFO_PREFIX = "For more information, please visit ";
 
     /**
