@@ -15,6 +15,7 @@
     <packaging>jar</packaging>
     <name>Logback Core Module</name>
     <description>logback-core module</description>
+    <version>1.5.12-sm</version>
 
     <properties>
         <module-name>ch.qos.logback.core</module-name>
