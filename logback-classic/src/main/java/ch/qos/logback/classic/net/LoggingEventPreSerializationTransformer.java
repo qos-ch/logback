@@ -16,7 +16,6 @@ package ch.qos.logback.classic.net;
 import java.io.Serializable;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
@@ -26,12 +25,10 @@ public class LoggingEventPreSerializationTransformer implements PreSerialization
         if (event == null) {
             return null;
         }
-        if (event instanceof LoggingEvent) {
-            return LoggingEventVO.build(event);
-        } else if (event instanceof LoggingEventVO) {
+        if (event instanceof LoggingEventVO) {
             return (LoggingEventVO) event;
         } else {
-            throw new IllegalArgumentException("Unsupported type " + event.getClass().getName());
+            return LoggingEventVO.build(event);
         }
     }
 
