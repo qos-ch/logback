@@ -16,6 +16,8 @@ package ch.qos.logback.classic.spi;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 //import sun.reflect.Reflection;
 
@@ -34,6 +36,8 @@ public class PackagingDataCalculator {
 
     private static boolean GET_CALLER_CLASS_METHOD_AVAILABLE = false; // private static boolean
                                                                       // HAS_GET_CLASS_LOADER_PERMISSION = false;
+
+    private static final Map<String, String> CLASS_NOT_FOUND_CACHE = new ConcurrentHashMap<>();
 
     static {
         // if either the Reflection class or the getCallerClass method
@@ -221,7 +225,18 @@ public class PackagingDataCalculator {
      * @param className
      * @return
      */
-    private Class<?> bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader, String className) {
+    private Class bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader, String className) {
+        if (CLASS_NOT_FOUND_CACHE.get(className) != null) {
+            return null;
+        }
+        Class clazz = doBestEffortLoadClass(lastGuaranteedClassLoader, className);
+        if (clazz == null) {
+            CLASS_NOT_FOUND_CACHE.put(className, "");
+        }
+        return clazz;
+    }
+
+    private Class<?> doBestEffortLoadClass(ClassLoader lastGuaranteedClassLoader, String className) {
         Class<?> result = loadClass(lastGuaranteedClassLoader, className);
         if (result != null) {
             return result;
