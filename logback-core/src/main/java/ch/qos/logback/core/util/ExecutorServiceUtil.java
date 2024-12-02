@@ -13,14 +13,7 @@ package ch.qos.logback.core.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ch.qos.logback.core.CoreConstants;
@@ -60,8 +53,7 @@ public class ExecutorServiceUtil {
     };
 
     static public ScheduledExecutorService newScheduledExecutorService() {
-        return new ScheduledThreadPoolExecutor(CoreConstants.SCHEDULED_EXECUTOR_POOL_SIZE,
-                THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE);
+        return new ScheduledThreadPoolExecutor(CoreConstants.SCHEDULED_EXECUTOR_POOL_SIZE, THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE);
     }
 
     /**
@@ -78,9 +70,20 @@ public class ExecutorServiceUtil {
      * @return ThreadPoolExecutor
      */
     static public ThreadPoolExecutor newThreadPoolExecutor() {
-        return new ThreadPoolExecutor(CoreConstants.CORE_POOL_SIZE, CoreConstants.MAX_POOL_SIZE, 0L,
-                TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(),
-                THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE);
+
+        // irrelevant parameter when LinkedBlockingQueue is in use
+        final int maximumPoolSize = CoreConstants.CORE_POOL_SIZE + 1;
+        final long keepAliveMillis = 100L;
+
+        // As of version 1.5.13, the SynchronousQueue was replaced by LinkedBlockingQueue
+        // This has the effect of queueing jobs immediately and have them run by CORE_POOL_SIZE
+        // threads. We expect jobs to arrive at a relatively slow pace compared to their duration.
+        // Note that threads are removed if idle more than keepAliveMillis
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(CoreConstants.CORE_POOL_SIZE, maximumPoolSize, keepAliveMillis, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<>(), THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE);
+        threadPoolExecutor.allowCoreThreadTimeOut(true);
+        return threadPoolExecutor;
+
     }
 
     /**
