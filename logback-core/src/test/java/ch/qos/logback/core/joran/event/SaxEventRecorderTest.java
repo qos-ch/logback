@@ -15,12 +15,16 @@ package ch.qos.logback.core.joran.event;
 
 import java.io.FileInputStream;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import ch.qos.logback.core.util.StatusPrinter;
+import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.Context;
@@ -31,7 +35,7 @@ import ch.qos.logback.core.status.testUtil.StatusChecker;
 
 /**
  * Test whether SaxEventRecorder does a good job.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class SaxEventRecorderTest {
@@ -59,15 +63,30 @@ public class SaxEventRecorderTest {
     }
 
     @Test
-    public void test1() throws Exception {
+    public void testEvent1() throws Exception {
+        System.out.println("test1");
         List<SaxEvent> seList = doTest("event1.xml");
+        StatusPrinter.print(context);
         Assertions.assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
         // dump(seList);
         Assertions.assertEquals(11, seList.size());
     }
 
+    @Test()
+    @Timeout(value = 500, unit = TimeUnit.MILLISECONDS)  // timeout in case attack is not prevented
+    public void testEventSSRF() throws Exception {
+        try {
+            List<SaxEvent> seList = doTest("event-ssrf.xml");
+            Assertions.assertTrue(statusChecker.getHighestLevel(0) == Status.WARN);
+            statusChecker.assertContainsMatch(Status.WARN, "Document Type Declaration");
+            Assertions.assertEquals(11, seList.size());
+        } finally {
+            StatusPrinter.print(context);
+        }
+    }
+
     @Test
-    public void test2() throws Exception {
+    public void testEventAmp() throws Exception {
         List<SaxEvent> seList = doTest("ampEvent.xml");
         Assertions.assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
         // dump(seList);
@@ -78,7 +97,7 @@ public class SaxEventRecorderTest {
     }
 
     @Test
-    public void test3() throws Exception {
+    public void testInc() throws Exception {
         List<SaxEvent> seList = doTest("inc.xml");
         Assertions.assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
         // dump(seList);
