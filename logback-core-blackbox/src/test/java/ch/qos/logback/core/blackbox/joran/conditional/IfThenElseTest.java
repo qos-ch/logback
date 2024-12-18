@@ -42,6 +42,7 @@ import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ElseModelHandler;
 import ch.qos.logback.core.model.processor.conditional.IfModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ThenModelHandler;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -51,6 +52,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
@@ -111,6 +113,14 @@ public class IfThenElseTest {
     public void tearDown() throws Exception {
         StatusPrinter.printIfErrorsOccured(context);
         System.clearProperty(sysKey);
+    }
+
+    @Test
+    public void ifWithExec() throws JoranException {
+        context.putProperty(ki1, val1);
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithExec.xml");
+        checker.containsException(org.codehaus.commons.compiler.CompileException.class);
+        checker.containsMatch(Status.ERROR, "Failed to parse condition");
     }
 
     @Test

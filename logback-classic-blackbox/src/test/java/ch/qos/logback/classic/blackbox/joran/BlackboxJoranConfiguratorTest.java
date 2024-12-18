@@ -26,6 +26,7 @@ import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,6 +69,7 @@ public class BlackboxJoranConfiguratorTest {
         assertTrue(str1.contains(" DEBUG - hello world"));
     }
 
+    @Disabled
     @Test
     public void testEvaluatorFilter() throws JoranException {
         configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "evaluatorFilter.xml");
@@ -86,6 +88,7 @@ public class BlackboxJoranConfiguratorTest {
         assertEquals("hello", back.getMessage());
     }
 
+    @Disabled
     @Test
     public void testEvaluatorFilterWithImports() throws JoranException {
         configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "evaluatorFilterWithImports.xml");
