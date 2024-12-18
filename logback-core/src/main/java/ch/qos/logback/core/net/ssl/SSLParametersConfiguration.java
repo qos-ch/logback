@@ -19,8 +19,6 @@ import java.util.List;
 
 import javax.net.ssl.SSLEngine;
 
-import org.codehaus.janino.Java;
-
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StringCollectionUtil;

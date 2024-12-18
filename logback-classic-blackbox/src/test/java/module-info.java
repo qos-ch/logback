@@ -16,8 +16,6 @@ module logback.classic.blackbox {
 
     requires java.logging;
 
-    exports ch.qos.logback.classic.blackbox.boolex;
-
     exports ch.qos.logback.classic.blackbox.joran;
     exports ch.qos.logback.classic.blackbox.joran.conditional;
     exports ch.qos.logback.classic.blackbox.joran.spi;
