@@ -81,14 +81,14 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
             effectiveMap.putAll(defaultConverterSupplierMap);
         }
 
-        caterForLegacy_DefaultConverterMap(effectiveMap);
+        caterForLegacyConverterMaps(effectiveMap);
 
         // contextMap is more specific than the default map
         Context context = getContext();
         if (context != null) {
             @SuppressWarnings("unchecked")
             Map<String, Supplier<DynamicConverter>> contextMap = (Map<String, Supplier<DynamicConverter>>) context
-                    .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+                    .getObject(CoreConstants.PATTERN_RULE_REGISTRY_FOR_SUPPLIERS);
             if (contextMap != null) {
                 effectiveMap.putAll(contextMap);
             }
@@ -104,18 +104,29 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
      *
      * @param effectiveMap
      */
-    private void caterForLegacy_DefaultConverterMap(Map<String, Supplier<DynamicConverter>> effectiveMap) {
-        // this transformation is for backward compatibility of existing code
+    private void caterForLegacyConverterMaps(Map<String, Supplier<DynamicConverter>> effectiveMap) {
+        Map<String, String> mapFromContext = (Map<String, String>) this.context
+                        .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+
+        migrateFromStringMapToSupplierMap(mapFromContext, effectiveMap);
+
         Map<String, String> defaultConverterMap = getDefaultConverterMap();
-        if(defaultConverterMap != null) {
-            for(Map.Entry<String, String> entry: defaultConverterMap.entrySet()) {
-                String key = entry.getKey().toString();
-                String converterClassName = entry.getValue();
-                ConverterSupplierByClassName converterSupplierByClassName = new ConverterSupplierByClassName(key, converterClassName);
-                converterSupplierByClassName.setContext(getContext());
-                effectiveMap.put(key, converterSupplierByClassName);
-            }
+        migrateFromStringMapToSupplierMap(defaultConverterMap, effectiveMap);
+    }
+
+    private void migrateFromStringMapToSupplierMap(Map<String, String> legacyMap, Map<String, Supplier<DynamicConverter>> targetSupplierMap) {
+        if(legacyMap == null)
+            return;
+
+        // this transformation is for backward compatibility of existing code
+        for(Map.Entry<String, String> entry: legacyMap.entrySet()) {
+            String key = entry.getKey();
+            String converterClassName = entry.getValue();
+            ConverterSupplierByClassName converterSupplierByClassName = new ConverterSupplierByClassName(key, converterClassName);
+            converterSupplierByClassName.setContext(getContext());
+            targetSupplierMap.put(key, converterSupplierByClassName);
         }
+
     }
 
     public void start() {

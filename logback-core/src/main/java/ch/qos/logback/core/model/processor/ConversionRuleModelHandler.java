@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static ch.qos.logback.core.joran.JoranConstants.CONVERSION_WORD_ATTRIBUTE;
-
 public class ConversionRuleModelHandler extends ModelHandlerBase {
 
     private boolean inError;
@@ -59,10 +57,10 @@ public class ConversionRuleModelHandler extends ModelHandlerBase {
 
         try {
             Map<String, Supplier<DynamicConverter>> ruleRegistry = (Map<String, Supplier<DynamicConverter>>) context
-                    .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+                    .getObject(CoreConstants.PATTERN_RULE_REGISTRY_FOR_SUPPLIERS);
             if (ruleRegistry == null) {
                 ruleRegistry = new HashMap<>();
-                context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, ruleRegistry);
+                context.putObject(CoreConstants.PATTERN_RULE_REGISTRY_FOR_SUPPLIERS, ruleRegistry);
             }
             // put the new rule into the rule registry
             addInfo("registering conversion word " + conversionWord + " with class [" + converterClass + "]");

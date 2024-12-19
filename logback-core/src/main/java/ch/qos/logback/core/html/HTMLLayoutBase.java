@@ -117,7 +117,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         if (context != null) {
             @SuppressWarnings("unchecked")
             Map<String, Supplier<DynamicConverter>> contextMap = (Map<String, Supplier<DynamicConverter>>) context
-                    .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+                    .getObject(CoreConstants.PATTERN_RULE_REGISTRY_FOR_SUPPLIERS);
             if (contextMap != null) {
                 effectiveMap.putAll(contextMap);
             }

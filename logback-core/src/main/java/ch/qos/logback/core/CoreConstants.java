@@ -52,11 +52,22 @@ public class CoreConstants {
      * The default context name.
      */
     public static final String DEFAULT_CONTEXT_NAME = "default";
+
+    /**
+     * Customized pattern conversion rules are stored under this key in the
+     * {@link Context} object store.
+     *
+     * @since 1.5.14
+     */
+    public static final String PATTERN_RULE_REGISTRY_FOR_SUPPLIERS = "PATTERN_RULE_REGISTRY_FOR_SUPPLIERS";
+
     /**
      * Customized pattern conversion rules are stored under this key in the
      * {@link Context} object store.
      */
     public static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
+
+
 
     public static final String ISO8601_STR = "ISO8601";
     public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
