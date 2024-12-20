@@ -252,11 +252,11 @@ public class CoreConstants {
     //public static final String RECONFIGURE_ON_CHANGE_TASK = "RECONFIGURE_ON_CHANGE_TASK";
     public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "SizeAndTimeBasedFileNamingAndTriggeringPolicy is deprecated. Use SizeAndTimeBasedRollingPolicy instead";
 
-    public static final String LOGBACK_CLASSIC_VERSION_MESSAGE = "This is logback-classic version ";
     public static final char JSON_LINE_SEPARATOR = '\n';
     final public static String MODEL_CONFIG_FILE_EXTENSION = ".scmo";
     /**
      * since 1.5.8
      */
     final public static String PROPERTIES_FILE_EXTENSION = ".properties";
+    public static final String LOGBACK_CORE_VERSION_MESSAGE = "This is logback-core version ";
 }

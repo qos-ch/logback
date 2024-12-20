@@ -62,4 +62,8 @@ public class ClassicConstants {
     public static final Marker FINALIZE_SESSION_MARKER = MarkerFactory.getMarker(FINALIZE_SESSION);
     final public static String AUTOCONFIG_FILE = "logback.xml";
     final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
+
+    public static final String LOGBACK_CLASSIC_VERSION_MESSAGE = "This is logback-classic version ";
+    public static final String LOGBACK_VERSIONS_MISMATCH = "Versions of logback-core and logback-classic are different!";
+
 }

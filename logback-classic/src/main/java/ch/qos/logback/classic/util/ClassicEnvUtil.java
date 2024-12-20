@@ -13,13 +13,10 @@
  */
 package ch.qos.logback.classic.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
+import java.lang.module.ModuleDescriptor;
+import java.util.*;
 
 import ch.qos.logback.core.util.EnvUtil;
-import ch.qos.logback.core.util.Loader;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -54,4 +51,43 @@ public class ClassicEnvUtil {
         return listOfT;
     }
 
+    /**
+     * <p>Returns the current version of logback-classic, or null if data is not
+     * available.
+     * </p>
+     *
+     * @since 1.5.15
+     * @return current version or null if missing version data
+     */
+    static public String getVersionOfLogbackClassic() {
+        String moduleVersion = getVersionOfLogbackClassicByModule();
+        if (moduleVersion != null)
+            return moduleVersion;
+
+        Package pkg = ClassicEnvUtil.class.getPackage();
+        if (pkg == null) {
+            return null;
+        }
+        return pkg.getImplementationVersion();
+    }
+
+    /**
+     * <p>Returns the current version of logback-classic via class.getModule() or null
+     * if data is not available.
+     * </p>
+     *
+     * @since 1.5.15
+     * @return current version or null if missing version data
+     */
+    static private String getVersionOfLogbackClassicByModule() {
+        Module module = ClassicEnvUtil.class.getModule();
+        if (module == null)
+            return null;
+
+        ModuleDescriptor md = module.getDescriptor();
+        if (md == null)
+            return null;
+        Optional<String> opt = md.rawVersion();
+        return opt.orElse(null);
+    }
 }

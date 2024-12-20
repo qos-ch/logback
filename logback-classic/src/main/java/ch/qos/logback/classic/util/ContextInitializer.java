@@ -20,6 +20,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
@@ -72,11 +73,8 @@ public class ContextInitializer {
         // see https://github.com/qos-ch/logback/issues/715
         classLoader = Loader.systemClassloaderIfNull(classLoader);
 
-        String versionStr = EnvUtil.logbackVersion();
-        if (versionStr == null) {
-            versionStr = CoreConstants.NA;
-        }
-        loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
+        checkVersions();
+
         StatusListenerConfigHelper.installIfAsked(loggerContext);
 
 
@@ -102,6 +100,22 @@ public class ContextInitializer {
                 continue;
             if (invokeConfigure(c) == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY)
                 return;
+        }
+    }
+
+    private void checkVersions() {
+        String versionOfLogbackClassic = ClassicEnvUtil.getVersionOfLogbackClassic();
+        if (versionOfLogbackClassic == null) {
+            versionOfLogbackClassic = CoreConstants.NA;
+        }
+        String versionOfLogbackCore = EnvUtil.logbackVersion();
+        if (versionOfLogbackCore == null) {
+            versionOfLogbackCore = CoreConstants.NA;
+        }
+        loggerContext.getStatusManager().add(new InfoStatus(ClassicConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionOfLogbackClassic, loggerContext));
+        if(!versionOfLogbackCore.equals(versionOfLogbackClassic)) {
+            loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CORE_VERSION_MESSAGE + versionOfLogbackCore, loggerContext));
+            loggerContext.getStatusManager().add(new WarnStatus(ClassicConstants.LOGBACK_VERSIONS_MISMATCH, loggerContext));
         }
     }
 

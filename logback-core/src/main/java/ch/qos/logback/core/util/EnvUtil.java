@@ -24,6 +24,7 @@ public class EnvUtil {
     private EnvUtil() {
     }
 
+
     /**
      * <p>Returns the current version of logback, or null if data is not
      * available.
@@ -33,8 +34,8 @@ public class EnvUtil {
      * @return current version or null if missing version data
      */
     static public String logbackVersion() {
-        String moduleVersion = logbackVersionByModule();
-        if(moduleVersion != null)
+        String moduleVersion = getVersionOfLogbackCoreByModule();
+        if (moduleVersion != null)
             return moduleVersion;
 
         Package pkg = EnvUtil.class.getPackage();
@@ -52,7 +53,7 @@ public class EnvUtil {
      * @since 1.3.0
      * @return current version or null if missing version data
      */
-    static private String logbackVersionByModule() {
+    static private String getVersionOfLogbackCoreByModule() {
         Module module = EnvUtil.class.getModule();
         if (module == null)
             return null;
