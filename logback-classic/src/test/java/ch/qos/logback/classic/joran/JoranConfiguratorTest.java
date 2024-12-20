@@ -18,6 +18,7 @@ import ch.qos.logback.classic.joran.serializedModel.HardenedModelInputStream;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
@@ -754,6 +755,24 @@ public class JoranConfiguratorTest {
 
         System.clearProperty(loggerASysLevelKey);
         System.clearProperty(loggerNestedSysLevelKey);
+
+    }
+
+    @Test
+    public void exceptionEventFilter() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "boolex/exceptionEvaluator.xml");
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        root.info("deny");
+        root.info("allow", new RuntimeException("test"));
+
+        ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(listAppender);
+        assertEquals(1, listAppender.list.size());
+
+        ILoggingEvent le = listAppender.list.get(0);
+
+        assertNotNull(le.getThrowableProxy());
+        assertEquals(RuntimeException.class.getName(), le.getThrowableProxy().getClassName());
 
     }
 

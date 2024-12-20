@@ -44,14 +44,14 @@ public interface EventEvaluator<E> extends ContextAware, LifeCycle {
     boolean evaluate(E event) throws NullPointerException, EvaluationException;
 
     /**
-     * Evaluators are named entities.
+     * An evaluator may optionally have a name.
      * 
      * @return The name of this evaluator.
      */
     String getName();
 
     /**
-     * Evaluators are named entities.
+     * An evaluator may optionally have a name.
      */
     void setName(String name);
 }
