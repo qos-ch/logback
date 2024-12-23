@@ -22,6 +22,8 @@ import java.util.concurrent.Future;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.tukaani.xz.LZMA2Options;
+import org.tukaani.xz.XZOutputStream;
 
 import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -30,7 +32,7 @@ import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.FileUtil;
 
 /**
- * The <code>Compression</code> class implements ZIP and GZ file
+ * The <code>Compression</code> class implements ZIP,GZ and XZ file
  * compression/decompression methods.
  *
  * @author Ceki G&uuml;lc&uuml;
@@ -55,6 +57,9 @@ public class Compressor extends ContextAwareBase {
         switch (compressionMode) {
         case GZ:
             gzCompress(nameOfFile2Compress, nameOfCompressedFile);
+            break;
+        case XZ:
+            xzCompress(nameOfFile2Compress, nameOfCompressedFile);
             break;
         case ZIP:
             zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
@@ -189,12 +194,61 @@ public class Compressor extends ContextAwareBase {
 
     }
 
+    private void xzCompress(String nameOfFile2xz, String nameOfxzedFile) {
+        File file2xz = new File(nameOfFile2xz);
+
+        if (!file2xz.exists()) {
+            addStatus(new WarnStatus("The file to compress named [" + nameOfFile2xz + "] does not exist.", this));
+
+            return;
+        }
+
+        if (!nameOfxzedFile.endsWith(".xz")) {
+            nameOfxzedFile = nameOfxzedFile + ".xz";
+        }
+
+        File xzedFile = new File(nameOfxzedFile);
+
+        if (xzedFile.exists()) {
+            addWarn("The target compressed file named [" + nameOfxzedFile
+                    + "] exist already. Aborting file compression.");
+            return;
+        }
+
+        addInfo("XZ compressing [" + file2xz + "] as [" + xzedFile + "]");
+        createMissingTargetDirsIfNecessary(xzedFile);
+
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2xz));
+             XZOutputStream xzos = new XZOutputStream(new FileOutputStream(nameOfxzedFile), new LZMA2Options())) {
+
+            byte[] inbuf = new byte[BUFFER_SIZE];
+            int n;
+
+            while ((n = bis.read(inbuf)) != -1) {
+                xzos.write(inbuf, 0, n);
+            }
+        } catch (Exception e) {
+            addStatus(new ErrorStatus(
+                    "Error occurred while compressing [" + nameOfFile2xz + "] into [" + nameOfxzedFile + "].", this,
+                    e));
+        }
+
+        if (!file2xz.delete()) {
+            addStatus(new WarnStatus("Could not delete [" + nameOfFile2xz + "].", this));
+        }
+    }
+
     static public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr,
             CompressionMode compressionMode) {
         int len = fileNamePatternStr.length();
         switch (compressionMode) {
         case GZ:
             if (fileNamePatternStr.endsWith(".gz"))
+                return fileNamePatternStr.substring(0, len - 3);
+            else
+                return fileNamePatternStr;
+        case XZ:
+            if (fileNamePatternStr.endsWith(".xz"))
                 return fileNamePatternStr.substring(0, len - 3);
             else
                 return fileNamePatternStr;
