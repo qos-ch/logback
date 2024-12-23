@@ -53,6 +53,8 @@ import ch.qos.logback.core.boolex.EventEvaluatorBase;
  *
  *
  * </pre>
+ *
+ * @since 1.5.15
  */
 public class ExceptionMatchEvaluator extends EventEvaluatorBase<ILoggingEvent> {
 
