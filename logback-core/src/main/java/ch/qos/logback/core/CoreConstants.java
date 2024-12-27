@@ -250,7 +250,8 @@ public class CoreConstants {
     public static final int UNBOUND_HISTORY = UNBOUNDED_HISTORY;
     
     //public static final String RECONFIGURE_ON_CHANGE_TASK = "RECONFIGURE_ON_CHANGE_TASK";
-    public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "SizeAndTimeBasedFileNamingAndTriggeringPolicy is deprecated. Use SizeAndTimeBasedRollingPolicy instead";
+    public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "Direct use of either SizeAndTimeBasedFNATP or SizeAndTimeBasedFileNamingAndTriggeringPolicy ";
+    public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED_BIS = "is deprecated. Please use SizeAndTimeBasedRollingPolicy instead.";
 
     public static final char JSON_LINE_SEPARATOR = '\n';
     final public static String MODEL_CONFIG_FILE_EXTENSION = ".scmo";

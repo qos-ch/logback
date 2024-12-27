@@ -28,11 +28,16 @@ import ch.qos.logback.core.util.FileSize;
 /**
  * This class implement {@link TimeBasedFileNamingAndTriggeringPolicy}
  * interface extending {@link TimeBasedFileNamingAndTriggeringPolicyBase}. This class is intended to be nested
- * within a {@link SizeAndTimeBasedFileNamingAndTriggeringPolicy} instance.  However, it can also be instantiated directly for testing purposes.
+ * within a {@link SizeAndTimeBasedFileNamingAndTriggeringPolicy} instance.  However, it can also be
+ * instantiated directly for testing purposes.
+ *
+ * <p>{@link SizeAndTimeBasedFNATP} class was renamed as {@link SizeAndTimeBasedFileNamingAndTriggeringPolicy}
+ * in version 1.5.8.</p>
  *
  * @author Ceki G&uuml;lc&uuml;
  *
  * @param <E>
+ * @since 1.5.8
  */
 @NoAutoStart
 public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
@@ -72,6 +77,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
 
         if (usage == Usage.DIRECT) {
             addWarn(CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
+            addWarn(CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED_BIS);
             addWarn("For more information see " + MANUAL_URL_PREFIX + "appenders.html#SizeAndTimeBasedRollingPolicy");
         }
 
