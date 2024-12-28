@@ -15,7 +15,6 @@ package ch.qos.logback.access.model.processor;
 
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.PatternLayoutEncoder;
-import ch.qos.logback.access.boolex.JaninoEventEvaluator;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.filter.EvaluatorFilter;
@@ -27,7 +26,6 @@ public class LogbackAccessDefaultNestedComponentRegistryRules {
     
     static public void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
         registry.add(AppenderBase.class, "layout", PatternLayout.class);
-        registry.add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
 
         registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
         registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
