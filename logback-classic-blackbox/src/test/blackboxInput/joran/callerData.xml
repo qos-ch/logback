@@ -2,18 +2,14 @@
 <!DOCTYPE configuration>
 
 <configuration>
+  <import class="ch.qos.logback.classic.blackbox.evaluator.MatchHelloEvaluator"/>
+  <import class="ch.qos.logback.core.testUtil.StringListAppender"/>
 
-  <evaluator name="helloEval">
-    <Expression>m.matches(message)</Expression>
-    <matcher>
-      <name>m</name>
-      <regex>^hello.*</regex>
-      <CaseSensitive>false</CaseSensitive>
-    </matcher>
+  <evaluator name="helloEval" class="MatchHelloEvaluator">
+    <checkForInclusion>hello</checkForInclusion>
   </evaluator>
 
-  <appender name="STR_LIST"
-    class="ch.qos.logback.core.testUtil.StringListAppender">
+  <appender name="STR_LIST" class="StringListAppender">
     <layout>
       <Pattern>%caller{4, helloEval}%d %level - %m%n</Pattern>
     </layout>

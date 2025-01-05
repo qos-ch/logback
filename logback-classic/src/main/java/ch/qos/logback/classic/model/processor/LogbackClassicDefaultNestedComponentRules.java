@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.boolex.StubEventEvaluator;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
@@ -48,6 +49,7 @@ public class LogbackClassicDefaultNestedComponentRules {
 
         registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
         registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
+        registry.add(EvaluatorFilter.class, "evaluator", StubEventEvaluator.class);
 
         SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
     }
@@ -63,8 +65,7 @@ public class LogbackClassicDefaultNestedComponentRules {
         tupleList.add(new ParentTag_Tag_Class_Tuple("ssl", "keyStore", KeyStoreFactoryBean.class.getName()));
         tupleList.add(new ParentTag_Tag_Class_Tuple("ssl", "trustStore", KeyManagerFactoryFactoryBean.class.getName()));
         tupleList.add(new ParentTag_Tag_Class_Tuple("ssl", "keyManagerFactory", SSLParametersConfiguration.class.getName()));
-        tupleList
-                .add(new ParentTag_Tag_Class_Tuple("ssl", "trustManagerFactory", TrustManagerFactoryFactoryBean.class.getName()));
+        tupleList.add(new ParentTag_Tag_Class_Tuple("ssl", "trustManagerFactory", TrustManagerFactoryFactoryBean.class.getName()));
         tupleList.add(new ParentTag_Tag_Class_Tuple("ssl", "secureRandom", SecureRandomFactoryBean.class.getName()));
         return tupleList;
 

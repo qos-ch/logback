@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+  <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
+  <import class="ch.qos.logback.core.filter.EvaluatorFilter"/>
+  <import class="ch.qos.logback.core.read.ListAppender"/>
+
+  <appender name="LIST" class="ListAppender">
+    <filter class="EvaluatorFilter">
+      <evaluator>
+        <expression>message.contains("billing")</expression>
+      </evaluator>
+      <onMismatch>NEUTRAL</onMismatch>
+      <onMatch>DENY</onMatch>
+    </filter>
+    <encoder class="PatternLayoutEncoder">
+      <pattern>%-4relative [%thread] %-5level %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="LIST"/>
+  </root>
+</configuration>
