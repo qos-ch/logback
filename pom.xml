@@ -426,8 +426,8 @@
         <version>${maven-jxr-plugin.version}</version>
         <configuration>
           <aggregate>true</aggregate>
-          <javadocDir>target/site/apidocs/</javadocDir>
-          <linkJavadoc>true</linkJavadoc>
+          <!--<javadocDir>target/site/apidocs/</javadocDir>-->
+          <linkJavadoc>false</linkJavadoc>
         </configuration>
       </plugin>
 
