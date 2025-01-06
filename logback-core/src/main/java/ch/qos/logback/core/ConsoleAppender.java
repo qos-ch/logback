@@ -49,8 +49,9 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     private final static String AnsiConsole_CLASS_NAME = "org.fusesource.jansi.AnsiConsole";
     private final static String JANSI2_OUT_METHOD_NAME = "out";
     private final static String JANSI2_ERR_METHOD_NAME = "err";
-    private final static String wrapSystemOut_METHOD_NAME = "wrapSystemOut";
-    private final static String wrapSystemErr_METHOD_NAME = "wrapSystemErr";
+    private final static String WRAP_SYSTEM_OUT_METHOD_NAME = "wrapSystemOut";
+    private final static String WRAP_SYSTEM_ERR_METHOD_NAME = "wrapSystemErr";
+    private final static String SYSTEM_INSTALL_METHOD_NAME = "systemInstall";
     private final static Class<?>[] ARGUMENT_TYPES = { PrintStream.class };
 
     private final static String CONSOLE_APPENDER_WARNING_URL = CoreConstants.CODES_URL+"#slowConsole";
@@ -105,6 +106,22 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
             ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
             Class<?> classObj = classLoader.loadClass(AnsiConsole_CLASS_NAME);
 
+            Method systemInstallMethod  = classObj.getMethod(SYSTEM_INSTALL_METHOD_NAME);
+            if(systemInstallMethod != null) {
+                systemInstallMethod.invoke(null);
+            }
+
+//            final Optional<Method> optSystemInstallMethod = Arrays.stream(classObj.getMethods())
+//                            .filter(m -> m.getName().equals(SYSTEM_INSTALL_METHOD_NAME))
+//                            .filter(m -> m.getParameters().length == 0)
+//                            .filter(m -> Modifier.isStatic(m.getModifiers()))
+//                            .findAny();
+//
+//            if (optSystemInstallMethod.isPresent()) {
+//                final Method systemInstallMethod = optSystemInstallMethod.orElseThrow(() -> new NoSuchElementException("No systemInstall method present"));
+//                systemInstallMethod.invoke(null);
+//            }
+
             // check for JAnsi 2
             String methodNameJansi2 = target == ConsoleTarget.SystemOut ? JANSI2_OUT_METHOD_NAME
                     : JANSI2_ERR_METHOD_NAME;
@@ -115,13 +132,13 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
                     .filter(m -> PrintStream.class.isAssignableFrom(m.getReturnType()))
                     .findAny();
             if (optOutMethod.isPresent()) {
-                final Method outMethod = optOutMethod.orElseThrow(() -> new NoSuchElementException("No value present"));
+                final Method outMethod = optOutMethod.orElseThrow(() -> new NoSuchElementException("No out/err method present"));
                 return (PrintStream) outMethod.invoke(null);
             }
 
             // JAnsi 1
-            String methodName = target == ConsoleTarget.SystemOut ? wrapSystemOut_METHOD_NAME
-                    : wrapSystemErr_METHOD_NAME;
+            String methodName = target == ConsoleTarget.SystemOut ? WRAP_SYSTEM_OUT_METHOD_NAME
+                    : WRAP_SYSTEM_ERR_METHOD_NAME;
             Method method = classObj.getMethod(methodName, ARGUMENT_TYPES);
             return (OutputStream) method.invoke(null, new PrintStream(targetStream));
         } catch (Exception e) {
