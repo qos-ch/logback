@@ -21,9 +21,9 @@
 
   <distributionManagement>
     <relocation>
-      <groupId>ch.qos.logback.access</groupId>      
-      <artifactId>common</artifactId>
-      <version>2.0.1</version>      
+        <groupId>ch.qos.logback.access</groupId>
+        <artifactId>logback-access-common</artifactId>
+        <version>2.0.6</version>
     </relocation>
   </distributionManagement>
 
