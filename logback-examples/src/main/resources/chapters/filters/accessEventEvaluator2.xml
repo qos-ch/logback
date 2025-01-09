@@ -1,21 +1,35 @@
+
 <configuration>
-  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+    <import class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+    <import class="ch.qos.logback.core.ConsoleAppender"/>
+    <import class="ch.qos.logback.core.filter.EvaluatorFilter"/>
+    <import class="ch.qos.logback.access.common.boolex.StatusCodeEventEvaluator"/>
+    <import class="ch.qos.logback.access.common.boolex.RequestURIEventEvaluator"/>
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      <evaluator name="Eval404">
-        <expression>
-         (event.getStatusCode() == 404)
-           &amp;&amp;  <!-- ampersand characters need to be escaped -->
-         !(event.getRequestURI().contains(".css"))
-        </expression>
-      </evaluator>
-      <onMismatch>DENY</onMismatch>
-      <onMatch>ACCEPT</onMatch>
-    </filter>
+    <statusListener class="OnConsoleStatusListener"/>
 
-   <encoder><pattern>%h %l %u %t %r %s %b</pattern></encoder>
-  </appender>
+    <appender name="STDOUT"  class="ConsoleAppender">
 
-  <appender-ref ref="STDOUT" />
+         <filter class="EvaluatorFilter">
+            <evaluator class="StatusCodeEventEvaluator">
+                <statusCode>404</statusCode>
+            </evaluator>
+            <onMatch>NEUTRAL</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <filter class="EvaluatorFilter">
+            <evaluator class="RequestURIEventEvaluator">
+                <regex>\.css$</regex>
+            </evaluator>
+            <onMatch>DENY</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+
+        <encoder>
+           <pattern>%h %l %u %t %r %s %b</pattern>
+        </encoder>
+    </appender>
+
+    <appender-ref ref="STDOUT" />
+
 </configuration>
