@@ -280,6 +280,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
                 fileChannel.position(size);
             }
             writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
+            updateByteCount(byteArray);
         } catch (IOException e) {
             // Mainly to catch FileLockInterruptionExceptions (see LOGBACK-875)
             resilientFOS.postIOFailure(e);
