@@ -1,5 +1,6 @@
 package ch.qos.logback.classic.spi;
 
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.IMarkerFactory;
 import org.slf4j.helpers.BasicMarkerFactory;
@@ -28,11 +29,11 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
 
     private LoggerContext defaultLoggerContext;
     private IMarkerFactory markerFactory;
-    private LogbackMDCAdapter mdcAdapter;
-    // private final ContextSelectorStaticBinder contextSelectorBinder =
-    // ContextSelectorStaticBinder.getSingleton();
-//    private static Object KEY = new Object();
-//    private volatile boolean initialized = false;
+    private        LogbackMDCAdapter           mdcAdapter;
+     private final ContextSelectorStaticBinder contextSelectorBinder =
+     ContextSelectorStaticBinder.getSingleton();
+    private static Object                      KEY                   = new Object();
+    private volatile boolean initialized = false;
 
     @Override
     public void initialize() {
@@ -57,7 +58,7 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
             if (!StatusUtil.contextHasStatusListener(defaultLoggerContext)) {
                 StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
             }
-            // contextSelectorBinder.init(defaultLoggerContext, KEY);
+             contextSelectorBinder.init(defaultLoggerContext, KEY);
 
         } catch (Exception t) { // see LOGBACK-1159
             Util.report("Failed to instantiate [" + LoggerContext.class.getName() + "]", t);
@@ -67,16 +68,15 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     @Override
 
     public ILoggerFactory getLoggerFactory() {
-        return defaultLoggerContext;
+        if (!initialized) {
+            return defaultLoggerContext;
+        }
 
-//        if (!initialized) {
-//            return defaultLoggerContext;
-//        
-//
-//        if (contextSelectorBinder.getContextSelector() == null) {
-//            throw new IllegalStateException("contextSelector cannot be null. See also " + NULL_CS_URL);
-//        }
-//        return contextSelectorBinder.getContextSelector().getLoggerContext();
+
+        if (contextSelectorBinder.getContextSelector() == null) {
+            throw new IllegalStateException("contextSelector cannot be null. See also " + NULL_CS_URL);
+        }
+        return contextSelectorBinder.getContextSelector().getLoggerContext();
     }
 
     @Override
