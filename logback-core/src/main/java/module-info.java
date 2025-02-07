@@ -18,6 +18,9 @@ module ch.qos.logback.core {
     // optionally require jansi
     requires static org.fusesource.jansi;
 
+    // optionally require tukaani
+    requires static org.tukaani.xz;
+
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;
 
