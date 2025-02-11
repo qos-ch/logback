@@ -59,6 +59,7 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
 
         URL url = performMultiStepModelFileSearch(true);
         if (url != null) {
+            addWarn("Replaced by logback-tyler, SerializedModelConfigurator has been deprecated and will be removed on 2025-07-01.");
             configureByResource(url);
             return ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY;
         } else {
