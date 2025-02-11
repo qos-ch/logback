@@ -21,18 +21,6 @@ Here is a summary of 1.5.x dependencies:
 |:---------------:|:--------:|:---------:|:-------:|:--------:|------------------------------|
 | 1.5.x            | master         | 2.0.x         | 11             | 21            | Jakarta EE (jakarta.* namespace)|
 
-
-
-## INACTIVE - 1.3.x supports Java EE, while version 1.4.x supports Jakarta EE.
-The two versions are feature identical. However, They are no longer actively maintained.
-
-Both 1.3.x and 1.4.x series require SLF4J 2.0.x or later.
-
-The 1.3.x series requires Java 8 at runtime. If you wish to build
-logback from source, you will need Java 9. 
-
-The 1.4.x series requires Java 11 at build time and at runtime.
-
 # Building logback
 
 Version 1.5.x requires Java 21 to compile and build.
@@ -78,6 +66,10 @@ community looks forward to your contribution. Please follow this process:
    later.
 
 6. Submit a pull request to logback from your commit page on GitHub.
+   All commits must have signed off by the contributor attesting to
+  [Developer Certificate of Origin (DCO)](https://developercertificate.org/).
+  Commits without sign off will be automatically rejected by the [DCO GitHub
+  check](https://probot.github.io/apps/dco/) application.
 
 7. Do not forget to explain your proposed changes.
 
