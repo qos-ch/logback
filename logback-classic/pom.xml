@@ -269,6 +269,7 @@
                 --add-modules jakarta.mail
                 --add-modules jakarta.servlet
                 --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
+                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.issue.github450=ch.qos.logback.core
                 --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core
                 --add-opens ch.qos.logback.classic/ch.qos.logback.classic.jsonTest=ALL-UNNAMED
               </argLine>
@@ -288,6 +289,7 @@
                 <exclude>org.slf4j.implTest.InitializationOutputTest.java</exclude>
                 <exclude>ch.qos.logback.classic.util.ContextInitializerTest.java</exclude>
                 <exclude>ch.qos.logback.classic.spi.InvocationTest.java</exclude>
+                <exclude>ch.qos.logback.classic.issue.github450.SLF4JIssue450Test</exclude>
               </excludes>
             </configuration>
           </execution>
@@ -300,11 +302,15 @@
             <configuration>
               <forkCount>4</forkCount>
               <reuseForks>false</reuseForks>
+              <argLine>
+                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.issue.github450=ch.qos.logback.core
+              </argLine>
               <includes>
                 <include>org.slf4j.implTest.MultithreadedInitializationTest.java</include>
                 <include>org.slf4j.implTest.InitializationOutputTest.java</include>
                 <include>ch.qos.logback.classic.util.ContextInitializerTest.java</include>
                 <include>ch.qos.logback.classic.spi.InvocationTest.java</include>
+                <include>ch.qos.logback.classic.issue.github450.SLF4JIssue450Test</include>
               </includes>
             </configuration>
           </execution>

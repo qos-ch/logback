@@ -16,20 +16,24 @@ package ch.qos.logback.classic.issue.github450;
 
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.read.ListAppender;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
-public class Main {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-    public static void main(String[] args) {
-        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, "logback-classic/"+ClassicTestConstants.INPUT_PREFIX + "issue/gh_issues_450.xml");
+public class SLF4JIssue450Test {
+
+
+    @Test
+    public void smoke() {
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/gh_issues_450.xml");
         System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, "stdout");
-        Logger logger = LoggerFactory.getLogger(Main.class);
+        Logger logger = LoggerFactory.getLogger(SLF4JIssue450Test.class);
         logger.info("toto");
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
@@ -38,8 +42,8 @@ public class Main {
         LoggingEvent le0 = (LoggingEvent) listAppender.list.get(0);
 
         String val = le0.getMDCPropertyMap().get("issues450");
-        if(val == null) {
-            throw new RuntimeException("issues450 missing property: issues450");
-        }
+        assertNotNull(val);
+        assertEquals("12", val);
+
     }
 }

@@ -26,24 +26,23 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     // to avoid constant folding by the compiler, this field must *not* be final
     public static String REQUESTED_API_VERSION = "2.0.99"; // !final
 
-    private LoggerContext defaultLoggerContext;
-    private IMarkerFactory markerFactory;
-    private LogbackMDCAdapter mdcAdapter;
-    // private final ContextSelectorStaticBinder contextSelectorBinder =
-    // ContextSelectorStaticBinder.getSingleton();
-//    private static Object KEY = new Object();
-//    private volatile boolean initialized = false;
+    private LoggerContext defaultLoggerContext = new LoggerContext();
+
+
+    // org.slf4j.LoggerFactory expects providers to initialize markerFactory as early as possible.
+    private IMarkerFactory markerFactory = new BasicMarkerFactory();
+
+    // org.slf4j.LoggerFactory expects providers to initialize their MDCAdapter field
+    // as early as possible, preferably at construction time.
+    private LogbackMDCAdapter mdcAdapter = new LogbackMDCAdapter();
 
     @Override
     public void initialize() {
-        defaultLoggerContext = new LoggerContext();
         defaultLoggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
-        initializeLoggerContext();
-        defaultLoggerContext.start();
-        markerFactory = new BasicMarkerFactory();
-        mdcAdapter = new LogbackMDCAdapter();
         // set the MDCAdapter for the defaultLoggerContext immediately
         defaultLoggerContext.setMDCAdapter(mdcAdapter);
+        initializeLoggerContext();
+        defaultLoggerContext.start();
     }
 
     private void initializeLoggerContext() {
@@ -68,15 +67,6 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
 
     public ILoggerFactory getLoggerFactory() {
         return defaultLoggerContext;
-
-//        if (!initialized) {
-//            return defaultLoggerContext;
-//        
-//
-//        if (contextSelectorBinder.getContextSelector() == null) {
-//            throw new IllegalStateException("contextSelector cannot be null. See also " + NULL_CS_URL);
-//        }
-//        return contextSelectorBinder.getContextSelector().getLoggerContext();
     }
 
     @Override
