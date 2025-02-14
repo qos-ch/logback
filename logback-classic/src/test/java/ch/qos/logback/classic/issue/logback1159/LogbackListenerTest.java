@@ -11,8 +11,10 @@ import java.util.Set;
 
 //import org.apache.commons.io.FileUtils;
 //import org.apache.commons.lang3.RandomStringUtils;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,21 +23,28 @@ import org.slf4j.LoggerFactoryFriend;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import org.slf4j.spi.MDCAdapter;
 
 public class LogbackListenerTest {
     private File logFile = new File("target/test.log");
 
+    LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter mdcAdapter = new LogbackMDCAdapter();
+
+    @BeforeEach
+    void setUp() {
+        loggerContext.setMDCAdapter(mdcAdapter);
+    }
+
     private void doConfigure() throws JoranException {
-        LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext(context);
+        configurator.setContext(loggerContext);
         configurator.doConfigure(new File("src/test/input/issue/logback-1159.xml"));
     }
 
     @AfterEach
     public void after() {
         logFile.delete();
-        LoggerFactoryFriend.reset();
     }
 
     private void disableLogFileAccess() throws IOException {
