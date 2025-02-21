@@ -46,17 +46,23 @@ public class CompressTest {
             File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt");
 
             copy(source, dest);
-            File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz");
-            target.mkdirs();
-            target.delete();
+            File gzTarget = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz");
+            gzTarget.mkdirs();
+            gzTarget.delete();
+            File xzTarget = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.xz");
+            xzTarget.mkdirs();
+            xzTarget.delete();
         }
         {
             File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.copy");
             File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt");
             copy(source, dest);
-            File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz");
-            target.mkdirs();
-            target.delete();
+            File gzTarget = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz");
+            gzTarget.mkdirs();
+            gzTarget.delete();
+            File xzTarget = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.xz");
+            xzTarget.mkdirs();
+            xzTarget.delete();
         }
         {
             File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.copy");
@@ -69,7 +75,7 @@ public class CompressTest {
     }
 
     @Test
-    public void test1() throws Exception {
+    public void test_gz_1() throws Exception {
         Compressor compressor = new Compressor(CompressionMode.GZ);
         compressor.setContext(context);
         compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt",
@@ -82,7 +88,7 @@ public class CompressTest {
     }
 
     @Test
-    public void test2() throws Exception {
+    public void test_gz_2() throws Exception {
         Compressor compressor = new Compressor(CompressionMode.GZ);
         compressor.setContext(context);
         compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt",
@@ -96,7 +102,7 @@ public class CompressTest {
     }
 
     @Test
-    public void test3() throws Exception {
+    public void test_zip_1() {
         Compressor compressor = new Compressor(CompressionMode.ZIP);
         compressor.setContext(context);
         compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.txt",
@@ -108,6 +114,32 @@ public class CompressTest {
         // Assertions.assertTrue(Compare.compare(CoreTestConstants.OUTPUT_DIR_PREFIX
         // + "compress3.txt.zip", CoreTestConstants.TEST_SRC_PREFIX
         // + "witness/compress3.txt.zip"));
+    }
+
+    @Test
+    public void test_xz_1() throws Exception {
+        Compressor compressor = new Compressor(CompressionMode.XZ);
+        compressor.setContext(context);
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt",
+                CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.xz", null);
+
+        StatusChecker checker = new StatusChecker(context);
+        Assertions.assertTrue(checker.isErrorFree(0));
+        Assertions.assertTrue(Compare.xzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.xz",
+                CoreTestConstants.TEST_SRC_PREFIX + "witness/compress1.txt.xz"));
+    }
+
+    @Test
+    public void test_xz_2() throws Exception {
+        Compressor compressor = new Compressor(CompressionMode.XZ);
+        compressor.setContext(context);
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt",
+                CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.xz", null);
+
+        StatusChecker checker = new StatusChecker(context);
+        Assertions.assertTrue(checker.isErrorFree(0));
+        Assertions.assertTrue(Compare.xzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.xz",
+                CoreTestConstants.TEST_SRC_PREFIX + "witness/compress2.txt.xz"));
     }
 
     private void copy(File src, File dst) throws IOException {
