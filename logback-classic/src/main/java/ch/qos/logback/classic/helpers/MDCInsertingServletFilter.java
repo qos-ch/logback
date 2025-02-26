@@ -32,7 +32,9 @@ import ch.qos.logback.classic.ClassicConstants;
  * request into the MDC.
  * <p/>
  * <p/>
- * The values are removed after the request is processed.
+ * The values are removed after the all following
+ * filters/servlets have been processed. Note, however,
+ * the value is not available in an error handler servlet.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
