@@ -25,6 +25,9 @@ import java.util.Map;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StringUtil;
+
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.MessageFormatter;
@@ -150,7 +153,7 @@ public class LoggingEvent implements ILoggingEvent {
         }
     }
 
-    void initTmestampFields(Instant instant) {
+    void initTmestampFields(@NonNull Instant instant) {
         this.instant = instant;
         long epochSecond = instant.getEpochSecond();
         this.nanoseconds = instant.getNano();
@@ -158,7 +161,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.timeStamp = (epochSecond * 1000) + (milliseconds);
     }
 
-    private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
+    private @Nullable Throwable extractThrowableAnRearrangeArguments(@Nullable Object[] argArray) {
         Throwable extractedThrowable = EventArgUtil.extractThrowable(argArray);
         if (EventArgUtil.successfulExtraction(extractedThrowable)) {
             this.argumentArray = EventArgUtil.trimmedCopy(argArray);
@@ -166,30 +169,30 @@ public class LoggingEvent implements ILoggingEvent {
         return extractedThrowable;
     }
 
-    public void setArgumentArray(Object[] argArray) {
+    public void setArgumentArray(@Nullable Object[] argArray) {
         if (this.argumentArray != null) {
             throw new IllegalStateException("argArray has been already set");
         }
         this.argumentArray = argArray;
     }
 
-    public Object[] getArgumentArray() {
+    public @Nullable Object[] getArgumentArray() {
         return this.argumentArray;
     }
 
-    public void addKeyValuePair(KeyValuePair kvp) {
+    public void addKeyValuePair(@NonNull KeyValuePair kvp) {
         if (keyValuePairs == null) {
             keyValuePairs = new ArrayList<>(4);
         }
         keyValuePairs.add(kvp);
     }
 
-    public void setKeyValuePairs(List<KeyValuePair> kvpList) {
+    public void setKeyValuePairs(@Nullable List<KeyValuePair> kvpList) {
         this.keyValuePairs = kvpList;
     }
 
     @Override
-    public List<KeyValuePair> getKeyValuePairs() {
+    public @Nullable List<KeyValuePair> getKeyValuePairs() {
         return this.keyValuePairs;
     }
 
@@ -205,7 +208,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.loggerName = loggerName;
     }
 
-    public String getThreadName() {
+    public @NonNull String getThreadName() {
         if (threadName == null) {
             threadName = extractThreadName(Thread.currentThread());
         }
@@ -221,7 +224,7 @@ public class LoggingEvent implements ILoggingEvent {
      * @return
      * @since 1.5.0
      */
-    private String extractThreadName(Thread aThread) {
+    private @NonNull String extractThreadName(@Nullable Thread aThread) {
         if (aThread == null) {
             return CoreConstants.NA;
         }
@@ -243,7 +246,7 @@ public class LoggingEvent implements ILoggingEvent {
      * @param aThread
      * @return Return the threadId if the thread is a virtual thread, return null otherwise.
      */
-    Long getVirtualThreadId(Thread aThread) {
+    Long getVirtualThreadId(@NonNull Thread aThread) {
         if (EnvUtil.isJDK21OrHigher()) {
             try {
                 Method isVirtualMethod = Thread.class.getMethod("isVirtual");
@@ -396,7 +399,7 @@ public class LoggingEvent implements ILoggingEvent {
      * Note that after serialization it is impossible to correctly extract caller information.
      * </p>
      */
-    public StackTraceElement[] getCallerData() {
+    public @NonNull StackTraceElement[] getCallerData() {
         if (callerDataArray == null) {
             callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass,
                     loggerContext.getMaxCallerDataDepth(), loggerContext.getFrameworkPackages());
@@ -408,15 +411,15 @@ public class LoggingEvent implements ILoggingEvent {
         return (callerDataArray != null);
     }
 
-    public void setCallerData(StackTraceElement[] callerDataArray) {
+    public void setCallerData(@Nullable StackTraceElement[] callerDataArray) {
         this.callerDataArray = callerDataArray;
     }
 
-    public List<Marker> getMarkerList() {
+    public @Nullable List<Marker> getMarkerList() {
         return markerList;
     }
 
-    public void addMarker(Marker marker) {
+    public void addMarker(@Nullable Marker marker) {
         if (marker == null) {
             return;
         }
@@ -450,7 +453,7 @@ public class LoggingEvent implements ILoggingEvent {
         return formattedMessage;
     }
 
-    public Map<String, String> getMDCPropertyMap() {
+    public @NonNull Map<String, String> getMDCPropertyMap() {
         // populate mdcPropertyMap if null
         if (mdcPropertyMap == null) {
             MDCAdapter mdcAdapter = loggerContext.getMDCAdapter();
@@ -472,7 +475,7 @@ public class LoggingEvent implements ILoggingEvent {
      * @param map
      * @since 1.0.8
      */
-    public void setMDCPropertyMap(Map<String, String> map) {
+    public void setMDCPropertyMap(@Nullable Map<String, String> map) {
         if (mdcPropertyMap != null) {
             throw new IllegalStateException("The MDCPropertyMap has been already set for this event.");
         }
@@ -485,7 +488,7 @@ public class LoggingEvent implements ILoggingEvent {
      *
      * @deprecated Replaced by [@link #getMDCPropertyMap}
      */
-    public Map<String, String> getMdc() {
+    public @NonNull Map<String, String> getMdc() {
         return getMDCPropertyMap();
     }
 
