@@ -24,7 +24,7 @@ import java.io.PrintStream;
 public class OnErrorConsoleStatusListener extends OnPrintStreamStatusListenerBase {
 
     @Override
-    protected PrintStream getPrintStream() {
+    protected PrintStream getPrintStream(Status status) {
         return System.err;
     }
 }
