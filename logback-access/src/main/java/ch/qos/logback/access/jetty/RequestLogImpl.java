@@ -15,6 +15,7 @@ package ch.qos.logback.access.jetty;
 
 import java.io.File;
 import java.net.URL;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +64,14 @@ import org.eclipse.jetty.util.component.LifeCycle;
  * Jetty 9.4.x and Jetty 10.x use a modern {@code org.eclipse.jetty.server.Server.setRequestLog(RequestLog)}
  * interface that is based on a Server level RequestLog behavior.  This means all requests are logged,
  * even bad requests, and context-less requests.
+ * </p>
+ * <p>
+ * <b>Note:</b>
+ * Jetty 9.4.x and Jetty 10.0.x don't have equal method signatures for all methods. E.g. the return type for
+ * {@code Response#getHttpFields()} changed from {@code HttpFields} to {@code HttpFields.Mutable}.
+ * To properly support Jetty 9.4.x and Jetty 10.0.x reflection is used to resolve the correct method.
+ * If this is too slow for an application, the {@link #makeJettyServerAdapter(Request, Response)} method can be used
+ * to override the {@link JettyServerAdapter} implementation.
  * </p>
  * <p>
  * The internals of the Jetty Request and Response objects track the state of the object at the time
@@ -244,7 +253,7 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
     String resource;
 
     // Jetty 9.4.x and newer is considered modern.
-    boolean modernJettyRequestLog;
+    protected boolean modernJettyRequestLog;
     boolean quiet = false;
 
     public RequestLogImpl() {
@@ -269,7 +278,7 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
         aai.appendLoopOnAppenders(accessEvent);
     }
 
-    private JettyServerAdapter makeJettyServerAdapter(Request jettyRequest, Response jettyResponse) {
+    protected JettyServerAdapter makeJettyServerAdapter(Request jettyRequest, Response jettyResponse) {
         if (modernJettyRequestLog) {
             return new JettyModernServerAdapter(jettyRequest, jettyResponse);
         } else {
@@ -467,13 +476,21 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
     }
 
 
-    @Override
     public void addLifeCycleListener(LifeCycle.Listener listener) {
         // we'll implement this when asked
     }
 
-    @Override
     public void removeLifeCycleListener(LifeCycle.Listener listener) {
         // we'll implement this when asked
+    }
+
+    public boolean addEventListener(EventListener eventListener) {
+        // we'll implement this when asked
+        return false;
+    }
+
+    public boolean removeEventListener(EventListener eventListener) {
+        // we'll implement this when asked
+        return false;
     }
 }
