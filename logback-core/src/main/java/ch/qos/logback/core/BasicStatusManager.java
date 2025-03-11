@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -31,15 +31,15 @@ public class BasicStatusManager implements StatusManager {
     int count = 0;
 
     // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
-    final protected List<Status> statusList = new ArrayList<Status>();
-    final protected CyclicBuffer<Status> tailBuffer = new CyclicBuffer<Status>(TAIL_SIZE);
-    final protected LogbackLock statusListLock = new LogbackLock();
+    protected final List<Status> statusList = new ArrayList<>();
+    protected final CyclicBuffer<Status> tailBuffer = new CyclicBuffer<>(TAIL_SIZE);
+    protected final LogbackLock statusListLock = new LogbackLock();
 
     int level = Status.INFO;
 
     // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
-    final protected List<StatusListener> statusListenerList = new ArrayList<StatusListener>();
-    final protected LogbackLock statusListenerListLock = new LogbackLock();
+    protected final List<StatusListener> statusListenerList = new ArrayList<>();
+    protected final LogbackLock statusListenerListLock = new LogbackLock();
 
     // Note on synchronization
     // This class contains two separate locks statusListLock and
@@ -48,21 +48,17 @@ public class BasicStatusManager implements StatusManager {
     // without cycles. They are exposed to derived classes which should be careful
     // not to create deadlock cycles.
 
-    /**
-     * Add a new status object.
-     * 
-     * @param newStatus the status message to add
-     */
+    @Override
     public void add(Status newStatus) {
         // LBCORE-72: fire event before the count check
         fireStatusAddEvent(newStatus);
 
-        count++;
-        if (newStatus.getLevel() > level) {
-            level = newStatus.getLevel();
-        }
-
         synchronized (statusListLock) {
+            count++;
+            int newLevel = newStatus.getLevel();
+            if (newLevel > level) {
+                level = newLevel;
+            }
             if (statusList.size() < MAX_HEADER_COUNT) {
                 statusList.add(newStatus);
             } else {
@@ -72,9 +68,10 @@ public class BasicStatusManager implements StatusManager {
 
     }
 
+    @Override
     public List<Status> getCopyOfStatusList() {
         synchronized (statusListLock) {
-            List<Status> tList = new ArrayList<Status>(statusList);
+            List<Status> tList = new ArrayList<>(statusList);
             tList.addAll(tailBuffer.asList());
             return tList;
         }
@@ -88,28 +85,37 @@ public class BasicStatusManager implements StatusManager {
         }
     }
 
+    @Override
     public void clear() {
         synchronized (statusListLock) {
             count = 0;
+            level = Status.INFO;
             statusList.clear();
             tailBuffer.clear();
         }
     }
 
+    @Override
     public int getLevel() {
-        return level;
+        synchronized (statusListLock) {
+            return level;
+        }
     }
 
+    @Override
     public int getCount() {
-        return count;
+        synchronized (statusListLock) {
+            return count;
+        }
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * This implementation does not allow duplicate installations of
-     * OnConsoleStatusListener
-     * 
-     * @param listener
+     * {@link OnConsoleStatusListener}.
      */
+    @Override
     public boolean add(StatusListener listener) {
         synchronized (statusListenerListLock) {
             if (listener instanceof OnConsoleStatusListener) {
@@ -130,15 +136,17 @@ public class BasicStatusManager implements StatusManager {
         return false;
     }
 
+    @Override
     public void remove(StatusListener listener) {
         synchronized (statusListenerListLock) {
             statusListenerList.remove(listener);
         }
     }
 
+    @Override
     public List<StatusListener> getCopyOfStatusListenerList() {
         synchronized (statusListenerListLock) {
-            return new ArrayList<StatusListener>(statusListenerList);
+            return new ArrayList<>(statusListenerList);
         }
     }
 
