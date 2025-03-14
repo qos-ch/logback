@@ -209,26 +209,7 @@
         </dependencies>
 
         <executions>
-          <!-- Disabled osgi tests given current OSGi/ServiceLoader integration failure -->
-          <!--
-          <execution>
-
-            <id>ant-osgi-test</id>
-            <phase>package</phase>
-            <configuration>
-              <target>
-                <property name="currentVersion" value="${project.version}"/>
-                <property name="slf4j.version" value="${slf4j.version}"/>
-                <property name="basedir" value="${basedir}"/>
-                <ant antfile="${basedir}/osgi-build.xml"/>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-           -->
-	  <execution>
+           <execution>
             <id>ant-integration-test</id>
             <phase>package</phase>
             <configuration>

@@ -18,6 +18,10 @@ import java.util.concurrent.Future;
 
 import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.util.DynamicClassLoadingException;
+import ch.qos.logback.core.util.IncompatibleClassException;
+
+import static ch.qos.logback.core.util.OptionHelper.instantiateByClassName;
 
 /**
  * The <code>Compression</code> class implements ZIP and GZ file
@@ -26,6 +30,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class Compressor extends ContextAwareBase {
+
+    public static final String COULD_NOT_OBTAIN_COMPRESSION_STRATEGY_MESSAGE = "Could not obtain compression strategy";
+    static String XZ_COMPRESSION_STRATEGY_CLASS_NAME = "ch.qos.logback.core.rolling.helper.XZCompressionStrategy";
 
     final CompressionMode compressionMode;
 
@@ -44,11 +51,11 @@ public class Compressor extends ContextAwareBase {
     public void compress(String originalFileName, String compressedFileName, String innerEntryName) {
         CompressionStrategy compressionStrategy = makeCompressionStrategy(compressionMode);
         if (compressionStrategy == null) {
-            addWarn("Could not ");
+            addWarn(COULD_NOT_OBTAIN_COMPRESSION_STRATEGY_MESSAGE);
+            return;
         }
         compressionStrategy.setContext(getContext());
         compressionStrategy.compress(originalFileName, compressedFileName, innerEntryName);
-
     }
 
     CompressionStrategy makeCompressionStrategy(CompressionMode compressionMode) {
@@ -57,9 +64,20 @@ public class Compressor extends ContextAwareBase {
             return new GZCompressionStrategy();
         case ZIP:
             return new ZipCompressionStrategy();
+        case XZ:
+            return dynamicInstantiation(XZ_COMPRESSION_STRATEGY_CLASS_NAME);
         case NONE:
             throw new UnsupportedOperationException("compress method called in NONE compression mode");
         default:
+            return null;
+        }
+    }
+
+    private CompressionStrategy dynamicInstantiation(String className) {
+        try {
+            return (CompressionStrategy) instantiateByClassName(className, CompressionStrategy.class, getContext());
+        } catch (IncompatibleClassException | DynamicClassLoadingException e) {
+            addError("Could not instantiate " + className, e);
             return null;
         }
     }
@@ -99,6 +117,11 @@ public class Compressor extends ContextAwareBase {
         case ZIP:
             if (fileNamePatternStr.endsWith(".zip"))
                 return fileNamePatternStr.substring(0, len - 4);
+            else
+                return fileNamePatternStr;
+        case XZ:
+            if (fileNamePatternStr.endsWith(".xz"))
+                return fileNamePatternStr.substring(0, len - 3);
             else
                 return fileNamePatternStr;
         case NONE:

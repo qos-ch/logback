@@ -5,7 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  
+
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
   <version>1.5.18-SNAPSHOT</version>
@@ -61,6 +61,7 @@
     <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
     <junit-vintage-engine.version>5.9.1</junit-vintage-engine.version>
     <junit-jupiter-params.version>5.9.1</junit-jupiter-params.version>
+    <junit-platform.version>1.10.5</junit-platform.version>
     <assertj-core.version>3.23.1</assertj-core.version>
     <hamcrest.version>2.2</hamcrest.version>
     <jakarta.mail.version>2.1.0</jakarta.mail.version>
@@ -73,11 +74,12 @@
     <janino.version>3.1.8</janino.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml, /logback-examples/src/main/resources/setClasspath.cmd, download.html
-    -->    
+    -->
     <slf4j.version>2.0.17</slf4j.version>
     <cal10n.version>0.8.1</cal10n.version>
     <consolePlugin.version>1.1.0</consolePlugin.version>
     <jackson.version>2.15.0</jackson.version>
+    <xz.version>1.10</xz.version>
 
     <!--<jansi.version>1.18</jansi.version>-->
     <jansi.version>2.4.0</jansi.version>
@@ -100,7 +102,7 @@
     <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
     <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
-    <ant.version>1.10.12</ant.version>
+    <ant.version>1.10.13</ant.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
     <jetty.version>12.0.13</jetty.version>
   </properties>
@@ -183,6 +185,11 @@
       </dependency>
       <!-- end of dependencies duplicated from logback-bom/pom.xml -->
 
+      <dependency>
+        <groupId>org.tukaani</groupId>
+        <artifactId>xz</artifactId>
+        <version>${xz.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.codehaus.janino</groupId>
         <artifactId>janino</artifactId>
@@ -346,8 +353,7 @@
           <artifactId>maven-bundle-plugin</artifactId>
           <version>${maven-bundle-plugin.version}</version>
         </plugin>
-
-      </plugins>
+    </plugins>
 
     </pluginManagement>
 
@@ -361,7 +367,7 @@
           <release>${jdk.version}</release>
         </configuration>
       </plugin>
- 
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -460,12 +466,12 @@
       -->
 
 
-      
 
-            
+
+
     </plugins>
   </reporting>
-  
+
   <profiles>
     <profile>
       <id>testSkip</id>
@@ -518,7 +524,7 @@
                 <goals>
                   <goal>jar</goal>
                 </goals>
-              </execution>            
+              </execution>
             </executions>
             <configuration>
               <doclint>none</doclint>

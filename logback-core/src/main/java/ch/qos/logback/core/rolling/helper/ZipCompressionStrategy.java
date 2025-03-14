@@ -80,8 +80,7 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
         }
     }
 
-    @Override
-    public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr) {
+    private String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr) {
         int len = fileNamePatternStr.length();
         if (fileNamePatternStr.endsWith(".zip"))
             return fileNamePatternStr.substring(0, len - 4);

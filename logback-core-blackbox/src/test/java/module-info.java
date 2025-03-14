@@ -8,7 +8,11 @@ module ch.qos.logback.core.blackbox {
     requires janino;
     requires org.fusesource.jansi;
 
+    requires org.tukaani.xz;
+
     exports ch.qos.logback.core.blackbox.joran.conditional;
     exports ch.qos.logback.core.blackbox.joran;
     exports ch.qos.logback.core.blackbox.appender;
+    exports ch.qos.logback.core.blackbox.rolling.helper;
+
 }

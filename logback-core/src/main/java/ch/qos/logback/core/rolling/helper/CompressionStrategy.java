@@ -20,5 +20,5 @@ public interface CompressionStrategy extends ContextAware {
 
     void compress(String originalFileName, String compressedFileName, String innerEntryName);
 
-    String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr);
+   //String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr);
 }

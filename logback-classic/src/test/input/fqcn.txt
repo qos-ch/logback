@@ -972,7 +972,7 @@ ch.qos.logback.core.rolling.ConfigParameters
 ch.qos.logback.core.rolling.DefaultRolloverChecker
 ch.qos.logback.core.rolling.FileMatchFunction
 ch.qos.logback.core.rolling.FileOpener
-ch.qos.logback.core.rolling.helper.CompressTest
+ch.qos.logback.core.blackbox.rolling.helper.CompressTest
 ch.qos.logback.core.rolling.helper.FileNamePatternTest
 ch.qos.logback.core.rolling.helper.FileStoreUtilTest
 ch.qos.logback.core.rolling.helper.RollingCalendarTest

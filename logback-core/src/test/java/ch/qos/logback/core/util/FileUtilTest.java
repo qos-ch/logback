@@ -83,7 +83,7 @@ public class FileUtilTest {
         File dirFile = new File(dir);
         dirFile.mkdir();
 
-        String src = CoreTestConstants.TEST_INPUT_PREFIX + "compress1.copy";
+        String src = CoreTestConstants.TEST_INPUT_PREFIX + "compress1.original";
         String target = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fu" + diff + "/copyingWorks.txt";
 
         fileUtil.copy(src, target);

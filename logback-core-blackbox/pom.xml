@@ -35,6 +35,12 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -46,14 +52,20 @@
                     <execution>
                         <id>default-test</id>
                         <configuration>
-                            <argLine>--add-opens java.base/java.io=ch.qos.logback.core.blackbox</argLine>
+                            <!--
+                            <argLine>
+                                ==add-opens ch.qos.logback.core/ch.qos.logback.core.util=org.tukaani.xz
+                                ==add-opens ch.qos.logback.core/ch.qos.logback.core.rolling.helper=org.tukaani.xz
+                                ==add-opens ch.qos.logback.core.blackbox/ch.qos.logback.core.blackbox.rolling.helper=org.tukaani.xz
+                                ==add-reads ch.qos.logback.core=org.tukaani.xz
+                                ==add-reads ch.qos.logback.core.blackbox=org.tukaani.xz
+                            </argLine>
+                            -->
                             <reuseForks>true</reuseForks>
                             <reportFormat>plain</reportFormat>
                             <trimStackTrace>false</trimStackTrace>
-
                         </configuration>
                     </execution>
-
 
                 </executions>
             </plugin>
