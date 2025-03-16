@@ -82,30 +82,6 @@ public class Compressor extends ContextAwareBase {
         }
     }
 
-    // http://jira.qos.ch/browse/LBCORE-98
-    // The name of the compressed file as nested within the zip archive
-    //
-    // Case 1: RawFile = null, Pattern = foo-%d.zip
-    // nestedFilename = foo-${current-date}
-    //
-    // Case 2: RawFile = hello.txt, Pattern = = foo-%d.zip
-    // nestedFilename = foo-${current-date}
-    //
-    // in both cases, the strategy consisting of removing the compression
-    // suffix of zip file works reasonably well. The alternative strategy
-    // whereby the nested file name was based on the value of the raw file name
-    // (applicable to case 2 only) has the disadvantage of the nested files
-    // all having the same name, which could make it harder for the user
-    // to unzip the file without collisions
-    //    ZipEntry computeZipEntry(File zippedFile) {
-    //        return computeZipEntry(zippedFile.getName());
-    //    }
-    //
-    //    ZipEntry computeZipEntry(String filename) {
-    //        String nameOfFileNestedWithinArchive = computeFileNameStrWithoutCompSuffix(filename, compressionMode);
-    //        return new ZipEntry(nameOfFileNestedWithinArchive);
-    //    }
-
     static public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr, CompressionMode compressionMode) {
         int len = fileNamePatternStr.length();
         switch (compressionMode) {
@@ -129,13 +105,6 @@ public class Compressor extends ContextAwareBase {
         }
         throw new IllegalStateException("Execution should not reach this point");
     }
-
-    //    void createMissingTargetDirsIfNecessary(File file) {
-    //        boolean result = FileUtil.createMissingParentDirectories(file);
-    //        if (!result) {
-    //            addError("Failed to create parent directories for [" + file.getAbsolutePath() + "]");
-    //        }
-    //    }
 
     @Override
     public String toString() {

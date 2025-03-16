@@ -26,7 +26,6 @@ import java.util.zip.GZIPOutputStream;
 public class GZCompressionStrategy extends CompressionStrategyBase {
 
 
-
     @Override
     public void compress(String originalFileName, String compressedFileName, String innerEntryName) {
 
@@ -70,15 +69,6 @@ public class GZCompressionStrategy extends CompressionStrategyBase {
         if (!file2gz.delete()) {
             addStatus(new WarnStatus("Could not delete [" + originalFileName + "].", this));
         }
-
     }
 
-//    @Override
-//    public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr) {
-//        int len = fileNamePatternStr.length();
-//        if (fileNamePatternStr.endsWith(".gz"))
-//            return fileNamePatternStr.substring(0, len - 3);
-//        else
-//            return fileNamePatternStr;
-//    }
 }

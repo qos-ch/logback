@@ -24,6 +24,12 @@ import java.io.FileOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Compresses files using JDK's Zip compression algorithm.
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 1.5.18
+ */
 public class ZipCompressionStrategy extends CompressionStrategyBase {
     static final int BUFFER_SIZE = 8192;
 
@@ -80,14 +86,6 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
         }
     }
 
-    private String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr) {
-        int len = fileNamePatternStr.length();
-        if (fileNamePatternStr.endsWith(".zip"))
-            return fileNamePatternStr.substring(0, len - 4);
-        else
-            return fileNamePatternStr;
-    }
-
     // http://jira.qos.ch/browse/LBCORE-98
     // The name of the compressed file as nested within the zip archive
     //
@@ -108,7 +106,7 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
     //}
 
     ZipEntry computeZipEntry(String filename) {
-        String nameOfFileNestedWithinArchive = computeFileNameStrWithoutCompSuffix(filename);
+        String nameOfFileNestedWithinArchive = Compressor.computeFileNameStrWithoutCompSuffix(filename, CompressionMode.ZIP);
         return new ZipEntry(nameOfFileNestedWithinArchive);
     }
 }
