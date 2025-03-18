@@ -15,8 +15,6 @@ package ch.qos.logback.core.util;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.HashSet;

@@ -63,7 +63,7 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
     }
 
     /**
-     * If compression mode is XZ but the XZ librarey is missing, then fallback to GZ compresison.
+     * If compression mode is XZ but the XZ library is missing, then fallback to GZ compression.
      */
     protected void adjustCompressionModeAndFileNamePatternStrIfNecessary() {
         if (compressionMode == compressionMode.XZ) {
