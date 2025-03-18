@@ -18,10 +18,12 @@ import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
+import static ch.qos.logback.core.util.Loader.isClassLoadable;
+
 /**
  * Implements methods common to most, it not all, rolling policies. Currently
  * such methods are limited to a compression mode getter/setter.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public abstract class RollingPolicyBase extends ContextAwareBase implements RollingPolicy {
@@ -40,23 +42,47 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
     /**
      * Given the FileNamePattern string, this method determines the compression mode
      * depending on last letters of the fileNamePatternStr. Patterns ending with .gz
-     * imply GZIP compression, endings with '.zip' imply ZIP compression. Otherwise
-     * and by default, there is no compression.
-     * 
+     * imply GZIP compression, endings with '.zip' imply ZIP compression, endings with
+     * .xz imply XZ compression. Otherwise and by default, there is no compression.
+     *
      */
     protected void determineCompressionMode() {
-        if (fileNamePatternStr.endsWith(".gz")) {
+        if (fileNamePatternStr.endsWith(CompressionMode.GZ_SUFFIX)) {
             addInfo("Will use gz compression");
             compressionMode = CompressionMode.GZ;
-        } else if (fileNamePatternStr.endsWith(".zip")) {
+        } else if (fileNamePatternStr.endsWith(CompressionMode.ZIP_SUFFIX)) {
             addInfo("Will use zip compression");
             compressionMode = CompressionMode.ZIP;
-        } else if (fileNamePatternStr.endsWith(".xz")) {
+        } else if (fileNamePatternStr.endsWith(CompressionMode.XZ_SUFFIX)) {
             addInfo("Will use xz compression");
             compressionMode = CompressionMode.XZ;
         } else {
             addInfo("No compression will be used");
             compressionMode = CompressionMode.NONE;
+        }
+    }
+
+    /**
+     * If compression mode is XZ but the XZ librarey is missing, then fallback to GZ compresison.
+     */
+    protected void adjustCompressionModeAndFileNamePatternStrIfNecessary() {
+        if (compressionMode == compressionMode.XZ) {
+            boolean xzLibraryLoadable = isClassLoadable("org.tukaani.xz.XZOutputStream", getContext());
+            if (!xzLibraryLoadable) {
+                addWarn("XZ library missing, falling back to GZ compression");
+                compressionMode = CompressionMode.GZ;
+                fileNamePatternStr = replaceSuffix(fileNamePatternStr, CompressionMode.XZ_SUFFIX, CompressionMode.GZ_SUFFIX);
+            }
+        }
+    }
+
+    private String replaceSuffix(String input, String existingSuffix, String newSuffix) {
+        int existingSuffixLen = existingSuffix.length();
+        if (input.endsWith(existingSuffix)) {
+            return input.substring(0, input.length() - existingSuffixLen) + newSuffix;
+        } else {
+            // unreachable code
+            throw new IllegalArgumentException("[" + input + "] should end with "+existingSuffix);
         }
     }
 

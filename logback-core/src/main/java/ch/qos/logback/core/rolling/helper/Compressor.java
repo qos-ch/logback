@@ -32,7 +32,7 @@ import static ch.qos.logback.core.util.OptionHelper.instantiateByClassName;
 public class Compressor extends ContextAwareBase {
 
     public static final String COULD_NOT_OBTAIN_COMPRESSION_STRATEGY_MESSAGE = "Could not obtain compression strategy";
-    static String XZ_COMPRESSION_STRATEGY_CLASS_NAME = "ch.qos.logback.core.rolling.helper.XZCompressionStrategy";
+    public static final String XZ_COMPRESSION_STRATEGY_CLASS_NAME = "ch.qos.logback.core.rolling.helper.XZCompressionStrategy";
 
     final CompressionMode compressionMode;
 

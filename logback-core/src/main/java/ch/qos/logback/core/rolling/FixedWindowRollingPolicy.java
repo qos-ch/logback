@@ -55,8 +55,9 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
         util.setContext(this.context);
 
         if (fileNamePatternStr != null) {
-            fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
             determineCompressionMode();
+            adjustCompressionModeAndFileNamePatternStrIfNecessary();
+            fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
         } else {
             addError(FNP_NOT_SET);
             addError(CoreConstants.SEE_FNP_NOT_SET);

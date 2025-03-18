@@ -68,7 +68,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         lastHeartBeat = nowInMillis;
         if (periodsElapsed > 1) {
             addInfo("Multiple periods, i.e. " + periodsElapsed
-                    + " periods, seem to have elapsed. This is expected at application start.");
+                    + " periods, seem to have elapsed. This can happen at application start.");
         }
         for (int i = 0; i < periodsElapsed; i++) {
             int offset = getPeriodOffsetForDeletionTarget() - i;
@@ -106,7 +106,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     }
 
     private boolean checkAndDeleteFile(File f) {
-        addInfo("deleting " + f);
+        addInfo("deleting historically stale " + f);
         if (f == null) {
             addWarn("Cannot delete empty file");
             return false;
@@ -136,9 +136,10 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
                 long size = f.length();
                 totalSize += size;
                 if (totalSize > totalSizeCap) {
-                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
+                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size) + " on account of totalSizeCap " + totalSizeCap);
 
                     boolean success = checkAndDeleteFile(f);
+
                     if (success) {
                         successfulDeletions++;
                         totalRemoved += size;
@@ -149,9 +150,9 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             }
         }
         if ((successfulDeletions + failedDeletions) == 0) {
-            addInfo("No removal attempts were made.");
+            addInfo("No removal attempts were made on account of totalSizeCap="+totalSizeCap);
         } else {
-            addInfo("Removed  " + new FileSize(totalRemoved) + " of files in " + successfulDeletions + " files.");
+            addInfo("Removed  " + new FileSize(totalRemoved) + " of files in " + successfulDeletions + " files on account of totalSizeCap=" + totalSizeCap);
             if (failedDeletions != 0) {
                 addInfo("There were " + failedDeletions + " failed deletion attempts.");
             }

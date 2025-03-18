@@ -18,7 +18,6 @@ import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.Date;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -68,8 +67,9 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
 
         // find out period from the filename pattern
         if (fileNamePatternStr != null) {
-            fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
             determineCompressionMode();
+            adjustCompressionModeAndFileNamePatternStrIfNecessary();
+            fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
         } else {
             addWarn(FNP_NOT_SET);
             addWarn(CoreConstants.SEE_FNP_NOT_SET);

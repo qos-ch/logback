@@ -33,7 +33,6 @@ public class Loader {
 
     private static boolean ignoreTCL = false;
     public static final String IGNORE_TCL_PROPERTY_NAME = "logback.ignoreTCL";
-    private static boolean HAS_GET_CLASS_LOADER_PERMISSION = false;
 
     static {
         String ignoreTCLProp = OptionHelper.getSystemProperty(IGNORE_TCL_PROPERTY_NAME, null);
@@ -41,19 +40,6 @@ public class Loader {
         if (ignoreTCLProp != null) {
             ignoreTCL = OptionHelper.toBoolean(ignoreTCLProp, true);
         }
-
-        HAS_GET_CLASS_LOADER_PERMISSION = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-            public Boolean run() {
-                try {
-                    AccessController.checkPermission(new RuntimePermission("getClassLoader"));
-                    return true;
-                } catch (SecurityException e) {
-                    // Using SecurityException instead of AccessControlException.
-                    // See bug LOGBACK-760.
-                    return false;
-                }
-            }
-        });
     }
 
     /**
@@ -147,21 +133,22 @@ public class Loader {
     }
 
     /**
-     * Returns the class loader of clazz in an access privileged section.
+     * Check whether a given class is loadable by the class loader that loaded the context parameter.
      *
-     * @param clazz
-     * @return
+     * @param className the class to check for availability
+     * @param context the context object used to find the class loader
+     * @return true if className is available, false otherwise
+     * @since 1.5.18
      */
-    public static ClassLoader getClassLoaderAsPrivileged(final Class<?> clazz) {
-        if (!HAS_GET_CLASS_LOADER_PERMISSION)
-            return null;
-        else
-            return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                public ClassLoader run() {
-                    return clazz.getClassLoader();
-                }
-            });
+    public static boolean isClassLoadable(String className, Context context) {
+        try {
+            Class<?> aClass = Loader.loadClass(className, context);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
+
 
     /**
      * Return the class loader which loaded the class passed as argument. Return the
