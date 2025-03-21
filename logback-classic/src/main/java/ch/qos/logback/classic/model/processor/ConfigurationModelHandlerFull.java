@@ -16,6 +16,7 @@ package ch.qos.logback.classic.model.processor;
 import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
@@ -25,7 +26,6 @@ import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.OptionHelper;
 
-import java.net.URL;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -58,6 +58,18 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
         // post handling of scan attribute works even we need to watch for included files because the main url is
         // set in GenericXMLConfigurator very early in the configuration process
         postProcessScanAttrib(mic, configurationModel);
+
+        ConfigurationWatchList cwl = ConfigurationWatchListUtil.getConfigurationWatchList(getContext());
+        if (cwl != null) {
+            try {
+                addInfo("Main configuration file URL: " + cwl.getMainURL());
+                addInfo("FileWatchList= {" + cwl.getFileWatchListAsStr()+"}");
+                addInfo("URLWatchList= {" + cwl.getUrlWatchListAsStr()+"}");
+            } catch(NoSuchMethodError e) {
+                addWarn("It looks like the version of logback-classic is more recent than");
+                addWarn("the version of logback-core. Please align the two versions.");
+            }
+        }
     }
 
     protected void postProcessScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
@@ -103,7 +115,7 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
 
             ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask, duration.getMilliseconds(), duration.getMilliseconds(),
                             TimeUnit.MILLISECONDS);
-            rocTask.setScheduredFuture(scheduledFuture);
+            rocTask.setScheduledFuture(scheduledFuture);
             context.addScheduledFuture(scheduledFuture);
         }
 

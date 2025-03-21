@@ -18,7 +18,6 @@ import ch.qos.logback.core.util.MD5Util;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
@@ -30,6 +29,8 @@ import java.util.stream.Collectors;
 import static ch.qos.logback.core.CoreConstants.PROPERTIES_FILE_EXTENSION;
 
 /**
+ * This class manages the list of files and/or urls that are watched for changes.
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ConfigurationWatchList extends ContextAwareBase {
@@ -130,18 +131,16 @@ public class ConfigurationWatchList extends ContextAwareBase {
     }
 
     /**
-     * Add the url but only if it is file://.
-     * @param url should be a file
+     * Add the url but only if it is file:// or http(s)://
+     * @param url should be a file or http(s)
      */
-
     public void addToWatchList(URL url) {
+        // assume that the caller has checked that the protocol is one of {file, https, http}.
         String protocolStr = url.getProtocol();
         if (protocolStr.equals(FILE_PROTOCOL_STR)) {
             addAsFileToWatch(url);
         } else if (isHTTP_Or_HTTPS(protocolStr)) {
             addAsHTTP_or_HTTPS_URLToWatch(url);
-        } else {
-            addInfo("Cannot watch ["+url + "] as its protocol is not one of file, http or https.");
         }
     }
 
@@ -269,7 +268,7 @@ public class ConfigurationWatchList extends ContextAwareBase {
             return false;
         }
         String protocolStr = url.getProtocol();
-        return Arrays.stream(WATCHABLE_PROTOCOLS).anyMatch(protocol -> protocol.equalsIgnoreCase(protocolStr));
+        return isWatchableProtocol(protocolStr);
     }
 
     /**
@@ -283,12 +282,23 @@ public class ConfigurationWatchList extends ContextAwareBase {
         return Arrays.stream(WATCHABLE_PROTOCOLS).anyMatch(protocol -> protocol.equalsIgnoreCase(protocolStr));
     }
 
-    @Override
-    public String toString() {
-
-        String fileWatchListStr = fileWatchList.stream().map(File::getPath).collect(Collectors.joining(", "));
+    /**
+     * Returns the urlWatchList field as a String
+     * @return the urlWatchList field as a String
+     * @since 1.5.19
+     */
+    public String getUrlWatchListAsStr() {
         String urlWatchListStr = urlWatchList.stream().map(URL::toString).collect(Collectors.joining(", "));
-
-        return "ConfigurationWatchList(" + "mainURL=" + mainURL + ", fileWatchList={" + fileWatchListStr + "}, urlWatchList=[" + urlWatchListStr + "})";
+        return urlWatchListStr;
     }
+
+    /**
+     * Returns the fileWatchList field as a String
+     * @return the fileWatchList field as a String
+     * @since 1.5.19
+     */
+    public String getFileWatchListAsStr() {
+        return fileWatchList.stream().map(File::getPath).collect(Collectors.joining(", "));
+    }
+
 }

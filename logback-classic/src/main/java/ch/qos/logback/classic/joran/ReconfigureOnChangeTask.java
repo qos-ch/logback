@@ -183,8 +183,22 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         return "ReconfigureOnChangeTask(born:" + birthdate + ")";
     }
 
-
+    /**
+     * Contains typo. Replaced by {@link #setScheduledFuture(ScheduledFuture)}.
+     * @param aScheduledFuture
+     * @deprecated
+     */
+    @Deprecated
     public void setScheduredFuture(ScheduledFuture<?> aScheduledFuture) {
+        setScheduledFuture(aScheduledFuture);
+    }
+
+    /**
+     * Replaces {@link #setScheduredFuture(ScheduledFuture)}
+     * @param aScheduledFuture
+     * @since 1.5.19
+     */
+    public void setScheduledFuture(ScheduledFuture<?> aScheduledFuture) {
         this.scheduledFuture = aScheduledFuture;
     }
 }

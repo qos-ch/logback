@@ -24,6 +24,8 @@ import ch.qos.logback.core.status.WarnStatus;
 import java.net.URL;
 
 /**
+ * A thin layer on top of {@link ConfigurationWatchList}.
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ConfigurationWatchListUtil {
@@ -85,9 +87,14 @@ public class ConfigurationWatchListUtil {
             }
         }
 
-        addInfo(context, "Adding [" + url + "] to configuration watch list.");
-        cwl.addToWatchList(url);
-
+        String protocol = url.getProtocol();
+        if(cwl.isWatchableProtocol(protocol)) {
+            addInfo(context, "Will add [" + url + "] to configuration watch list.");
+            cwl.addToWatchList(url);
+        } else {
+            addInfo(context, "Will not add configuration file ["+url + "] to watch list, because '"+protocol+"' protocol is not watchable.");
+            addInfo(context, "Only the protocols 'file', 'http' and 'https' are watchable.");
+        }
     }
 
     private static ConfigurationWatchList registerNewConfigurationWatchListWithContext(Context context) {
