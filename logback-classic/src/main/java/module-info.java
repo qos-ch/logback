@@ -18,7 +18,8 @@ module ch.qos.logback.classic {
   requires org.slf4j;
 
   requires ch.qos.logback.core;
-  provides org.slf4j.spi.SLF4JServiceProvider with ch.qos.logback.classic.spi.LogbackServiceProvider;
+    requires org.jspecify;
+    provides org.slf4j.spi.SLF4JServiceProvider with ch.qos.logback.classic.spi.LogbackServiceProvider;
   uses ch.qos.logback.classic.spi.Configurator;
 
   exports ch.qos.logback.classic;
