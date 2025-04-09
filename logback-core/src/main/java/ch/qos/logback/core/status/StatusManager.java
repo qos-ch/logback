@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2024, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -16,71 +16,75 @@ package ch.qos.logback.core.status;
 import java.util.List;
 
 /**
- * Internal error messages (statii) are managed by instances of this interface.
- * 
- * @author Ceki G&uuml;lc&uuml;
+ * A component which accepts status events and notifies registered listeners.
+ * Maintains event statistics, an event buffer, and a listener registry.
+ *
+ * @author Ceki Gülcü
+ * @author Mark Chesney
  */
 public interface StatusManager {
 
     /**
-     * Add a new status message.
-     * 
-     * @param status
+     * Notifies registered listeners of the specified status event and adds it to
+     * the end of the event buffer.
+     *
+     * @param status a status event
      */
     void add(Status status);
 
     /**
-     * Obtain a copy of the status list maintained by this StatusManager.
-     * 
-     * @return
+     * Returns a point-in-time snapshot of the event buffer.
+     *
+     * @return a snapshot of the event buffer
      */
     List<Status> getCopyOfStatusList();
 
     /**
-     * Return the highest level of all the statii.
-     * 
-     * @return
+     * Returns the highest level of statuses seen since instantiation.
+     *
+     * @return the highest level of statuses seen
      */
-    // int getLevel();
+    int getLevel();
 
     /**
-     * Return the number of status entries.
-     * 
-     * @return
+     * Returns the number of events processed since instantiation or the last reset.
+     *
+     * @return the number of events processed
      */
     int getCount();
 
     /**
-     * Add a status listener.
-     * 
-     * @param listener
-     */
-
-    /**
-     * Add a status listener. The StatusManager may decide to skip installation if
-     * an earlier instance was already installed.
-     * 
-     * @param listener
-     * @return true if actually added, false if skipped
+     * Registers the specified listener.
+     * <p>
+     * Returns {@code true} if the registered listeners changed, and {@code false}
+     * if the specified listener is already registered, and the implementation does
+     * not permit duplicates.
+     *
+     * @param listener the listener to register
+     * @return {@code true} if the registered listeners changed, {@code false}
+     *         otherwise
      */
     boolean add(StatusListener listener);
 
     /**
-     * ); Remove a status listener.
-     * 
-     * @param listener
+     * Deregisters the specified listener, if registered.
+     * <p>
+     * If the implementation permits duplicates, only the first occurrence is
+     * deregistered.
+     *
+     * @param listener the listener to deregister
      */
     void remove(StatusListener listener);
 
     /**
-     * Clear the list of status messages.
+     * Resets event statistics and empties the event buffer.
      */
     void clear();
 
     /**
-     * Obtain a copy of the status listener list maintained by this StatusManager
-     * 
-     * @return
+     * Returns a point-in-time snapshot of the registered listeners.
+     *
+     * @return a snapshot of the registered listeners
      */
     List<StatusListener> getCopyOfStatusListenerList();
 
