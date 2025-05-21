@@ -85,6 +85,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
         variableSubstitutionsHelper =  new VariableSubstitutionsHelper(context, otherMic.getCopyOfPropertyMap());
         defaultNestedComponentRegistry.duplicate(otherMic.getDefaultNestedComponentRegistry());
         createAppenderBags();
+        objectMap.put(JoranConstants.PARENT_APPENDER_BAG, new HashMap<String, Appender<?>>((Map<String, Appender<?>>)otherMic.objectMap.get(JoranConstants.APPENDER_BAG)));
     } 
         
     public Map<String, Object> getObjectMap() {
