@@ -291,7 +291,7 @@ public class OptionHelper {
                 return false;
     }
 
-    final public static boolean isNotEmtpy(Object[] array) {
+    final public static boolean isNotEmpty(Object[] array) {
         return !isNullOrEmpty(array);
     }
 }
