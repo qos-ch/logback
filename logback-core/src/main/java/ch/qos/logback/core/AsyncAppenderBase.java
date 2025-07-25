@@ -113,8 +113,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         addInfo("Setting discardingThreshold to " + discardingThreshold);
         worker.setDaemon(true);
         worker.setName("AsyncAppender-Worker-" + getName());
-        // make sure this instance is marked as "started" before staring the worker
-        // Thread
+        // make sure this instance is marked as "started" before starting the
+        // worker Thread
         super.start();
         worker.start();
     }
@@ -244,7 +244,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * BlockingQueue#remainingCapacity()}
      *
      * @return the remaining capacity
-     * 
+     *
      */
     public int getRemainingCapacity() {
         return blockingQueue.remainingCapacity();
