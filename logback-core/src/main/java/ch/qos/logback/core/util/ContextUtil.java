@@ -85,10 +85,10 @@ public class ContextUtil extends ContextAwareBase {
     public void addOrReplaceShutdownHook(ShutdownHook hook) {
         Runtime runtime = Runtime.getRuntime();
 
-        Thread oldShutdownHookTread = (Thread) context.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
-        if(oldShutdownHookTread != null) {
+        Thread oldShutdownHookThread = (Thread) context.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
+        if(oldShutdownHookThread != null) {
             addInfo("Removing old shutdown hook from JVM runtime");
-            runtime.removeShutdownHook(oldShutdownHookTread);
+            runtime.removeShutdownHook(oldShutdownHookThread);
         }
 
         Thread hookThread = new Thread(hook, "Logback shutdown hook [" + context.getName() + "]");
