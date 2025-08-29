@@ -104,8 +104,8 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     protected void initCollisionMaps() {
-        putObject(FA_FILENAME_COLLISION_MAP, new ConcurrentHashMap<String, String>());
-        putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new ConcurrentHashMap<String, FileNamePattern>());
+        putObject(FA_FILENAME_COLLISION_MAP, new HashMap<String, String>());
+        putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, FileNamePattern>());
     }
 
     @Override
