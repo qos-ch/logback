@@ -60,6 +60,9 @@ public class SimpleSocketServer extends Thread {
     // used for testing purposes
     private CountDownLatch latch;
 
+    // Set this appender as the sole appender for the remoteLogger
+    private String serverAppender;
+
     public static void main(String argv[]) throws Exception {
         doMain(SimpleSocketServer.class, argv);
     }
@@ -80,9 +83,14 @@ public class SimpleSocketServer extends Thread {
         sss.start();
     }
 
-    public SimpleSocketServer(LoggerContext lc, int port) {
+    public SimpleSocketServer(LoggerContext lc, int port, String serverAppender) {
         this.lc = lc;
         this.port = port;
+        this.serverAppender = serverAppender;
+    }
+
+    public SimpleSocketServer(LoggerContext lc, int port) {
+        this(lc, port, null);
     }
 
     public void run() {
