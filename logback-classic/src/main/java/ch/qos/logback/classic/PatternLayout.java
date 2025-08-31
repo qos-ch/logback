@@ -46,7 +46,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     public static final Map<String, String> CONVERTER_CLASS_TO_KEY_MAP = new HashMap<String, String>();
 
     /**
-     * @deprecated replaced by DEFAULT_CONVERTER_MAP
+     * @deprecated replaced by DEFAULT_CONVERTER_SUPPLIER_MAP
      */
     @Deprecated
     public static final Map<String, String> defaultConverterMap = DEFAULT_CONVERTER_MAP;
