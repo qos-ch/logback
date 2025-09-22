@@ -24,6 +24,8 @@ import ch.qos.logback.core.util.CachingDateFormatter;
 public class DateConverter extends ClassicConverter {
 
     CachingDateFormatter cachingDateFormatter = null;
+    boolean isUnixSeconds = false;
+    boolean isUnixMillis = false;
 
     public void start() {
 
@@ -35,6 +37,17 @@ public class DateConverter extends ClassicConverter {
             datePattern = CoreConstants.ISO8601_PATTERN;
         }  else if (datePattern.equals(CoreConstants.STRICT_STR)) {
             datePattern = CoreConstants.STRICT_ISO8601_PATTERN;
+        } else if (datePattern.equals("EPOCH_SECONDS")) {
+            isUnixSeconds = true;
+            super.start();
+            return;
+        } else if (datePattern.equals("EPOCH_MILLIS")) {
+            isUnixMillis = true;
+        }
+
+        if (isUnixSeconds || isUnixMillis) {
+            super.start();
+            return;
         }
 
         List<String> optionList = getOptionList();
@@ -67,6 +80,12 @@ public class DateConverter extends ClassicConverter {
 
     public String convert(ILoggingEvent le) {
         long timestamp = le.getTimeStamp();
-        return cachingDateFormatter.format(timestamp);
+        if (isUnixSeconds) {
+            return Long.toString(timestamp / 1000);
+        } else if (isUnixMillis) {
+            return Long.toString(timestamp);
+        } else {
+            return cachingDateFormatter.format(timestamp);
+        }
     }
 }

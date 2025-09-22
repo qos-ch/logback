@@ -13,7 +13,23 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MarkerFactory;
+
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
@@ -23,16 +39,6 @@ import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
 import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.MarkerFactory;
-
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ConverterTest {
 
@@ -72,7 +78,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("73", buf.toString());
+            assertEquals("79", buf.toString());
         }
     }
 
@@ -400,7 +406,8 @@ public class ConverterTest {
         dateConverterChecker(millis, List.of("ISO8601", "GMT"), "2024-08-14 15:29:25,956");
         dateConverterChecker(millis, List.of("ISO8601", "UTC"), "2024-08-14 15:29:25,956");
         dateConverterChecker(millis, List.of("yyyy-MM-EE", "UTC", "fr-CH"), "2024-08-mer.");
-
+        dateConverterChecker(millis, List.of("EPOCH_SECONDS"), "1723649365");
+        dateConverterChecker(millis, List.of("EPOCH_MILLIS"), "1723649365956");
     }
 
     void dateConverterChecker(long millis, List<String> options, String expected) {
