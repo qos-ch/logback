@@ -62,7 +62,7 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
         output.append("<input type=\"submit\" name=\"" + SUBMIT + "\" value=\"" + CLEAR + "\">");
         output.append("</form>\r\n");
 
-        if (CLEAR.equalsIgnoreCase(req.getParameter(SUBMIT))) {
+        if ("POST".equals(req.getMethod()) && CLEAR.equalsIgnoreCase(req.getParameter(SUBMIT))) {
             sm.clear();
             sm.add(new InfoStatus("Cleared all status messages", this));
         }
