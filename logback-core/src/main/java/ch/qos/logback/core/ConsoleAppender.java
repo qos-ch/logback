@@ -88,7 +88,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
     @Override
     public void start() {
-        addInfo("BEWARE: Writing to the console can be very slow. Avoid logging to the ");
+        addInfo("NOTE: Writing to the console can be slow. Try to avoid logging to the ");
         addInfo("console in production environments, especially in high volume systems.");
         addInfo("See also "+CONSOLE_APPENDER_WARNING_URL);
         OutputStream targetStream = target.getStream();
