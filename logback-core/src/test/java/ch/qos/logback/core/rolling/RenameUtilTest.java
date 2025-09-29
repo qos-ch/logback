@@ -21,8 +21,10 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
+import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
+import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileLock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,6 +44,7 @@ public class RenameUtilTest {
     Encoder<Object> encoder;
     Context context = new ContextBase();
     StatusChecker statusChecker = new StatusChecker(context);
+    StatusPrinter2 statusPrinter2 = new StatusPrinter2();
 
     long currentTime = System.currentTimeMillis();
     int diff = RandomUtil.getPositiveInt();
@@ -66,12 +70,18 @@ public class RenameUtilTest {
         String randomTARGETDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff2;
 
         renameUtil.rename(fromFile.toString(), new File(randomTARGETDir + "/to.test").toString());
-        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+        statusPrinter2.printInCaseOfErrorsOrWarnings(context);
         assertTrue(statusChecker.isErrorFree(0));
     }
 
     @Test // LOGBACK-1054
     public void renameLockedAbstractFile_LOGBACK_1054() throws IOException, RolloverFailure {
+
+        // this tests only works on windows
+        if(!EnvUtil.isWindows()) {
+            return;
+        }
+
         RenameUtil renameUtil = new RenameUtil();
         renameUtil.setContext(context);
 
@@ -82,12 +92,15 @@ public class RenameUtilTest {
 
         makeFile(src);
 
-        FileInputStream fisLock = new FileInputStream(src);
+        // open file in a way preventing simple rename in order to force call to
+        // areOnDifferentVolumes() method. This only works on Windows
+
+        FileInputStream fis = new FileInputStream(src);
         renameUtil.rename(src, target);
         // release the lock
-        fisLock.close();
+        fis.close();
 
-        StatusPrinter.print(context);
+        statusPrinter2.print(context);
         assertEquals(0, statusChecker.matchCount("Parent of target file ." + target + ". is null"));
     }
 
@@ -101,7 +114,7 @@ public class RenameUtilTest {
         makeFile(src);
 
         renameUtil.rename(src, "/tmp/foo" + diff + ".txt");
-        StatusPrinter.print(context);
+        statusPrinter2.print(context);
     }
 
     @Test
@@ -114,7 +127,7 @@ public class RenameUtilTest {
         makeFile(src);
 
         renameUtil.rename(src, "d:/tmp/foo" + diff + ".txt");
-        StatusPrinter.print(context);
+        statusPrinter2.print(context);
         assertTrue(statusChecker.isErrorFree(0));
     }
 
