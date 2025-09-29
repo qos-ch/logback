@@ -89,37 +89,37 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     public static final String STEP_ARRAY_NAME_ATTRIBUTE = "stepArray";
 
-    private static final char OPEN_OBJ = '{';
-    private static final char CLOSE_OBJ = '}';
-    private static final char OPEN_ARRAY = '[';
-    private static final char CLOSE_ARRAY = ']';
+    protected static final char OPEN_OBJ = '{';
+    protected static final char CLOSE_OBJ = '}';
+    protected static final char OPEN_ARRAY = '[';
+    protected static final char CLOSE_ARRAY = ']';
 
-    private static final char QUOTE = DOUBLE_QUOTE_CHAR;
-    private static final char SP = ' ';
-    private static final char ENTRY_SEPARATOR = COLON_CHAR;
+    protected static final char QUOTE = DOUBLE_QUOTE_CHAR;
+    protected static final char SP = ' ';
+    protected static final char ENTRY_SEPARATOR = COLON_CHAR;
 
-    private static final String COL_SP = ": ";
+    protected static final String COL_SP = ": ";
 
-    private static final String QUOTE_COL = "\":";
+    protected static final String QUOTE_COL = "\":";
 
-    private static final char VALUE_SEPARATOR = COMMA_CHAR;
+    protected static final char VALUE_SEPARATOR = COMMA_CHAR;
 
-    private boolean withSequenceNumber = true;
+    protected boolean withSequenceNumber = true;
 
-    private boolean withTimestamp = true;
-    private boolean withNanoseconds = true;
+    protected boolean withTimestamp = true;
+    protected boolean withNanoseconds = true;
 
-    private boolean withLevel = true;
-    private boolean withThreadName = true;
-    private boolean withLoggerName = true;
-    private boolean withContext = true;
-    private boolean withMarkers = true;
-    private boolean withMDC = true;
-    private boolean withKVPList = true;
-    private boolean withMessage = true;
-    private boolean withArguments = true;
-    private boolean withThrowable = true;
-    private boolean withFormattedMessage = false;
+    protected boolean withLevel = true;
+    protected boolean withThreadName = true;
+    protected boolean withLoggerName = true;
+    protected boolean withContext = true;
+    protected boolean withMarkers = true;
+    protected boolean withMDC = true;
+    protected boolean withKVPList = true;
+    protected boolean withMessage = true;
+    protected boolean withArguments = true;
+    protected boolean withThrowable = true;
+    protected boolean withFormattedMessage = false;
 
     @Override
     public byte[] headerBytes() {
@@ -138,7 +138,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         if (withTimestamp) {
             appendValueSeparator(sb, withSequenceNumber);
-            appenderMemberWithLongValue(sb, TIMESTAMP_ATTR_NAME, event.getTimeStamp());
+            appenderTimestamp(sb, event);
         }
 
         if (withNanoseconds) {
@@ -179,7 +179,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         if (withMessage) {
             sb.append(VALUE_SEPARATOR);
-            appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(event.getMessage()));
+            appenderMessage(sb, event);
         }
 
         if (withFormattedMessage) {
@@ -194,12 +194,25 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         if (withThrowable)
             appendThrowableProxy(sb, THROWABLE_ATTR_NAME, event.getThrowableProxy());
 
+        appenderExtra(sb, event);
+
         sb.append(CLOSE_OBJ);
         sb.append(CoreConstants.JSON_LINE_SEPARATOR);
         return sb.toString().getBytes(UTF_8_CHARSET);
     }
 
-    void appendValueSeparator(StringBuilder sb, boolean... subsequentConditionals) {
+    protected void appenderMessage(StringBuilder sb, ILoggingEvent event) {
+        appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(event.getMessage()));
+    }
+
+    protected void appenderExtra(StringBuilder sb, ILoggingEvent event) {
+    }
+
+    protected void appenderTimestamp(StringBuilder sb, ILoggingEvent event) {
+        appenderMemberWithLongValue(sb, TIMESTAMP_ATTR_NAME, event.getTimeStamp());
+    }
+
+    protected void appendValueSeparator(StringBuilder sb, boolean... subsequentConditionals) {
         boolean enabled = false;
         for (boolean subsequent : subsequentConditionals) {
             if (subsequent) {
@@ -212,7 +225,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
             sb.append(VALUE_SEPARATOR);
     }
 
-    private void appendLoggerContext(StringBuilder sb, LoggerContextVO loggerContextVO) {
+    protected void appendLoggerContext(StringBuilder sb, LoggerContextVO loggerContextVO) {
 
         sb.append(QUOTE).append(CONTEXT_ATTR_NAME).append(QUOTE_COL);
         if (loggerContextVO == null) {
@@ -231,7 +244,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     }
 
-    private void appendMap(StringBuilder sb, String attrName, Map<String, String> map) {
+    protected void appendMap(StringBuilder sb, String attrName, Map<String, String> map) {
         sb.append(QUOTE).append(attrName).append(QUOTE_COL);
         if (map == null) {
             sb.append(NULL_STR);
@@ -253,11 +266,11 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_OBJ);
     }
 
-    private void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp) {
+    protected void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp) {
         appendThrowableProxy(sb, attributeName, itp, true);
     }
 
-    private void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp, boolean appendValueSeparator) {
+    protected void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp, boolean appendValueSeparator) {
 
         if (appendValueSeparator)
             sb.append(VALUE_SEPARATOR);
@@ -316,7 +329,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     }
 
-    private void appendSTEPArray(StringBuilder sb, StackTraceElementProxy[] stepArray, int commonFrames) {
+    protected void appendSTEPArray(StringBuilder sb, StackTraceElementProxy[] stepArray, int commonFrames) {
         sb.append(QUOTE).append(STEP_ARRAY_NAME_ATTRIBUTE).append(QUOTE_COL).append(OPEN_ARRAY);
 
         int len = stepArray != null ? stepArray.length : 0;
@@ -351,19 +364,19 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_ARRAY);
     }
 
-    private void appenderMember(StringBuilder sb, String key, String value) {
+    protected void appenderMember(StringBuilder sb, String key, String value) {
         sb.append(QUOTE).append(key).append(QUOTE_COL).append(QUOTE).append(value).append(QUOTE);
     }
 
-    private void appenderMemberWithIntValue(StringBuilder sb, String key, int value) {
+    protected void appenderMemberWithIntValue(StringBuilder sb, String key, int value) {
         sb.append(QUOTE).append(key).append(QUOTE_COL).append(value);
     }
 
-    private void appenderMemberWithLongValue(StringBuilder sb, String key, long value) {
+    protected void appenderMemberWithLongValue(StringBuilder sb, String key, long value) {
         sb.append(QUOTE).append(key).append(QUOTE_COL).append(value);
     }
 
-    private void appendKeyValuePairs(StringBuilder sb, ILoggingEvent event) {
+    protected void appendKeyValuePairs(StringBuilder sb, ILoggingEvent event) {
         List<KeyValuePair> kvpList = event.getKeyValuePairs();
         if (kvpList == null || kvpList.isEmpty())
             return;
@@ -382,7 +395,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_ARRAY);
     }
 
-    private void appendArgumentArray(StringBuilder sb, ILoggingEvent event) {
+    protected void appendArgumentArray(StringBuilder sb, ILoggingEvent event) {
         Object[] argumentArray = event.getArgumentArray();
         if (argumentArray == null)
             return;
@@ -399,7 +412,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_ARRAY);
     }
 
-    private void appendMarkers(StringBuilder sb, ILoggingEvent event) {
+    protected void appendMarkers(StringBuilder sb, ILoggingEvent event) {
         List<Marker> markerList = event.getMarkerList();
         if (markerList == null)
             return;
@@ -416,25 +429,25 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_ARRAY);
     }
 
-    private String jsonEscapedToString(Object o) {
+    protected String jsonEscapedToString(Object o) {
         if (o == null)
             return NULL_STR;
         return jsonEscapeString(o.toString());
     }
 
-    private String nullSafeStr(String s) {
+    protected String nullSafeStr(String s) {
         if (s == null)
             return NULL_STR;
         return s;
     }
 
-    private String jsonEscape(String s) {
+    protected String jsonEscape(String s) {
         if (s == null)
             return NULL_STR;
         return jsonEscapeString(s);
     }
 
-    private void appendMDC(StringBuilder sb, ILoggingEvent event) {
+    protected void appendMDC(StringBuilder sb, ILoggingEvent event) {
         Map<String, String> map = event.getMDCPropertyMap();
         sb.append(VALUE_SEPARATOR);
         sb.append(QUOTE).append(MDC_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_OBJ);
@@ -452,7 +465,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_OBJ);
     }
 
-    boolean isNotEmptyMap(Map map) {
+    protected boolean isNotEmptyMap(Map map) {
         if (map == null)
             return false;
         return !map.isEmpty();
