@@ -51,7 +51,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
@@ -128,6 +127,16 @@ public class IfThenElseTest {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "if0.xml");
         verifyConfig(new String[] { "BEGIN", "a", "END" });
     }
+
+    @Test
+    public void ifWithNew() throws JoranException {
+        context.putProperty(ki1, val1);
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifNew.xml");
+        checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_MSG);
+        checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_SEE);
+        verifyConfig(new String[] { "BEGIN", "END" });
+    }
+
 
     @Test
     public void whenLocalPropertyIsSet_IfThenBranchIsEvaluated() throws JoranException {
