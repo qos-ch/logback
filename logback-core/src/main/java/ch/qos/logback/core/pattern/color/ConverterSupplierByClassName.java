@@ -20,6 +20,13 @@ import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.function.Supplier;
 
+/**
+ *
+ * <p>Implements the {@link Supplier} interface in order to cater for legacy code using the class name
+ * of a converter.
+ * </p>
+ * <p>Should not be used in non-legacy code.</p>
+ */
 public class ConverterSupplierByClassName extends ContextAwareBase implements Supplier<DynamicConverter> {
 
     String conversionWord;
