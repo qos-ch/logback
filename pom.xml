@@ -105,6 +105,9 @@
     <ant.version>1.10.13</ant.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
     <jetty.version>12.0.13</jetty.version>
+
+    <central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
+
   </properties>
 
   <developers>
@@ -353,6 +356,7 @@
           <artifactId>maven-bundle-plugin</artifactId>
           <version>${maven-bundle-plugin.version}</version>
         </plugin>
+
     </plugins>
 
     </pluginManagement>
@@ -437,6 +441,15 @@
         </configuration>
       </plugin>
 
+       <plugin>
+         <groupId>org.sonatype.central</groupId>
+         <artifactId>central-publishing-maven-plugin</artifactId>
+         <version>${central-publishing-maven-plugin.version}</version>
+         <extensions>true</extensions>
+         <configuration>
+           <publishingServerId>central</publishingServerId>
+         </configuration>
+       </plugin>
 
     </plugins>
   </build>
