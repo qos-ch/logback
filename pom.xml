@@ -356,7 +356,6 @@
           <artifactId>maven-bundle-plugin</artifactId>
           <version>${maven-bundle-plugin.version}</version>
         </plugin>
-
     </plugins>
 
     </pluginManagement>
@@ -444,10 +443,11 @@
        <plugin>
          <groupId>org.sonatype.central</groupId>
          <artifactId>central-publishing-maven-plugin</artifactId>
-         <version>${central-publishing-maven-plugin.version}</version>
+         <version>${central-publishing-maven-plugin.version}</version>         
          <extensions>true</extensions>
          <configuration>
            <publishingServerId>central</publishingServerId>
+           <excludeArtifacts>logback-core-blackbox,logback-classic-blackbox,logback-examples</excludeArtifacts>
          </configuration>
        </plugin>
 
