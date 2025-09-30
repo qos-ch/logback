@@ -63,7 +63,7 @@ CREATE TABLE logging_event_property
     mapped_key        VARCHAR2(254) NOT NULL,
     mapped_value      VARCHAR2(1024),
     PRIMARY KEY(event_id, mapped_key),
-    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id) ON DELETE CASCADE
   );
   
 CREATE TABLE logging_event_exception
@@ -72,7 +72,7 @@ CREATE TABLE logging_event_exception
     i                SMALLINT NOT NULL,
     trace_line       VARCHAR2(254) NOT NULL,
     PRIMARY KEY(event_id, i),
-    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id) ON DELETE CASCADE
   );
   
 
