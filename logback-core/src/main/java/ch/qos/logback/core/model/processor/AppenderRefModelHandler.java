@@ -50,9 +50,16 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
             AppenderAttachable<?> appenderAttachable) {
         String appenderName = mic.subst(appenderRefModel.getRef());
 
-        Map<String, Appender> appenderBag = (Map<String, Appender>) mic.getObjectMap().get(JoranConstants.APPENDER_BAG);
+        Map<String, Appender> appenderBag = (Map<String, Appender>) mic.getObjectMap().get(JoranConstants.APPENDER_BAG);        
 
         Appender appender = appenderBag.get(appenderName);
+        if (appender == null) {
+            Map<String, Appender> parentAppenderBag = (Map<String, Appender>) mic.getObjectMap().get(JoranConstants.PARENT_APPENDER_BAG);
+            if (parentAppenderBag) != null) {
+                appender = parentAppenderBag.get(appenderName);
+            }
+        }
+
         if (appender == null) {
             addError("Failed to find appender named [" + appenderName + "]");
         } else {

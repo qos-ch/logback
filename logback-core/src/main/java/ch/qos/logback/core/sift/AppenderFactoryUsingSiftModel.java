@@ -23,12 +23,14 @@ import ch.qos.logback.core.joran.ParamModelHandler;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.AppenderModel;
+import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.SiftModel;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
+import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
@@ -67,6 +69,7 @@ public class AppenderFactoryUsingSiftModel<E> implements AppenderFactory<E> {
         siftProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
         siftProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
         siftProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
+        siftProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
         siftProcessor.addHandler(SiftModel.class, NOPSiftModelHandler::makeInstance);
         
         return siftProcessor;
