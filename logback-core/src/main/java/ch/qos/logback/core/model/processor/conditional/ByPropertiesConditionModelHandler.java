@@ -1,0 +1,79 @@
+/*
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ *  Copyright (C) 1999-2025, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *     or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
+
+package ch.qos.logback.core.model.processor.conditional;
+
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.boolex.PropertyEvaluator;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.conditional.IfModel;
+import ch.qos.logback.core.model.conditional.ByPropertiesConditionModel;
+import ch.qos.logback.core.model.processor.ModelHandlerBase;
+import ch.qos.logback.core.model.processor.ModelHandlerException;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
+import ch.qos.logback.core.util.OptionHelper;
+
+import static ch.qos.logback.core.model.conditional.IfModel.BranchState.ELSE_BRANCH;
+import static ch.qos.logback.core.model.conditional.IfModel.BranchState.IF_BRANCH;
+
+public class ByPropertiesConditionModelHandler extends ModelHandlerBase {
+
+    private boolean inError = false;
+    PropertyEvaluator propertyEvaluator;
+
+    public ByPropertiesConditionModelHandler(Context context) {
+        super(context);
+    }
+
+    @Override
+    protected Class<ByPropertiesConditionModel> getSupportedModelClass() {
+        return ByPropertiesConditionModel.class;
+    }
+
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext mic) {
+        return new ByPropertiesConditionModelHandler(context);
+    }
+
+
+    @Override
+    public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+
+        ByPropertiesConditionModel byPropertiesConditionModel = (ByPropertiesConditionModel) model;
+        String className = byPropertiesConditionModel.getClassName();
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
+            addWarn("Missing className. This should have been caught earlier.");
+            inError = true;
+            return;
+        } else {
+            className = mic.getImport(className);
+        }
+        try {
+            addInfo("About to instantiate PropertyEvaluator of type [" + className + "]");
+
+            propertyEvaluator = (PropertyEvaluator) OptionHelper.instantiateByClassName(className,
+                    PropertyEvaluator.class, context);
+            propertyEvaluator.setContext(context);
+            propertyEvaluator.setLocalPropertyContainer(mic);
+
+            boolean evaluationResult = propertyEvaluator.evaluate();
+            IfModel.BranchState branchState = evaluationResult ? IF_BRANCH : ELSE_BRANCH;
+            mic.pushObject(branchState);
+        } catch (Exception e) {
+            inError = true;
+            mic.pushObject(IfModel.BranchState.IN_ERROR);
+            addError("Could not create a SequenceNumberGenerator of type [" + className + "].", e);
+            throw new ModelHandlerException(e);
+        }
+    }
+}

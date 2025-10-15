@@ -14,9 +14,7 @@
 package ch.qos.logback.core.joran;
 
 import ch.qos.logback.core.joran.action.*;
-import ch.qos.logback.core.joran.conditional.ElseAction;
-import ch.qos.logback.core.joran.conditional.IfAction;
-import ch.qos.logback.core.joran.conditional.ThenAction;
+import ch.qos.logback.core.joran.conditional.*;
 import ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker;
 import ch.qos.logback.core.joran.sanity.SanityChecker;
 import ch.qos.logback.core.joran.spi.ElementSelector;
@@ -77,6 +75,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
         rs.addRule(new ElementSelector("*/param"),  ParamAction::new);
 
         // add if-then-else support
+        rs.addRule(new ElementSelector("*/condition"), ByPropertiesConditionAction::new);
         rs.addRule(new ElementSelector("*/if"),  IfAction::new);
         rs.addTransparentPathPart("if");
         rs.addRule(new ElementSelector("*/if/then"),  ThenAction::new);

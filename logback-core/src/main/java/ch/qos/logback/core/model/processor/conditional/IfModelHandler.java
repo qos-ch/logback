@@ -57,25 +57,37 @@ public class IfModelHandler extends ModelHandlerBase {
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         
         ifModel = (IfModel) model;
-        
+        mic.pushModel(ifModel);
+        Object micTopObject = mic.peekObject();
+        String conditionStr = ifModel.getCondition();
+
+        if(micTopObject instanceof BranchState) {
+            BranchState branchState = (BranchState) micTopObject;
+            ifModel.setBranchState(branchState);
+            // consume the BranchState at top of the object stack
+            mic.popObject();
+        } else {
+            janinoFallback(mic, model, conditionStr);
+        }
+    }
+
+    private void janinoFallback(ModelInterpretationContext mic, Model model, String conditionStr) {
         if (!EnvUtil.isJaninoAvailable()) {
             addError(MISSING_JANINO_MSG);
             addError(MISSING_JANINO_SEE);
             return;
         }
-        
-        mic.pushModel(ifModel);
+
         Condition condition = null;
         int lineNum = model.getLineNumber();
 
-        String conditionStr = ifModel.getCondition();
         if (!OptionHelper.isNullOrEmptyOrAllSpaces(conditionStr)) {
             try {
                 conditionStr = OptionHelper.substVars(conditionStr, mic, context);
             } catch (ScanException e) {
                addError("Failed to parse input [" + conditionStr + "] on line "+lineNum, e);
                ifModel.setBranchState(BranchState.IN_ERROR);
-               return;
+                return;
             }
 
             // do not allow 'new' operator

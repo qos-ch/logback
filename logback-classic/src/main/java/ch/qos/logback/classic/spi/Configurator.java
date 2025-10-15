@@ -14,22 +14,18 @@
 package ch.qos.logback.classic.spi;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAware;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
- * Allows programmatic initialization and configuration of Logback. The
+ * <p>Allows programmatic initialization and configuration of Logback. The
  * ServiceLoader is typically used to instantiate implementations and thus
  * implementations will need to follow the guidelines of the ServiceLoader,
- * in particular the no-arg constructor requirement.
+ * in particular the no-arg constructor requirement.</p>
  *
- * The return type of {@link #configure(LoggerContext)  configure} was changed from 'void' to
+ * <p>The return type of {@link #configure(LoggerContext)  configure} was changed from 'void' to
  * {@link ExecutionStatus) in logback version 1.3.0.
+ * </p>
  */
 public interface Configurator extends ContextAware {
 

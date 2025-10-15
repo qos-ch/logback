@@ -16,10 +16,12 @@ package ch.qos.logback.core.joran;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.*;
+import ch.qos.logback.core.model.conditional.ByPropertiesConditionModel;
 import ch.qos.logback.core.model.conditional.ElseModel;
 import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.model.conditional.ThenModel;
 import ch.qos.logback.core.model.processor.*;
+import ch.qos.logback.core.model.processor.conditional.ByPropertiesConditionModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ElseModelHandler;
 import ch.qos.logback.core.model.processor.conditional.IfModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ThenModelHandler;
@@ -62,6 +64,8 @@ public class ModelClassToModelHandlerLinkerBase {
         defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler::makeInstance);
         defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
 
+
+        defaultProcessor.addHandler(ByPropertiesConditionModel.class, ByPropertiesConditionModelHandler::makeInstance);
         defaultProcessor.addHandler(IfModel.class, IfModelHandler::makeInstance);
         defaultProcessor.addHandler(ThenModel.class, ThenModelHandler::makeInstance);
         defaultProcessor.addHandler(ElseModel.class, ElseModelHandler::makeInstance);
