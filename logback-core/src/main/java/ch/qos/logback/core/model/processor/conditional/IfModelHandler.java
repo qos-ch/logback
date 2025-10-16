@@ -36,6 +36,9 @@ public class IfModelHandler extends ModelHandlerBase {
     public static final String NEW_OPERATOR_DISALLOWED_MSG = "The 'condition' attribute may not contain the 'new' operator.";
     public static final String NEW_OPERATOR_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionNew";
 
+    public static final String CONDITION_ATTR_DEPRECATED_MSG = "The 'condition' attribute in <if> element is deprecated and slated for removal. Use <condition> element instead.";
+    public static final String CONDITION_ATTR_DEPRECATED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionAttributeDeprecation";
+
     enum Branch {IF_BRANCH, ELSE_BRANCH; }
     
     IfModel ifModel = null;
@@ -60,6 +63,8 @@ public class IfModelHandler extends ModelHandlerBase {
         mic.pushModel(ifModel);
         Object micTopObject = mic.peekObject();
         String conditionStr = ifModel.getCondition();
+        emitDeprecationWarningIfNecessary(conditionStr);
+
 
         if(micTopObject instanceof BranchState) {
             BranchState branchState = (BranchState) micTopObject;
@@ -119,10 +124,17 @@ public class IfModelHandler extends ModelHandlerBase {
         }
     }
 
+    private void emitDeprecationWarningIfNecessary(String conditionStr) {
+        if(!OptionHelper.isNullOrEmptyOrAllSpaces(conditionStr)) {
+            addWarn(CONDITION_ATTR_DEPRECATED_MSG);
+            addWarn(CONDITION_ATTR_DEPRECATED_SEE);
+        }
+    }
+
+
     private boolean hasNew(String conditionStr) {
         return conditionStr.contains("new ");
     }
-
 
     @Override
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {

@@ -65,15 +65,29 @@ public class ByPropertiesConditionModelHandler extends ModelHandlerBase {
                     PropertyEvaluator.class, context);
             propertyEvaluator.setContext(context);
             propertyEvaluator.setLocalPropertyContainer(mic);
-
-            boolean evaluationResult = propertyEvaluator.evaluate();
-            IfModel.BranchState branchState = evaluationResult ? IF_BRANCH : ELSE_BRANCH;
-            mic.pushObject(branchState);
+            mic.pushObject(propertyEvaluator);
         } catch (Exception e) {
             inError = true;
             mic.pushObject(IfModel.BranchState.IN_ERROR);
             addError("Could not create a SequenceNumberGenerator of type [" + className + "].", e);
             throw new ModelHandlerException(e);
         }
+    }
+
+    public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        if (inError) {
+            return;
+        }
+        Object o = mic.peekObject();
+        if (o != propertyEvaluator) {
+            addWarn("The object at the of the stack is not the propertyEvaluator instance pushed earlier.");
+        } else {
+            mic.popObject();
+        }
+
+        boolean evaluationResult = propertyEvaluator.evaluate();
+        IfModel.BranchState branchState = evaluationResult ? IF_BRANCH : ELSE_BRANCH;
+        mic.pushObject(branchState);
+
     }
 }

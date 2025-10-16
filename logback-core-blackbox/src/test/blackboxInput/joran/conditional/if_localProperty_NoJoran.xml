@@ -1,0 +1,31 @@
+<!--
+  ~ Logback: the reliable, generic, fast and flexible logging framework.
+  ~  Copyright (C) 1999-2025, QOS.ch. All rights reserved.
+  ~
+  ~ This program and the accompanying materials are dual-licensed under
+  ~ either the terms of the Eclipse Public License v1.0 as published by
+  ~ the Eclipse Foundation
+  ~
+  ~     or (per the licensee's choosing)
+  ~
+  ~ under the terms of the GNU Lesser General Public License version 2.1
+  ~ as published by the Free Software Foundation.
+  -->
+
+<x>
+    <stack name="BEGIN"/>
+    <property name="Ki1" value="Val1"/>
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualsValue">
+        <key>Ki1</key>
+        <value>Val1</value>
+    </condition>
+    <if>
+        <then>
+            <stack name="a"/>
+        </then>
+        <else>
+            <stack name="b"/>
+        </else>
+    </if>
+    <stack name="END"/>
+</x>

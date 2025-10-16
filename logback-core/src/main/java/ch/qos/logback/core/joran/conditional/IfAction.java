@@ -29,7 +29,7 @@ public class IfAction extends BaseModelAction  {
     @Override
     protected boolean validPreconditions(SaxEventInterpretationContext interpcont, String name, Attributes attributes) {
         PreconditionValidator pv = new PreconditionValidator(this, interpcont, name, attributes);
-        pv.validateGivenAttribute(CONDITION_ATTRIBUTE);
+        //pv.validateGivenAttribute(CONDITION_ATTRIBUTE);
         return pv.isValid();
     }
     

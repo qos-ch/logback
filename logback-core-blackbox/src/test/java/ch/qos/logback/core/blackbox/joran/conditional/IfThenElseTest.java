@@ -24,6 +24,7 @@ import ch.qos.logback.core.blackbox.model.BlackboxTopModel;
 import ch.qos.logback.core.blackbox.model.processor.BlackboxStackModelHandler;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.PropertyAction;
+import ch.qos.logback.core.joran.conditional.ByPropertiesConditionAction;
 import ch.qos.logback.core.joran.conditional.ElseAction;
 import ch.qos.logback.core.joran.conditional.IfAction;
 import ch.qos.logback.core.joran.conditional.ThenAction;
@@ -32,6 +33,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.PropertyModel;
+import ch.qos.logback.core.model.conditional.ByPropertiesConditionModel;
 import ch.qos.logback.core.model.conditional.ElseModel;
 import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.model.conditional.ThenModel;
@@ -39,6 +41,7 @@ import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
+import ch.qos.logback.core.model.processor.conditional.ByPropertiesConditionModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ElseModelHandler;
 import ch.qos.logback.core.model.processor.conditional.IfModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ThenModelHandler;
@@ -46,6 +49,7 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
+import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,6 +64,7 @@ public class IfThenElseTest {
 
     Context context = new ContextBase();
     StatusUtil checker = new StatusUtil(context);
+    StatusPrinter2 statusPrinter2 = new StatusPrinter2();
     BlackboxSimpleConfigurator simpleConfigurator;
     int diff = RandomUtil.getPositiveInt();
     static final String CONDITIONAL_DIR_PREFIX = BlackboxCoreTestConstants.JORAN_INPUT_PREFIX + "conditional/";
@@ -75,6 +80,7 @@ public class IfThenElseTest {
         rulesMap.put(new ElementSelector("x"), BlackboxTopElementAction::new);
         rulesMap.put(new ElementSelector("x/stack"), BlackboxStackAction::new);
         rulesMap.put(new ElementSelector("x/property"), PropertyAction::new);
+        rulesMap.put(new ElementSelector("*/condition"), ByPropertiesConditionAction::new);
         rulesMap.put(new ElementSelector("*/if"), IfAction::new);
         rulesMap.put(new ElementSelector("*/if/then"), ThenAction::new);
         rulesMap.put(new ElementSelector("*/if/else"), ElseAction::new);
@@ -98,6 +104,7 @@ public class IfThenElseTest {
                 defaultProcessor.addHandler(BlackboxStackModel.class, BlackboxStackModelHandler::makeInstance);
                 defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
+                defaultProcessor.addHandler(ByPropertiesConditionModel.class, ByPropertiesConditionModelHandler::makeInstance);
                 defaultProcessor.addHandler(IfModel.class, IfModelHandler::makeInstance);
                 defaultProcessor.addHandler(ThenModel.class, ThenModelHandler::makeInstance);
                 defaultProcessor.addHandler(ElseModel.class, ElseModelHandler::makeInstance);
@@ -109,7 +116,7 @@ public class IfThenElseTest {
 
     @AfterEach
     public void tearDown() throws Exception {
-        StatusPrinter.printIfErrorsOccured(context);
+        statusPrinter2.printIfErrorsOccured(context);
         System.clearProperty(sysKey);
     }
 
@@ -120,7 +127,7 @@ public class IfThenElseTest {
         checker.containsException(org.codehaus.commons.compiler.CompileException.class);
         checker.containsMatch(Status.ERROR, "Failed to parse condition");
     }
-
+    // ----------------------------------------------------------------------------------------------------
     @Test
     public void whenContextPropertyIsSet_IfThenBranchIsEvaluated() throws JoranException {
         context.putProperty(ki1, val1);
@@ -128,6 +135,14 @@ public class IfThenElseTest {
         verifyConfig(new String[] { "BEGIN", "a", "END" });
     }
 
+    @Test
+    public void whenContextPropertyIsSet_IfThenBranchIsEvaluated_WithoutJoran() throws JoranException {
+        context.putProperty(ki1, val1);
+
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "if0_NoJoran.xml");
+        verifyConfig(new String[] { "BEGIN", "a", "END" });
+    }
+    // ----------------------------------------------------------------------------------------------------
     @Test
     public void ifWithNew() throws JoranException {
         context.putProperty(ki1, val1);
@@ -137,7 +152,7 @@ public class IfThenElseTest {
         verifyConfig(new String[] { "BEGIN", "END" });
     }
 
-
+    // ----------------------------------------------------------------------------------------------------
     @Test
     public void whenLocalPropertyIsSet_IfThenBranchIsEvaluated() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "if_localProperty.xml");
@@ -145,10 +160,23 @@ public class IfThenElseTest {
     }
 
     @Test
+    public void whenLocalPropertyIsSet_IfThenBranchIsEvaluated_NoJoran() throws JoranException {
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "if_localProperty_NoJoran.xml");
+        verifyConfig(new String[] { "BEGIN", "a", "END" });
+    }
+    // ----------------------------------------------------------------------------------------------------
+    @Test
     public void whenNoPropertyIsDefined_ElseBranchIsEvaluated() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "if0.xml");
         verifyConfig(new String[] { "BEGIN", "b", "END" });
     }
+
+    @Test
+    public void whenNoPropertyIsDefined_ElseBranchIsEvaluated_NoJoran() throws JoranException {
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "if0_NoJoran.xml");
+        verifyConfig(new String[] { "BEGIN", "b", "END" });
+    }
+    // ----------------------------------------------------------------------------------------------------
 
     @Test
     public void whenContextPropertyIsSet_IfThenBranchIsEvaluated_NO_ELSE_DEFINED() throws JoranException {
@@ -158,6 +186,13 @@ public class IfThenElseTest {
     }
 
     @Test
+    public void whenContextPropertyIsSet_IfThenBranchIsEvaluated_NO_ELSE_DEFINED_NoJoran() throws JoranException {
+        context.putProperty(ki1, val1);
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithoutElse_NoJoran.xml");
+        verifyConfig(new String[] { "BEGIN", "a", "END" });
+    }
+    // ----------------------------------------------------------------------------------------------------
+    @Test
     public void whenNoPropertyIsDefined_IfThenBranchIsNotEvaluated_NO_ELSE_DEFINED() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithoutElse.xml");
         verifyConfig(new String[] { "BEGIN", "END" });
@@ -165,19 +200,35 @@ public class IfThenElseTest {
     }
 
     @Test
+    public void whenNoPropertyIsDefined_IfThenBranchIsNotEvaluated_NO_ELSE_DEFINED_NoJoran() throws JoranException {
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithoutElse_NoJoran.xml");
+        verifyConfig(new String[] { "BEGIN", "END" });
+        Assertions.assertTrue(checker.isErrorFree(0));
+    }
+    // ----------------------------------------------------------------------------------------------------
+    @Test
     public void nestedIf() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "nestedIf.xml");
         //StatusPrinter.print(context);
         verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
         Assertions.assertTrue(checker.isErrorFree(0));
     }
+    @Test
+    public void nestedIf_NoJoran() throws JoranException {
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "nestedIf_NoJoran.xml");
+        //StatusPrinter.print(context);
+        verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
+        Assertions.assertTrue(checker.isErrorFree(0));
+    }
+
+    // ----------------------------------------------------------------------------------------------------
 
     @Test
     public void useNonExistenceOfSystemPropertyToDefineAContextProperty() throws JoranException {
         Assertions.assertNull(System.getProperty(sysKey));
         Assertions.assertNull(context.getProperty(dynaKey));
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifSystem.xml");
-        System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
+        //System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
         Assertions.assertNotNull(context.getProperty(dynaKey));
     }
 

@@ -14,6 +14,7 @@
 
 package ch.qos.logback.core.boolex;
 
+import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -28,7 +29,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * @since 1.5.20
  * @author Ceki G&uuml;lc&uuml;
  */
-abstract public class PropertyEvaluatorBase implements PropertyEvaluator {
+abstract public class PropertyEvaluatorBase extends ContextAwareBase implements PropertyEvaluator {
 
     /**
      * Indicates whether this evaluator has been started.
