@@ -220,9 +220,7 @@ public class IfThenElseTest {
         verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
         Assertions.assertTrue(checker.isErrorFree(0));
     }
-
     // ----------------------------------------------------------------------------------------------------
-
     @Test
     public void useNonExistenceOfSystemPropertyToDefineAContextProperty() throws JoranException {
         Assertions.assertNull(System.getProperty(sysKey));
@@ -231,7 +229,15 @@ public class IfThenElseTest {
         //System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
         Assertions.assertNotNull(context.getProperty(dynaKey));
     }
-
+    @Test
+    public void useNonExistenceOfSystemPropertyToDefineAContextProperty_NoJoran() throws JoranException {
+        Assertions.assertNull(System.getProperty(sysKey));
+        Assertions.assertNull(context.getProperty(dynaKey));
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifSystem_NoJoran.xml");
+        //System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
+        Assertions.assertNotNull(context.getProperty(dynaKey));
+    }
+    // ----------------------------------------------------------------------------------------------------
     @Test
     public void noContextPropertyShouldBeDefinedIfSystemPropertyExists() throws JoranException {
         System.setProperty(sysKey, "a");
@@ -241,6 +247,17 @@ public class IfThenElseTest {
         System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
         Assertions.assertNull(context.getProperty(dynaKey));
     }
+
+    @Test
+    public void noContextPropertyShouldBeDefinedIfSystemPropertyExists_NoJoran() throws JoranException {
+        System.setProperty(sysKey, "a");
+        Assertions.assertNull(context.getProperty(dynaKey));
+        System.out.println("before " + dynaKey + "=" + context.getProperty(dynaKey));
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifSystem_NoJoran.xml");
+        System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
+        Assertions.assertNull(context.getProperty(dynaKey));
+    }
+    // ----------------------------------------------------------------------------------------------------
 
     private void verifyConfig(String[] expected) {
         Stack<String> witness = new Stack<>();

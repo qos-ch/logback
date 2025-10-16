@@ -85,6 +85,12 @@ public class ByPropertiesConditionModelHandler extends ModelHandlerBase {
             mic.popObject();
         }
 
+        propertyEvaluator.start();
+        if(!propertyEvaluator.isStarted()) {
+            addError("PropertyEvaluator of type ["+propertyEvaluator.getClass().getName()+"] did not start successfully.");
+            mic.pushObject(IfModel.BranchState.IN_ERROR);
+            return;
+        }
         boolean evaluationResult = propertyEvaluator.evaluate();
         IfModel.BranchState branchState = evaluationResult ? IF_BRANCH : ELSE_BRANCH;
         mic.pushObject(branchState);
