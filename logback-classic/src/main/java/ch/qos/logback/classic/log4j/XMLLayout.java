@@ -24,9 +24,8 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.helpers.Transform;
 
-// Code is based on revision 309623 of org.apache.log4j.xml.XMLLayout dated "Wed
-// Jul 31 09:25:14 2002 UTC" as authored by Ceki Gulcu.
-// See also http://tinyurl.com/dch9mr
+// Code is based on revision 594563f2c1887908955ca6581ae8fb66161396c0 of org.apache.logging.log4j.core.layout.XMLLayout
+// https://github.com/apache/logging-log4j2/blob/594563f2c1887908955ca6581ae8fb66161396c0/log4j-core/src/main/java/org/apache/logging/log4j/core/layout/XMLLayout.java
 
 /**
  * 
@@ -38,9 +37,7 @@ import ch.qos.logback.core.helpers.Transform;
 public class XMLLayout extends LayoutBase<ILoggingEvent> {
 
     private final int DEFAULT_SIZE = 256;
-    private final int UPPER_LIMIT = 2048;
 
-    private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
     private boolean locationInfo = false;
     private boolean properties = false;
 
@@ -96,13 +93,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
      */
     public String doLayout(ILoggingEvent event) {
 
-        // Reset working buffer. If the buffer is too large, then we need a new
-        // one in order to avoid the penalty of creating a large array.
-        if (buf.capacity() > UPPER_LIMIT) {
-            buf = new StringBuilder(DEFAULT_SIZE);
-        } else {
-            buf.setLength(0);
-        }
+        StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
         // We yield to the \r\n heresy.
 
