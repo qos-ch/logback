@@ -13,6 +13,26 @@
  */
 package ch.qos.logback.core.joran.conditional;
 
+/**
+ * <p>A condition evaluated during Joran conditional processing.</p>
+ *
+ * <p>Implementations of this interface encapsulate a boolean test that
+ * determines whether a conditional block in a Joran configuration should
+ * be processed.</p>
+ *
+ * <p>Typical implementations evaluate configuration state, environment
+ * variables, or other runtime properties.</p>
+ *
+ * @since 0.9.20
+ * @author Ceki G&uuml;lc&uuml;
+ */
 public interface Condition {
+
+    /**
+     * Evaluate the condition.
+     *
+     * @return {@code true} if the condition is satisfied and the associated
+     *         conditional block should be activated; {@code false} otherwise
+     */
     boolean evaluate();
 }

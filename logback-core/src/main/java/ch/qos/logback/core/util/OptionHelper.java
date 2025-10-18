@@ -113,6 +113,20 @@ public class OptionHelper {
 
     }
 
+    /**
+     * Try to lookup the property in the following order:
+     * <ul>
+     * <li>pc1 (usually the local property container)</li>
+     * <li>pc2 (usually the {@link Context context})</li>
+     * <li>System properties</li>
+     * <li>Environment variables</li>
+     * </ul>
+     *
+     * @param key the property key
+     * @param pc1 the first property container to search
+     * @param pc2 the second property container to search
+     * @return the property value or null if not found
+     */
     public static String propertyLookup(String key, PropertyContainer pc1, PropertyContainer pc2) {
         String value = null;
         // first try the props passed as parameter

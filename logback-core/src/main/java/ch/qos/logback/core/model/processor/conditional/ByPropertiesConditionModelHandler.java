@@ -15,7 +15,7 @@
 package ch.qos.logback.core.model.processor.conditional;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.boolex.PropertyEvaluator;
+import ch.qos.logback.core.boolex.PropertyCondition;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.model.conditional.ByPropertiesConditionModel;
@@ -30,7 +30,7 @@ import static ch.qos.logback.core.model.conditional.IfModel.BranchState.IF_BRANC
 public class ByPropertiesConditionModelHandler extends ModelHandlerBase {
 
     private boolean inError = false;
-    PropertyEvaluator propertyEvaluator;
+    PropertyCondition propertyEvaluator;
 
     public ByPropertiesConditionModelHandler(Context context) {
         super(context);
@@ -61,8 +61,8 @@ public class ByPropertiesConditionModelHandler extends ModelHandlerBase {
         try {
             addInfo("About to instantiate PropertyEvaluator of type [" + className + "]");
 
-            propertyEvaluator = (PropertyEvaluator) OptionHelper.instantiateByClassName(className,
-                    PropertyEvaluator.class, context);
+            propertyEvaluator = (PropertyCondition) OptionHelper.instantiateByClassName(className,
+                    PropertyCondition.class, context);
             propertyEvaluator.setContext(context);
             propertyEvaluator.setLocalPropertyContainer(mic);
             mic.pushObject(propertyEvaluator);

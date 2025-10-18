@@ -12,11 +12,9 @@
  * as published by the Free Software Foundation.
  */
 
-package ch.qos.logback.core.blackbox.boolex;
+package ch.qos.logback.core.boolex;
 
-import ch.qos.logback.core.boolex.PropertyEvaluatorBase;
-
-public class IsPropertyNullCondition  extends PropertyEvaluatorBase {
+public class IsPropertyNullCondition  extends PropertyConditionBase {
 
     String key;
 

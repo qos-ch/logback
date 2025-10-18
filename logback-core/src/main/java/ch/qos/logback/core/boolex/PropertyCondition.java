@@ -16,7 +16,6 @@ package ch.qos.logback.core.boolex;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.conditional.Condition;
-import ch.qos.logback.core.joran.conditional.PropertyEvalScriptBuilder;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.PropertyContainer;
@@ -39,7 +38,7 @@ import ch.qos.logback.core.spi.PropertyContainer;
  * @since 1.5.20
  * @author Ceki G&uuml;lc&uuml;
  */
-public interface PropertyEvaluator extends Condition, ContextAware, LifeCycle {
+public interface PropertyCondition extends Condition, ContextAware, LifeCycle {
 
     /**
      * Returns the local {@link PropertyContainer} used for property lookups specific to the embedding configurator.

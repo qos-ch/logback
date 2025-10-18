@@ -14,22 +14,31 @@
 
 package ch.qos.logback.core.boolex;
 
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * <p>Abstract base class provides some scaffolding. it is intended to ease migration
+ * <p>Abstract base class provides some scaffolding. It is intended to ease migration
  * from <b>legacy</b> conditional processing in configuration files
- * (e.g. &lt;if>, &lt;then>, &lt;else>) using the Janino library.
- * </p>
+ * (e.g. &lt;if>, &lt;then&gt;, &lt;else>) using the Janino library. Nevertheless,
+ * it should also be useful in newly written code.</p>
  *
- * <p>Nevertheless, it should also be useful in newly written code. </p>
+ * <p>Properties are looked up in the following order:</p>
  *
+ * <ol>
+ *  <li>In the local property container, usually the {@link ModelInterpretationContext} </li>
+ *  <li>in the logger context</li>
+ *  <li>system properties</li>
+ *  <li>environment variables</li>
+ * </ol>
+ *
+ * @see OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)
  * @since 1.5.20
  * @author Ceki G&uuml;lc&uuml;
  */
-abstract public class PropertyEvaluatorBase extends ContextAwareBase implements PropertyEvaluator {
+abstract public class PropertyConditionBase extends ContextAwareBase implements PropertyCondition {
 
     /**
      * Indicates whether this evaluator has been started.
@@ -39,14 +48,17 @@ abstract public class PropertyEvaluatorBase extends ContextAwareBase implements 
      * <p>The local property container used for property lookups.</p>
      *
      * <p>Local properties correspond to the properties in the embedding
-     * configurator.</p>
+     * configurator, i.e. usually the {@link ModelInterpretationContext} instance.</p>
      */
     PropertyContainer localPropertyContainer;
 
     /**
-     * Returns the property container used by this evaluator.
+     * Returns the local property container used by this evaluator.
      *
-     * @return the property container
+     * <p>Local properties correspond to the properties in the embedding
+     * configurator, i.e. usually the {@link ModelInterpretationContext} instance.</p>
+     *
+     * @return the local property container
      */
     @Override
     public PropertyContainer getLocalPropertyContainer() {
@@ -54,17 +66,24 @@ abstract public class PropertyEvaluatorBase extends ContextAwareBase implements 
     }
 
     /**
-     * Sets the property container for this evaluator.
+     * Sets the local property container for this evaluator.
      *
-     * @param aPropertyContainer the property container to set
+     * <p>Local properties correspond to the properties in the embedding
+     * configurator, i.e. usually the {@link ModelInterpretationContext} instance.</p>
+     *
+     * @param aLocalPropertyContainer the local property container to set
      */
     @Override
-    public void setLocalPropertyContainer(PropertyContainer aPropertyContainer) {
-        this.localPropertyContainer = aPropertyContainer;
+    public void setLocalPropertyContainer(PropertyContainer aLocalPropertyContainer) {
+        this.localPropertyContainer = aLocalPropertyContainer;
     }
 
     /**
      * Checks if the property with the given key is null.
+     *
+     * <p>The property is looked up via the
+     * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
+     * See above for the lookup order.</p>
      *
      * @param k the property key
      * @return true if the property is null, false otherwise
@@ -76,6 +95,10 @@ abstract public class PropertyEvaluatorBase extends ContextAwareBase implements 
 
     /**
      * Checks if the property with the given key is defined (not null).
+     *
+     * <p>The property is looked up via the
+     * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
+     * See above for the lookup order.</p>
      *
      * @param k the property key
      * @return true if the property is defined, false otherwise
@@ -98,6 +121,10 @@ abstract public class PropertyEvaluatorBase extends ContextAwareBase implements 
 
     /**
      * Retrieves the property value for the given key, returning an empty string if null.
+     *
+     * <p>The property is looked up via the
+     * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
+     * See above for the lookup order.</p>
      *
      * @param k the property key
      * @return the property value or an empty string

@@ -14,9 +14,9 @@
 
 package ch.qos.logback.core.blackbox.boolex;
 
-import ch.qos.logback.core.boolex.PropertyEvaluatorBase;
+import ch.qos.logback.core.boolex.PropertyConditionBase;
 
-public class AlwaysFalseCondition extends PropertyEvaluatorBase {
+public class AlwaysFalseCondition extends PropertyConditionBase {
 
     @Override
     public boolean evaluate() {

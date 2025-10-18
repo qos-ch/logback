@@ -14,7 +14,7 @@
 
 <x>
     <stack name="BEGIN"/>
-    <condition class="ch.qos.logback.core.boolex.PropertyEqualsValue">
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
             <key>ki1</key>
             <value>val1</value>
     </condition>

@@ -17,7 +17,7 @@
 <x>
     <stack name="BEGIN"/>
 
-    <condition class="ch.qos.logback.core.blackbox.boolex.IsPropertyNullCondition">
+    <condition class="ch.qos.logback.core.boolex.IsPropertyNullCondition">
         <key>sysKey</key>
     </condition>
     <if>
