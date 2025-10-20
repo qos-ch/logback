@@ -22,7 +22,7 @@ import java.io.File;
 
 abstract public class CompressionStrategyBase extends ContextAwareBase implements CompressionStrategy {
 
-    static final int BUFFER_SIZE = 8192;
+    static final int BUFFER_SIZE = 65536;
 
     void createMissingTargetDirsIfNecessary(File file) {
         boolean result = FileUtil.createMissingParentDirectories(file);

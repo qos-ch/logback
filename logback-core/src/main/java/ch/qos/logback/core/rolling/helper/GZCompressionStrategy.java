@@ -17,7 +17,6 @@ package ch.qos.logback.core.rolling.helper;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -50,16 +49,11 @@ public class GZCompressionStrategy extends CompressionStrategyBase {
 
         addInfo("GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         createMissingTargetDirsIfNecessary(gzedFile);
+        System.out.println("GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
+        try (FileInputStream fis = new FileInputStream(originalFileName);
+                        GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(compressedFileName), BUFFER_SIZE)) {
 
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(originalFileName));
-                        GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(compressedFileName))) {
-
-            byte[] inbuf = new byte[BUFFER_SIZE];
-            int n;
-
-            while ((n = bis.read(inbuf)) != -1) {
-                gzos.write(inbuf, 0, n);
-            }
+            fis.transferTo(gzos);
 
             addInfo("Done GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         } catch (Exception e) {
