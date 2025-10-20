@@ -69,7 +69,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
         rs.addRule(new ElementSelector("configuration/statusListener"),  StatusListenerAction::new);
 
         rs.addRule(new ElementSelector("*/appender"),  AppenderAction::new);
-        rs.addRule(new ElementSelector("configuration/appender/appender-ref"),  AppenderRefAction::new);
+        rs.addRule(new ElementSelector("*/appender/appender-ref"),  AppenderRefAction::new);
         rs.addRule(new ElementSelector("configuration/newRule"),  NewRuleAction::new);
 
         rs.addRule(new ElementSelector("*/param"),  ParamAction::new);
