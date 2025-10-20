@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import ch.qos.logback.classic.net.SMTPAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
@@ -37,10 +38,8 @@ import ch.qos.logback.core.helpers.Transform;
  */
 public class XMLLayout extends LayoutBase<ILoggingEvent> {
 
-    private final int DEFAULT_SIZE = 256;
-    private final int UPPER_LIMIT = 2048;
+    private static final int DEFAULT_SIZE = 256;
 
-    private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
     private boolean locationInfo = false;
     private boolean properties = false;
 
@@ -57,8 +56,10 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
      * 
      * <p>
      * If you are embedding this layout within an
-     * {@link org.apache.log4j.net.SMTPAppender} then make sure to set the
-     * <b>LocationInfo</b> option of that appender as well.
+     * {@link SMTPAppender} then make sure to set the
+     * {@link SMTPAppender#setIncludeCallerData(boolean) includeCallerData} option
+     * as well.
+     * </p>
      */
     public void setLocationInfo(boolean flag) {
         locationInfo = flag;
@@ -96,13 +97,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
      */
     public String doLayout(ILoggingEvent event) {
 
-        // Reset working buffer. If the buffer is too large, then we need a new
-        // one in order to avoid the penalty of creating a large array.
-        if (buf.capacity() > UPPER_LIMIT) {
-            buf = new StringBuilder(DEFAULT_SIZE);
-        } else {
-            buf.setLength(0);
-        }
+        StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
         // We yield to the \r\n heresy.
 
