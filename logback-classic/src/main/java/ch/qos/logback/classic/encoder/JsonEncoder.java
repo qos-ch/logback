@@ -23,7 +23,6 @@ import ch.qos.logback.core.encoder.EncoderBase;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,9 +35,45 @@ import static ch.qos.logback.core.encoder.JsonEscapeUtil.jsonEscapeString;
 import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
 
 /**
+ * JSON encoder that produces one JSON object per line in JSON Lines format, suitable for structured logging.
+ * Each {@link ILoggingEvent} is encoded into a JSON object containing fields such as timestamp, level, message,
+ * and optional elements like MDC properties, markers, and stack traces.
  *
+ * <p>This encoder supports extensive configuration through boolean flags to include or exclude specific fields
+ * in the output, allowing customization for different logging needs. For example, you can enable/disable
+ * sequence numbers, nanoseconds, thread names, logger context, markers, MDC, key-value pairs, arguments,
+ * and throwable information.</p>
  *
- * https://jsonlines.org/ https://datatracker.ietf.org/doc/html/rfc8259
+ * <p>The encoder is designed for extensibility: subclasses can override protected methods (e.g.,
+ * {@link #appendLoggerContext}, {@link #appendThrowableProxy}, {@link #appendMarkers}) to customize
+ * how specific parts of the JSON are generated. Additionally, the {@link #appendCustomFields} hook
+ * allows appending custom top-level fields to the JSON object.</p>
+ *
+ * <h3>Configuration</h3>
+ * <p>Use the setter methods (e.g., {@link #setWithSequenceNumber}, {@link #setWithTimestamp}) to control
+ * which fields are included. By default, most fields are enabled except {@code withFormattedMessage}.</p>
+ *
+ * <h3>Example Usage</h3>
+ * <pre>{@code
+ * <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+ *   <encoder class="ch.qos.logback.classic.encoder.JsonEncoder">
+ *     <withSequenceNumber>false</withSequenceNumber>
+ *     <withNanoseconds>false</withNanoseconds>
+ *     <withThreadName>false</withThreadName>
+ *   </encoder>
+ * </appender>
+ * }</pre>
+ *
+ * <p>This produces output similar to the following (on a single line):
+ * </p>
+ *
+ * <pre>{"timestamp":1640995200000,"level":"INFO","loggerName":"com.example.MyClass","context":{"name":"default","birthdate":1640995200000,"properties":{}},"message":"Hello World"}</pre>
+ *
+ * @see <a href="https://jsonlines.org/">JSON Lines</a>
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc8259">RFC 8259 (The JavaScript Object Notation (JSON) Data Interchange Format)</a>
+ * @see ch.qos.logback.core.encoder.EncoderBase
+ * @since 1.3.8/1.4.8
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     static final boolean DO_NOT_ADD_QUOTE_KEY = false;
@@ -89,20 +124,20 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     public static final String STEP_ARRAY_NAME_ATTRIBUTE = "stepArray";
 
-    private static final char OPEN_OBJ = '{';
-    private static final char CLOSE_OBJ = '}';
-    private static final char OPEN_ARRAY = '[';
-    private static final char CLOSE_ARRAY = ']';
+    protected static final char OPEN_OBJ = '{';
+    protected static final char CLOSE_OBJ = '}';
+    protected static final char OPEN_ARRAY = '[';
+    protected static final char CLOSE_ARRAY = ']';
 
-    private static final char QUOTE = DOUBLE_QUOTE_CHAR;
-    private static final char SP = ' ';
-    private static final char ENTRY_SEPARATOR = COLON_CHAR;
+    protected static final char QUOTE = DOUBLE_QUOTE_CHAR;
+    protected static final char SP = ' ';
+    protected static final char ENTRY_SEPARATOR = COLON_CHAR;
 
-    private static final String COL_SP = ": ";
+    protected static final String COL_SP = ": ";
 
-    private static final String QUOTE_COL = "\":";
+    protected static final String QUOTE_COL = "\":";
 
-    private static final char VALUE_SEPARATOR = COMMA_CHAR;
+    protected static final char VALUE_SEPARATOR = COMMA_CHAR;
 
     private boolean withSequenceNumber = true;
 
@@ -194,12 +229,34 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         if (withThrowable)
             appendThrowableProxy(sb, THROWABLE_ATTR_NAME, event.getThrowableProxy());
 
+        // allow subclasses to append custom top-level fields; default implementation is a no-op
+        appendCustomFields(sb, event);
+
         sb.append(CLOSE_OBJ);
         sb.append(CoreConstants.JSON_LINE_SEPARATOR);
         return sb.toString().getBytes(UTF_8_CHARSET);
     }
 
-    void appendValueSeparator(StringBuilder sb, boolean... subsequentConditionals) {
+    /**
+     * Append a JSON value separator (a comma) to the provided {@link StringBuilder}
+     * when any of the supplied boolean flags indicate that a subsequent element
+     * is present.
+     *
+     * <p>Callers pass a sequence of booleans that represent whether subsequent
+     * JSON members will be written. If at least one of those booleans is
+     * {@code true}, this method appends a single comma (',') to separate JSON
+     * fields.</p>
+     *
+     * <p>This method is protected so subclasses that extend the encoder can
+     * reuse or override the logic for inserting separators between generated
+     * JSON members.</p>
+     *
+     * @param sb the {@link StringBuilder} to append the separator to; must not be {@code null}
+     * @param subsequentConditionals one or more booleans indicating whether
+     *                               subsequent JSON elements will be written.
+     *                               If any value is {@code true}, a comma is appended.
+     */
+    protected void appendValueSeparator(StringBuilder sb, boolean... subsequentConditionals) {
         boolean enabled = false;
         for (boolean subsequent : subsequentConditionals) {
             if (subsequent) {
@@ -212,7 +269,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
             sb.append(VALUE_SEPARATOR);
     }
 
-    private void appendLoggerContext(StringBuilder sb, LoggerContextVO loggerContextVO) {
+    protected void appendLoggerContext(StringBuilder sb, LoggerContextVO loggerContextVO) {
 
         sb.append(QUOTE).append(CONTEXT_ATTR_NAME).append(QUOTE_COL);
         if (loggerContextVO == null) {
@@ -231,7 +288,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     }
 
-    private void appendMap(StringBuilder sb, String attrName, Map<String, String> map) {
+    protected void appendMap(StringBuilder sb, String attrName, Map<String, String> map) {
         sb.append(QUOTE).append(attrName).append(QUOTE_COL);
         if (map == null) {
             sb.append(NULL_STR);
@@ -253,11 +310,11 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_OBJ);
     }
 
-    private void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp) {
+    protected void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp) {
         appendThrowableProxy(sb, attributeName, itp, true);
     }
 
-    private void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp, boolean appendValueSeparator) {
+    protected void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp, boolean appendValueSeparator) {
 
         if (appendValueSeparator)
             sb.append(VALUE_SEPARATOR);
@@ -316,10 +373,16 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     }
 
-    private void appendSTEPArray(StringBuilder sb, StackTraceElementProxy[] stepArray, int commonFrames) {
+    protected void appendSTEPArray(StringBuilder sb, StackTraceElementProxy[] stepArray, int commonFrames) {
         sb.append(QUOTE).append(STEP_ARRAY_NAME_ATTRIBUTE).append(QUOTE_COL).append(OPEN_ARRAY);
 
-        int len = stepArray != null ? stepArray.length : 0;
+        // If there are no stack trace elements, write an empty array and return early.
+        if (stepArray == null || stepArray.length == 0) {
+            sb.append(CLOSE_ARRAY);
+            return;
+        }
+
+        int len = stepArray.length;
 
         if (commonFrames >= len) {
             commonFrames = 0;
@@ -351,19 +414,36 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_ARRAY);
     }
 
-    private void appenderMember(StringBuilder sb, String key, String value) {
+    /**
+     * Hook allowing subclasses to append additional fields into the root JSON object.
+     * Default implementation is a no-op.
+     *
+     * <p>Subclasses may append additional top-level JSON members here. If a
+     * subclass writes additional members it should prepend them with
+     * {@link #VALUE_SEPARATOR} (a comma) if necessary to keep the JSON valid.
+     * Implementations must not close the root JSON object or write the final
+     * line separator; {@link JsonEncoder} handles those.</p>
+     *
+     * @param sb the StringBuilder that accumulates the JSON output; never null
+     * @param event the logging event being encoded; never null
+     */
+    protected void appendCustomFields(StringBuilder sb, ILoggingEvent event) {
+        // no-op by default; subclasses may append VALUE_SEPARATOR then their fields
+    }
+
+    protected void appenderMember(StringBuilder sb, String key, String value) {
         sb.append(QUOTE).append(key).append(QUOTE_COL).append(QUOTE).append(value).append(QUOTE);
     }
 
-    private void appenderMemberWithIntValue(StringBuilder sb, String key, int value) {
+    protected void appenderMemberWithIntValue(StringBuilder sb, String key, int value) {
         sb.append(QUOTE).append(key).append(QUOTE_COL).append(value);
     }
 
-    private void appenderMemberWithLongValue(StringBuilder sb, String key, long value) {
+    protected void appenderMemberWithLongValue(StringBuilder sb, String key, long value) {
         sb.append(QUOTE).append(key).append(QUOTE_COL).append(value);
     }
 
-    private void appendKeyValuePairs(StringBuilder sb, ILoggingEvent event) {
+    protected void appendKeyValuePairs(StringBuilder sb, ILoggingEvent event) {
         List<KeyValuePair> kvpList = event.getKeyValuePairs();
         if (kvpList == null || kvpList.isEmpty())
             return;
@@ -382,7 +462,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_ARRAY);
     }
 
-    private void appendArgumentArray(StringBuilder sb, ILoggingEvent event) {
+    protected void appendArgumentArray(StringBuilder sb, ILoggingEvent event) {
         Object[] argumentArray = event.getArgumentArray();
         if (argumentArray == null)
             return;
@@ -399,7 +479,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_ARRAY);
     }
 
-    private void appendMarkers(StringBuilder sb, ILoggingEvent event) {
+    protected void appendMarkers(StringBuilder sb, ILoggingEvent event) {
         List<Marker> markerList = event.getMarkerList();
         if (markerList == null)
             return;
@@ -434,7 +514,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         return jsonEscapeString(s);
     }
 
-    private void appendMDC(StringBuilder sb, ILoggingEvent event) {
+    protected void appendMDC(StringBuilder sb, ILoggingEvent event) {
         Map<String, String> map = event.getMDCPropertyMap();
         sb.append(VALUE_SEPARATOR);
         sb.append(QUOTE).append(MDC_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_OBJ);
@@ -452,7 +532,13 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(CLOSE_OBJ);
     }
 
-    boolean isNotEmptyMap(Map map) {
+    /**
+     * Return {@code true} when the provided map is non-null and non-empty.
+     *
+     * @param map the map to check; may be null
+     * @return {@code true} if the map contains at least one entry
+     */
+    boolean isNotEmptyMap(Map<?, ?> map) {
         if (map == null)
             return false;
         return !map.isEmpty();
@@ -464,7 +550,8 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     }
 
     /**
-     * @param withSequenceNumber
+     * Set whether the sequence number is included in each encoded event.
+     * @param withSequenceNumber {@code true} to include the sequence number in the output
      * @since 1.5.0
      */
     public void setWithSequenceNumber(boolean withSequenceNumber) {
@@ -472,7 +559,8 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     }
 
     /**
-     * @param withTimestamp
+     * Set whether the event timestamp is included in each encoded event.
+     * @param withTimestamp {@code true} to include the event timestamp in the output
      * @since 1.5.0
      */
     public void setWithTimestamp(boolean withTimestamp) {
@@ -480,55 +568,111 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     }
 
     /**
-     * @param withNanoseconds
+     * Set whether nanoseconds will be included in the timestamp output.
+     * @param withNanoseconds {@code true} to include nanoseconds in the timestamp output
      * @since 1.5.0
      */
     public void setWithNanoseconds(boolean withNanoseconds) {
         this.withNanoseconds = withNanoseconds;
     }
 
-    public void setWithLevel(boolean withLevel) {
-        this.withLevel = withLevel;
-    }
+    /**
+     * Enable or disable the inclusion of the log level in the encoded output.
+     *
+     * @param withLevel {@code true} to include the log level. Default is {@code true}.
+     */
+     public void setWithLevel(boolean withLevel) {
+         this.withLevel = withLevel;
+     }
 
-    public void setWithThreadName(boolean withThreadName) {
-        this.withThreadName = withThreadName;
-    }
+     /**
+      * Enable or disable the inclusion of the thread name in the encoded output.
+      *
+      * @param withThreadName {@code true} to include the thread name. Default is {@code true}.
+      */
+     public void setWithThreadName(boolean withThreadName) {
+         this.withThreadName = withThreadName;
+     }
 
-    public void setWithLoggerName(boolean withLoggerName) {
-        this.withLoggerName = withLoggerName;
-    }
+     /**
+      * Enable or disable the inclusion of the logger name in the encoded output.
+      *
+      * @param withLoggerName {@code true} to include the logger name. Default is {@code true}.
+      */
+     public void setWithLoggerName(boolean withLoggerName) {
+         this.withLoggerName = withLoggerName;
+     }
 
-    public void setWithContext(boolean withContext) {
-        this.withContext = withContext;
-    }
+     /**
+      * Enable or disable the inclusion of the logger context information.
+      *
+      * @param withContext {@code true} to include the logger context. Default is {@code true}.
+      */
+     public void setWithContext(boolean withContext) {
+         this.withContext = withContext;
+     }
 
-    public void setWithMarkers(boolean withMarkers) {
-        this.withMarkers = withMarkers;
-    }
+     /**
+      * Enable or disable the inclusion of markers in the encoded output.
+      *
+      * @param withMarkers {@code true} to include markers. Default is {@code true}.
+      */
+     public void setWithMarkers(boolean withMarkers) {
+         this.withMarkers = withMarkers;
+     }
 
-    public void setWithMDC(boolean withMDC) {
-        this.withMDC = withMDC;
-    }
+     /**
+      * Enable or disable the inclusion of MDC properties in the encoded output.
+      *
+      * @param withMDC {@code true} to include MDC properties. Default is {@code true}.
+      */
+     public void setWithMDC(boolean withMDC) {
+         this.withMDC = withMDC;
+     }
 
-    public void setWithKVPList(boolean withKVPList) {
-        this.withKVPList = withKVPList;
-    }
+     /**
+      * Enable or disable the inclusion of key-value pairs attached to the logging event.
+      *
+      * @param withKVPList {@code true} to include the key/value pairs list. Default is {@code true}.
+      */
+     public void setWithKVPList(boolean withKVPList) {
+         this.withKVPList = withKVPList;
+     }
 
-    public void setWithMessage(boolean withMessage) {
-        this.withMessage = withMessage;
-    }
+     /**
+      * Enable or disable the inclusion of the raw message text in the encoded output.
+      *
+      * @param withMessage {@code true} to include the message. Default is {@code true}.
+      */
+     public void setWithMessage(boolean withMessage) {
+         this.withMessage = withMessage;
+     }
 
-    public void setWithArguments(boolean withArguments) {
-        this.withArguments = withArguments;
-    }
+     /**
+      * Enable or disable the inclusion of the event argument array in the encoded output.
+      *
+      * @param withArguments {@code true} to include the argument array. Default is {@code true}.
+      */
+     public void setWithArguments(boolean withArguments) {
+         this.withArguments = withArguments;
+     }
 
-    public void setWithThrowable(boolean withThrowable) {
-        this.withThrowable = withThrowable;
-    }
+     /**
+      * Enable or disable the inclusion of throwable information in the encoded output.
+      *
+      * @param withThrowable {@code true} to include throwable/stacktrace information. Default is {@code true}.
+      */
+     public void setWithThrowable(boolean withThrowable) {
+         this.withThrowable = withThrowable;
+     }
 
-    public void setWithFormattedMessage(boolean withFormattedMessage) {
-        this.withFormattedMessage = withFormattedMessage;
-    }
+     /**
+      * Enable or disable the inclusion of the formatted message in the encoded output.
+      *
+      * @param withFormattedMessage {@code true} to include the formatted message. Default is {@code false}.
+      */
+     public void setWithFormattedMessage(boolean withFormattedMessage) {
+         this.withFormattedMessage = withFormattedMessage;
+     }
 
-}
+ }
