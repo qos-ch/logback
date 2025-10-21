@@ -49,11 +49,15 @@ public class GZCompressionStrategy extends CompressionStrategyBase {
 
         addInfo("GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         createMissingTargetDirsIfNecessary(gzedFile);
-        System.out.println("GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         try (FileInputStream fis = new FileInputStream(originalFileName);
-                        GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(compressedFileName), BUFFER_SIZE)) {
+             GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(compressedFileName), BUFFER_SIZE)) {
 
-            fis.transferTo(gzos);
+            byte[] inbuf = new byte[BUFFER_SIZE];
+            int n;
+
+            while ((n = fis.read(inbuf)) != -1) {
+                gzos.write(inbuf, 0, n);
+            }
 
             addInfo("Done GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         } catch (Exception e) {
