@@ -31,7 +31,6 @@ import java.util.zip.ZipOutputStream;
  * @since 1.5.18
  */
 public class ZipCompressionStrategy extends CompressionStrategyBase {
-    static final int BUFFER_SIZE = 8192;
 
     @Override
     public void compress(String originalFileName, String compressedFileName, String innerEntryName) {
@@ -64,8 +63,8 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
         addInfo("ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
         createMissingTargetDirsIfNecessary(zippedFile);
 
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(originalFileName));
-                        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(compressedFileName))) {
+        try (FileInputStream fis = new FileInputStream(originalFileName);
+             ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(compressedFileName))) {
 
             ZipEntry zipEntry = computeZipEntry(innerEntryName);
             zos.putNextEntry(zipEntry);
@@ -73,7 +72,7 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
             byte[] inbuf = new byte[BUFFER_SIZE];
             int n;
 
-            while ((n = bis.read(inbuf)) != -1) {
+            while ((n = fis.read(inbuf)) != -1) {
                 zos.write(inbuf, 0, n);
             }
 

@@ -56,13 +56,13 @@ public class XZCompressionStrategy extends CompressionStrategyBase {
         addInfo("XZ compressing [" + file2xz + "] as [" + xzedFile + "]");
         createMissingTargetDirsIfNecessary(xzedFile);
 
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2xz));
+        try (FileInputStream fis = new FileInputStream(nameOfFile2xz);
              XZOutputStream xzos = new XZOutputStream(new FileOutputStream(nameOfxzedFile), new LZMA2Options())) {
 
             byte[] inbuf = new byte[BUFFER_SIZE];
             int n;
 
-            while ((n = bis.read(inbuf)) != -1) {
+            while ((n = fis.read(inbuf)) != -1) {
                 xzos.write(inbuf, 0, n);
             }
         } catch (Exception e) {
