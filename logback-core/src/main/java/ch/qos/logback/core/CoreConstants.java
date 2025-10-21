@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -145,6 +146,10 @@ public class CoreConstants {
      * An empty Class array.
      */
     public static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[] {};
+
+
+    public static final File[] EMPTY_FILE_ARRAY = new File[0];
+
     public static final String CAUSED_BY = "Caused by: ";
     public static final String SUPPRESSED = "Suppressed: ";
     public static final String WRAPPED_BY = "Wrapped by: ";

@@ -20,7 +20,11 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static ch.qos.logback.core.CoreConstants.EMPTY_FILE_ARRAY;
+
 public class FileFilterUtil {
+
+
 
     public static void sortFileArrayByName(File[] fileArray) {
         Arrays.sort(fileArray, new Comparator<File>() {
@@ -74,10 +78,10 @@ public class FileFilterUtil {
     public static File[] filesInFolderMatchingStemRegex(File file, final String stemRegex) {
 
         if (file == null) {
-            return new File[0];
+            return EMPTY_FILE_ARRAY;
         }
-        if (!file.exists() || !file.isDirectory()) {
-            return new File[0];
+        if (!file.isDirectory()) {
+            return EMPTY_FILE_ARRAY;
         }
 
         // better compile the regex. See also LOGBACK-1409
