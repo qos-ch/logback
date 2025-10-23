@@ -35,8 +35,13 @@ public class DefaultShutdownHook extends ShutdownHookBase {
      */
     private Duration delay = DEFAULT_DELAY;
 
+
+    /**
+     * Creates a DefaultShutdownHook using the default delay ({@link #DEFAULT_DELAY}).
+     */
     public DefaultShutdownHook() {
     }
+
 
     public Duration getDelay() {
         return delay;

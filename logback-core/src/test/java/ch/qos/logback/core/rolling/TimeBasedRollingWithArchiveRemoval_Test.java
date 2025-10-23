@@ -51,7 +51,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.SpacePadder;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
-import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.FixedRateInvocationGate;
@@ -418,11 +417,9 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ParentScaffoldingFo
     @Disabled
     @Test
     // this test assumes a high degree of collisions in the archived files. Every 24
-    // hours, the archive
-    // belonging to the previous day will be overwritten. Given that logback goes 14
-    // days (336 hours) in history
-    // to clean files on start up, it is bound to delete more recent files. It is
-    // not logback's responsibility
+    // hours, the archive belonging to the previous day will be overwritten. Given that
+    // logback goes 14 days (336 hours) in history to clean files on start up, it is
+    // bound to delete more recent files. It is not logback's responsibility
     // to cater for such degenerate cases.
     public void cleanHistoryOnStartWithHourPatternWithCollisions() {
         long now = this.currentTime;

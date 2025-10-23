@@ -1,8 +1,13 @@
 package ch.qos.logback.core.rolling;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Date;
 
-import ch.qos.logback.core.rolling.testUtil.ParentScaffoldingForRollingTests;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.hook.ShutdownHook;
+import ch.qos.logback.core.hook.ShutdownHookBase;
+import ch.qos.logback.core.status.Status;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -18,11 +23,18 @@ import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.Test;
 
 @Disabled
+/**
+ * This test is disabled because it is intended to be run manually as it is difficult
+ * to unit test shutdown hooks.
+ *
+ * To run this test, enable it and execute it as a JUnit test. Observe the
+ * console output to see if the compression completes before the JVM exits.
+ */
 public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTests {
 
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
-    DefaultShutdownHook delayingShutdownHook = new DefaultShutdownHook();
+    ShutdownHook shutdownHook = new DefaultShutdownHook();
 
     static final long FRI_2016_05_13_T_170415_GMT = 1463159055630L;
 
@@ -33,7 +45,7 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
     public void setUp() {
         super.setUp();
         StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
-        delayingShutdownHook.setContext(context);
+        shutdownHook.setContext(context);
         initRFA(rfa);
     }
 
@@ -43,7 +55,7 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
     }
 
     void initTRBP(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp, String filenamePattern,
-            long givenTime) {
+                  long givenTime) {
         tbrp.setContext(context);
         tbrp.setFileNamePattern(filenamePattern);
         tbrp.setParent(rfa);
@@ -56,13 +68,13 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
 
     @AfterEach
     public void tearDown() throws Exception {
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
     }
 
     @Disabled
     @Test
     public void test1() {
-        Thread shutdownThread = new Thread(delayingShutdownHook);
+        Thread shutdownThread = new Thread(shutdownHook);
         Runtime.getRuntime().addShutdownHook(shutdownThread);
 
         String patternPrefix = "test1";
