@@ -96,6 +96,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         File[] matchingFileArray = getFilesInPeriod(instantOfPeriodToClean);
 
         for (File f : matchingFileArray) {
+            addInfo("deleting historically stale " + f);
             checkAndDeleteFile(f);
         }
 
@@ -106,7 +107,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     }
 
     private boolean checkAndDeleteFile(File f) {
-        addInfo("deleting historically stale " + f);
+
         if (f == null) {
             addWarn("Cannot delete empty file");
             return false;
@@ -126,7 +127,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         long totalSize = 0;
         long totalRemoved = 0;
         int successfulDeletions = 0;
-        int failedDeletions = 0;
+            int failedDeletions = 0;
 
         for (int offset = 0; offset < maxHistory; offset++) {
             Instant instant = rc.getEndOfNextNthPeriod(now, -offset);
@@ -134,9 +135,11 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             descendingSort(matchingFileArray, instant);
             for (File f : matchingFileArray) {
                 long size = f.length();
+                //System.out.println("File: " + f + " size=" + size);
                 totalSize += size;
                 if (totalSize > totalSizeCap) {
-                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size) + " on account of totalSizeCap " + totalSizeCap);
+                    //addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size) + " on account of totalSizeCap " + totalSizeCap);
+                    addInfo("Deleting [" + f + "]" + " of size " + size + " on account of totalSizeCap " + totalSizeCap);
 
                     boolean success = checkAndDeleteFile(f);
 

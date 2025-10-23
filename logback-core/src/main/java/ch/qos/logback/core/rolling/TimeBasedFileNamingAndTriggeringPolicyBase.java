@@ -17,6 +17,7 @@ import static ch.qos.logback.core.CoreConstants.CODES_URL;
 
 import java.io.File;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
@@ -56,6 +57,8 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     protected boolean started = false;
     protected boolean errorFree = true;
 
+    protected ZoneId zoneId = ZoneId.systemDefault();
+
     public boolean isStarted() {
         return started;
     }
@@ -68,7 +71,8 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
         }
 
         if (dtc.getZoneId() != null) {
-            TimeZone tz = TimeZone.getTimeZone(dtc.getZoneId());
+            this.zoneId = dtc.getZoneId();
+            TimeZone tz = TimeZone.getTimeZone(zoneId);
             rc = new RollingCalendar(dtc.getDatePattern(), tz, Locale.getDefault());
         } else {
             rc = new RollingCalendar(dtc.getDatePattern());
@@ -90,7 +94,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
 
         if (tbrp.getParentsRawFileProperty() != null) {
             File currentFile = new File(tbrp.getParentsRawFileProperty());
-            if (currentFile.exists() && currentFile.canRead()) {
+            if (currentFile.canRead()) {
                 timestamp = currentFile.lastModified();
                 setDateInCurrentPeriod(timestamp);
             }

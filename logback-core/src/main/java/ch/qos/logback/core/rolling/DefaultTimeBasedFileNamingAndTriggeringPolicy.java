@@ -13,6 +13,8 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import ch.qos.logback.core.joran.spi.NoAutoStart;
@@ -54,7 +56,8 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
             long nextCheck = computeNextCheck(currentTime);
             atomicNextCheck.set(nextCheck);
             Instant instantOfElapsedPeriod = dateInCurrentPeriod;
-            addInfo("Elapsed period: " + instantOfElapsedPeriod.toString());
+            ZonedDateTime ztd = instantOfElapsedPeriod.atZone(zoneId);
+            addInfo("Elapsed period: " + ztd.toString());
             this.elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convert(instantOfElapsedPeriod);
             setDateInCurrentPeriod(currentTime);
             return true;
