@@ -13,28 +13,16 @@
  */
 package ch.qos.logback.core.rolling.testUtil;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
-import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.FileToBufferUtil;
-import ch.qos.logback.core.testUtil.RandomUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,27 +33,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class ScaffoldingForRollingTests {
+public class ScaffoldingForRollingTests extends ParentScaffoldingForRollingTests {
 
     static public final String DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss";
     static public final String DATE_PATTERN_BY_DAY = "yyyy-MM-dd";
     static public final SimpleDateFormat SDF = new SimpleDateFormat(DATE_PATTERN_WITH_SECONDS);
+    public static final int MILLIS_IN_ONE_SECOND = 1000;
 
-    int diff = RandomUtil.getPositiveInt();
-    protected String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
-    protected EchoEncoder<Object> encoder = new EchoEncoder<Object>();
-    protected Context context = new ContextBase();
-    protected List<String> expectedFilenameList = new ArrayList<String>();
+
     protected long nextRolloverThreshold; // initialized in setUp()
-    protected long currentTime; // initialized in setUp()
-    protected List<Future<?>> futureList = new ArrayList<Future<?>>();
-
-    Calendar calendar = Calendar.getInstance();
 
     public void setUp() {
-        context.setName("test");
-        calendar.set(Calendar.MILLISECOND, 333);
-        currentTime = calendar.getTimeInMillis();
+        super.setUp();
         recomputeRolloverThreshold(currentTime);
     }
 
@@ -108,18 +87,6 @@ public class ScaffoldingForRollingTests {
         fileContentCheck(fileArray, runLength, prefix, runStart);
     }
 
-    public static void reverseSortedContentCheck(String outputDirStr, int runLength, String prefix) throws IOException {
-        File[] fileArray = getFilesInDirectory(outputDirStr);
-        FileFilterUtil.reverseSortFileArrayByName(fileArray);
-        fileContentCheck(fileArray, runLength, prefix);
-    }
-
-    public static void existenceCheck(List<String> filenameList) {
-        for (String filename : filenameList) {
-            assertTrue(new File(filename).exists(), "File " + filename + " does not exist");
-        }
-    }
-
     public static int existenceCount(List<String> filenameList) {
         int existenceCounter = 0;
         for (String filename : filenameList) {
@@ -138,43 +105,29 @@ public class ScaffoldingForRollingTests {
         throw new RuntimeException("implement");
     }
 
-    protected String testId2FileName(String testId) {
-        return randomOutputDir + testId + ".log";
-    }
-
     // assuming rollover every second
     protected void recomputeRolloverThreshold(long ct) {
-        long delta = ct % 1000;
-        nextRolloverThreshold = (ct - delta) + 1000;
+        long delta = ct % MILLIS_IN_ONE_SECOND;
+        nextRolloverThreshold = (ct - delta) + MILLIS_IN_ONE_SECOND;
     }
 
     protected boolean passThresholdTime(long nextRolloverThreshold) {
         return currentTime >= nextRolloverThreshold;
     }
 
-    protected void incCurrentTime(long increment) {
-        currentTime += increment;
-    }
-
     protected Date getDateOfCurrentPeriodsStart() {
-        long delta = currentTime % 1000;
+        long delta = currentTime % MILLIS_IN_ONE_SECOND;
         return new Date(currentTime - delta);
     }
 
     protected Date getDateOfPreviousPeriodsStart() {
-        long delta = currentTime % 1000;
-        return new Date(currentTime - delta - 1000);
+        long delta = currentTime % MILLIS_IN_ONE_SECOND;
+        return new Date(currentTime - delta - MILLIS_IN_ONE_SECOND);
     }
 
     protected long getMillisOfCurrentPeriodsStart() {
-        long delta = currentTime % 1000;
+        long delta = currentTime % MILLIS_IN_ONE_SECOND;
         return (currentTime - delta);
-    }
-
-    protected void addExpectedFileName_ByDate(String patternStr, long millis) {
-        FileNamePattern fileNamePattern = new FileNamePattern(patternStr, context);
-        String fn = fileNamePattern.convert(new Date(millis));
-        expectedFilenameList.add(fn);
     }
 
     protected void addExpectedFileNamedIfItsTime_ByDate(String fileNamePatternStr) {
@@ -198,15 +151,6 @@ public class ScaffoldingForRollingTests {
         String fn = randomOutputDir + testId + "-" + SDF.format(millis) + "-" + fileIndexCounter + ".txt"
                 + compressionSuffix;
         expectedFilenameList.add(fn);
-    }
-
-    protected List<String> filterElementsInListBySuffix(String suffix) {
-        List<String> zipFiles = new ArrayList<String>();
-        for (String filename : expectedFilenameList) {
-            if (filename.endsWith(suffix))
-                zipFiles.add(filename);
-        }
-        return zipFiles;
     }
 
     protected void addExpectedFileNamedIfItsTime_ByDate(String outputDir, String testId, boolean gzExtension) {
@@ -240,12 +184,6 @@ public class ScaffoldingForRollingTests {
         }
     }
 
-    protected void zipEntryNameCheck(List<String> expectedFilenameList, String pattern) throws IOException {
-        for (String filepath : expectedFilenameList) {
-            checkZipEntryName(filepath, pattern);
-        }
-    }
-
     protected void checkZipEntryMatchesZipFilename(List<String> expectedFilenameList) throws IOException {
         for (String filepath : expectedFilenameList) {
             String stripped = stripStemFromZipFilename(filepath);
@@ -261,37 +199,5 @@ public class ScaffoldingForRollingTests {
 
     }
 
-    void checkZipEntryName(String filepath, String pattern) throws IOException {
-        ZipFile zf = new ZipFile(filepath);
 
-        try {
-            Enumeration<? extends ZipEntry> entries = zf.entries();
-            assert ((entries.hasMoreElements()));
-            ZipEntry firstZipEntry = entries.nextElement();
-            assert ((!entries.hasMoreElements()));
-            assertTrue(firstZipEntry.getName().matches(pattern));
-        } finally {
-            if (zf != null)
-                zf.close();
-        }
-    }
-
-    protected void add(Future<?> future) {
-        if (future == null)
-            return;
-        if (!futureList.contains(future)) {
-            futureList.add(future);
-        }
-    }
-
-    protected void waitForJobsToComplete() {
-        for (Future<?> future : futureList) {
-            try {
-                future.get(10, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                new RuntimeException("unexpected exception while testing", e);
-            }
-        }
-        futureList.clear();
-    }
 }

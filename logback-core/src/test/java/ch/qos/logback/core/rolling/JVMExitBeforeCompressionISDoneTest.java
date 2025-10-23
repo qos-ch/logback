@@ -2,6 +2,7 @@ package ch.qos.logback.core.rolling;
 
 import java.util.Date;
 
+import ch.qos.logback.core.rolling.testUtil.ParentScaffoldingForRollingTests;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;

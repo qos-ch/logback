@@ -17,7 +17,6 @@ import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
 import static ch.qos.logback.core.CoreConstants.STRICT_ISO8601_PATTERN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.time.Instant;
@@ -33,15 +32,21 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
+
 import java.util.concurrent.atomic.LongAdder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.time.temporal.ChronoUnit;
 
+import ch.qos.logback.core.rolling.testUtil.ParentScaffoldingForRollingTests;
+import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.ParameterizedTest;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.SpacePadder;
@@ -51,7 +56,7 @@ import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.FixedRateInvocationGate;
 
-public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRollingTests {
+public class TimeBasedRollingWithArchiveRemoval_Test extends ParentScaffoldingForRollingTests {
     String MONTHLY_DATE_PATTERN = "yyyy-MM";
     String MONTHLY_CRONOLOG_DATE_PATTERN = "yyyy/MM";
     final String DAILY_CRONOLOG_DATE_PATTERN = "yyyy/MM/dd";
@@ -61,7 +66,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
 
     DateTimeFormatter STRICT_DATE_PARSER = DateTimeFormatter.ofPattern(STRICT_ISO8601_PATTERN);
 
-    // by default tbfnatp is an instance of
+
+       // by default tbfnatp is an instance of
     // DefaultTimeBasedFileNamingAndTriggeringPolicy
     TimeBasedFileNamingAndTriggeringPolicy<Object> tbfnatp = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
 
@@ -187,22 +193,37 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         generateDailyRolloverAndCheckFileCount(cp);
     }
 
-    @Test
-    public void checkCleanupForBasicDailyRolloverWithSizeCap() {
-        long bytesOutputPerPeriod = 15984;
+    @ParameterizedTest
+    @MethodSource
+    public void checkCleanupForBasicDailyRolloverWithSizeCap(Long injectedCurrentTime) {
+        this.currentTime = injectedCurrentTime;
+        // the size cap is based on observations made during test runs
+        long bytesOutputPerPeriod = 16500;
         int sizeInUnitsOfBytesPerPeriod = 2;
+        // 1000 is to give some leeway
+        long sizeCap = sizeInUnitsOfBytesPerPeriod * bytesOutputPerPeriod + 1000;
+
+
 
         cp.maxHistory(5).simulatedNumberOfPeriods(10)
-                .sizeCap(sizeInUnitsOfBytesPerPeriod * bytesOutputPerPeriod + 1000);
+                .sizeCap(sizeCap);
         generateDailyRollover(cp);
+        // expect two archive for sizeInUnitsOfBytesPerPeriod =2 plus the latest period to remain
         checkFileCount(sizeInUnitsOfBytesPerPeriod + 1);
     }
 
+    static Stream<Long> checkCleanupForBasicDailyRolloverWithSizeCap() {
+        // currentTime = 1760822446333
+        // Sat Oct 18 2025 21:20:46.333 UTC
+        return Stream.of(1760822446333L, System.currentTimeMillis());
+    }
     @Test
     public void checkThatSmallTotalSizeCapLeavesAtLeastOneArhcive() {
         long WED_2016_03_23_T_131345_CET = WED_2016_03_23_T_230705_CET - 10 * CoreConstants.MILLIS_IN_ONE_HOUR;
 
         // long bytesOutputPerPeriod = 15984;
+
+
 
         cp = new ConfigParameters(WED_2016_03_23_T_131345_CET);
         final int verySmallCapSize = 1;
@@ -306,8 +327,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         List<File> foundFiles = findFilesByPattern("\\d{4}-\\d{2}-\\d{2}-clean(\\.\\d)");
         Collections.sort(foundFiles, new Comparator<File>() {
             public int compare(File f0, File f1) {
-                String s0 = f0.getName().toString();
-                String s1 = f1.getName().toString();
+                String s0 = f0.getName();
+                String s1 = f1.getName();
                 return s0.compareTo(s1);
             }
         });
@@ -370,7 +391,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     void logTwiceAndStop(long currentTime, String fileNamePattern, int maxHistory, long durationInMillis) {
         ConfigParameters params = new ConfigParameters(currentTime).fileNamePattern(fileNamePattern)
                 .maxHistory(maxHistory);
-        buildRollingFileAppender(params, DO_CLEAN_HISTORY_ON_START);
+        configureRollingFileAppender(params, DO_CLEAN_HISTORY_ON_START);
         rfa.doAppend("Hello ----------------------------------------------------------" + new Date(currentTime));
         currentTime += durationInMillis / 2;
         add(tbrp.compressionFuture);
@@ -451,7 +472,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         return result;
     }
 
-    void buildRollingFileAppender(ConfigParameters cp, boolean cleanHistoryOnStart) {
+    void configureRollingFileAppender(ConfigParameters cp, boolean cleanHistoryOnStart) {
         rfa.setContext(context);
         rfa.setEncoder(encoder);
         tbrp.setContext(context);
@@ -460,6 +481,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         tbrp.setTotalSizeCap(new FileSize(cp.sizeCap));
         tbrp.setParent(rfa);
         tbrp.setCleanHistoryOnStart(cleanHistoryOnStart);
+        tbfnatp.setContext(context);
         tbrp.timeBasedFileNamingAndTriggeringPolicy = tbfnatp;
         tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(cp.simulatedTime);
         tbrp.start();
@@ -471,22 +493,38 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     boolean DO_NOT_CLEAN_HISTORY_ON_START = false;
 
     long logOverMultiplePeriods(ConfigParameters cp) {
+        //addOnConsoleStatusListenerForDebugging();
 
-        buildRollingFileAppender(cp, DO_NOT_CLEAN_HISTORY_ON_START);
+        configureRollingFileAppender(cp, DO_NOT_CLEAN_HISTORY_ON_START);
+
 
         int runLength = cp.simulatedNumberOfPeriods * ticksPerPeriod;
         int startInactivityIndex = cp.startInactivity * ticksPerPeriod;
         int endInactivityIndex = startInactivityIndex + cp.numInactivityPeriods * ticksPerPeriod;
         long tickDuration = cp.periodDurationInMillis / ticksPerPeriod;
 
+        System.out.println("ticksPerPeriod=" + ticksPerPeriod);
+        System.out.println("cp.startInactivity="+cp.startInactivity);
+        System.out.println("cp.simulatedNumberOfPeriods="+cp.simulatedNumberOfPeriods);
+        System.out.println("cp.periodDurationInMillis="+cp.periodDurationInMillis);
+
+        System.out.println("runLength=" + runLength);
+
+        System.out.println("startInactivityIndex=" + startInactivityIndex);
+        System.out.println("endInactivityIndex=" + endInactivityIndex);
+        System.out.println("tickDuration=" + tickDuration);
+        System.out.println(" ");
+
         for (int i = 0; i <= runLength; i++) {
-            Date currentDate = new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
+            long timeInMillis = tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime();
+
+            Date currentDate = new Date(timeInMillis);
+            //System.out.println("i=" + i + ", currentDate=" + currentDate);
             if (i < startInactivityIndex || i > endInactivityIndex) {
                 rfa.doAppend(buildMessageString(currentDate, i));
             }
 
-            tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(
-                    addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime(), tickDuration));
+            tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(timeInMillis, tickDuration));
 
             add(tbrp.compressionFuture);
             add(tbrp.cleanUpFuture);
@@ -504,6 +542,13 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         // System.out.println("Current time at end of loop: "+new
         // Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
         return tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime();
+    }
+
+    private void addOnConsoleStatusListenerForDebugging() {
+        OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
+        onConsoleStatusListener.setContext(context);
+        onConsoleStatusListener.start();
+        context.getStatusManager().add(onConsoleStatusListener);
     }
 
     private static String buildMessageString(Date currentDate, int i) {

@@ -18,12 +18,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.function.UnaryOperator;
 
+import ch.qos.logback.core.rolling.testUtil.ParentScaffoldingForRollingTests;
+import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
-import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -51,6 +52,7 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
+    static public final String DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss";
     static final int NO_RESTART = 0;
     static final int WITH_RESTART = 1;
     static final int WITH_RESTART_AND_LONG_WAIT = 2000;

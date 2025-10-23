@@ -24,6 +24,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedFileNamingAndTriggeringPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+import ch.qos.logback.core.rolling.testUtil.ParentScaffoldingForRollingTests;
 import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.testUtil.StatusChecker;

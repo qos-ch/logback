@@ -16,23 +16,23 @@ package ch.qos.logback.core.rolling;
 import java.io.IOException;
 import java.util.List;
 
+import ch.qos.logback.core.rolling.testUtil.ParentScaffoldingForRollingTests;
 import ch.qos.logback.core.util.Duration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
-import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
+public class SizeBasedRollingTest extends ParentScaffoldingForRollingTests {
 
-public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
-
-    RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
+    static public final String DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss";
+    RollingFileAppender<Object> rfa = new RollingFileAppender<>();
     FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
-    SizeBasedTriggeringPolicy<Object> sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy<Object>();
-    EchoEncoder<Object> encoder = new EchoEncoder<Object>();
+    SizeBasedTriggeringPolicy<Object> sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy<>();
+    EchoEncoder<Object> encoder = new EchoEncoder<>();
 
     @BeforeEach
     public void setUp() {

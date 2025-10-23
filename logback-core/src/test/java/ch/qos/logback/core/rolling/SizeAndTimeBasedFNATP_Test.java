@@ -17,13 +17,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.rolling.testUtil.ParentScaffoldingForRollingTests;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.StatusPrinter;
