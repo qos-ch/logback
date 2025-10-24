@@ -42,7 +42,7 @@ who can quickly answer your questions.
 # Urgent issues
 
 For urgent issues do not hesitate to [champion a
-release](https://github.com/sponsors/qos-ch/sponsorships?tier_id=77436).
+release](https://github.com/sponsors/qos-ch/sponsorships?tier_id=543501).
 In principle, most championed issues are solved within 3 business days
 followed up by a release.
 
