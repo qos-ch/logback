@@ -29,7 +29,7 @@ public class SubPatternLayout extends PatternLayout {
 
     SubPatternLayout() {
         Map<String, String> defaultConverterMap = getDefaultConverterMap();
-        defaultConverterMap.put(DOOO, DateConverter.class.getName());
+        defaultConverterMap.put(DOOO, LevelConverter.class.getName());
     }
 
 }

@@ -31,6 +31,10 @@ public class LegacyPatternLayoutTest {
 
     LoggerContext context = new LoggerContext();
 
+    /**
+     * Test backward compatibility for classes derived from
+     * PatternLayout that add custom conversion words.
+     */
     @Test public void subPattern() {
         SubPatternLayout layout = new SubPatternLayout();
         layout.setPattern("%"+SubPatternLayout.DOOO);
@@ -38,9 +42,10 @@ public class LegacyPatternLayoutTest {
         layout.start();
         LoggingEvent event = new LoggingEvent();
         event.setTimeStamp(0);
+        event.setLevel(Level.INFO);
 
         String result = layout.doLayout(event);
-        assertEquals("1970-01-01 01:00:00,000", result);
+        assertEquals("INFO", result);
     }
 
     @Test
