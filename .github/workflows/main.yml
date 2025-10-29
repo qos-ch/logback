@@ -39,6 +39,7 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: ${{ matrix.jdk }}
+        cache: maven  # This enables Maven dependency caching
     - name: Install
       # download dependencies, etc, so test log looks better
       run: mvn -B install
