@@ -20,6 +20,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.ReentryGuard;
+import ch.qos.logback.core.util.ReentryGuardFactory;
 
 /**
  * Similar to {@link AppenderBase} except that derived appenders need to handle thread
@@ -31,16 +33,13 @@ import ch.qos.logback.core.status.WarnStatus;
 abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase implements Appender<E> {
 
     protected volatile boolean started = false;
-
-    // using a ThreadLocal instead of a boolean add 75 nanoseconds per
-    // doAppend invocation. This is tolerable as doAppend takes at least a few
-    // microseconds
-    // on a real appender
     /**
      * The guard prevents an appender from repeatedly calling its own doAppend
      * method.
+     *
+     * @since 1.5.21
      */
-    private ThreadLocal<Boolean> guard = new ThreadLocal<Boolean>();
+    private ReentryGuard  reentryGuard;
 
     /**
      * Appenders are named.
@@ -59,23 +58,20 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
     static final int ALLOWED_REPEATS = 3;
 
     public void doAppend(E eventObject) {
-        // WARNING: The guard check MUST be the first statement in the
-        // doAppend() method.
+        if (!this.started) {
+            if (statusRepeatCount++ < ALLOWED_REPEATS) {
+                addStatus(new WarnStatus("Attempted to append to non started appender [" + name + "].", this));
+            }
+            return;
+        }
 
         // prevent re-entry.
-        if (Boolean.TRUE.equals(guard.get())) {
+        if (reentryGuard.isLocked()) {
             return;
         }
 
         try {
-            guard.set(Boolean.TRUE);
-
-            if (!this.started) {
-                if (statusRepeatCount++ < ALLOWED_REPEATS) {
-                    addStatus(new WarnStatus("Attempted to append to non started appender [" + name + "].", this));
-                }
-                return;
-            }
+            reentryGuard.lock();
 
             if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
                 return;
@@ -89,7 +85,7 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
                 addError("Appender [" + name + "] failed to append.", e);
             }
         } finally {
-            guard.set(Boolean.FALSE);
+            reentryGuard.unlock();
         }
     }
 
@@ -103,7 +99,35 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
     }
 
     public void start() {
+        this.reentryGuard = buildReentryGuard();
         started = true;
+    }
+
+    /**
+     * Create a {@link ReentryGuard} instance used by this appender to prevent
+     * recursive/re-entrant calls to {@link #doAppend(Object)}.
+     *
+     * <p>The default implementation returns a no-op guard produced by
+     * {@link ReentryGuardFactory#makeGuard(ch.qos.logback.core.util.ReentryGuardFactory.GuardType)}
+     * using {@code GuardType.NOP}. Subclasses that require actual re-entry
+     * protection (for example using a thread-local or lock-based guard) should
+     * override this method to return an appropriate {@link ReentryGuard}
+     * implementation.</p>
+     *
+     * <p>Contract/expectations:
+     * <ul>
+     *   <li>Called from {@link #start()} to initialize the appender's guard.</li>
+     *   <li>Implementations should be lightweight and thread-safe.</li>
+     *   <li>Return value must not be {@code null}.</li>
+     * </ul>
+     * </p>
+     *
+     * @return a non-null {@link ReentryGuard} used to detect and prevent
+     *         re-entrant appends. By default this is a no-op guard.
+     * @since 1.5.21
+     */
+    protected ReentryGuard buildReentryGuard() {
+        return ReentryGuardFactory.makeGuard(ReentryGuardFactory.GuardType.NOP);
     }
 
     public void stop() {

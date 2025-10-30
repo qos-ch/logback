@@ -25,6 +25,8 @@ import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
+import ch.qos.logback.core.util.ReentryGuard;
+import ch.qos.logback.core.util.ReentryGuardFactory;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
@@ -98,6 +100,14 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
         }
         setOutputStream(targetStream);
         super.start();
+    }
+
+    /**
+     * Create a ThreadLocal ReentryGuard to prevent recursive appender invocations.
+     * @return a ReentryGuard instance of type {@link ReentryGuardFactory.GuardType#THREAD_LOCAL THREAD_LOCAL}.
+     */
+    protected ReentryGuard buildReentryGuard() {
+        return ReentryGuardFactory.makeGuard(ReentryGuardFactory.GuardType.THREAD_LOCAL);
     }
 
     private OutputStream wrapWithJansi(OutputStream targetStream) {
