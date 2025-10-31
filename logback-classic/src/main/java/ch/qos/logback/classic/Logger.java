@@ -375,6 +375,7 @@ public final class Logger
         final FilterReply decision = loggerContext.getTurboFilterChainDecision_0_3OrMore(marker, this, level, msg,
                 params, t);
 
+        // the ACCEPT case falls through
         if (decision == FilterReply.NEUTRAL) {
             if (effectiveLevelInt > level.levelInt) {
                 return;
@@ -391,6 +392,7 @@ public final class Logger
 
         final FilterReply decision = loggerContext.getTurboFilterChainDecision_1(marker, this, level, msg, param, t);
 
+        // the ACCEPT case falls through
         if (decision == FilterReply.NEUTRAL) {
             if (effectiveLevelInt > level.levelInt) {
                 return;
@@ -408,6 +410,7 @@ public final class Logger
         final FilterReply decision = loggerContext.getTurboFilterChainDecision_2(marker, this, level, msg, param1,
                 param2, t);
 
+        // the ACCEPT case falls through
         if (decision == FilterReply.NEUTRAL) {
             if (effectiveLevelInt > level.levelInt) {
                 return;
