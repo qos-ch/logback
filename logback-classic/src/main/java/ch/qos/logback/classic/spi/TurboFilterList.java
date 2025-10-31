@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -24,7 +24,7 @@ import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * Implementation of TurboFilterAttachable.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
@@ -37,31 +37,32 @@ final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
      * then NEUTRAL is returned.
      */
     public FilterReply getTurboFilterChainDecision(final Marker marker, final Logger logger, final Level level,
-            final String format, final Object[] params, final Throwable t) {
+                                                   final String format, final Object[] params, final Throwable t) {
 
         final int size = size();
-        // if (size == 0) {
-        // return FilterReply.NEUTRAL;
-        // }
+        // caller may have already performed this check, but we do it here as well to be sure
+        if (size == 0) {
+            return FilterReply.NEUTRAL;
+        }
+
         if (size == 1) {
             try {
                 TurboFilter tf = get(0);
                 return tf.decide(marker, logger, level, format, params, t);
             } catch (IndexOutOfBoundsException iobe) {
+                // concurrent modification detected, fall through to the general case
                 return FilterReply.NEUTRAL;
             }
         }
 
-        Object[] tfa = toArray();
-        final int len = tfa.length;
-        for (int i = 0; i < len; i++) {
-            // for (TurboFilter tf : this) {
-            final TurboFilter tf = (TurboFilter) tfa[i];
+
+        for (TurboFilter tf : this) {
             final FilterReply r = tf.decide(marker, logger, level, format, params, t);
             if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
                 return r;
             }
         }
+
         return FilterReply.NEUTRAL;
     }
 

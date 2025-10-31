@@ -27,7 +27,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * first is much more performant.
  * <p>
  * For more information about turbo filters, please refer to the online manual
- * at http://logback.qos.ch/manual/filters.html#TurboFilter
+ * at https://logback.qos.ch/manual/filters.html#TurboFilter
  * 
  * @author Ceki Gulcu
  */
