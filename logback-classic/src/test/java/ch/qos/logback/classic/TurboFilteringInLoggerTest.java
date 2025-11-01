@@ -44,7 +44,7 @@ public class TurboFilteringInLoggerTest {
 
     ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
-    MDCFilter mdcFilter = new MDCFilter();
+
     @BeforeEach
     public void setUp() throws Exception {
         loggerContext = new LoggerContext();
@@ -59,25 +59,28 @@ public class TurboFilteringInLoggerTest {
 
     }
 
-    private void addMDCFilter() {
-
-        mdcFilter.setOnMatch("ACCEPT");
-        mdcFilter.setOnMismatch("DENY");
-        mdcFilter.setMDCKey(key);
-        mdcFilter.setValue(value);
-        mdcFilter.start();
-        loggerContext.addTurboFilter(mdcFilter);
+    private CountingMDCFilter addMDCFilter() {
+        CountingMDCFilter countingMDCFilter = new CountingMDCFilter();
+        countingMDCFilter.setOnMatch("ACCEPT");
+        countingMDCFilter.setOnMismatch("DENY");
+        countingMDCFilter.setMDCKey(key);
+        countingMDCFilter.setValue(value);
+        countingMDCFilter.start();
+        loggerContext.addTurboFilter(countingMDCFilter);
+        return  countingMDCFilter;
     }
-    private void addYesFilter() {
+    private YesFilter addYesFilter() {
         YesFilter filter = new YesFilter();
         filter.start();
         loggerContext.addTurboFilter(filter);
+        return filter;
     }
 
-    private void addNoFilter() {
+    private NoFilter addNoFilter() {
         NoFilter filter = new NoFilter();
         filter.start();
         loggerContext.addTurboFilter(filter);
+        return filter;
     }
 
     private void addAcceptBLUEFilter() {
@@ -105,16 +108,22 @@ public class TurboFilteringInLoggerTest {
 
     @Test
     public void testIsInfoEnabledWithYesFilter() {
-        addYesFilter();
+        YesFilter filter = addYesFilter();
         logger.setLevel(Level.WARN);
-        assertTrue(logger.isInfoEnabled());
+        assertTrue(logger.isInfoEnabled()); // count+=1
+        logger.info("testIsInfoEnabledWithYesFilter1"); // count+=1
+        logger.atInfo().log("testIsInfoEnabledWithYesFilter2"); // count+=2
+        assertEquals(2, listAppender.list.size());
+        assertEquals(4, filter.count);
     }
 
     @Test
     public void testIsWarnEnabledWithYesFilter() {
-        addYesFilter();
+        YesFilter filter = addYesFilter();
         logger.setLevel(Level.ERROR);
-        assertTrue(logger.isWarnEnabled());
+        assertTrue(logger.isWarnEnabled());  // count+=1
+        assertEquals(1, filter.count);
+
     }
 
     @Test
@@ -190,26 +199,41 @@ public class TurboFilteringInLoggerTest {
 
     @Test
     public void fluentAPI() {
-        addMDCFilter();
+        CountingMDCFilter countingMDCFilter = addMDCFilter();
         Logger logger = loggerContext.getLogger(this.getClass());
-        logger.atDebug().log("hello 1");
+        logger.atDebug().log("hello 1"); // count+=1
         assertEquals(0, listAppender.list.size());
         MDC.put(key, value);
-        logger.atDebug().log("hello 2");
+        logger.atDebug().log("hello 2");  // count+=2
         assertEquals(1, listAppender.list.size());
+        assertEquals(3, countingMDCFilter.count);
     }
 }
 
 class YesFilter extends TurboFilter {
+    int count = 0;
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
+        count++;
         return FilterReply.ACCEPT;
     }
 }
 
 class NoFilter extends TurboFilter {
+    int count = 0;
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
+        count++;
         return FilterReply.DENY;
+    }
+}
+
+
+class CountingMDCFilter extends MDCFilter {
+    int count = 0;
+    @Override
+    public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
+        count++;
+        return super.decide(marker, logger, level, format, params, t);
     }
 }

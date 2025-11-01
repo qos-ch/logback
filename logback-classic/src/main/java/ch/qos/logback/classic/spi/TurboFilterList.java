@@ -33,7 +33,7 @@ final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
 
     /**
      * Loop through the filters in the chain. As soon as a filter decides on ACCEPT
-     * or DENY, then that value is returned. If all of the filters return NEUTRAL,
+     * or DENY, then that value is returned. If all turbo filters return NEUTRAL,
      * then NEUTRAL is returned.
      */
     public FilterReply getTurboFilterChainDecision(final Marker marker, final Logger logger, final Level level,
@@ -66,16 +66,44 @@ final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
         return FilterReply.NEUTRAL;
     }
 
-    // public boolean remove(TurboFilter turboFilter) {
-    // return tfList.remove(turboFilter);
-    // }
-    //
-    // public TurboFilter remove(int index) {
-    // return tfList.remove(index);
-    // }
-    //
-    // final public int size() {
-    // return tfList.size();
-    // }
+
+    /**
+     * Loop through the filters in the chain. As soon as a filter decides on ACCEPT
+     * or DENY, then that value is returned. If all turbo filters return NEUTRAL,
+     * then NEUTRAL is returned.
+     *
+     * @param logger  the logger requesting a decision
+     * @param slf4jEvent the SLF4J logging event
+     * @return the decision of the turbo filter chain
+     * @since 1.5.21
+     */
+    public FilterReply getTurboFilterChainDecision(Logger logger, org.slf4j.event.LoggingEvent slf4jEvent) {
+
+        final int size = size();
+        // caller may have already performed this check, but we do it here as well to be sure
+        if (size == 0) {
+            return FilterReply.NEUTRAL;
+        }
+
+        if (size == 1) {
+            try {
+                TurboFilter tf = get(0);
+                return tf.decide(logger, slf4jEvent);
+            } catch (IndexOutOfBoundsException iobe) {
+                // concurrent modification detected, fall through to the general case
+                return FilterReply.NEUTRAL;
+            }
+        }
+
+
+        for (TurboFilter tf : this) {
+            final FilterReply r = tf.decide(logger, slf4jEvent);
+            if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
+                return r;
+            }
+        }
+
+        return FilterReply.NEUTRAL;
+    }
 
 }

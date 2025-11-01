@@ -13,24 +13,6 @@
  */
 package ch.qos.logback.classic;
 
-import static ch.qos.logback.core.CoreConstants.EVALUATOR_MAP;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.locks.ReentrantLock;
-
-import ch.qos.logback.classic.util.LogbackMDCAdapter;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.InfoStatus;
-import org.slf4j.ILoggerFactory;
-import org.slf4j.Marker;
-
 import ch.qos.logback.classic.spi.LoggerComparator;
 import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.classic.spi.LoggerContextVO;
@@ -45,7 +27,15 @@ import ch.qos.logback.core.spi.SequenceNumberGenerator;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Marker;
 import org.slf4j.spi.MDCAdapter;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+
+import static ch.qos.logback.core.CoreConstants.EVALUATOR_MAP;
 
 /**
  * LoggerContext glues many of the logback-classic components together. In
@@ -281,11 +271,19 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
 
     final FilterReply getTurboFilterChainDecision_2(final Marker marker, final Logger logger, final Level level, final String format, final Object param1,
                     final Object param2, final Throwable t) {
-        if (turboFilterList.size() == 0) {
+        if (turboFilterList.isEmpty()) {
             return FilterReply.NEUTRAL;
         }
         return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, new Object[] { param1, param2 }, t);
     }
+
+    final FilterReply getTurboFilterChainDecision(final Logger logger, final org.slf4j.event.LoggingEvent slf4jEvent) {
+        if (turboFilterList.isEmpty()) {
+            return FilterReply.NEUTRAL;
+        }
+        return turboFilterList.getTurboFilterChainDecision(logger, slf4jEvent);
+    }
+
 
     // === start listeners ==============================================
     public void addListener(LoggerContextListener listener) {

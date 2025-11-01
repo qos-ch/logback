@@ -369,6 +369,7 @@ public final class Logger
      * by about 20 nanoseconds.
      */
 
+    // for 0 or 3 or more parameters
     private void filterAndLog_0_Or3Plus(final String localFQCN, final Marker marker, final Level level,
             final String msg, final Object[] params, final Throwable t) {
 
@@ -386,6 +387,7 @@ public final class Logger
 
         buildLoggingEventAndAppend(localFQCN, marker, level, msg, params, t);
     }
+
 
     private void filterAndLog_1(final String localFQCN, final Marker marker, final Level level, final String msg,
             final Object param, final Throwable t) {
@@ -748,16 +750,36 @@ public final class Logger
      * Method that calls the attached TurboFilter objects based on the logger and
      * the level.
      * 
-     * It is used by isYYYEnabled() methods.
-     * 
-     * It returns the typical FilterReply values: ACCEPT, NEUTRAL or DENY.
-     * 
+     * <p>It is used by isXYZEnabled() methods such as {@link #isDebugEnabled()},
+     * {@link #isInfoEnabled()} etc.
+     * </p>
+     *
+     * <p>It returns the typical FilterReply values: ACCEPT, NEUTRAL or DENY.
+     * </p>
      * @param level
      * @return the reply given by the TurboFilters
      */
     private FilterReply callTurboFilters(Marker marker, Level level) {
         return loggerContext.getTurboFilterChainDecision_0_3OrMore(marker, this, level, null, null, null);
     }
+
+    /**
+     * Method that calls the attached TurboFilter objects based on this logger and
+     * {@link org.slf4j.event.LoggingEvent  LoggingEvent}.
+     *
+     * <p>This method is typically called by
+     * {@link #log(org.slf4j.event.LoggingEvent) log(LoggingEvent)} method.</p>
+     *
+     * <p>It returns {@link FilterReply} values: ACCEPT, NEUTRAL or DENY.
+     * </p>
+     *
+     * @param slf4jEvent the SLF4J LoggingEvent
+     * @return the reply given by the TurboFilters
+     */
+    private FilterReply callTurboFilters(org.slf4j.event.LoggingEvent slf4jEvent) {
+        return loggerContext.getTurboFilterChainDecision(this, slf4jEvent);
+    }
+
 
     /**
      * Return the context for this logger.
@@ -785,7 +807,9 @@ public final class Logger
 
     /**
      * Support SLF4J interception during initialization as introduced in SLF4J
-     * version 1.7.15
+     * version 1.7.15. Alternatively, this method can be called by SLF4J's fluent API, i.e. by
+     * {@link LoggingEventBuilder}.
+     *
      * 
      * @since 1.1.4
      * @param slf4jEvent
@@ -794,10 +818,16 @@ public final class Logger
         org.slf4j.event.Level slf4jLevel = slf4jEvent.getLevel();
         Level logbackLevel = Level.convertAnSLF4JLevel(slf4jLevel);
 
-        // By default, assume this class was the caller. This happens during
-        // initialization.
-        // However, it is possible that the caller is some other library, e.g.
-        // slf4j-jdk-platform-logging
+        // invoke turbo filters. See also https://github.com/qos-ch/logback/issues/871
+        final FilterReply decision = loggerContext.getTurboFilterChainDecision(this, slf4jEvent);
+        // the ACCEPT and NEUTRAL cases falls through as there are no further level checks to be done
+        if (decision == FilterReply.DENY) {
+            return;
+        }
+
+        // By default, assume this class was the caller. In some cases, {@link SubstituteLogger} can also be a caller.
+        //
+        // It is possible that the caller is some other library, e.g. slf4j-jdk-platform-logging
 
         String callerBoundary = slf4jEvent.getCallerBoundary();
         if (callerBoundary == null) {
