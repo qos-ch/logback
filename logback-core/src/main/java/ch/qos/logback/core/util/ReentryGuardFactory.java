@@ -14,8 +14,6 @@
 
 package ch.qos.logback.core.util;
 
-import java.util.Objects;
-
 /**
  * Factory that creates {@link ReentryGuard} instances according to a requested type.
  *
@@ -56,7 +54,6 @@ public class ReentryGuardFactory {
      * @since 1.5.21
      */
     public static ReentryGuard makeGuard(GuardType guardType) {
-        Objects.requireNonNull(guardType, "guardType must not be null");
         switch (guardType) {
             case THREAD_LOCAL:
                 return new ReentryGuard.ReentryGuardImpl();
