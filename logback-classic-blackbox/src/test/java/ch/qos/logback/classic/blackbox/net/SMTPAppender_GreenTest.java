@@ -20,22 +20,20 @@ import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
 import ch.qos.logback.classic.net.SMTPAppender;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.util.EnvUtil;
+import com.icegreen.greenmail.util.*;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
-import com.icegreen.greenmail.util.DummySSLSocketFactory;
-import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.GreenMailUtil;
-import com.icegreen.greenmail.util.ServerSetup;
 
 //import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -66,6 +64,11 @@ public class SMTPAppender_GreenTest {
     static final String FOOTER = "FOOTER\n";
     static final String DEFAULT_PATTERN = "%-4relative %mdc [%thread] %-5level %class - %msg%n";
 
+    static final String JAVAX_NET_DEBUG_KEY = "javax.net.debug";
+    static final String SSH_HANDSHAKE_DEBUG_VAL =  "ssl:handshake";
+    // for use in authenticated SSL tests only (to avoid SSL handshake failures)
+    static final String CHECK_SERVER_IDENTITY_KEY = "mail.smtp.ssl.checkserveridentity";
+
     static final boolean SYNCHRONOUS = false;
     static final boolean ASYNCHRONOUS = true;
     static int TIMEOUT = 3000;
@@ -82,11 +85,26 @@ public class SMTPAppender_GreenTest {
     static String REQUIRED_USERNAME = "alice";
     static String REQUIRED_PASSWORD = "alicepass";
 
+
     @BeforeEach
     public void setUp() throws Exception {
         loggerContext.setMDCAdapter(logbackMDCAdapter);
         StatusListenerConfigHelper.addOnConsoleListenerInstance(loggerContext, new OnConsoleStatusListener());
+        setGlobalLogbackLoggerForGreenmail(Level.INFO);
     }
+
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        greenMailServer.stop();
+        setGlobalLogbackLoggerForGreenmail(null);
+    }
+
+    private static void setGlobalLogbackLoggerForGreenmail(Level level) {
+        Logger logbackLogger = (Logger) LoggerFactory.getLogger("com.icegreen.greenmail");
+        logbackLogger.setLevel(level);
+    }
+
 
     void startSMTPServer(boolean withSSL) {
         ServerSetup serverSetup;
@@ -107,10 +125,6 @@ public class SMTPAppender_GreenTest {
         }
     }
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        greenMailServer.stop();
-    }
 
     void buildSMTPAppender(String subject, boolean synchronicity) throws Exception {
         smtpAppender = new SMTPAppender();
@@ -456,9 +470,12 @@ public class SMTPAppender_GreenTest {
 
     @Test
     public void authenticatedSSL() throws Exception {
-        try {
-            setSystemPropertiesForStartTLS();
 
+        try {
+            // without setting this property, the SSL handshake fails with newer icegreen, angus versions
+            System.setProperty(CHECK_SERVER_IDENTITY_KEY, "false");
+            setSystemPropertiesForStartTLS();
+            //System.setProperty("greenmail.smtps.host",  "127.0.0.1");
             startSMTPServer(WITH_SSL);
             buildSMTPAppender("testMultipleTo", SYNCHRONOUS);
             smtpAppender.setUsername(REQUIRED_USERNAME);
@@ -478,6 +495,7 @@ public class SMTPAppender_GreenTest {
             assertNotNull(mma);
             assertTrue(mma.length == 1, "body should not be empty");
         } finally {
+            System.clearProperty(CHECK_SERVER_IDENTITY_KEY);
             unsetSystemPropertiesForStartTLS();
         }
     }

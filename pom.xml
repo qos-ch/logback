@@ -64,12 +64,12 @@
     <junit-platform.version>1.10.5</junit-platform.version>
     <assertj-core.version>3.23.1</assertj-core.version>
     <hamcrest.version>2.2</hamcrest.version>
-    <jakarta.mail.version>2.1.0</jakarta.mail.version>
-    <jakarta.activation.version>2.1.0</jakarta.activation.version>
-    <jakarta.angus-mail.version>1.0.0</jakarta.angus-mail.version>
+    <jakarta.mail.version>2.1.5</jakarta.mail.version>
+    <jakarta.activation.version>2.1.4</jakarta.activation.version>
+    <jakarta.angus-mail.version>2.0.3</jakarta.angus-mail.version>
 
     <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
-    <greenmail.version>2.0.0-alpha-1</greenmail.version>
+    <greenmail.version>2.1.7</greenmail.version>
 
     <janino.version>3.1.8</janino.version>
     <!-- slf4j.version property is used below, in
@@ -234,6 +234,12 @@
         <artifactId>angus-mail</artifactId>
         <version>${jakarta.angus-mail.version}</version>
       </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.angus</groupId>-->
+<!--            <artifactId>angus-activation</artifactId>-->
+<!--            <version>${jakarta.angus-activation.version}</version>-->
+<!--        </dependency>-->
 
       <dependency>
         <groupId>jakarta.servlet</groupId>
