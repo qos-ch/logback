@@ -86,7 +86,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         ledo.sequenceNumber = le.getSequenceNumber();
         ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
         // add caller data only if it is there already
-        // fixes http://jira.qos.ch/browse/LBCLASSIC-145
+        // See also https://jira.qos.ch/browse/LOGBACK-480
         if (le.hasCallerData()) {
             ledo.callerDataArray = le.getCallerData();
         }
