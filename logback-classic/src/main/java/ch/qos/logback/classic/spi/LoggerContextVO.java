@@ -41,6 +41,13 @@ public class LoggerContextVO implements Serializable {
     protected Map<String, String> propertyMap;
     protected long birthTime;
 
+    /**
+     * No-arg constructor for serialization frameworks only.
+     *
+     * @since 1.5.21
+     */
+    public LoggerContextVO() {}
+
     public LoggerContextVO(LoggerContext lc) {
         this.name = lc.getName();
         this.propertyMap = lc.getCopyOfPropertyMap();
