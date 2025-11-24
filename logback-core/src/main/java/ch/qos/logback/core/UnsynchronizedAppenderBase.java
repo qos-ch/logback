@@ -22,6 +22,7 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.ReentryGuard;
 import ch.qos.logback.core.util.ReentryGuardFactory;
+import ch.qos.logback.core.util.SimpleTimeBasedGuard;
 
 /**
  * Similar to {@link AppenderBase} except that derived appenders need to handle thread
@@ -52,14 +53,14 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
         return name;
     }
 
-    private int statusRepeatCount = 0;
-    private int exceptionCount = 0;
+    private SimpleTimeBasedGuard notStartedGuard = new SimpleTimeBasedGuard();
+    private SimpleTimeBasedGuard exceptionGuard = new SimpleTimeBasedGuard();
 
-    static final int ALLOWED_REPEATS = 3;
 
     public void doAppend(E eventObject) {
         if (!this.started) {
-            if (statusRepeatCount++ < ALLOWED_REPEATS) {
+
+            if (notStartedGuard.allow()) {
                 addStatus(new WarnStatus("Attempted to append to non started appender [" + name + "].", this));
             }
             return;
@@ -81,7 +82,7 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
             this.append(eventObject);
 
         } catch (Exception e) {
-            if (exceptionCount++ < ALLOWED_REPEATS) {
+            if (exceptionGuard.allow()) {
                 addError("Appender [" + name + "] failed to append.", e);
             }
         } finally {
@@ -123,7 +124,7 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
      * </p>
      *
      * @return a non-null {@link ReentryGuard} used to detect and prevent
-     *         re-entrant appends. By default this is a no-op guard.
+     *         re-entrant appends. By default, this is a no-op guard.
      * @since 1.5.21
      */
     protected ReentryGuard buildReentryGuard() {
