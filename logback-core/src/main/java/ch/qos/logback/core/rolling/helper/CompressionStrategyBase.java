@@ -14,7 +14,6 @@
 
 package ch.qos.logback.core.rolling.helper;
 
-import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.FileUtil;
 
