@@ -47,11 +47,11 @@ public class ThrowableProxyTest {
         result = result.replace("common frames omitted", "more");
         String expected = sw.toString();
 
-        // System.out.println("========expected");
-        // System.out.println(expected);
-
-        // System.out.println("========result");
-        // System.out.println(result);
+//         System.out.println("========expected");
+//         System.out.println(expected);
+//
+//         System.out.println("========result");
+//         System.out.println(result);
 
         assertEquals(expected, result);
     }
@@ -180,6 +180,16 @@ public class ThrowableProxyTest {
         verify(e);
     }
 
+    @Test
+    public void overriddenToString() {
+        Exception e = new Exception() {
+            public String toString() {
+                return getClass().getName() + " [extra]";
+            }
+        };
+        verify(e);
+    }
+
     void someMethod() throws Exception {
         throw new Exception("someMethod");
     }
@@ -202,4 +212,6 @@ public class ThrowableProxyTest {
             throw new Exception("someOtherMethod", e);
         }
     }
+
+
 }

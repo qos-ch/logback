@@ -21,6 +21,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     private static final long serialVersionUID = -773438177285807139L;
 
     private String className;
+    private String overridingMessage;
     private String message;
     private int commonFramesCount;
     private StackTraceElementProxy[] stackTraceElementProxyArray;
@@ -31,6 +32,17 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     public String getMessage() {
         return message;
     }
+    /**
+     * Return the overriding message if any. This method returns null
+     * if there is no overriding message.
+     *
+     * <p>Overriding message exists only if the original throwable implementation overrides the toString() method.</p>
+     *
+     * @return the overriding message or null
+     * @since 1.5.22
+     */
+    @Override
+    public String getOverridingMessage() { return overridingMessage;}
 
     public String getClassName() {
         return className;
@@ -102,6 +114,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
         ThrowableProxyVO tpvo = new ThrowableProxyVO();
         tpvo.className = throwableProxy.getClassName();
         tpvo.message = throwableProxy.getMessage();
+        tpvo.overridingMessage = throwableProxy.getOverridingMessage();
         tpvo.commonFramesCount = throwableProxy.getCommonFrames();
         tpvo.stackTraceElementProxyArray = throwableProxy.getStackTraceElementProxyArray();
         tpvo.cyclic = throwableProxy.isCyclic();

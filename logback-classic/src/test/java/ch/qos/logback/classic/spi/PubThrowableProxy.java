@@ -19,6 +19,9 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 
 import java.util.Arrays;
 
+/**
+ * Used in tests to represent a ThrowableProxy in a JSON-friendly way.
+ */
 public class PubThrowableProxy implements IThrowableProxy {
 
     private String className;

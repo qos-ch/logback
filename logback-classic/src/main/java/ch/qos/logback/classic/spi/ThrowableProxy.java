@@ -28,6 +28,7 @@ public class ThrowableProxy implements IThrowableProxy {
 
     private Throwable throwable;
     private String className;
+    private String overridingMessage;
     private String message;
     // package-private because of ThrowableProxyUtil
     StackTraceElementProxy[] stackTraceElementProxyArray;
@@ -65,6 +66,7 @@ public class ThrowableProxy implements IThrowableProxy {
         this.throwable = throwable;
         this.className = throwable.getClass().getName();
         this.message = throwable.getMessage();
+        this.overridingMessage = buildOverridingMessage(throwable);
         this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
         this.cyclic = false;
 
@@ -101,12 +103,34 @@ public class ThrowableProxy implements IThrowableProxy {
         }
     }
 
+    private String buildOverridingMessage(Throwable throwable) {
+        StringBuilder sb = new StringBuilder();
+        ThrowableProxyUtil.appendNominalFirstLine(sb, throwable.getClass().getName(), throwable.getMessage());
+        String messageFromToString = throwable.toString();
+        String nominalMessage = sb.toString();
+        if (!nominalMessage.equals(messageFromToString)) {
+            return messageFromToString;
+        } else {
+            return null;
+        }
+    }
+
     public Throwable getThrowable() {
         return throwable;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see ch.qos.logback.classic.spi.IThrowableProxy#getOverridingMessage()
+     */
+    @Override
+    public String getOverridingMessage() {
+        return overridingMessage;
     }
 
     /*

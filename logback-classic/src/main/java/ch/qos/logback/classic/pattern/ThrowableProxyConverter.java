@@ -177,17 +177,9 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
         if (prefix != null) {
             buf.append(prefix);
         }
-        subjoinExceptionMessage(buf, tp);
+        ThrowableProxyUtil.subjoinExceptionMessage(buf, tp);
     }
 
-    private void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-        if (tp.isCyclic()) {
-            buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage())
-                    .append(']');
-        } else {
-            buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
-        }
-    }
 
     protected void subjoinSTEPArray(StringBuilder buf, int indent, IThrowableProxy tp) {
         StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();

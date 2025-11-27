@@ -73,6 +73,10 @@ public class ThrowableProxyUtil {
         return count;
     }
 
+    public static void appendNominalFirstLine(StringBuilder buf, String classname, String message) {
+        buf.append(classname).append(": ").append(message);
+    }
+
     public static String asString(IThrowableProxy tp) {
         StringBuilder sb = new StringBuilder(BUILDER_CAPACITY);
 
@@ -181,12 +185,21 @@ public class ThrowableProxyUtil {
         subjoinExceptionMessage(buf, tp);
     }
 
-    private static void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
+    public static void subjoinExceptionMessage(StringBuilder stringBuilder, IThrowableProxy tp) {
         if (tp.isCyclic()) {
-            buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage())
-                    .append(']');
+            stringBuilder.append("[CIRCULAR REFERENCE: ");
+            appendNominalOrOverridingMessage(stringBuilder, tp);
+            stringBuilder.append(']');
         } else {
-            buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+            appendNominalOrOverridingMessage(stringBuilder, tp);
+        }
+    }
+
+    private static void appendNominalOrOverridingMessage(StringBuilder stringBuilder, IThrowableProxy tp) {
+        if(tp.getOverridingMessage() == null) {
+            appendNominalFirstLine(stringBuilder, tp.getClassName(), tp.getMessage());
+        } else {
+            stringBuilder.append(tp.getOverridingMessage());
         }
     }
 }
