@@ -92,6 +92,24 @@ public class ImplicitActionTest {
     }
 
     @Test
+    public void nestedComplexWithPassword() throws Exception {
+        try {
+            fruitContext.addSubstitutionProperty("A_PASSWORD", "blue");
+
+            simpleConfigurator.doConfigure(IMPLCIT_DIR + "nestedComplexWithPassword.xml");
+            StatusPrinter.print(fruitContext);
+            StatusChecker checker = new StatusChecker(fruitContext);
+
+            checker.assertContainsMatch("value \"\\*{6}\" substituted for \"\\$\\{A_PASSWORD\\}\"");
+            verifyFruit();
+
+        } catch (Exception je) {
+            StatusPrinter.print(fruitContext);
+            throw je;
+        }
+    }
+
+    @Test
     public void nestedComplexWithoutClassAtrribute() throws Exception {
         try {
             simpleConfigurator.doConfigure(IMPLCIT_DIR + "nestedComplexWithoutClassAtrribute.xml");

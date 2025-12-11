@@ -28,19 +28,19 @@ public class ParamModelHandler extends ModelHandlerBase {
     }
 
     @Override
-    public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
+    public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 
         ParamModel paramModel = (ParamModel) model;
 
-        String valueStr = intercon.subst(paramModel.getValue());
+        String valueStr = mic.subst(paramModel.getValue());
 
-        Object o = intercon.peekObject();
+        Object o = mic.peekObject();
 
         PropertySetter propSetter = new PropertySetter(beanDescriptionCache, o);
         propSetter.setContext(context);
 
         // allow for variable substitution for name as well
-        String finalName = intercon.subst(paramModel.getName());
+        String finalName = mic.subst(paramModel.getName());
         propSetter.setProperty(finalName, valueStr);
     }
 

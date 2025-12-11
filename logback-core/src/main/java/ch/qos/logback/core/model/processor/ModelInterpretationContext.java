@@ -18,14 +18,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Stack;
 import java.util.function.Supplier;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.GenericXMLConfigurator;
-import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
@@ -34,7 +32,6 @@ import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
-import ch.qos.logback.core.spi.PropertyContainer;
 
 public class ModelInterpretationContext extends ContextAwareBase implements ContextAwarePropertyContainer {
 
@@ -165,12 +162,12 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
     public String subst(String ref)  {
 
         String substituted = variableSubstitutionsHelper.subst(ref);
-        if(ref != null && !ref.equals(substituted)) {
-            addInfo("value \""+substituted+"\" substituted for \""+ref+"\"");
+        if(ref != null && !ref.equals(substituted) ) {
+            String sanitized = variableSubstitutionsHelper.sanitizeIfConfidential(ref, substituted);
+            addInfo("value \""+sanitized+"\" substituted for \""+ref+"\"");
         }
         return substituted;
     }
-
 
     public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
         return defaultNestedComponentRegistry;

@@ -187,7 +187,8 @@ public class PropertiesConfigurator extends ContextAwareBase {
 
         String substituted = variableSubstitutionsHelper.subst(ref);
         if (ref != null && !ref.equals(substituted)) {
-            addInfo("value \"" + substituted + "\" substituted for \"" + ref + "\"");
+            String sanitized = variableSubstitutionsHelper.sanitizeIfConfidential(ref, substituted);
+            addInfo("value \"" + sanitized + "\" substituted for \"" + ref + "\"");
         }
         return substituted;
     }
