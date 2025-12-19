@@ -281,6 +281,7 @@ public class DefaultProcessor extends ContextAwareBase {
     }
 
     private boolean allDependenciesStarted(Model model) {
+        // assumes that DependencyDefinitions have been registered
         List<String> dependencyNames = mic.getDependeeNamesForModel(model);
 
         if (dependencyNames == null || dependencyNames.isEmpty()) {
@@ -293,25 +294,6 @@ public class DefaultProcessor extends ContextAwareBase {
             }
         }
         return true;
-    }
-
-    ModelHandlerBase instantiateHandler(Class<? extends ModelHandlerBase> handlerClass) {
-        try {
-            Constructor<? extends ModelHandlerBase> commonConstructor = getWithContextConstructor(handlerClass);
-            if (commonConstructor != null) {
-                return commonConstructor.newInstance(context);
-            }
-            Constructor<? extends ModelHandlerBase> constructorWithBDC = getWithContextAndBDCConstructor(handlerClass);
-            if (constructorWithBDC != null) {
-                return constructorWithBDC.newInstance(context, mic.getBeanDescriptionCache());
-            }
-            addError("Failed to find suitable constructor for class [" + handlerClass + "]");
-            return null;
-        } catch (InstantiationException | IllegalAccessException | SecurityException | IllegalArgumentException
-                | InvocationTargetException e1) {
-            addError("Failed to instantiate " + handlerClass);
-            return null;
-        }
     }
 
     private Constructor<? extends ModelHandlerBase> getWithContextConstructor(
