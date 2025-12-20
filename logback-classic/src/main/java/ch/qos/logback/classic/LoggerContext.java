@@ -376,7 +376,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         resetCount++;
         super.reset();
         initEvaluatorMap();
-        initCollisionMaps();
         root.recursiveReset();
         resetTurboFilterList();
         cancelScheduledTasks();

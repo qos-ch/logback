@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.util;
 
-import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
-import static ch.qos.logback.core.CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,23 +43,6 @@ public class ContextUtil extends ContextAwareBase {
             context.putProperty(key, (String) e.getValue());
         }
 
-    }
-
-    public static Map<String, String> getFilenameCollisionMap(Context context) {
-        if (context == null)
-            return null;
-        @SuppressWarnings("unchecked")
-        Map<String, String> map = (Map<String, String>) context.getObject(FA_FILENAME_COLLISION_MAP);
-        return map;
-    }
-
-    public static Map<String, FileNamePattern> getFilenamePatternCollisionMap(Context context) {
-        if (context == null)
-            return null;
-        @SuppressWarnings("unchecked")
-        Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context
-                .getObject(RFA_FILENAME_PATTERN_COLLISION_MAP);
-        return map;
     }
 
     public void addGroovyPackages(List<String> frameworkPackages) {

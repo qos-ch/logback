@@ -15,14 +15,10 @@ package ch.qos.logback.classic;
 
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.status.StatusManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LoggerContextTest {
@@ -234,21 +230,6 @@ public class LoggerContextTest {
     public void evaluatorMapPostReset() {
         lc.reset();
         assertNotNull(lc.getObject(CoreConstants.EVALUATOR_MAP));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void collisionMapsPostReset() {
-        lc.reset();
-
-        Map<String, String> fileCollisions = (Map<String, String>) lc.getObject(FA_FILENAME_COLLISION_MAP);
-        assertNotNull(fileCollisions);
-        assertTrue(fileCollisions.isEmpty());
-
-        Map<String, FileNamePattern> filenamePatternCollisionMap = (Map<String, FileNamePattern>) lc.getObject(
-                        CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
-        assertNotNull(filenamePatternCollisionMap);
-        assertTrue(filenamePatternCollisionMap.isEmpty());
     }
 
     // http://jira.qos.ch/browse/LOGBACK-142

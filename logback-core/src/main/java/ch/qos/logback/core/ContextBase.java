@@ -14,9 +14,7 @@
 package ch.qos.logback.core;
 
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
-import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
 import static ch.qos.logback.core.CoreConstants.HOSTNAME_KEY;
-import static ch.qos.logback.core.CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +63,6 @@ public class ContextBase implements Context, LifeCycle {
     private volatile boolean started;
 
     public ContextBase() {
-        initCollisionMaps();
     }
 
     public StatusManager getStatusManager() {
@@ -101,11 +98,6 @@ public class ContextBase implements Context, LifeCycle {
         } else {
             this.propertyMap.put(key, val);
         }
-    }
-
-    protected void initCollisionMaps() {
-        putObject(FA_FILENAME_COLLISION_MAP, new HashMap<String, String>());
-        putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, FileNamePattern>());
     }
 
     @Override

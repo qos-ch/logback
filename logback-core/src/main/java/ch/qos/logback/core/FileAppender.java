@@ -137,41 +137,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
             return;
 
         super.stop();
-
-        Map<String, String> map = ContextUtil.getFilenameCollisionMap(context);
-        if (map == null || getName() == null)
-            return;
-
-        map.remove(getName());
     }
-
-//    protected boolean checkForFileCollisionInPreviousFileAppenders() {
-//        boolean collisionsDetected = false;
-//        if (fileName == null) {
-//            return false;
-//        }
-//        @SuppressWarnings("unchecked")
-//        Map<String, String> previousFilesMap = (Map<String, String>) context
-//                .getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
-//        if (previousFilesMap == null) {
-//            return collisionsDetected;
-//        }
-//        for (Entry<String, String> entry : previousFilesMap.entrySet()) {
-//            if (fileName.equals(entry.getValue())) {
-//                addErrorForCollision("File", entry.getValue(), entry.getKey());
-//                collisionsDetected = true;
-//            }
-//        }
-//        if (name != null) {
-//            previousFilesMap.put(getName(), fileName);
-//        }
-//        return collisionsDetected;
-//    }
-//
-//    protected void addErrorForCollision(String optionName, String optionValue, String appenderName) {
-//        addError("'" + optionName + "' option has the same value \"" + optionValue + "\" as that given for appender ["
-//                + appenderName + "] defined earlier.");
-//    }
 
     /**
      * <p>

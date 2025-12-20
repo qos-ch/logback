@@ -119,37 +119,6 @@ public class RollingFileAppender<E> extends FileAppender<E> {
         return false;
     }
 
-//    private boolean checkForCollisionsInPreviousRollingFileAppenders() {
-//        boolean collisionResult = false;
-//        if (triggeringPolicy instanceof RollingPolicyBase) {
-//            final RollingPolicyBase base = (RollingPolicyBase) triggeringPolicy;
-//            final FileNamePattern fileNamePattern = base.fileNamePattern;
-//            boolean collisionsDetected = innerCheckForFileNamePatternCollisionInPreviousRFA(fileNamePattern);
-//            if (collisionsDetected)
-//                collisionResult = true;
-//        }
-//        return collisionResult;
-//    }
-
-//    private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(FileNamePattern fileNamePattern) {
-//        boolean collisionsDetected = false;
-//        @SuppressWarnings("unchecked") Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context.getObject(
-//                        CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
-//        if (map == null) {
-//            return collisionsDetected;
-//        }
-//        for (Entry<String, FileNamePattern> entry : map.entrySet()) {
-//            if (fileNamePattern.equals(entry.getValue())) {
-//                //addErrorForCollision("FileNamePattern", entry.getValue().toString(), entry.getKey());
-//                collisionsDetected = true;
-//            }
-//        }
-//        if (name != null) {
-//            map.put(name, fileNamePattern);
-//        }
-//        return collisionsDetected;
-//    }
-
     private void initializeLengthCounter() {
         if(getLengthCounter() != null && currentlyActiveFile.exists()) {
             long currentFileLength = currentlyActiveFile.length();
@@ -169,11 +138,6 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             rollingPolicy.stop();
         if (triggeringPolicy != null)
             triggeringPolicy.stop();
-
-        Map<String, FileNamePattern> map = ContextUtil.getFilenamePatternCollisionMap(context);
-        if (map != null && getName() != null)
-            map.remove(getName());
-
     }
 
     @Override
