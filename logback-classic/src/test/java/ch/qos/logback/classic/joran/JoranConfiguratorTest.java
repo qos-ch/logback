@@ -18,7 +18,6 @@ import ch.qos.logback.classic.joran.serializedModel.HardenedModelInputStream;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.classic.turbo.TurboFilter;
@@ -52,7 +51,6 @@ import org.slf4j.spi.MDCAdapter;
 import java.io.Console;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -559,7 +557,7 @@ public class JoranConfiguratorTest {
     @Test
     public void asynAppenderListAfter() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_after.xml");
-
+        StatusPrinter.print(loggerContext);
         final AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
         assertNotNull(asyncAppender);
         assertTrue(asyncAppender.isStarted());
@@ -807,8 +805,6 @@ public class JoranConfiguratorTest {
 
         //    <serializeModel file="${targetModelFile}"/>
         //    <logger name="ModelSerializationTest" level="DEBUG"/>
-
-
     }
 
 

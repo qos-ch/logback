@@ -98,9 +98,6 @@ public class Model implements Serializable {
         handled = true;
     }
 
-
-
-
     public String getTag() {
         return tag;
     }

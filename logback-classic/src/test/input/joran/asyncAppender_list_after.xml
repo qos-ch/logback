@@ -1,9 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration>
-
 <configuration debug="false">
 
- 
    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
       <queueSize>256</queueSize>
       <includeCallerData>false</includeCallerData>

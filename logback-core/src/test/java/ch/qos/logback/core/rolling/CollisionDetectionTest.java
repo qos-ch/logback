@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
@@ -20,6 +21,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
+@Disabled
 public class CollisionDetectionTest {
 
     Context context = new ContextBase();

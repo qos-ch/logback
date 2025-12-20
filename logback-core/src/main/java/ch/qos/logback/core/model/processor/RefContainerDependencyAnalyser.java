@@ -16,6 +16,19 @@ package ch.qos.logback.core.model.processor;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.Model;
 
+/**
+ * <p>RefContainerDependencyAnalyser pushes relevant models into the modelStack
+ * of ModelInterpretationContext.</p>
+ *
+ * <p>Relevant models are LoggerModel, RootLoggerModel and AppenderModel as defined
+ * in {@link ch.qos.logback.core.joran.ModelClassToModelHandlerLinkerBase#link}
+ * method.</p>
+ *
+ * <p>This class could have been called RefContainerDependencyAnalysisHelper.</p>
+ *
+ * @author Ceki G&uuml;lc&uuml;
+ *
+ */
 @PhaseIndicator(phase = ProcessingPhase.DEPENDENCY_ANALYSIS)
 public class RefContainerDependencyAnalyser extends ModelHandlerBase {
 

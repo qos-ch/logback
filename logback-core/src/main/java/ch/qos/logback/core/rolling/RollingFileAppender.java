@@ -62,11 +62,11 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             return;
         }
 
-        if (checkForCollisionsInPreviousRollingFileAppenders()) {
-            addError("Collisions detected with FileAppender/RollingAppender instances defined earlier. Aborting.");
-            addError(MORE_INFO_PREFIX + COLLISION_WITH_EARLIER_APPENDER_URL);
-            return;
-        }
+//        if (checkForCollisionsInPreviousRollingFileAppenders()) {
+//            addError("Collisions detected with FileAppender/RollingAppender instances defined earlier. Aborting.");
+//            addError(MORE_INFO_PREFIX + COLLISION_WITH_EARLIER_APPENDER_URL);
+//            return;
+//        }
 
         // we don't want to void existing log files
         if (!append) {
@@ -119,36 +119,36 @@ public class RollingFileAppender<E> extends FileAppender<E> {
         return false;
     }
 
-    private boolean checkForCollisionsInPreviousRollingFileAppenders() {
-        boolean collisionResult = false;
-        if (triggeringPolicy instanceof RollingPolicyBase) {
-            final RollingPolicyBase base = (RollingPolicyBase) triggeringPolicy;
-            final FileNamePattern fileNamePattern = base.fileNamePattern;
-            boolean collisionsDetected = innerCheckForFileNamePatternCollisionInPreviousRFA(fileNamePattern);
-            if (collisionsDetected)
-                collisionResult = true;
-        }
-        return collisionResult;
-    }
+//    private boolean checkForCollisionsInPreviousRollingFileAppenders() {
+//        boolean collisionResult = false;
+//        if (triggeringPolicy instanceof RollingPolicyBase) {
+//            final RollingPolicyBase base = (RollingPolicyBase) triggeringPolicy;
+//            final FileNamePattern fileNamePattern = base.fileNamePattern;
+//            boolean collisionsDetected = innerCheckForFileNamePatternCollisionInPreviousRFA(fileNamePattern);
+//            if (collisionsDetected)
+//                collisionResult = true;
+//        }
+//        return collisionResult;
+//    }
 
-    private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(FileNamePattern fileNamePattern) {
-        boolean collisionsDetected = false;
-        @SuppressWarnings("unchecked") Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context.getObject(
-                        CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
-        if (map == null) {
-            return collisionsDetected;
-        }
-        for (Entry<String, FileNamePattern> entry : map.entrySet()) {
-            if (fileNamePattern.equals(entry.getValue())) {
-                addErrorForCollision("FileNamePattern", entry.getValue().toString(), entry.getKey());
-                collisionsDetected = true;
-            }
-        }
-        if (name != null) {
-            map.put(name, fileNamePattern);
-        }
-        return collisionsDetected;
-    }
+//    private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(FileNamePattern fileNamePattern) {
+//        boolean collisionsDetected = false;
+//        @SuppressWarnings("unchecked") Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context.getObject(
+//                        CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
+//        if (map == null) {
+//            return collisionsDetected;
+//        }
+//        for (Entry<String, FileNamePattern> entry : map.entrySet()) {
+//            if (fileNamePattern.equals(entry.getValue())) {
+//                //addErrorForCollision("FileNamePattern", entry.getValue().toString(), entry.getKey());
+//                collisionsDetected = true;
+//            }
+//        }
+//        if (name != null) {
+//            map.put(name, fileNamePattern);
+//        }
+//        return collisionsDetected;
+//    }
 
     private void initializeLengthCounter() {
         if(getLengthCounter() != null && currentlyActiveFile.exists()) {

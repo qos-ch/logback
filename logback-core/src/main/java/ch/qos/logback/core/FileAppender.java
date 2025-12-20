@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -30,10 +30,10 @@ import ch.qos.logback.core.util.FileUtil;
 
 /**
  * FileAppender appends log events to a file.
- * 
+ *
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#FileAppender
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class FileAppender<E> extends OutputStreamAppender<E> {
@@ -82,7 +82,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     /**
      * This method is used by derived classes to obtain the raw file property.
      * Regular users should not be calling this method.
-     * 
+     *
      * @return the value of the file property
      */
     final public String rawFileProperty() {
@@ -91,10 +91,10 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
 
     /**
      * Returns the value of the <b>File</b> property.
-     * 
+     *
      * <p>
      * This method may be overridden by derived classes.
-     * 
+     *
      */
     public String getFile() {
         return fileName;
@@ -116,18 +116,11 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
                 }
             }
 
-            if (checkForFileCollisionInPreviousFileAppenders()) {
-                addError("Collisions detected with FileAppender/RollingAppender instances defined earlier. Aborting.");
-                addError(MORE_INFO_PREFIX + COLLISION_WITH_EARLIER_APPENDER_URL);
+            try {
+                openFile(getFile());
+            } catch (java.io.IOException e) {
                 errors++;
-            } else {
-                // file should be opened only if collision free
-                try {
-                    openFile(getFile());
-                } catch (java.io.IOException e) {
-                    errors++;
-                    addError("openFile(" + fileName + "," + append + ") call failed.", e);
-                }
+                addError("openFile(" + fileName + "," + append + ") call failed.", e);
             }
         } else {
             errors++;
@@ -140,7 +133,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
 
     @Override
     public void stop() {
-        if(!isStarted())
+        if (!isStarted())
             return;
 
         super.stop();
@@ -152,46 +145,46 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
         map.remove(getName());
     }
 
-    protected boolean checkForFileCollisionInPreviousFileAppenders() {
-        boolean collisionsDetected = false;
-        if (fileName == null) {
-            return false;
-        }
-        @SuppressWarnings("unchecked")
-        Map<String, String> previousFilesMap = (Map<String, String>) context
-                .getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
-        if (previousFilesMap == null) {
-            return collisionsDetected;
-        }
-        for (Entry<String, String> entry : previousFilesMap.entrySet()) {
-            if (fileName.equals(entry.getValue())) {
-                addErrorForCollision("File", entry.getValue(), entry.getKey());
-                collisionsDetected = true;
-            }
-        }
-        if (name != null) {
-            previousFilesMap.put(getName(), fileName);
-        }
-        return collisionsDetected;
-    }
-
-    protected void addErrorForCollision(String optionName, String optionValue, String appenderName) {
-        addError("'" + optionName + "' option has the same value \"" + optionValue + "\" as that given for appender ["
-                + appenderName + "] defined earlier.");
-    }
+//    protected boolean checkForFileCollisionInPreviousFileAppenders() {
+//        boolean collisionsDetected = false;
+//        if (fileName == null) {
+//            return false;
+//        }
+//        @SuppressWarnings("unchecked")
+//        Map<String, String> previousFilesMap = (Map<String, String>) context
+//                .getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+//        if (previousFilesMap == null) {
+//            return collisionsDetected;
+//        }
+//        for (Entry<String, String> entry : previousFilesMap.entrySet()) {
+//            if (fileName.equals(entry.getValue())) {
+//                addErrorForCollision("File", entry.getValue(), entry.getKey());
+//                collisionsDetected = true;
+//            }
+//        }
+//        if (name != null) {
+//            previousFilesMap.put(getName(), fileName);
+//        }
+//        return collisionsDetected;
+//    }
+//
+//    protected void addErrorForCollision(String optionName, String optionValue, String appenderName) {
+//        addError("'" + optionName + "' option has the same value \"" + optionValue + "\" as that given for appender ["
+//                + appenderName + "] defined earlier.");
+//    }
 
     /**
      * <p>
      * Sets and <i>opens</i> the file where the log output will go. The specified
      * file must be writable.
-     * 
+     *
      * <p>
      * If there was already an opened file, then the previous file is closed first.
-     * 
+     *
      * <p>
      * <b>Do not use this method directly. To configure a FileAppender or one of its
      * subclasses, set its properties one by one and then call start().</b>
-     * 
+     *
      * @param file_name The path to the log file.
      */
     public void openFile(String file_name) throws IOException {
@@ -213,7 +206,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
 
     /**
      * @see #setPrudent(boolean)
-     * 
+     *
      * @return true if in prudent mode
      */
     public boolean isPrudent() {
@@ -223,7 +216,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     /**
      * When prudent is set to true, file appenders from multiple JVMs can safely
      * write to the same file.
-     * 
+     *
      * @param prudent
      */
     public void setPrudent(boolean prudent) {
@@ -255,7 +248,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
 
         streamWriteLock.lock();
         try {
-           safeWriteBytes(byteArray);
+            safeWriteBytes(byteArray);
         } finally {
             streamWriteLock.unlock();
         }

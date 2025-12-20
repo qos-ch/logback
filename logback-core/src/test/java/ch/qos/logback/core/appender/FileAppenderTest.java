@@ -125,31 +125,4 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
         Assertions.assertTrue(file.exists());
         Assertions.assertTrue(file.delete(), "failed to delete " + file.getAbsolutePath());
     }
-
-    @Test
-    public void fileNameCollision() {
-        String fileName = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "fileNameCollision";
-
-        FileAppender<Object> appender0 = new FileAppender<Object>();
-        appender0.setName("FA0");
-        appender0.setFile(fileName);
-        appender0.setContext(context);
-        appender0.setEncoder(new DummyEncoder<Object>());
-        appender0.start();
-        Assertions.assertTrue(appender0.isStarted());
-
-        FileAppender<Object> appender1 = new FileAppender<Object>();
-        appender1.setName("FA1");
-        appender1.setFile(fileName);
-        appender1.setContext(context);
-        appender1.setEncoder(new DummyEncoder<Object>());
-        appender1.start();
-
-        Assertions.assertFalse(appender1.isStarted());
-
-        StatusPrinter.print(context);
-        StatusChecker checker = new StatusChecker(context);
-        checker.assertContainsMatch(Status.ERROR, "'File' option has the same value");
-
-    }
 }

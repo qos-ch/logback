@@ -41,12 +41,12 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
         AppenderRefModel appenderRefModel = (AppenderRefModel) model;
         AppenderAttachable<?> appenderAttachable = (AppenderAttachable<?>) o;
 
-        attachRefencedAppenders(interpContext, appenderRefModel, appenderAttachable);
+        attachReferencedAppenders(interpContext, appenderRefModel, appenderAttachable);
 
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    void attachRefencedAppenders(ModelInterpretationContext mic, AppenderRefModel appenderRefModel,
+    void attachReferencedAppenders(ModelInterpretationContext mic, AppenderRefModel appenderRefModel,
             AppenderAttachable<?> appenderAttachable) {
         String appenderName = mic.subst(appenderRefModel.getRef());
 

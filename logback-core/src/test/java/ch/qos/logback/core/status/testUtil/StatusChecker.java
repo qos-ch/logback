@@ -65,4 +65,8 @@ public class StatusChecker extends StatusUtil {
 
     public void assertErrorCount(int i) {
     }
+
+    public void assertMatchCount(String regex, int expectedCount) {
+        Assertions.assertEquals(expectedCount, matchCount(regex));
+    }
 }

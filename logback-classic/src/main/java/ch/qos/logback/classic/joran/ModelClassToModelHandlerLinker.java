@@ -22,12 +22,7 @@ import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.InsertFromJNDIModel;
 import ch.qos.logback.core.model.ModelHandlerFactoryMethod;
-import ch.qos.logback.core.model.processor.AppenderModelHandler;
-import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
-import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
-import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.InsertFromJNDIModelHandler;
-import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
+import ch.qos.logback.core.model.processor.*;
 
 /**
  * For a given DefaultProcessor instance link a {@link ch.qos.logback.core.model.Model Model} class to a
@@ -62,25 +57,25 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
         defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler::makeInstance);
         defaultProcessor.addHandler(LevelModel.class, LevelModelHandler::makeInstance);
 
-        defaultProcessor.addAnalyser(LoggerModel.class,
-                () -> new RefContainerDependencyAnalyser(context, LoggerModel.class));
-
         defaultProcessor.addAnalyser(RootLoggerModel.class,
-                () -> new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
+                () -> new AppenderRefDependencyAnalyser(context));
+
+        defaultProcessor.addAnalyser(LoggerModel.class,
+                () -> new AppenderRefDependencyAnalyser(context));
 
         defaultProcessor.addAnalyser(AppenderModel.class,
-                () -> new RefContainerDependencyAnalyser(context, AppenderModel.class));
+                () -> new AppenderRefDependencyAnalyser(context));
 
-        defaultProcessor.addAnalyser(AppenderRefModel.class, () -> new AppenderRefDependencyAnalyser(context));
+        defaultProcessor.addAnalyser(AppenderModel.class, () -> new FileCollisionAnalyser(context));
 
         sealModelFilters(defaultProcessor);
 
     }
 
     public ModelHandlerFactoryMethod getConfigurationModelHandlerFactoryMethod() {
-        if(configurationModelHandlerFactoryMethod == null) {
+        if (configurationModelHandlerFactoryMethod == null) {
             //System.out.println("returning default ConfigurationModelHandler::makeInstance;");
-            return  ConfigurationModelHandler::makeInstance;
+            return ConfigurationModelHandler::makeInstance;
         } else {
             //System.out.println("returning set "+configurationModelHandlerFactoryMethod);
             return configurationModelHandlerFactoryMethod;

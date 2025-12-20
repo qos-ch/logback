@@ -83,7 +83,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
             ImcplicitActionDataForBasicProperty adBasicProperty = new ImcplicitActionDataForBasicProperty(parentBean,
                     aggregationType, nestedElementTagName);
             implicitModelData = adBasicProperty;
-            doBasicProperty(mic, model, adBasicProperty);
+            doBasicProperty(mic, implicitModel, adBasicProperty);
             return;
         // we only push action data if NestComponentIA is applicable
         case AS_COMPLEX_PROPERTY_COLLECTION:

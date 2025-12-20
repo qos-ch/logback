@@ -45,7 +45,13 @@ public class DependencyDefinition {
     public Model getDepender() {
         return depender;
     }
-    
-    
-    
+
+
+    @Override
+    public String toString() {
+        return "DependencyDefinition{" +
+                "depender=" + depender +
+                ", dependee='" + dependee + '\'' +
+                '}';
+    }
 }

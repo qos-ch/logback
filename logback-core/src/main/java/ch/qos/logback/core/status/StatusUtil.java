@@ -140,6 +140,7 @@ public class StatusUtil {
         return false;
     }
 
+
     public int levelCount(int level, long threshold) {
         List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
 

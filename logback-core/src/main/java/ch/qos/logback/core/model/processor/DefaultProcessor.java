@@ -15,6 +15,7 @@ package ch.qos.logback.core.model.processor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -42,7 +43,7 @@ public class DefaultProcessor extends ContextAwareBase {
 
     final protected ModelInterpretationContext mic;
     final HashMap<Class<? extends Model>, ModelHandlerFactoryMethod> modelClassToHandlerMap = new HashMap<>();
-    final HashMap<Class<? extends Model>, Supplier<ModelHandlerBase>> modelClassToDependencyAnalyserMap = new HashMap<>();
+    final HashMap<Class<? extends Model>, List<Supplier<ModelHandlerBase>>> modelClassToDependencyAnalyserMap = new HashMap<>();
 
     ChainedModelFilter phaseOneFilter = new ChainedModelFilter();
     ChainedModelFilter phaseTwoFilter = new ChainedModelFilter();
@@ -81,7 +82,7 @@ public class DefaultProcessor extends ContextAwareBase {
     }
 
     public void addAnalyser(Class<? extends Model> modelClass, Supplier<ModelHandlerBase> analyserSupplier) {
-        modelClassToDependencyAnalyserMap.put(modelClass, analyserSupplier);
+        modelClassToDependencyAnalyserMap.computeIfAbsent(modelClass, x -> new ArrayList<>()).add(analyserSupplier);
     }
 
     private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFilter modelfFilter, String phaseName) {
@@ -127,25 +128,31 @@ public class DefaultProcessor extends ContextAwareBase {
 
 
     protected void analyseDependencies(Model model) {
-        Supplier<ModelHandlerBase> analyserSupplier = modelClassToDependencyAnalyserMap.get(model.getClass());
 
-        ModelHandlerBase analyser = null;
+        List<Supplier<ModelHandlerBase>> analyserSupplierList = modelClassToDependencyAnalyserMap.get(model.getClass());
 
-        if (analyserSupplier != null) {
-            analyser = analyserSupplier.get();
-        }
+        if (analyserSupplierList != null) {
+            for (Supplier<ModelHandlerBase> analyserSupplier : analyserSupplierList) {
+                ModelHandlerBase analyser = null;
 
-        if (analyser != null && !model.isSkipped()) {
-            callAnalyserHandleOnModel(model, analyser);
+                if (analyserSupplier != null) {
+                    analyser = analyserSupplier.get();
+                }
+
+                if (analyser != null && !model.isSkipped()) {
+                    callAnalyserHandleOnModel(model, analyser);
+                }
+
+                if (analyser != null && !model.isSkipped()) {
+                    callAnalyserPostHandleOnModel(model, analyser);
+                }
+            }
         }
 
         for (Model m : model.getSubModels()) {
             analyseDependencies(m);
         }
 
-        if (analyser != null && !model.isSkipped()) {
-            callAnalyserPostHandleOnModel(model, analyser);
-        }
     }
 
     private void callAnalyserPostHandleOnModel(Model model, ModelHandlerBase analyser) {
@@ -294,27 +301,6 @@ public class DefaultProcessor extends ContextAwareBase {
             }
         }
         return true;
-    }
-
-    private Constructor<? extends ModelHandlerBase> getWithContextConstructor(
-            Class<? extends ModelHandlerBase> handlerClass) {
-        try {
-            Constructor<? extends ModelHandlerBase> constructor = handlerClass.getConstructor(Context.class);
-            return constructor;
-        } catch (NoSuchMethodException e) {
-            return null;
-        }
-    }
-
-    private Constructor<? extends ModelHandlerBase> getWithContextAndBDCConstructor(
-            Class<? extends ModelHandlerBase> handlerClass) {
-        try {
-            Constructor<? extends ModelHandlerBase> constructor = handlerClass.getConstructor(Context.class,
-                    BeanDescriptionCache.class);
-            return constructor;
-        } catch (NoSuchMethodException e) {
-            return null;
-        }
     }
 
 }
