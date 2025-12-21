@@ -63,7 +63,7 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
         addInfo("ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
         createMissingTargetDirsIfNecessary(zippedFile);
 
-        try (FileInputStream fis = new FileInputStream(originalFileName);
+        try (BufferedInputStream bais = new BufferedInputStream(new FileInputStream(originalFileName), BUFFER_SIZE);
              ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(compressedFileName))) {
 
             ZipEntry zipEntry = computeZipEntry(innerEntryName);
@@ -72,7 +72,7 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
             byte[] inbuf = new byte[BUFFER_SIZE];
             int n;
 
-            while ((n = fis.read(inbuf)) != -1) {
+            while ((n = bais.read(inbuf)) != -1) {
                 zos.write(inbuf, 0, n);
             }
 
