@@ -16,8 +16,7 @@ package ch.qos.logback.core.rolling.helper;
 
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
-
-import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -64,7 +63,7 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
         createMissingTargetDirsIfNecessary(zippedFile);
 
         try (FileInputStream fis = new FileInputStream(originalFileName);
-             ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(compressedFileName))) {
+             ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(compressedFileName), BUFFER_SIZE))) {
 
             ZipEntry zipEntry = computeZipEntry(innerEntryName);
             zos.putNextEntry(zipEntry);

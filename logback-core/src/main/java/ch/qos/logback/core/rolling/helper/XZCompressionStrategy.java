@@ -13,10 +13,7 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
@@ -57,7 +54,7 @@ public class XZCompressionStrategy extends CompressionStrategyBase {
         createMissingTargetDirsIfNecessary(xzedFile);
 
         try (FileInputStream fis = new FileInputStream(nameOfFile2xz);
-             XZOutputStream xzos = new XZOutputStream(new FileOutputStream(nameOfxzedFile), new LZMA2Options())) {
+             XZOutputStream xzos = new XZOutputStream(new BufferedOutputStream(new FileOutputStream(nameOfxzedFile), BUFFER_SIZE), new LZMA2Options())) {
 
             byte[] inbuf = new byte[BUFFER_SIZE];
             int n;
