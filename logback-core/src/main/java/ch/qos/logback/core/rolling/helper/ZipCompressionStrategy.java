@@ -63,7 +63,6 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
         addInfo("ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
         createMissingTargetDirsIfNecessary(zippedFile);
 
-        System.out.println("using BufferedOutputStream");
         try (FileInputStream fis = new FileInputStream(originalFileName);
              ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(compressedFileName), BUFFER_SIZE))) {
 
