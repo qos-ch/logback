@@ -85,10 +85,24 @@ public class FileCollisionAnalyserTest {
         runCollisionTest(configFile, 1, 0, "file", outputTargetVal);
     }
 
+    @Test
+    public void testConditionalFileCollision() throws JoranException {
+        String configFile = ClassicTestConstants.JORAN_INPUT_PREFIX + "collision/conditionalRepeat.xml";
+        configure(configFile);
+        //statusPrinter2.print(loggerContext);
+
+        Appender<ILoggingEvent> fileAppender1 = root.getAppender("FILE1");
+        assertNull(fileAppender1);
+
+        Appender<ILoggingEvent> fileAppender2 = root.getAppender("FILE2");
+        assertNotNull(fileAppender2);
+        checker.assertIsWarningOrErrorFree();
+    }
+
 
     public void runCollisionTest(String configFile, int fileAppenderCount, int rollingAppenderCount, String tagName, String value) throws JoranException {
         configure(configFile);
-        statusPrinter2.print(loggerContext);
+        //statusPrinter2.print(loggerContext);
 
         Appender<ILoggingEvent> fileAppender1 = root.getAppender("FILE1");
         assertNotNull(fileAppender1);
