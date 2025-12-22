@@ -105,10 +105,11 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
      * @param effectiveMap
      */
     private void caterForLegacyConverterMaps(Map<String, Supplier<DynamicConverter>> effectiveMap) {
-        Map<String, String> mapFromContext = (Map<String, String>) this.context
+        if (getContext() != null) {
+            Map<String, String> mapFromContext = (Map<String, String>) getContext()
                         .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
-
-        migrateFromStringMapToSupplierMap(mapFromContext, effectiveMap);
+            migrateFromStringMapToSupplierMap(mapFromContext, effectiveMap);
+        }
 
         Map<String, String> defaultConverterMap = getDefaultConverterMap();
         migrateFromStringMapToSupplierMap(defaultConverterMap, effectiveMap);
