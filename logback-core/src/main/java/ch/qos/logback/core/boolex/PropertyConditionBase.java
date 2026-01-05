@@ -19,6 +19,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
 
+import static ch.qos.logback.core.CoreConstants.EMPTY_STRING;
+
 /**
  * <p>Abstract base class provides some scaffolding. It is intended to ease migration
  * from <b>legacy</b> conditional processing in configuration files
@@ -34,9 +36,9 @@ import ch.qos.logback.core.util.OptionHelper;
  *  <li>environment variables</li>
  * </ol>
  *
+ * @author Ceki G&uuml;lc&uuml;
  * @see OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)
  * @since 1.5.20
- * @author Ceki G&uuml;lc&uuml;
  */
 abstract public class PropertyConditionBase extends ContextAwareBase implements PropertyCondition {
 
@@ -134,7 +136,61 @@ abstract public class PropertyConditionBase extends ContextAwareBase implements 
         if (val != null)
             return val;
         else
-            return "";
+            return EMPTY_STRING;
+    }
+
+    /**
+     * Compare the resolved property value with the provided expected value.
+     *
+     * <p>The property is looked up via the
+     * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
+     * See above for the lookup order.</p>
+     *
+     * <p>Returns {@code true} if the resolved property value is equal to {@code val}
+     * according to {@link String#equals(Object)}. If the resolved property value or {@code val} is null,
+     * then false is returned.</p>
+     *
+     * @param propertyKey the property key to look up
+     * @param value       expected string value to compare against; must be non-null
+     * @return {@code true} if the resolved property equals {@code value},
+     * {@code false} otherwise or if either the resolved property or {@code value} is null.
+     * @since 1.5.24
+     */
+    public boolean propertyEquals(String propertyKey, String value) {
+        String actual = OptionHelper.propertyLookup(propertyKey, localPropertyContainer, getContext());
+        if (actual == null || value == null) {
+            return false;
+        }
+        return actual.equals(value);
+    }
+
+
+    /**
+     * Determine whether the resolved property value contains the given substring.
+     * <p>
+     *
+     * <p>The property is looked up via the
+     * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
+     * See above for the lookup order.</p>
+     *
+     * <p>This method returns {@code true} if the resolved property value's
+     * {@link String#contains(CharSequence)} returns {@code true} for the supplied
+     * {@code inclusion}. False is returned if either the resolved property value or
+     * {@code inclusion} parameter is null.</p>
+     *
+     * @param k         the property key to look up
+     * @param inclusion substring to search for in the resolved property value; must be non-null
+     * @return {@code true} if the property value contains {@code inclusion}, false otherwise or
+     * if either the resolved property value or {@code inclusion} is null
+     *
+     * @since 1.5.24
+     */
+    public boolean propertyContains(String k, String inclusion) {
+        String actual = OptionHelper.propertyLookup(k, localPropertyContainer, getContext());
+        if (actual == null || inclusion == null)
+            return false;
+
+        return actual.contains(inclusion);
     }
 
     /**
