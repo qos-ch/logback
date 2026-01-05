@@ -144,6 +144,8 @@ abstract public class PropertyConditionBase extends ContextAwareBase implements 
      * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
      * See above for the lookup order. The comparison is performed using {@link String#equals(Object)}.</p>
      *
+     * <p>Returns {@code false} if either the property is not defined (null) or the value parameter is null.</p>
+     *
      * @param k the property key
      * @param value the value to compare against
      * @return true if the property value equals the specified value, false otherwise
@@ -164,6 +166,8 @@ abstract public class PropertyConditionBase extends ContextAwareBase implements 
      * <p>The property is looked up via the
      * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
      * See above for the lookup order. The substring check is performed using {@link String#contains(CharSequence)}.</p>
+     *
+     * <p>Returns {@code false} if either the property is not defined (null) or the substring parameter is null.</p>
      *
      * @param k the property key
      * @param substring the substring to search for
