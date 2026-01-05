@@ -138,6 +138,44 @@ abstract public class PropertyConditionBase extends ContextAwareBase implements 
     }
 
     /**
+     * Checks if the property with the given key equals the specified value.
+     *
+     * <p>The property is looked up via the
+     * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
+     * See above for the lookup order. The comparison is performed using {@link String#equals(Object)}.</p>
+     *
+     * @param k the property key
+     * @param value the value to compare against
+     * @return true if the property value equals the specified value, false otherwise
+     */
+    public boolean propertyEquals(String k, String value) {
+        String val = OptionHelper.propertyLookup(k, localPropertyContainer, getContext());
+        if (val == null)
+            return false;
+        else
+            return val.equals(value);
+    }
+
+    /**
+     * Checks if the property with the given key contains the specified substring.
+     *
+     * <p>The property is looked up via the
+     * {@link OptionHelper#propertyLookup(String, PropertyContainer, PropertyContainer)} method.
+     * See above for the lookup order. The substring check is performed using {@link String#contains(CharSequence)}.</p>
+     *
+     * @param k the property key
+     * @param substring the substring to search for
+     * @return true if the property value contains the specified substring, false otherwise
+     */
+    public boolean propertyContains(String k, String substring) {
+        String val = OptionHelper.propertyLookup(k, localPropertyContainer, getContext());
+        if (val == null)
+            return false;
+        else
+            return val.contains(substring);
+    }
+
+    /**
      * Checks if this evaluator has been started.
      *
      * @return true if started, false otherwise
