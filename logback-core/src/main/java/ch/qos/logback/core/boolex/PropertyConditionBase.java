@@ -149,6 +149,8 @@ abstract public class PropertyConditionBase extends ContextAwareBase implements 
      * @return true if the property value equals the specified value, false otherwise
      */
     public boolean propertyEquals(String k, String value) {
+        if (value == null)
+            return false;
         String val = OptionHelper.propertyLookup(k, localPropertyContainer, getContext());
         if (val == null)
             return false;
@@ -168,6 +170,8 @@ abstract public class PropertyConditionBase extends ContextAwareBase implements 
      * @return true if the property value contains the specified substring, false otherwise
      */
     public boolean propertyContains(String k, String substring) {
+        if (substring == null)
+            return false;
         String val = OptionHelper.propertyLookup(k, localPropertyContainer, getContext());
         if (val == null)
             return false;
