@@ -85,6 +85,27 @@ public class ExpressionPropertyConditionTest {
         check(expression, true);
     }
 
+
+    @Test
+    public void propertyContains() {
+        String expression = String.format("propertyContains(\"%s\", \"%s\")" , SMOKE_KEY, SMOKE_VALUE.substring(0, 2));
+        check(expression, true);
+    }
+
+
+    @Test
+    public void notPropertyContainsX() {
+        String expression = String.format("!propertyContains(\"%s\", \"%s\")" , SMOKE_KEY, SMOKE_VALUE+"x");
+        check(expression, true);
+    }
+
+    @Test
+    public void propertyEqualsOrIsNull() {
+        String expression = String.format("!propertyEquals(\"%s\", \"%s\") || !isNull(\"%s\")" , SMOKE_KEY, SMOKE_VALUE, UNDEFINED_KEY);
+        check(expression, false);
+    }
+
+
     void check(String expression, boolean expected) {
         epc.setExpression(expression);
         epc.start();

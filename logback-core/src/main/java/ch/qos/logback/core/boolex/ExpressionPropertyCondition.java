@@ -14,30 +14,64 @@
 
 package ch.qos.logback.core.boolex;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import ch.qos.logback.core.util.IntHolder;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-
+/**
+ * A property condition that evaluates boolean expressions based on property lookups.
+ * It supports logical operators (NOT, AND, OR) and functions like isNull, isDefined,
+ * propertyEquals, and propertyContains. Expressions are parsed using the Shunting-Yard
+ * algorithm into Reverse Polish Notation (RPN) for evaluation.
+ *
+ * <p>Example expression: {@code isDefined("key1") && propertyEquals("key2", "value")}</p>
+ *
+ * <p>Properties are resolved via {@link PropertyConditionBase#property(String)}.</p>
+ *
+ * @since 1.5.24
+ */
 public class ExpressionPropertyCondition extends PropertyConditionBase {
 
 
-    Map<String, Function<String, Boolean>> functionMap = new HashMap<>();
-    Map<String, BiFunction<String, String, Boolean>> biFunctionMap = new HashMap<>();
+    /**
+     * A map that associates a string key with a function for evaluating boolean conditions.
+     *
+     * <p>This map defines the known functions. It can be overridden by subclasses to define
+     * new functions.</p>
+     *
+     * <p>In the context of this class, a function is a function that takes a String
+     * argument and returns a boolean.</p>
+     */
+    protected Map<String, Function<String, Boolean>> functionMap = new HashMap<>();
 
-    private static final String IS_NULL = "isNull";
-    private static final String IS_DEFINED = "isDefined";
 
-    private static final String PROPERTY_EQUALS = "propertyEquals";
-    private static final String PROPERTY_CONTAINS = "propertyContains";
+    /**
+     * A map that associates a string key with a bi-function for evaluating boolean conditions.
+     *
+     * <p>This map defines the known bi-functions. It can be overridden by subclasses to define
+     * new bi-functions.</p>
+     *
+     * <p>In the context of this class, a bi-function is a function that takes two String
+     * arguments and returns a boolean.</p>
+     */
+    protected Map<String, BiFunction<String, String, Boolean>> biFunctionMap = new HashMap<>();
+
+    private static final String IS_NULL_FUNCTION_KEY = "isNull";
+    private static final String IS_DEFINEDP_FUNCTION_KEY = "isDefined";
+
+    private static final String PROPERTY_EQUALS_FUNCTION_KEY = "propertyEquals";
+    private static final String PROPERTY_CONTAINS_FUNCTION_KEY = "propertyContains";
 
     private static final char QUOTE = '"';
     private static final char COMMA = ',';
     private static final char LEFT_PAREN = '(';
     private static final char RIGHT_PAREN = ')';
-    private static final String LEFT_PAREN_STR = "(";
-    private static final String RIGHT_PAREN_STR = ")";
 
 
     private static final char NOT_CHAR = '!';
@@ -99,33 +133,64 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
     String expression;
     List<Token> rpn;
 
+    /**
+     * Constructs an ExpressionPropertyCondition and initializes the function maps
+     * with supported unary and binary functions.
+     */
     ExpressionPropertyCondition() {
-        functionMap.put(IS_NULL, this::isNull);
-        functionMap.put(IS_DEFINED, this::isDefined);
-        biFunctionMap.put(PROPERTY_EQUALS, this::propertyEquals);
-        biFunctionMap.put(PROPERTY_CONTAINS, this::propertyContains);
+        functionMap.put(IS_NULL_FUNCTION_KEY, this::isNull);
+        functionMap.put(IS_DEFINEDP_FUNCTION_KEY, this::isDefined);
+        biFunctionMap.put(PROPERTY_EQUALS_FUNCTION_KEY, this::propertyEquals);
+        biFunctionMap.put(PROPERTY_CONTAINS_FUNCTION_KEY, this::propertyContains);
     }
 
-
+    /**
+     * Starts the condition by parsing the expression into tokens and converting
+     * them to Reverse Polish Notation (RPN) for evaluation.
+     *
+     * <p>In case of malformed expression, the instance will not enter the "started" state.</p>
+     */
     public void start() {
-        super.start();
         if (expression == null || expression.isEmpty()) {
             addError("Empty expression");
             return;
         }
 
-        List<Token> tokens = tokenize(expression.trim());
-        this.rpn = infixToReversePolishNotation(tokens);
+        try {
+            List<Token> tokens = tokenize(expression.trim());
+            this.rpn = infixToReversePolishNotation(tokens);
+        } catch (IllegalArgumentException|IllegalStateException e) {
+            addError("Malformed expression: " + e.getMessage());
+            return;
+        }
+        super.start();
     }
 
+    /**
+     * Returns the current expression string.
+     *
+     * @return the expression, or null if not set
+     */
     public String getExpression() {
         return expression;
     }
 
+    /**
+     * Sets the expression to be evaluated.
+     *
+     * @param expression the boolean expression string
+     */
     public void setExpression(String expression) {
         this.expression = expression;
     }
 
+    /**
+     * Evaluates the parsed expression against the current property context.
+     *
+     * <p>If the instance is not in started state, returns false.</p>
+     *
+     * @return true if the expression evaluates to true, false otherwise
+     */
     @Override
     public boolean evaluate() {
         if (!isStarted()) {
@@ -134,8 +199,15 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
         return evaluateRPN(rpn);
     }
 
-    // Tokenize the input string
-    private List<Token> tokenize(String expr) {
+    /**
+     * Tokenizes the input expression string into a list of tokens, handling
+     * functions, operators, and parentheses.
+     *
+     * @param expr the expression string to tokenize
+     * @return list of tokens
+     * @throws IllegalArgumentException if the expression is malformed
+     */
+    private List<Token> tokenize(String expr) throws IllegalArgumentException, IllegalStateException {
         List<Token> tokens = new ArrayList<>();
 
         int i = 0;
@@ -196,9 +268,9 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
                 checkExpectedCharacter(LEFT_PAREN, i);
                 i++; // consume '('
 
-                AtomicInteger atomicInteger = new AtomicInteger(i);
-                String param0 = extractQuotedString(atomicInteger);
-                i = atomicInteger.get();
+                IntHolder intHolder = new IntHolder(i);
+                String param0 = extractQuotedString(intHolder);
+                i = intHolder.value;
                 // Skip spaces
                 i = skipWhitespaces(i);
 
@@ -206,9 +278,9 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
                 if (biFunctionMap.containsKey(functionName)) {
                     checkExpectedCharacter(COMMA, i);
                     i++; // consume ','
-                    atomicInteger.set(i);
-                    String param1 = extractQuotedString(atomicInteger);
-                    i = atomicInteger.get();
+                    intHolder.set(i);
+                    String param1 = extractQuotedString(intHolder);
+                    i = intHolder.get();
                     i = skipWhitespaces(i);
                     tokens.add(new Token(TokenType.BI_FUNCTION, functionName, param0, param1));
                 } else {
@@ -225,8 +297,8 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
         return tokens;
     }
 
-    private String extractQuotedString(AtomicInteger atomicInteger) {
-        int i = atomicInteger.get();
+    private String extractQuotedString(IntHolder intHolder) {
+        int i = intHolder.get();
         i = skipWhitespaces(i);
 
         // Expect starting "
@@ -237,11 +309,11 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
         i = findIndexOfClosingQuote(i);
         String param = expression.substring(start, i);
         i++; // consume closing "
-        atomicInteger.set(i);
+        intHolder.set(i);
         return param;
     }
 
-    private int findIndexOfClosingQuote(int i) {
+    private int findIndexOfClosingQuote(int i) throws IllegalStateException{
         while (i < expression.length() && expression.charAt(i) != QUOTE) {
             i++;
         }
@@ -251,14 +323,7 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
         return i;
     }
 
-    private int findIndexOfComma(int i) {
-        while (i < expression.length() && expression.charAt(i) != COMMA) {
-            i++;
-        }
-        return i;
-    }
-
-    void checkExpectedCharacter(char expectedChar, int i) {
+    void checkExpectedCharacter(char expectedChar, int i) throws IllegalArgumentException{
         if (i >= expression.length() || expression.charAt(i) != expectedChar) {
             throw new IllegalArgumentException("In [" + expression + "] expecting '" + expectedChar + "' at position " + i);
         }
@@ -271,10 +336,17 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
         return i;
     }
 
-    // Shunting-Yard: convert infix tokens to RPN
+    /**
+     * Converts infix notation tokens to Reverse Polish Notation (RPN) using
+     * the Shunting-Yard algorithm.
+     *
+     * @param tokens list of infix tokens
+     * @return list of tokens in RPN
+     * @throws IllegalArgumentException if parentheses are mismatched
+     */
     private List<Token> infixToReversePolishNotation(List<Token> tokens) {
         List<Token> output = new ArrayList<>();
-        Deque<Token> operatorStack = new ArrayDeque<>();
+        Stack<Token> operatorStack = new Stack<>();
 
         for (Token token : tokens) {
             TokenType tokenType = token.tokenType;
@@ -329,13 +401,19 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
 
     private Associativity operatorAssociativity(Token token) {
         TokenType tokenType = token.tokenType;
-        //
+
         return tokenType == TokenType.NOT ? Associativity.RIGHT : Associativity.LEFT;
     }
 
-    // Evaluate RPN
-    private boolean evaluateRPN(List<Token> rpn) {
-        Deque<Boolean> resultStack = new ArrayDeque<>();
+    /**
+     * Evaluates the Reverse Polish Notation (RPN) expression.
+     *
+     * @param rpn list of tokens in RPN
+     * @return the boolean result of the evaluation
+     * @throws IllegalStateException if a function is not defined in the function map
+     */
+    private boolean evaluateRPN(List<Token> rpn) throws IllegalStateException {
+        Stack<Boolean> resultStack = new Stack<>();
 
         for (Token token : rpn) {
             if (isPredicate(token)) {
@@ -366,7 +444,7 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
     }
 
     // Evaluate a single predicate like isNull("key1")
-    private boolean evaluateFunctions(Token token) {
+    private boolean evaluateFunctions(Token token) throws IllegalStateException {
         String functionName = token.functionName;
         String param0 = token.param0;
         String param1 = token.param1;
@@ -380,8 +458,6 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
             return biFunction.apply(param0, param1);
         }
 
-        throw new IllegalArgumentException("Unknown function: " + token);
+        throw new IllegalStateException("Unknown function: " + token);
     }
-
-
 }
