@@ -23,6 +23,7 @@ import ch.qos.logback.classic.util.LevelUtil;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.GenericXMLConfigurator;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.util.PropertyModelHandlerHelper;
 import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -176,11 +177,12 @@ public class TylerConfiguratorBase extends ContextAwareBase implements ContextAw
         return supplier;
     }
 
+    // used by TylerIncludeModelHandler in logback-tyler
     protected void processModelFromIncludedFile(Model modelFromIncludedFile) {
         Supplier<? extends GenericXMLConfigurator > configuratorSupplier = this.getConfiguratorSupplier();
         GenericXMLConfigurator genericXMLConfigurator = configuratorSupplier.get();
-        ConfigurationModel configururationModel = new ConfigurationModel();
-        configururationModel.addSubModel(modelFromIncludedFile);
-        genericXMLConfigurator.processModel(configururationModel);
+        ConfigurationModel configurationModel = new ConfigurationModel();
+        configurationModel.addSubModel(modelFromIncludedFile);
+        genericXMLConfigurator.processModel(configurationModel);
     }
 }
