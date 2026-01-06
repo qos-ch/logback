@@ -25,10 +25,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * A property condition that evaluates boolean expressions based on property lookups.
- * It supports logical operators (NOT, AND, OR) and functions like isNull, isDefined,
+ * This class evaluates boolean expressions based on property lookups.
+ * <p>It supports logical operators (NOT, AND, OR) and functions like isNull, isDefined,
  * propertyEquals, and propertyContains. Expressions are parsed using the Shunting-Yard
  * algorithm into Reverse Polish Notation (RPN) for evaluation.
+ * </p>
  *
  * <p>Example expression: {@code isDefined("key1") && propertyEquals("key2", "value")}</p>
  *
@@ -137,7 +138,7 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
      * Constructs an ExpressionPropertyCondition and initializes the function maps
      * with supported unary and binary functions.
      */
-    ExpressionPropertyCondition() {
+    public ExpressionPropertyCondition() {
         functionMap.put(IS_NULL_FUNCTION_KEY, this::isNull);
         functionMap.put(IS_DEFINEDP_FUNCTION_KEY, this::isDefined);
         biFunctionMap.put(PROPERTY_EQUALS_FUNCTION_KEY, this::propertyEquals);
