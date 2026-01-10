@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.util;
 
+import ch.qos.logback.core.CoreConstants;
+
 import java.lang.module.ModuleDescriptor;
 import java.util.Optional;
 
@@ -26,43 +28,16 @@ public class EnvUtil {
 
 
     /**
-     * <p>Returns the current version of logback, or null if data is not
+     * <p>Returns the current version of logback-core, or null if data is not
      * available.
      * </p>
      *
      * @since 1.3.0
      * @return current version or null if missing version data
+     * @deprecated See {@link VersionUtil#getVersionOfArtifact(Class)}
      */
     static public String logbackVersion() {
-        String moduleVersion = getVersionOfLogbackCoreByModule();
-        if (moduleVersion != null)
-            return moduleVersion;
-
-        Package pkg = EnvUtil.class.getPackage();
-        if (pkg == null) {
-            return null;
-        }
-        return pkg.getImplementationVersion();
-    }
-
-    /**
-     * <p>Returns the current version of logback via class.getModule() or null if data is not
-     * available.
-     * </p>
-     *
-     * @since 1.3.0
-     * @return current version or null if missing version data
-     */
-    static private String getVersionOfLogbackCoreByModule() {
-        Module module = EnvUtil.class.getModule();
-        if (module == null)
-            return null;
-
-        ModuleDescriptor md = module.getDescriptor();
-        if (md == null)
-            return null;
-        Optional<String> opt = md.rawVersion();
-        return opt.orElse(null);
+        return VersionUtil.getVersionOfArtifact(CoreConstants.class);
     }
 
     static public int getJDKVersion(String javaVersionStr) {

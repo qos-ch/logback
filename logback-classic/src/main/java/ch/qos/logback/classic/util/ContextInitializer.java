@@ -24,6 +24,7 @@ import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
+import ch.qos.logback.core.util.VersionUtil;
 
 import java.util.Comparator;
 import java.util.List;
@@ -103,18 +104,10 @@ public class ContextInitializer {
     }
 
     private void checkVersions() {
-        String versionOfLogbackClassic = ClassicEnvUtil.getVersionOfLogbackClassic();
-        if (versionOfLogbackClassic == null) {
-            versionOfLogbackClassic = CoreConstants.NA;
-        }
-        String versionOfLogbackCore = EnvUtil.logbackVersion();
-        if (versionOfLogbackCore == null) {
-            versionOfLogbackCore = CoreConstants.NA;
-        }
-        loggerContext.getStatusManager().add(new InfoStatus(ClassicConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionOfLogbackClassic, loggerContext));
-        if(!versionOfLogbackCore.equals(versionOfLogbackClassic)) {
-            loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CORE_VERSION_MESSAGE + versionOfLogbackCore, loggerContext));
-            loggerContext.getStatusManager().add(new WarnStatus(ClassicConstants.LOGBACK_VERSIONS_MISMATCH, loggerContext));
+        try {
+            VersionUtil.checkForVersionEquality(loggerContext, this.getClass(), VersionUtil.class, "logback-classic", "logback-core");
+        }  catch(NoClassDefFoundError e) {
+            contextAware.addWarn("Missing ch.logback.core.util.VersionUtil class on classpath. The version of logback-core is probably older than 1.5.25.");
         }
     }
 

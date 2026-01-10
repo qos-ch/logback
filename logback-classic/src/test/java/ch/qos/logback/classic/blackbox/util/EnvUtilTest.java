@@ -14,13 +14,23 @@
 
 package ch.qos.logback.classic.blackbox.util;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.util.ClassicEnvUtil;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.VersionUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests in this class are run during the regular build process.
+ *
+ * <p>It follows that {@link VersionUtil} class is present. Moreover, logback-core and
+ * logback-classic versions are the same.
+ * </p>
+ */
 public class EnvUtilTest {
 
     // Beware: ----------------------------------------
@@ -39,15 +49,15 @@ public class EnvUtilTest {
     // is added when creating the jar.
     @Test
     public void versionTest() {
-        String versionStr = EnvUtil.logbackVersion();
+        String versionStr = VersionUtil.getVersionOfArtifact(ClassicConstants.class);
         assertNotNull(versionStr);
         assertTrue(versionStr.startsWith(EXPECTED_VERSION));
     }
 
     @Test
     public void versionCompare() {
-        String coreVersionStr = EnvUtil.logbackVersion();
-        String versionOfLogbackClassic = ClassicEnvUtil.getVersionOfLogbackClassic();
+        String coreVersionStr = VersionUtil.getVersionOfArtifact(CoreConstants.class);
+        String versionOfLogbackClassic = VersionUtil.getVersionOfArtifact(ClassicConstants.class);
         assertNotNull(coreVersionStr);
         assertNotNull(versionOfLogbackClassic);
 

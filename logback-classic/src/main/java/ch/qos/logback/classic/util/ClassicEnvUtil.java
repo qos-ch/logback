@@ -16,7 +16,9 @@ package ch.qos.logback.classic.util;
 import java.lang.module.ModuleDescriptor;
 import java.util.*;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.VersionUtil;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -58,36 +60,15 @@ public class ClassicEnvUtil {
      *
      * @since 1.5.15
      * @return current version or null if missing version data
+     * @deprecated See {@link ch.qos.logback.core.util.VersionUtil#getVersionOfArtifact(Class)}
      */
+    @Deprecated
     static public String getVersionOfLogbackClassic() {
-        String moduleVersion = getVersionOfLogbackClassicByModule();
-        if (moduleVersion != null)
-            return moduleVersion;
-
-        Package pkg = ClassicEnvUtil.class.getPackage();
-        if (pkg == null) {
+        try {
+            return VersionUtil.getVersionOfArtifact(ClassicConstants.class);
+        } catch (NoClassDefFoundError e) {
             return null;
         }
-        return pkg.getImplementationVersion();
     }
 
-    /**
-     * <p>Returns the current version of logback-classic via class.getModule() or null
-     * if data is not available.
-     * </p>
-     *
-     * @since 1.5.15
-     * @return current version or null if missing version data
-     */
-    static private String getVersionOfLogbackClassicByModule() {
-        Module module = ClassicEnvUtil.class.getModule();
-        if (module == null)
-            return null;
-
-        ModuleDescriptor md = module.getDescriptor();
-        if (md == null)
-            return null;
-        Optional<String> opt = md.rawVersion();
-        return opt.orElse(null);
-    }
 }
