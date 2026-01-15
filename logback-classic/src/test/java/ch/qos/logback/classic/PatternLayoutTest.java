@@ -214,6 +214,28 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals(expected, val);
     }
 
+    @Test
+    public void epoch() {
+        verifyEpoch(123, false, "2026-01-15 10:15:30.123 1768472130123 Some message");
+        verifyEpoch(456, false, "2026-01-15 10:15:30.456 1768472130456 Some message");
+        verifyEpoch(123, true, "2026-01-15 10:15:30.123 1768472130 Some message");
+        verifyEpoch(456, true, "2026-01-15 10:15:30.456 1768472130 Some message");
+    }
+
+    void verifyEpoch(int millis, boolean secondsNotMillis, String expected) {
+        Instant instant = Instant.parse("2026-01-15T10:15:30Z");
+        instant = instant.plusMillis(millis);
+        LoggingEvent le = makeLoggingEvent(aMessage, null);
+        le.setInstant(instant);
+
+        String option = secondsNotMillis ? "{seconds}" : "";
+        pl.setPattern("%date{yyyy-MM-dd HH:mm:ss.SSS, UTC} %epoch"+option+" %message%nopex");
+        pl.start();
+
+        String val = pl.doLayout(le);
+        assertEquals(expected, val);
+    }
+
     @Override
     public Context getContext() {
         return loggerContext;

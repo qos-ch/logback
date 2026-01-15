@@ -70,6 +70,10 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         DEFAULT_CONVERTER_SUPPLIER_MAP.put("micros", MicrosecondConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(MicrosecondConverter.class.getName(), "micros");
 
+        DEFAULT_CONVERTER_SUPPLIER_MAP.put("ep", EpochConverter::new);
+        DEFAULT_CONVERTER_SUPPLIER_MAP.put("epoch", EpochConverter::new);
+        CONVERTER_CLASS_TO_KEY_MAP.put(EpochConverter.class.getName(), "epoch");
+
         DEFAULT_CONVERTER_SUPPLIER_MAP.put("r", RelativeTimeConverter::new);
         DEFAULT_CONVERTER_SUPPLIER_MAP.put("relative", RelativeTimeConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(RelativeTimeConverter.class.getName(), "relative");
