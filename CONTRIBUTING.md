@@ -47,9 +47,9 @@ meets all requirements outlined in this document.**
  3. Submit a pull-request based off your topic branch, following the patch
     rules below.
  4. If your patch is non-trivial and you haven't submitted a [signed CLA](http://logback.qos.ch/cla.txt),
-    please email it to ceki@qos.ch and tony19@gmail.com with **\[logback]
-    signed CLA** in the subject line. Trivial bug fixes (less than ~30 lines)
-    do not require a CLA.
+    please email it to ceki@qos.ch with **\[logback] signed CLA** in the subject line. Trivial bug
+    fixes (less than ~30 lines) do not require a CLA.
+    
 
 ## Patch rules
 
