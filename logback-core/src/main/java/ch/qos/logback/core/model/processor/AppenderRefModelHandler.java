@@ -1,13 +1,15 @@
 package ch.qos.logback.core.model.processor;
 
-import java.util.Map;
-
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.AppenderAttachable;
+
+import java.util.Map;
+
+import static ch.qos.logback.core.model.processor.AppenderDeclarationAnalyser.isAppenderDeclared;
 
 public class AppenderRefModelHandler extends ModelHandlerBase {
     boolean inError = false;
@@ -49,6 +51,11 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
     void attachReferencedAppenders(ModelInterpretationContext mic, AppenderRefModel appenderRefModel,
             AppenderAttachable<?> appenderAttachable) {
         String appenderName = mic.subst(appenderRefModel.getRef());
+
+        if(!isAppenderDeclared(mic, appenderName)) {
+            addWarn("Appender named [" + appenderName + "] could not be found. Skipping attachment to "+appenderAttachable+".");
+            return;
+        }
 
         Map<String, Appender> appenderBag = (Map<String, Appender>) mic.getObjectMap().get(JoranConstants.APPENDER_BAG);
 

@@ -13,15 +13,12 @@
  */
 package ch.qos.logback.core.model.processor;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ModelHandlerFactoryMethod;
 import ch.qos.logback.core.model.NamedComponentModel;
@@ -270,7 +267,7 @@ public class DefaultProcessor extends ContextAwareBase {
     }
 
     private boolean dependencyIsADirectSubmodel(Model model) {
-        List<String> dependecyNames = this.mic.getDependeeNamesForModel(model);
+        List<String> dependecyNames = this.mic.getDependencyNamesForModel(model);
         if (dependecyNames == null || dependecyNames.isEmpty()) {
             return false;
         }
@@ -289,14 +286,19 @@ public class DefaultProcessor extends ContextAwareBase {
 
     private boolean allDependenciesStarted(Model model) {
         // assumes that DependencyDefinitions have been registered
-        List<String> dependencyNames = mic.getDependeeNamesForModel(model);
+        List<String> dependencyNames = mic.getDependencyNamesForModel(model);
 
         if (dependencyNames == null || dependencyNames.isEmpty()) {
             return true;
         }
         for (String name : dependencyNames) {
-            boolean isStarted = mic.isNamedDependeeStarted(name);
-            if (isStarted == false) {
+            boolean isRegistered = AppenderDeclarationAnalyser.isAppenderDeclared(mic, name);
+            if (!isRegistered) {
+                // non registered dependencies are not taken into account
+                continue;
+            }
+            boolean isStarted = mic.isNamedDependemcyStarted(name);
+            if (!isStarted) {
                 return false;
             }
         }

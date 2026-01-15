@@ -63,10 +63,14 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
         defaultProcessor.addAnalyser(LoggerModel.class,
                 () -> new AppenderRefDependencyAnalyser(context));
 
+        // an appender may contain appender refs, e.g. AsyncAppender
         defaultProcessor.addAnalyser(AppenderModel.class,
                 () -> new AppenderRefDependencyAnalyser(context));
 
         defaultProcessor.addAnalyser(AppenderModel.class, () -> new FileCollisionAnalyser(context));
+
+
+        defaultProcessor.addAnalyser(AppenderModel.class, () -> new AppenderDeclarationAnalyser(context));
 
         sealModelFilters(defaultProcessor);
 

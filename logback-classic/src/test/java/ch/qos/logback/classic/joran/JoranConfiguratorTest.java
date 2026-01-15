@@ -185,6 +185,40 @@ public class JoranConfiguratorTest {
         assertEquals(1, listAppender.list.size());
         System.clearProperty(propertyName);
     }
+    @Test
+    public void appenderRefSettingBySystemPropertyDefault() throws JoranException {
+
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderRefByPropertyDefault.xml");
+        StatusPrinter.print(loggerContext);
+        final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
+        final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("A");
+        assertNotNull(listAppender);
+        assertEquals(0, listAppender.list.size());
+        final String msg = "hello world";
+        logger.info(msg);
+
+        assertEquals(1, listAppender.list.size());
+    }
+
+
+    @Test
+    public void refToUndefinedAppender() throws JoranException {
+
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "refToUndefinedAppender.xml");
+        StatusPrinter.print(loggerContext);
+        final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
+        final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("A");
+        assertNotNull(listAppender);
+        assertEquals(0, listAppender.list.size());
+        final String msg = "hello world";
+        logger.info(msg);
+
+        assertEquals(1, listAppender.list.size());
+
+        checker.assertContainsMatch(Status.WARN, "Appender named \\[NON_EXISTENT_APPENDER\\] could not be found. Skipping attachment to Logger\\[ROOT\\]");
+
+    }
+
 
     @Test
     public void statusListener() throws JoranException {

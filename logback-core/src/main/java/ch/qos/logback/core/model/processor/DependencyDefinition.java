@@ -16,9 +16,9 @@ package ch.qos.logback.core.model.processor;
 import ch.qos.logback.core.model.Model;
 
 /**
- * Defines the relation between a dependee (Model) and a dependency (String).
+ * Defines the relation between a depender (of type Model) and a dependency name (String).
  * 
- * Note that a dependee may have multiple dependencies but 
+ * Note that a depender may have multiple dependencies but
  * {@link DependencyDefinition} applies to just one dependency relation.
  * 
  * @author ceki
@@ -26,20 +26,21 @@ import ch.qos.logback.core.model.Model;
  */
 public class DependencyDefinition {
 
-    // depender: a component of type Model which depends on a dependee
+    // OLD terminology: depender: a component of type Model which depends on a dependee
+    // NEW terminology: dependent: a component of type Model which depends on a dependency
     Model depender;
-    // dependee: the string name of a component depended upon by the depender of type Model
-    String dependee;
+    // dependee or dependency: the string name of a component depended upon by the depender of type Model
+    String dependency;
     
-    public DependencyDefinition(Model depender, String dependee) {
+    public DependencyDefinition(Model depender, String dependency) {
         this.depender = depender;
-        this.dependee = dependee;
+        this.dependency = dependency;
         
         
     }
     
-    public String getDependee() {
-        return dependee;
+    public String getDependency() {
+        return dependency;
     }
 
     public Model getDepender() {
@@ -51,7 +52,7 @@ public class DependencyDefinition {
     public String toString() {
         return "DependencyDefinition{" +
                 "depender=" + depender +
-                ", dependee='" + dependee + '\'' +
+                ", dependency='" + dependency + '\'' +
                 '}';
     }
 }

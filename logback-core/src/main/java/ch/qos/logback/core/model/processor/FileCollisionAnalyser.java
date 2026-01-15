@@ -33,13 +33,6 @@ import java.util.stream.Stream;
 @PhaseIndicator(phase = ProcessingPhase.DEPENDENCY_ANALYSIS)
 public class FileCollisionAnalyser extends ModelHandlerBase {
 
-    // Key: appender name, Value: file path
-    final static String FA_FILE_COLLISION_MAP_KEY = "FA_FILE_COLLISION_MAP_KEY";
-
-    // Key: appender name, Value: FileNamePattern
-    Map<String, FileNamePattern> RFA_FILENAME_COLLISTION_MAP = new HashMap<>();
-
-
     public FileCollisionAnalyser(Context context) {
         super(context);
     }

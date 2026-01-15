@@ -183,24 +183,24 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
         return Collections.unmodifiableList(dependencyDefinitionList);
     }
 
-    public List<String> getDependeeNamesForModel(Model model) {
+    public List<String> getDependencyNamesForModel(Model model) {
         List<String> dependencyList = new ArrayList<>();
         for (DependencyDefinition dd : dependencyDefinitionList) {
             if (dd.getDepender() == model) {
-               dependencyList.add(dd.getDependee());
+               dependencyList.add(dd.getDependency());
             }
         }
         return dependencyList;
     }
 
-    public boolean hasDependers(String dependeeName) {
+    public boolean hasDependers(String dependencyName) {
 
-        if (dependeeName == null || dependeeName.trim().length() == 0) {
+        if (dependencyName == null || dependencyName.trim().length() == 0) {
             new IllegalArgumentException("Empty dependeeName name not allowed here");
         }
 
         for (DependencyDefinition dd : dependencyDefinitionList) {
-            if (dd.dependee.equals(dependeeName))
+            if (dd.dependency.equals(dependencyName))
                 return true;
         }
 
@@ -212,7 +212,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
         startedDependees.add(name);
     }
 
-    public boolean isNamedDependeeStarted(String name) {
+    public boolean isNamedDependemcyStarted(String name) {
         return startedDependees.contains(name);
     }
 
