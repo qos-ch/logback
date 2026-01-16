@@ -27,6 +27,7 @@ public class EpochConverterTest {
     @Test
     public void withDefaultConfiguration() {
         ec.setOptionList(null);
+        ec.start();
         LoggingEvent le = new LoggingEvent();
         Instant instant = Instant.parse("2026-01-15T10:15:30Z");
         instant = instant.plusMillis(321);
@@ -39,6 +40,7 @@ public class EpochConverterTest {
     @Test
     public void withSecondsConfiguration() {
         ec.setOptionList(Collections.singletonList("seconds"));
+        ec.start();
         LoggingEvent le = new LoggingEvent();
         Instant instant = Instant.parse("2026-01-15T10:15:30Z");
         instant = instant.plusMillis(321); // millis should be ignored
@@ -51,6 +53,7 @@ public class EpochConverterTest {
     @Test
     public void withUnknownNonsenseConfiguration() {
         ec.setOptionList(Collections.singletonList("nonsense"));
+        ec.start();
         LoggingEvent le = new LoggingEvent();
         Instant instant = Instant.parse("2026-01-15T10:15:30Z");
         instant = instant.plusMillis(321);
