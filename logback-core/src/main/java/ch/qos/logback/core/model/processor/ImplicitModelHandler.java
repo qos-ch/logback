@@ -74,7 +74,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         switch (aggregationType) {
         case NOT_FOUND:
             addWarn(IGNORING_UNKNOWN_PROP+" [" + nestedElementTagName + "] in [" + o.getClass().getName() + "]");
-            inError = true;
+            this.inError = true;
             // no point in processing submodels
             implicitModel.markAsSkipped();
             return;
@@ -82,16 +82,18 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         case AS_BASIC_PROPERTY_COLLECTION:
             ImcplicitActionDataForBasicProperty adBasicProperty = new ImcplicitActionDataForBasicProperty(parentBean,
                     aggregationType, nestedElementTagName);
-            implicitModelData = adBasicProperty;
+            this.implicitModelData = adBasicProperty;
             doBasicProperty(mic, implicitModel, adBasicProperty);
             return;
         // we only push action data if NestComponentIA is applicable
         case AS_COMPLEX_PROPERTY_COLLECTION:
         case AS_COMPLEX_PROPERTY:
-            ImplicitModelDataForComplexProperty adComplex = new ImplicitModelDataForComplexProperty(parentBean,
+            Class<?> propertyType = parentBean.getTypeForComplexProperty(nestedElementTagName, aggregationType);
+            ImplicitModelDataForComplexProperty imdForComplexProperty = new ImplicitModelDataForComplexProperty(parentBean,
                     aggregationType, nestedElementTagName);
-            implicitModelData = adComplex;
-            doComplex(mic, implicitModel, adComplex);
+            imdForComplexProperty.setExpectedPropertyType(propertyType);
+            this.implicitModelData = imdForComplexProperty;
+            doComplex(mic, implicitModel, imdForComplexProperty);
             return;
         default:
             addError("PropertySetter.computeAggregationType returned " + aggregationType);
@@ -119,50 +121,56 @@ public class ImplicitModelHandler extends ModelHandlerBase {
     }
 
     public void doComplex(ModelInterpretationContext interpretationContext, ComponentModel componentModel,
-            ImplicitModelDataForComplexProperty actionData) {
+            ImplicitModelDataForComplexProperty imdForComplexProperty) {
 
-        String className = componentModel.getClassName();
+        String propertyClassName = componentModel.getClassName();
         // perform variable name substitution
-        String substClassName = interpretationContext.subst(className);
+        String substPropertyClassName = interpretationContext.subst(propertyClassName);
 
-        String fqcn = interpretationContext.getImport(substClassName);
+        String fqcn = interpretationContext.getImport(substPropertyClassName);
 
-        Class<?> componentClass = null;
+        Class<?> propertyClass = null;
         try {
 
             if (!OptionHelper.isNullOrEmptyOrAllSpaces(fqcn)) {
-                componentClass = Loader.loadClass(fqcn, context);
+                propertyClass = Loader.loadClass(fqcn, context);
             } else {
                 // guess class name via implicit rules
-                PropertySetter parentBean = actionData.parentBean;
-                componentClass = parentBean.getClassNameViaImplicitRules(actionData.propertyName,
-                        actionData.getAggregationType(), interpretationContext.getDefaultNestedComponentRegistry());
+                PropertySetter parentBean = imdForComplexProperty.parentBean;
+                propertyClass = parentBean.getClassNameViaImplicitRules(imdForComplexProperty.propertyName,
+                        imdForComplexProperty.getAggregationType(), interpretationContext.getDefaultNestedComponentRegistry());
             }
 
-            if (componentClass == null) {
-                actionData.inError = true;
+            if (propertyClass == null) {
+                imdForComplexProperty.inError = true;
                 String errMsg = "Could not find an appropriate class for property [" + componentModel.getTag() + "]";
                 addError(errMsg);
                 return;
             }
 
             if (OptionHelper.isNullOrEmptyOrAllSpaces(fqcn)) {
-                addInfo("Assuming default type [" + componentClass.getName() + "] for [" + componentModel.getTag()
+                addInfo("Assuming default type [" + propertyClass.getName() + "] for [" + componentModel.getTag()
                         + "] property");
             }
 
-            actionData.setNestedComplexProperty(componentClass.getConstructor().newInstance());
 
-            // pass along the repository
-            if (actionData.getNestedComplexProperty() instanceof ContextAware) {
-                ((ContextAware) actionData.getNestedComplexProperty()).setContext(this.context);
+
+            Class<?> expectedPropertyType = imdForComplexProperty.getExpectedPropertyType();
+
+            Object object = OptionHelper.instantiateClassWithSuperclassRestriction(propertyClass, expectedPropertyType);
+
+            imdForComplexProperty.setNestedComplexProperty(object);
+
+            // pass along the context
+            if (imdForComplexProperty.getNestedComplexProperty() instanceof ContextAware) {
+                ((ContextAware) imdForComplexProperty.getNestedComplexProperty()).setContext(this.context);
             }
             // addInfo("Pushing component [" + localName
             // + "] on top of the object stack.");
-            interpretationContext.pushObject(actionData.getNestedComplexProperty());
+            interpretationContext.pushObject(imdForComplexProperty.getNestedComplexProperty());
 
         } catch (Exception oops) {
-            actionData.inError = true;
+            imdForComplexProperty.inError = true;
             String msg = "Could not create component [" + componentModel.getTag() + "] of type [" + fqcn + "]";
             addError(msg, oops);
         }

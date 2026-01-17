@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -40,7 +40,7 @@ import java.lang.reflect.Method;
  * ps.set(&quot;age&quot;, &quot;32&quot;);
  * ps.set(&quot;isMale&quot;, &quot;true&quot;);
  * </pre>
- *
+ * <p>
  * will cause the invocations anObject.setName("Joe"), anObject.setAge(32), and
  * setMale(true) if such methods exist with those signatures. Otherwise an
  * {@link PropertySetterException} is thrown.
@@ -110,9 +110,9 @@ public class PropertySetter extends ContextAwareBase {
     /**
      * Set the named property using a {@link Method setter}.
      *
-     * @param setter  A Method describing the characteristics of the
-     *              property to set.
-     * @param value The value of the property.
+     * @param setter A Method describing the characteristics of the
+     *               property to set.
+     * @param value  The value of the property.
      */
     private void setProperty(Method setter, String value) throws PropertySetterException {
         Class<?>[] paramTypes = setter.getParameterTypes();
@@ -138,41 +138,6 @@ public class PropertySetter extends ContextAwareBase {
     public AggregationType computeAggregationType(String name) {
         return this.aggregationAssessor.computeAggregationType(name);
     }
-
-//    private Method findAdderMethod(String name) {
-//        String propertyName = BeanUtil.toLowerCamelCase(name);
-//        return beanDescription.getAdder(propertyName);
-//    }
-//
-//    private Method findSetterMethod(String name) {
-//        String propertyName = BeanUtil.toLowerCamelCase(name);
-//        return beanDescription.getSetter(propertyName);
-//    }
-
-//    private Class<?> getParameterClassForMethod(Method method) {
-//        if (method == null) {
-//            return null;
-//        }
-//        Class<?>[] classArray = method.getParameterTypes();
-//        if (classArray.length != 1) {
-//            return null;
-//        } else {
-//            return classArray[0];
-//        }
-//    }
-
-//    private AggregationType computeRawAggregationType(Method method) {
-//        Class<?> parameterClass = getParameterClassForMethod(method);
-//        if (parameterClass == null) {
-//            return AggregationType.NOT_FOUND;
-//        }
-//        if (StringToObjectConverter.canBeBuiltFromSimpleString(parameterClass)) {
-//            return AggregationType.AS_BASIC_PROPERTY;
-//        } else {
-//            return AggregationType.AS_COMPLEX_PROPERTY;
-//        }
-//    }
-
 
 
     public Class<?> getObjClass() {
@@ -210,7 +175,7 @@ public class PropertySetter extends ContextAwareBase {
         }
 
         name = StringUtil.capitalizeFirstLetter(name);
-        Method adderMethod =aggregationAssessor.findAdderMethod(name);
+        Method adderMethod = aggregationAssessor.findAdderMethod(name);
 
         if (adderMethod == null) {
             addError("No adder for property [" + name + "].");
@@ -281,8 +246,40 @@ public class PropertySetter extends ContextAwareBase {
 
 
     public Class<?> getClassNameViaImplicitRules(String name, AggregationType aggregationType,
-            DefaultNestedComponentRegistry registry) {
+                                                 DefaultNestedComponentRegistry registry) {
         return aggregationAssessor.getClassNameViaImplicitRules(name, aggregationType, registry);
     }
 
+    public Class<?> getTypeForComplexProperty(String nestedElementTagName, AggregationType aggregationType) {
+
+        Method aMethod = null;
+        switch (aggregationType) {
+            case AS_COMPLEX_PROPERTY:
+                aMethod = aggregationAssessor.findSetterMethod(nestedElementTagName);
+                break;
+            case AS_COMPLEX_PROPERTY_COLLECTION:
+                aMethod = aggregationAssessor.findAdderMethod(nestedElementTagName);
+        }
+
+
+        checkParameterCount(aMethod, nestedElementTagName);
+
+        Class<?>[] paramTypes = aMethod.getParameterTypes();
+        return paramTypes[0];
+
+    }
+
+    private void checkParameterCount(Method aMethod, String nestedElementTagName) {
+        if(aMethod == null) {
+            String msg = "Could not find method for property [" + nestedElementTagName + "].";
+            addError(msg);
+            throw new IllegalStateException(msg);
+        }
+        int parameterCount = aMethod.getParameterCount();
+        if (parameterCount != 1) {
+            String msg = "Expected ["+aMethod.getName()+"] for property [" + nestedElementTagName + "] to have exactly one parameter.";
+            addError(msg);
+            throw new IllegalStateException(msg);
+        }
+    }
 }

@@ -68,6 +68,8 @@ public class AggregationAssessor extends ContextAwareBase  {
 
             case AS_COMPLEX_PROPERTY:
                 return AggregationType.AS_COMPLEX_PROPERTY_COLLECTION;
+
+            // computeRawAggregationType cannot return these values
             case AS_BASIC_PROPERTY_COLLECTION:
             case AS_COMPLEX_PROPERTY_COLLECTION:
                 addError("Unexpected AggregationType " + type);

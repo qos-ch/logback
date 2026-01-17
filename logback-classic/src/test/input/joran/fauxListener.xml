@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="false">
+   <listener class="ch.qos.logback.classic.joran.FauxListener"/>
+</configuration>

@@ -22,6 +22,7 @@ import ch.qos.logback.core.util.AggregationType;
 public class ImplicitModelDataForComplexProperty extends ImplicitModelData {
 
     private Object nestedComplexProperty;
+    private Class<?> expectedPropertyType;
 
     public ImplicitModelDataForComplexProperty(PropertySetter parentBean, AggregationType aggregationType,
             String propertyName) {
@@ -30,6 +31,14 @@ public class ImplicitModelDataForComplexProperty extends ImplicitModelData {
 
     public Object getNestedComplexProperty() {
         return nestedComplexProperty;
+    }
+
+    public Class<?> getExpectedPropertyType() {
+        return expectedPropertyType;
+    }
+
+    public void setExpectedPropertyType(Class<?> expectedPropertyType) {
+        this.expectedPropertyType = expectedPropertyType;
     }
 
     public void setNestedComplexProperty(Object nestedComplexProperty) {

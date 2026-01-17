@@ -14,6 +14,7 @@
 package ch.qos.logback.core.util;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 import ch.qos.logback.core.Context;
@@ -42,6 +43,20 @@ public class OptionHelper {
     public static Object instantiateByClassName(String className, Class<?> superClass, ClassLoader classLoader)
             throws IncompatibleClassException, DynamicClassLoadingException {
         return instantiateByClassNameAndParameter(className, superClass, classLoader, null, null);
+    }
+
+
+    public static Object instantiateClassWithSuperclassRestriction(Class<?> classObj, Class<?> superClass)
+            throws IncompatibleClassException, DynamicClassLoadingException {
+        if (!superClass.isAssignableFrom(classObj)) {
+            throw new IncompatibleClassException(superClass, classObj);
+        }
+
+        try {
+            return classObj.getConstructor().newInstance();
+        } catch (NoSuchMethodException|InstantiationException|IllegalAccessException|InvocationTargetException e) {
+            throw new DynamicClassLoadingException("Failed to instantiate type " + classObj.getName(), e);
+        }
     }
 
     public static Object instantiateByClassNameAndParameter(String className, Class<?> superClass,
