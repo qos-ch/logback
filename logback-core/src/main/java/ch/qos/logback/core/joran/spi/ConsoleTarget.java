@@ -18,13 +18,13 @@ import java.io.OutputStream;
 
 /**
  * The set of console output targets.
- * 
+ *
+ * <p>See <a href="https://jira.qos.ch/browse/LOGBACK-136">LOGBACK-136</a></p>
+ *
  * @author Ruediger Dohna
  * @author Ceki G&uuml;lc&uuml;
  * @author Tom SH Liu
  * @author David Roussel
- * 
- * @sse LOGBACK-136
  */
 public enum ConsoleTarget {
 

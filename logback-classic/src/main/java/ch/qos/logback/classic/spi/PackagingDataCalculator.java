@@ -21,7 +21,7 @@ import java.util.HashMap;
  * Given a classname locate associated PackageInfo (jar name, version name).
  *
  * @author James Strachan
- * @Ceki G&uuml;lc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class PackagingDataCalculator {
 

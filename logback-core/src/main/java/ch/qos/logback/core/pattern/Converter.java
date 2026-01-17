@@ -16,7 +16,8 @@ package ch.qos.logback.core.pattern;
 /**
  * A minimal converter which sets up the general interface for derived classes.
  * It also implements the functionality to chain converters in a linked list.
- * 
+ *
+ * @param <E> The type of the event object
  * @author ceki
  */
 abstract public class Converter<E> {
@@ -27,7 +28,7 @@ abstract public class Converter<E> {
      * The convert method is responsible for extracting data from the event and
      * storing it for later use by the write method.
      * 
-     * @param event
+     * @param event the event to convert
      */
     public abstract String convert(E event);
 

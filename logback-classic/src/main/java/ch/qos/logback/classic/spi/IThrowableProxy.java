@@ -44,7 +44,7 @@ public interface IThrowableProxy {
      * Is this instance the result of a cyclic exception?
      *
      * @return true if cyclic, false otherwise
-     * @sine 1.3.0
+     * @since 1.3.0
      */
     boolean isCyclic();
 }

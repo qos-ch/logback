@@ -24,7 +24,6 @@ import ch.qos.logback.core.AppenderBase;
  * An appender used for testing.
  * 
  * @author ceki
- * @param <E>
  * @since 1.3.0
  */
 public class WithLayoutListAppender extends AppenderBase<ILoggingEvent> {

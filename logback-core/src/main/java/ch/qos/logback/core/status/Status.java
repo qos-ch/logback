@@ -32,8 +32,8 @@ public interface Status {
     Throwable getThrowable();
 
     /**
-     * @eprecated. Use getTimestamp instead.
-     * @return
+     * @deprecated Use getTimestamp instead.
+     * @return the date as a long value
      */
     @Deprecated
     default Long getDate() {

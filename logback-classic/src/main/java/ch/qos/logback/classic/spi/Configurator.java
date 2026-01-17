@@ -24,7 +24,7 @@ import ch.qos.logback.core.spi.ContextAware;
  * in particular the no-arg constructor requirement.</p>
  *
  * <p>The return type of {@link #configure(LoggerContext)  configure} was changed from 'void' to
- * {@link ExecutionStatus) in logback version 1.3.0.
+ * {@link ExecutionStatus} in logback version 1.3.0.
  * </p>
  */
 public interface Configurator extends ContextAware {

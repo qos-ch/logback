@@ -19,7 +19,7 @@ import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 
 /**
- * Compresses files using {@link org.tukaani.xz xz} library.
+ * Compresses files using <a href="https://tukaani.org/xz/">tukaani.org/xz</a> library.
  *
  * <p>Note that </p>
  *

@@ -21,7 +21,7 @@ import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * 
- * See {@link http://logback.qos.ch/manual/filters.html#DuplicateMessageFilter}
+ * See <a href=" http://logback.qos.ch/manual/filters.html#DuplicateMessageFilter">DuplicateMessageFilter</a>
  * for details.
  * 
  * @author Ceki Gulcu

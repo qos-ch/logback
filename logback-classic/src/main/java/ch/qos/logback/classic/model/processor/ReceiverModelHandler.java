@@ -24,7 +24,7 @@ import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * A Joran {@link ModelHandler} for a {@link SocketReceiver} configuration.
+ * A model handler for a {@link SocketReceiver} configuration.
  *
  * @author Carl Harris
  */

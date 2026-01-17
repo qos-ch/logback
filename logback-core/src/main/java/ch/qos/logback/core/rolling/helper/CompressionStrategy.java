@@ -20,7 +20,7 @@ import ch.qos.logback.core.spi.ContextAware;
  * This interface was introduced in order to support for pluggable
  * compression methods.
  *
- * @author Ceki G&uuml;lc&uuml
+ * @author Ceki G&uuml;lc&uuml;
  * @since 1.5.18
  */
 public interface CompressionStrategy extends ContextAware {

@@ -59,7 +59,7 @@ public abstract class Action extends ContextAwareBase {
     /**
      * Called to pass the body (as text) contained within an element.
      * 
-     * @param ic
+     * @param intercon
      * @param body
      * @throws ActionException
      */

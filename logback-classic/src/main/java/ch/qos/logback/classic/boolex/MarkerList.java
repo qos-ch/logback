@@ -19,7 +19,7 @@ import org.slf4j.Marker;
 import java.util.List;
 
 /**
- * A helper class to be used in conjunction with {@link ch.qos.logback.classic.boolex.JaninoEventEvaluator}
+ * A helper class to be used in conjunction with <code>JaninoEventEvaluator</code> (removed in 1.5.13).
  *
  * @since 1.5.4
  */

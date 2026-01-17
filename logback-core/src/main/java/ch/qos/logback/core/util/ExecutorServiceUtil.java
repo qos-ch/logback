@@ -99,7 +99,7 @@ public class ExecutorServiceUtil {
     }
 
     /**
-     * An alternate implementation of {@linl #newThreadPoolExecutor} which returns a virtual thread per task executor when
+     * An alternate implementation of {@link #newThreadPoolExecutor} which returns a virtual thread per task executor when
      * available.
      *
      * @since 1.3.12/1.4.12

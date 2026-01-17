@@ -159,7 +159,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
 
     /**
-     * See {@link #setStackTracePattern(String).
+     * See {@link #setStackTracePattern(String)}.
      *
      * @return the stackTraceSuffixPattern
      * @since 1.0.4

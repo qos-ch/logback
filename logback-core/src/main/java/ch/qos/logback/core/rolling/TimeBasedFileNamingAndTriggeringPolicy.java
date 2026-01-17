@@ -24,7 +24,7 @@ import ch.qos.logback.core.spi.ContextAware;
  * support methods.
  * </p>
  *
- * @See also {@link TimeBasedFileNamingAndTriggeringPolicyBase}
+ * @see TimeBasedFileNamingAndTriggeringPolicyBase
  *
  * @author Ceki G&uuml;lc&uuml;
  * 
