@@ -25,6 +25,7 @@ import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -205,7 +206,7 @@ public class JoranConfiguratorTest {
     public void refToUndefinedAppender() throws JoranException {
 
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "refToUndefinedAppender.xml");
-        StatusPrinter.print(loggerContext);
+        //StatusPrinter.print(loggerContext);
         final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
         final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("A");
         assertNotNull(listAppender);
@@ -216,7 +217,27 @@ public class JoranConfiguratorTest {
         assertEquals(1, listAppender.list.size());
 
         checker.assertContainsMatch(Status.WARN, "Appender named \\[NON_EXISTENT_APPENDER\\] could not be found. Skipping attachment to Logger\\[ROOT\\]");
+    }
 
+    @Test
+    public void refViaDefaultSubstitution() throws JoranException {
+
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "refViaDefaultSubstitution.xml");
+        StatusPrinter.print(loggerContext);
+        final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
+        final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("A");
+        final NOPAppender<ILoggingEvent> nopAppender = (NOPAppender) root.getAppender("NOP");
+
+        assertNotNull(listAppender);
+        assertNotNull(nopAppender);
+
+        assertEquals(0, listAppender.list.size());
+        final String msg = "hello world";
+        logger.info(msg);
+
+        assertEquals(1, listAppender.list.size());
+
+        checker.assertIsWarningOrErrorFree();
     }
 
 

@@ -115,12 +115,12 @@ public class OptionHelper {
 
     /**
      * Try to lookup the property in the following order:
-     * <ul>
-     * <li>pc1 (usually the local property container)</li>
+     * <ol>
+     * <li>pc1 (the local property container, usually the {@link ch.qos.logback.core.model.processor.ModelInterpretationContext ModelInterpretationContext})</li>
      * <li>pc2 (usually the {@link Context context})</li>
      * <li>System properties</li>
      * <li>Environment variables</li>
-     * </ul>
+     * </ol>
      *
      * @param key the property key
      * @param pc1 the first property container to search

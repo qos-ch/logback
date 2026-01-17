@@ -159,6 +159,23 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
         return beanDescriptionCache;
     }
 
+    /**
+     * Performs variable substitution on the provided {@code ref} string.
+     *
+     * <p>Value substitution will follow the order</p>
+     * <ol>
+     * <li>properties defined in this {@link ModelInterpretationContext}</li>
+     * <li>properties defined in the {@link Context context} of this {@link ModelInterpretationContext}</li>
+     * <li>System properties</li>
+     * <li>Environment variables</li>
+     * </ol>
+     *
+     * <p>If value substitution occurs it will be output as a status message, unless marked confidential, that is,
+     * if {@code ref} contains the case-insensitive strings PASSWORD, SECRET or CONFIDENTIAL.</p>
+     *
+     * @param ref the string that may contain variables to be substituted; can be {@code null}
+     * @return the string with substitutions applied if applicable; may return {@code null} if {@code ref} is {@code null}
+     */
     public String subst(String ref)  {
 
         String substituted = variableSubstitutionsHelper.subst(ref);

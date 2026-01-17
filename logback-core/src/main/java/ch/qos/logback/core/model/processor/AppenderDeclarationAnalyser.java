@@ -47,8 +47,8 @@ public class AppenderDeclarationAnalyser extends ModelHandlerBase {
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         AppenderModel appenderModel = (AppenderModel) model;
+        String appenderName = mic.subst(appenderModel.getName());
 
-        String appenderName = appenderModel.getName();
         addAppenderDeclaration(mic, appenderName);
     }
 
