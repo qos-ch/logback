@@ -3,66 +3,68 @@ Here is a list of persons who have signed a CLA [1].
 
 Name                     Location              Date
 ----                     --------              ----
-Maarten Bosteels         Heverlee, Belgium     2007-01-15
-John E. Conlon           WI, USA               2007-02-08
-Ralph W. Goers Jr.       CA, USA               2008-07-24
-Matt Humphreys           London, UK            2008-08-16
-Thorbjorn Ravn Andersen  Hammel, Denmark       2008-08-16
-Chad LaVigne             MN, USA               2009-03-25
-Joern Huxhorn            Pfungstadt, Germany   2009-04-29
-Thorsten Moeller         Basel, Switzerland    2009-11-16
-Robert Elliot            Twickenham, UK        2010-03-08
-Tomasz Nurkiewicz        Wegrow, Poland        2010-03-19
-Aleksey Didik            S.Putilovskay, Russia 2010-03-26
-Heiko Seeberger          Schondorf , Germany   2010-09-06
-Ryan Cogswell            MN, USA               2011-07-07
-Pierre Queinnec          Paris, France         2011-07-20
-Anthony Trinh            MA, USA               2012-05-10
-Torsten Juergeleit       Liederbach, Germany   2012-05-13
-Cedric Lime              Levallois-Perret, FR  2012-06-08
-Christian Trutz          Mark, Germany         2012-06-14
-Les Hazlewood            CA, USA               2012-09-10
+Maarten Bosteels         Belgium               2007-01-15
+John E. Conlon           USA                   2007-02-08
+Ralph W. Goers Jr.       USA                   2008-07-24
+Matt Humphreys           UK                    2008-08-16
+Thorbjorn Ravn Andersen  Denmark               2008-08-16
+Chad LaVigne             USA                   2009-03-25
+Joern Huxhorn            Germany               2009-04-29
+Thorsten Moeller         Switzerland           2009-11-16
+Robert Elliot            United Kingdom        2010-03-08
+Tomasz Nurkiewicz        Poland                2010-03-19
+Aleksey Didik            Russia                2010-03-26
+Heiko Seeberger          Germany               2010-09-06
+Ryan Cogswell            USA                   2011-07-07
+Pierre Queinnec          France                2011-07-20
+Anthony Trinh            USA                   2012-05-10
+Torsten Juergeleit       Germany               2012-05-13
+Cedric Lime              France                2012-06-08
+Christian Trutz          Germany               2012-06-14
+Les Hazlewood            USA                   2012-09-10
 Libor Jelinek            Czech Republic        2012-09-17
-Matthew Bishop           Vancouver, Canada     2012-09-18
-Joris Kuipers            Amstelveen, NL        2013-02-11
-Andrey Korzhevskiy       Skryabina Akademika, Russia 2013-03-26 
-Carl E. Harris Jr.       VA, USA               2013-03-27
-Matthew R. Bertolini     NJ, USA               2013-04-23
-Gregory A. Denton        WA, USA               2013-05-02
-Mikhail Mazursky         Bashkortostan,Russia  2013-10-02
-Marvin B. Lillehaug      Trondheim, Norway     2014-01-20
-Chetan Mehrotra          Uttar Pradesh, India  2014-02-04
-Eric Dahl                NE, USA               2014-02-04
-Adam Gent                MA, USA               2014-04-01
-Sebastian Groebler       Berlin, Germany       2014-07-17
-Alexander Dorokhine      CA, USA               2014-12-07
-Yuji Okazawa             Tokyo, Japan          2015-04-01
-Lukasz Cwik              WA, USA               2015-06-11
-Juan Pablo Santos        Madrid, Spain         2015-06-15
-Gareth Davis             Cambridge, UK         2015-07-15
-Marek Szalik             Warszawa, Poland      2015-11-25
-Pavel Boldyrev           Ontario, Canada       2015-12-22
-Christoph Zauner         Ennsdorf, Austria     2016-01-11
-David Roberge            Maine, USA            2016-02-14
-Adam Batkin              Connecticut, USA      2016-02-14
-Ville Koskela            Washington, USA       2016-02-19
+Matthew Bishop           Canada                2012-09-18
+Atilla Kiraly            Hungary               2013-01-07
+Joris Kuipers            Netherlands           2013-02-11
+Andrey Korzhevskiy       Russia                2013-03-26 
+Carl E. Harris Jr.       USA                   2013-03-27
+Matthew R. Bertolini     USA                   2013-04-23
+Gregory A. Denton        USA                   2013-05-02
+Mikhail Mazursky         Russia                2013-10-02
+Marvin B. Lillehaug      Norway                2014-01-20
+Chetan Mehrotra          India                 2014-02-04
+Eric Dahl                USA                   2014-02-04
+Adam Gent                USA                   2014-04-01
+Sebastian Groebler       Germany               2014-07-17
+Alexander Dorokhine      USA                   2014-12-07
+Yuji Okazawa             Japan                 2015-04-01
+Lukasz Cwik              USA                   2015-06-11
+Juan Pablo Santos        Spain                 2015-06-15
+Gareth Davis             United Kingdom        2015-07-15
+Marek Szalik             Poland                2015-11-25
+Pavel Boldyrev           Canada                2015-12-22
+Christoph Zauner         Austria               2016-01-11
+David Roberge            USA                   2016-02-14
+Adam Batkin              USA                   2016-02-14
+Ville Koskela            USA                   2016-02-19
 Vedran Pavic             Croatia               2016-02-23
-Max Urech                AG, Switzerland       2016-03-17
-Kenneth Gendron          CA, USA               2016-04-01
+Max Urech                Switzerland           2016-03-17
+Tsuyoshi Yoshizawa       Japan                 2016-03-29 
+Kenneth Gendron          USA                   2016-04-01
 Espen A. Fossen          Norway                2016-04-07
-Scott Babcock            WA, USA               2016-12-22
+Scott Babcock            USA                   2016-12-22
 Olivier Bourgain         France                2017-01-31
 Nicolas Maupu            France                2017-01-31
 Friso Vrolijken          Netherlands           2017-02-15
-Jan Engehausen           ZH, Switzerland       2017-07-07
-Christian Lorenz         Berlin, Germany       2017-11-28
-Federico Fissore         Reano, Italy          2019-02-18
+Jan Engehausen           Switzerland           2017-07-07
+Christian Lorenz         Germany               2017-11-28
+Federico Fissore         Italy                 2019-02-18
 Wessel van Norel         Netherlands           2019-08-12
 Alexandre Dutra          France                2019-10-10
-Nicolai Parlog           Karlsruhe,Germany     2019-11-25
-Antonio Tomac            Zagreb, Croatia       2020-08-11 
-Matthias Kiefer          Hagenbacj, Germany    2024-01-14
-Duncan Jauncey           Hertford, UK          2026-01-15
+Nicolai Parlog           Germany               2019-11-25
+Antonio Tomac            Croatia               2020-08-11 
+Matthias Kiefer          Germany               2024-01-14
+Duncan Jauncey           United Kingdom        2026-01-15
 
 Justification for CLAs
 ----------------------
@@ -90,11 +92,9 @@ been performed (due diligence).
 
 A more detailed discussion of CLAs can be found at [2].
 
-BTW, the CLA can be sent to Ceki directly by email (ceki at qos.ch). A
-scanned copy on two separate pages is fine but please make sure that
-the images render reasonably well when printed on a laser
-printer. Images taken by cellphone cameras often render as a large
-gray smudge when printed.
+A scanned copy of the signed CLA can be sent to Ceki directly by email
+(ceki at qos.ch) in PDF format. Please make sure that the copy renders
+reasonably well when printed on a laser printer.
 
 [1] http://logback.qos.ch/cla.txt
 [2] http://www.oss-watch.ac.uk/resources/cla.xml
