@@ -1,7 +1,5 @@
 package ch.qos.logback.core.model.processor;
 
-import javax.naming.NamingException;
-
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
@@ -72,7 +70,7 @@ public class InsertFromJNDIModelHandler extends ModelHandlerBase {
                 addInfo("Setting variable [" + asKey + "] to [" + envEntryValue + "] in [" + scope + "] scope");
                 PropertyModelHandlerHelper.setProperty(capc, asKey, envEntryValue, scope);
             }
-        } catch (NamingException e) {
+        } catch (Exception e) {
             addError("Failed to lookup JNDI env-entry [" + envEntryName + "]");
         }
 
