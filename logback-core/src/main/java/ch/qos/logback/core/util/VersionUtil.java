@@ -15,7 +15,6 @@
 package ch.qos.logback.core.util;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.WarnStatus;
 
@@ -97,7 +96,7 @@ public class VersionUtil {
     /**
      * Retrieves the version of a module using a properties file associated with the module.
      *
-     * <p>Unfortunately, this code cannot be called by depender modules. It needs to be copy-pasted.</p>
+     * <p>Unfortunately, this code cannot be called by other modules. It needs to be duplicated.</p>
      *
      * <p>The method looks for a properties file with a name derived from the <code>moduleName</code> parameter,
      * in the same location, e.g. package, as the <code>aClass</code> parameter. It attempts to load the properties file
@@ -111,6 +110,8 @@ public class VersionUtil {
      * @param aClass the class used to locate the resource file, the properties file is expected to be in the same package
      * @param moduleName the name of the module, which is used to construct the properties file name and the key
      * @return the version of the module as a string, or null if the version cannot be determined
+     *
+     * @since 1.5.26
      */
     static public String getArtifactVersionBySelfDeclaredProperties(Class<?> aClass, String moduleName) {
         Properties props = new Properties();
@@ -128,22 +129,6 @@ public class VersionUtil {
         } catch (IOException e) {
             return null;
         }
-    }
-
-    /**
-     * Retrieves the version of the "logback-core" module using a properties file
-     * associated with the module.
-     *
-     * <p>The method locates and reads a properties file named "logback-core-version.properties"
-     * in the package of the {@code CoreConstants.class}. It then extracts the version
-     * information using the key "logback-core-version".
-     * </p>
-     *
-     * @return the version of the "logback-core" module as a string, or null if the version cannot be determined
-     * @since 1.5.26
-     */
-    static public String getCoreVersionBySelfDeclaredProperties() {
-        return getArtifactVersionBySelfDeclaredProperties(CoreConstants.class, "logback-core");
     }
 
 

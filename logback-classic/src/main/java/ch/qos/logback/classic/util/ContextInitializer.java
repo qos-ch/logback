@@ -18,6 +18,7 @@ import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareImpl;
+import ch.qos.logback.core.util.CoreVersionUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.VersionUtil;
@@ -101,7 +102,7 @@ public class ContextInitializer {
 
     private void checkVersions() {
         try {
-            String coreVersion = VersionUtil.getCoreVersionBySelfDeclaredProperties();
+            String coreVersion = CoreVersionUtil.getCoreVersionBySelfDeclaredProperties();
             String classicVersion = ClassicVersionUtil.getVersionBySelfDeclaredProperties();
             VersionUtil.checkForVersionEquality(loggerContext, coreVersion, classicVersion, "logback-core", "logback-classic");
         }  catch(NoClassDefFoundError e) {
