@@ -14,15 +14,14 @@
 
 package ch.qos.logback.classic.blackbox;
 
-import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.CoreVersionUtil;
 import ch.qos.logback.core.util.VersionUtil;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -59,9 +58,11 @@ public class VersionCheckTest {
      * 1.5.25 or older.
      */
     @Test
+    @Disabled
     public void versionTest() {
         String olderCoreVersion = System.getProperty("olderCore", "none");
-        assertEquals("1.5.20", olderCoreVersion);
+        //assertEquals("1.5.20", olderCoreVersion);
+        assertEquals("1.5.25", olderCoreVersion);
         try {
             VersionUtil.checkForVersionEquality(loggerContext, this.getClass(), CoreConstants.class, "logback-classic", "logback-core");
             fail("Expected NoClassDefFoundError");
@@ -70,6 +71,26 @@ public class VersionCheckTest {
             System.out.println("Got expected NoClassDefFoundError.");
         }
     }
+
+    @Test
+    public void otherVersionTest() {
+        String olderCoreVersion = System.getProperty("olderCore", "none");
+        //assertEquals("1.5.20", olderCoreVersion);
+        assertEquals("1.5.25", olderCoreVersion);
+        try {
+            CoreVersionUtil.getCoreVersionBySelfDeclaredProperties();
+            fail("Expected Error");
+        } catch (NoClassDefFoundError e) {
+            // logback-core version is 1.5.24 or older
+            System.out.println("Got expected NoClassDefFoundError.");
+        } catch (NoSuchMethodError e) {
+            // logback-core version is 1.5.25 or older
+            System.out.println("Got expected NoSuchFieldError.");
+        }
+    }
+
+
+
 
     // WARNING: do not add other tests to this file
 

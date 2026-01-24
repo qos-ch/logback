@@ -130,7 +130,7 @@
         <profile>
             <id>older-core</id>
             <properties>
-                <older-logback-core.version>1.5.20</older-logback-core.version>
+                <older-logback-core.version>1.5.25</older-logback-core.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
