@@ -12,6 +12,7 @@ module ch.qos.logback.core.blackbox {
 
     requires org.tukaani.xz;
 
+    exports ch.qos.logback.core.blackbox;
     exports ch.qos.logback.core.blackbox.boolex;
     exports ch.qos.logback.core.blackbox.joran.conditional;
     exports ch.qos.logback.core.blackbox.joran;

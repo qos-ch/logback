@@ -14,14 +14,10 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareImpl;
-import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.WarnStatus;
-import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.VersionUtil;
@@ -105,9 +101,14 @@ public class ContextInitializer {
 
     private void checkVersions() {
         try {
-            VersionUtil.checkForVersionEquality(loggerContext, this.getClass(), VersionUtil.class, "logback-classic", "logback-core");
+            String coreVersion = VersionUtil.getCoreVersionBySelfDeclaredProperties();
+            String classicVersion = ClassicVersionUtil.getVersionBySelfDeclaredProperties();
+            VersionUtil.checkForVersionEquality(loggerContext, coreVersion, classicVersion, "logback-core", "logback-classic");
         }  catch(NoClassDefFoundError e) {
-            contextAware.addWarn("Missing ch.logback.core.util.VersionUtil class on classpath. The version of logback-core is probably older than 1.5.25.");
+            contextAware.addWarn("Missing ch.logback.core.util.VersionUtil class on classpath. The version of logback-core is probably older than 1.5.26.");
+        } catch (NoSuchMethodError e) {
+            contextAware.addWarn(e.toString());
+            contextAware.addWarn("The version of logback-core is probably older than 1.5.26.");
         }
     }
 

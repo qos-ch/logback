@@ -25,4 +25,5 @@ module logback.classic.blackbox {
 
     // resources in named modules are accessible only if opened
     opens asResource;
+    exports ch.qos.logback.classic.blackbox.util;
 }

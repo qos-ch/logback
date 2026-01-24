@@ -14,12 +14,15 @@
 
 package ch.qos.logback.classic.blackbox;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.VersionUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -44,6 +47,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class VersionCheckTest {
 
 
+    // WARNING: do not add other tests to this file
+
     LoggerContext loggerContext = new LoggerContext();
 
     /**
@@ -65,5 +70,7 @@ public class VersionCheckTest {
             System.out.println("Got expected NoClassDefFoundError.");
         }
     }
+
+    // WARNING: do not add other tests to this file
 
 }
