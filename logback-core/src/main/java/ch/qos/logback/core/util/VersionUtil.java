@@ -27,7 +27,6 @@ import java.util.Properties;
 import static ch.qos.logback.core.CoreConstants.NA;
 
 
-
 /**
  * Utility class for handling and validating version information of various artifacts.
  *
@@ -107,10 +106,9 @@ public class VersionUtil {
      * <code>moduleName-version.properties</code>. The properties file should contain a single key-value pair,
      * where the key is <code>moduleName-version</code>, and the value is the module version.
      *
-     * @param aClass the class used to locate the resource file, the properties file is expected to be in the same package
+     * @param aClass     the class used to locate the resource file, the properties file is expected to be in the same package
      * @param moduleName the name of the module, which is used to construct the properties file name and the key
      * @return the version of the module as a string, or null if the version cannot be determined
-     *
      * @since 1.5.26
      */
     static public String getArtifactVersionBySelfDeclaredProperties(Class<?> aClass, String moduleName) {
@@ -118,7 +116,7 @@ public class VersionUtil {
         // example propertiesFileName: logback-core-version.properties
         //
         String propertiesFileName = moduleName + "-version.properties";
-        String propertyKey = moduleName+"-version";
+        String propertyKey = moduleName + "-version";
         try (InputStream is = aClass.getResourceAsStream(propertiesFileName)) {
             if (is != null) {
                 props.load(is);
@@ -135,7 +133,7 @@ public class VersionUtil {
     // dependency synonym dependee
     // depender synonym dependent
 
-    static String getExpectedVersionOfDependeeByProperties(Class<?> dependerClass, String propertiesFileName, String dependencyNameAsKey) {
+    static String getExpectedVersionOfDependencyByProperties(Class<?> dependerClass, String propertiesFileName, String dependencyNameAsKey) {
         Properties props = new Properties();
         // propertiesFileName : logback-access-common-dependees.properties
         try (InputStream is = dependerClass.getClassLoader()
@@ -151,24 +149,33 @@ public class VersionUtil {
         }
     }
 
+
     static public void checkForVersionEquality(Context context, Class<?> dependerClass, Class<?> dependencyClass, String dependentName, String dependencyName) {
         // the depender depends on the dependency
-        String dependentVersion = nonNull(getVersionOfArtifact(dependerClass));
+        String dependerVersion = nonNull(getVersionOfArtifact(dependerClass));
         String dependencyVersion = nonNull(getVersionOfArtifact(dependencyClass));
 
-        checkForVersionEquality(context, dependentVersion, dependencyVersion, dependentName, dependencyName);
+        checkForVersionEquality(context, dependerVersion, dependencyVersion, dependentName, dependencyName);
     }
+
+    // depender depends on dependency
+    // dependency synonym dependee
+    // depender synonym dependent
+    static public void checkForVersionEquality(Context context, Class<?> dependerClass, String dependencyVersion, String dependentName, String dependencyName) {
+        String dependerVersion = nonNull(getVersionOfArtifact(dependerClass));
+        checkForVersionEquality(context, dependerVersion, dependencyVersion, dependentName, dependencyName);
+    }
+
 
     /**
      * Compares the versions of a dependent and a dependency to determine if they are equal.
      * Updates the context's status manager with version information and logs a warning if the versions differ.
      *
-     * @param context the logging context to which status messages are added
-     * @param dependentVersion the version string of the dependent component
+     * @param context           the logging context to which status messages are added
+     * @param dependentVersion  the version string of the dependent component
      * @param dependencyVersion the version string of the dependency component
-     * @param dependentName the name of the dependent component
-     * @param dependencyName the name of the dependency component
-     *
+     * @param dependentName     the name of the dependent component
+     * @param dependencyName    the name of the dependency component
      * @since 1.5.26
      */
     static public void checkForVersionEquality(Context context, String dependentVersion, String dependencyVersion, String dependentName, String dependencyName) {
@@ -182,25 +189,36 @@ public class VersionUtil {
         }
     }
 
-    private static void addFoundVersionStatus(Context context, String name, String version) {
+
+
+
+
+        private static void addFoundVersionStatus(Context context, String name, String version) {
         String foundDependent = String.format("Found %s version %s", name, version);
         context.getStatusManager().add(new InfoStatus(foundDependent, context));
     }
 
 
-
-    private static String nameToFilename(String  name) {
-        return name+"-dependencies.properties";
+    private static String nameToFilename(String name) {
+        return name + "-dependencies.properties";
     }
+
+//    // dependency synonym dependee
+//    // depender synonym dependent
+//    static public void compareExpectedAndFoundVersion(Context context, Class<?> dependerClass, Class<?> dependencyClass,
+//                                                      String dependerName, String dependencyName) {
+//        String actualDependencyVersion = nonNull(getVersionOfArtifact(dependencyClass));
+//        String dependerVersion = nonNull(getVersionOfArtifact(dependerClass));
+//
+//        compareExpectedAndFoundVersion(context, actualDependencyVersion, dependerClass, dependerVersion, dependerName, dependencyName);
+//    }
 
     // dependency synonym dependee
     // depender synonym dependent
-    static public void compareExpectedAndFoundVersion(Context context, Class<?> dependerClass, Class<?> dependencyClass,
-                                               String dependerName, String dependencyName) {
+    static public void compareExpectedAndFoundVersion(Context context, String actualDependencyVersion, Class<?>dependerClass, String dependerVersion,
+                                                      String dependerName, String dependencyName) {
 
-        String expectedDependencyVersion = nonNull(getExpectedVersionOfDependeeByProperties(dependerClass, nameToFilename(dependerName), dependencyName));
-        String actualDependencyVersion = nonNull(getVersionOfArtifact(dependencyClass));
-        String dependerVersion = nonNull(getVersionOfArtifact(dependerClass));
+        String expectedDependencyVersion = nonNull(getExpectedVersionOfDependencyByProperties(dependerClass, nameToFilename(dependerName), dependencyName));
 
         addFoundVersionStatus(context, dependencyName, actualDependencyVersion);
         addFoundVersionStatus(context, dependerName, dependerVersion);
@@ -209,6 +227,5 @@ public class VersionUtil {
             String discrepancyMsg = String.format("Expected version of %s is %s but found %s", dependencyName, expectedDependencyVersion, actualDependencyVersion);
             context.getStatusManager().add(new WarnStatus(discrepancyMsg, context));
         }
-
     }
 }
