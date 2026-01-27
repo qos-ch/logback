@@ -332,4 +332,131 @@ public class AsyncAppenderBaseTest {
         // thread
         asyncAppenderBase.start();
     }
+
+    // ========== Metrics tests ==========
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    public void metricsTotalAppendedCount() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        int loopLen = 10;
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
+        asyncAppenderBase.stop();
+        Assertions.assertEquals(loopLen, asyncAppenderBase.getTotalAppendedCount());
+    }
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    public void metricsDiscardedByThreshold() {
+        // Create fresh instances to avoid state from other tests
+        LossyAsyncAppender freshLossyAppender = new LossyAsyncAppender();
+        freshLossyAppender.setContext(context);
+        DelayingListAppender<Integer> freshDelayingAppender = new DelayingListAppender<>();
+        freshDelayingAppender.setContext(context);
+        freshDelayingAppender.setName("freshDelaying");
+        freshDelayingAppender.setDelay(50); // Long delay to ensure queue fills up reliably
+        freshDelayingAppender.start();
+
+        int bufferSize = 5;
+        int loopLen = bufferSize * 4; // More events to ensure threshold is reached
+        freshLossyAppender.addAppender(freshDelayingAppender);
+        freshLossyAppender.setQueueSize(bufferSize);
+        freshLossyAppender.setDiscardingThreshold(2); // Higher threshold for more reliable triggering
+        freshLossyAppender.setMaxFlushTime(2000);
+        freshLossyAppender.start();
+        for (int i = 0; i < loopLen; i++) {
+            freshLossyAppender.doAppend(i);
+        }
+        freshLossyAppender.stop();
+
+        // Total appended should be loopLen
+        Assertions.assertEquals(loopLen, freshLossyAppender.getTotalAppendedCount());
+
+        // Discards by threshold should be tracked when discardable events
+        // are dropped due to queue being nearly full.
+        long discardedByThreshold = freshLossyAppender.getDiscardedByThresholdCount();
+        Assertions.assertTrue(discardedByThreshold > 0,
+                "Expected some events to be discarded by threshold, but got " + discardedByThreshold);
+
+        // No events discarded by queue full since neverBlock is false
+        Assertions.assertEquals(0, freshLossyAppender.getDiscardedByQueueFullCount());
+
+        // Verify consistency: total appended = received + discarded
+        long totalDiscarded = freshLossyAppender.getTotalDiscardedCount();
+        int received = freshDelayingAppender.list.size();
+        Assertions.assertEquals(loopLen, received + totalDiscarded,
+                "Total appended should equal received + discarded");
+    }
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    public void metricsDiscardedByQueueFull() {
+        int bufferSize = 10;
+        int loopLen = bufferSize * 200;
+        delayingListAppender.setDelay(5);
+        asyncAppenderBase.addAppender(delayingListAppender);
+        asyncAppenderBase.setQueueSize(bufferSize);
+        asyncAppenderBase.setNeverBlock(true);
+        asyncAppenderBase.start();
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
+        asyncAppenderBase.stop();
+
+        // Total appended should be loopLen
+        Assertions.assertEquals(loopLen, asyncAppenderBase.getTotalAppendedCount());
+
+        // No discards by threshold (base class isDiscardable returns false)
+        Assertions.assertEquals(0, asyncAppenderBase.getDiscardedByThresholdCount());
+
+        // Some events should be discarded by queue full since neverBlock is true
+        // and the queue can't keep up with the rate of events
+        Assertions.assertTrue(asyncAppenderBase.getDiscardedByQueueFullCount() > 0,
+                "Expected some events to be discarded due to full queue");
+
+        // Total discarded should match queue full discards
+        Assertions.assertEquals(asyncAppenderBase.getDiscardedByQueueFullCount(),
+                asyncAppenderBase.getTotalDiscardedCount());
+    }
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    public void metricsResetWorks() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        for (int i = 0; i < 10; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
+
+        Assertions.assertEquals(10, asyncAppenderBase.getTotalAppendedCount());
+
+        asyncAppenderBase.resetMetrics();
+
+        Assertions.assertEquals(0, asyncAppenderBase.getTotalAppendedCount());
+        Assertions.assertEquals(0, asyncAppenderBase.getDiscardedByThresholdCount());
+        Assertions.assertEquals(0, asyncAppenderBase.getDiscardedByQueueFullCount());
+        Assertions.assertEquals(0, asyncAppenderBase.getTotalDiscardedCount());
+
+        asyncAppenderBase.stop();
+    }
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    public void metricsNoDiscardWhenQueueHasCapacity() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.setQueueSize(100);
+        asyncAppenderBase.start();
+        int loopLen = 10;
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
+        asyncAppenderBase.stop();
+
+        Assertions.assertEquals(loopLen, asyncAppenderBase.getTotalAppendedCount());
+        Assertions.assertEquals(0, asyncAppenderBase.getTotalDiscardedCount());
+        verify(listAppender, loopLen);
+    }
 }

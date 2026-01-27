@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * This appender and derived classes, log events asynchronously. In order to
@@ -69,6 +70,11 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      */
     public static final int DEFAULT_MAX_FLUSH_TIME = 1000;
     int maxFlushTime = DEFAULT_MAX_FLUSH_TIME;
+
+    // Metrics counters for observability
+    private final AtomicLong totalAppendedCount = new AtomicLong(0);
+    private final AtomicLong discardedByThresholdCount = new AtomicLong(0);
+    private final AtomicLong discardedByQueueFullCount = new AtomicLong(0);
 
     /**
      * Is the eventObject passed as parameter discardable? The base class's
@@ -159,7 +165,9 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     @Override
     protected void append(E eventObject) {
+        totalAppendedCount.incrementAndGet();
         if (isQueueBelowDiscardingThreshold() && isDiscardable(eventObject)) {
+            discardedByThresholdCount.incrementAndGet();
             return;
         }
         preprocess(eventObject);
@@ -172,7 +180,10 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     private void put(E eventObject) {
         if (neverBlock) {
-            blockingQueue.offer(eventObject);
+            boolean offered = blockingQueue.offer(eventObject);
+            if (!offered) {
+                discardedByQueueFullCount.incrementAndGet();
+            }
         } else {
             putUninterruptibly(eventObject);
         }
@@ -248,6 +259,68 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      */
     public int getRemainingCapacity() {
         return blockingQueue.remainingCapacity();
+    }
+
+    // ========== Metrics for observability ==========
+
+    /**
+     * Returns the total number of events that have been submitted to this appender
+     * for logging. This includes events that were successfully queued as well as
+     * events that were discarded.
+     *
+     * @return total number of events submitted to append()
+     * @since 1.5.27
+     */
+    public long getTotalAppendedCount() {
+        return totalAppendedCount.get();
+    }
+
+    /**
+     * Returns the number of events that were discarded because the queue was
+     * nearly full (remaining capacity below discarding threshold) and the event
+     * was deemed discardable by the {@link #isDiscardable(Object)} method.
+     *
+     * @return number of events discarded due to threshold policy
+     * @since 1.5.27
+     */
+    public long getDiscardedByThresholdCount() {
+        return discardedByThresholdCount.get();
+    }
+
+    /**
+     * Returns the number of events that were discarded because the queue was
+     * completely full and {@link #neverBlock} was set to true. In this mode,
+     * when the queue cannot accept new events, they are dropped immediately.
+     *
+     * @return number of events discarded due to full queue in non-blocking mode
+     * @since 1.5.27
+     */
+    public long getDiscardedByQueueFullCount() {
+        return discardedByQueueFullCount.get();
+    }
+
+    /**
+     * Returns the total number of events that were discarded for any reason.
+     * This is the sum of {@link #getDiscardedByThresholdCount()} and
+     * {@link #getDiscardedByQueueFullCount()}.
+     *
+     * @return total number of discarded events
+     * @since 1.5.27
+     */
+    public long getTotalDiscardedCount() {
+        return discardedByThresholdCount.get() + discardedByQueueFullCount.get();
+    }
+
+    /**
+     * Resets all metrics counters to zero. This can be useful for testing or
+     * when you want to start fresh metrics collection at a specific point in time.
+     *
+     * @since 1.5.27
+     */
+    public void resetMetrics() {
+        totalAppendedCount.set(0);
+        discardedByThresholdCount.set(0);
+        discardedByQueueFullCount.set(0);
     }
 
     public void addAppender(Appender<E> newAppender) {
