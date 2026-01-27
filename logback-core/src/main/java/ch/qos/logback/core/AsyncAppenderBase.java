@@ -425,15 +425,17 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                     E e0 = parent.blockingQueue.take();
                     elements.add(e0);
                     parent.blockingQueue.drainTo(elements);
+                    int dispatched = 0;
                     for (E e : elements) {
                         try {
                             aai.appendLoopOnAppenders(e);
-                            parent.dispatchedCount.incrementAndGet();
+                            dispatched++;
                         } catch (Exception ex) {
                             parent.failedDispatchCount.incrementAndGet();
                             parent.addError("Failed to dispatch event to appender", ex);
                         }
                     }
+                    parent.dispatchedCount.addAndGet(dispatched);
                 } catch (InterruptedException e1) {
                     // exit if interrupted
                     break;
@@ -442,16 +444,18 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
             addInfo("Worker thread will flush remaining events before exiting. ");
 
+            int dispatched = 0;
             for (E e : parent.blockingQueue) {
                 try {
                     aai.appendLoopOnAppenders(e);
-                    parent.dispatchedCount.incrementAndGet();
+                    dispatched++;
                 } catch (Exception ex) {
                     parent.failedDispatchCount.incrementAndGet();
                     parent.addError("Failed to dispatch event to appender", ex);
                 }
                 parent.blockingQueue.remove(e);
             }
+            parent.dispatchedCount.addAndGet(dispatched);
 
             aai.detachAndStopAllAppenders();
         }
