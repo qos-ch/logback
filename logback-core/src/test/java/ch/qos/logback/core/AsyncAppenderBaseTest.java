@@ -449,7 +449,6 @@ public class AsyncAppenderBaseTest {
         Assertions.assertEquals(0, freshAsyncAppender.getTotalDiscardedCount());
         Assertions.assertEquals(0, freshAsyncAppender.getDispatchedCount());
         Assertions.assertEquals(0, freshAsyncAppender.getFailedDispatchCount());
-        Assertions.assertEquals(0, freshAsyncAppender.getPeakQueueSize());
 
         freshAsyncAppender.stop();
     }
@@ -491,29 +490,6 @@ public class AsyncAppenderBaseTest {
         // After stop(), in-flight should be 0
         Assertions.assertEquals(asyncAppenderBase.getTotalAppendedCount(),
                 asyncAppenderBase.getDispatchedCount() + asyncAppenderBase.getTotalDiscardedCount());
-    }
-
-    @Test
-    @Timeout(value = 2, unit = TimeUnit.SECONDS)
-    public void metricsPeakQueueSize() {
-        int bufferSize = 10;
-        delayingListAppender.setDelay(10);
-        asyncAppenderBase.addAppender(delayingListAppender);
-        asyncAppenderBase.setQueueSize(bufferSize);
-        asyncAppenderBase.start();
-
-        // Send events faster than they can be processed
-        int loopLen = bufferSize * 2;
-        for (int i = 0; i < loopLen; i++) {
-            asyncAppenderBase.doAppend(i);
-        }
-        asyncAppenderBase.stop();
-
-        // Peak queue size should be greater than 0 and at most bufferSize
-        Assertions.assertTrue(asyncAppenderBase.getPeakQueueSize() > 0,
-                "Peak queue size should be greater than 0");
-        Assertions.assertTrue(asyncAppenderBase.getPeakQueueSize() <= bufferSize,
-                "Peak queue size should not exceed buffer size");
     }
 
     @Test

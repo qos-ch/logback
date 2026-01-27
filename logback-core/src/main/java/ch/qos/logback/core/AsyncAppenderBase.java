@@ -22,8 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * This appender and derived classes, log events asynchronously. In order to
@@ -73,12 +72,11 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     int maxFlushTime = DEFAULT_MAX_FLUSH_TIME;
 
     // Metrics counters for observability
-    private final AtomicLong totalAppendedCount = new AtomicLong(0);
-    private final AtomicLong discardedByThresholdCount = new AtomicLong(0);
-    private final AtomicLong discardedByQueueFullCount = new AtomicLong(0);
-    private final AtomicLong dispatchedCount = new AtomicLong(0);
-    private final AtomicLong failedDispatchCount = new AtomicLong(0);
-    private final AtomicInteger peakQueueSize = new AtomicInteger(0);
+    private final LongAdder totalAppendedCount = new LongAdder();
+    private final LongAdder discardedByThresholdCount = new LongAdder();
+    private final LongAdder discardedByQueueFullCount = new LongAdder();
+    private final LongAdder dispatchedCount = new LongAdder();
+    private final LongAdder failedDispatchCount = new LongAdder();
 
     /**
      * Is the eventObject passed as parameter discardable? The base class's
@@ -169,9 +167,9 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     @Override
     protected void append(E eventObject) {
-        totalAppendedCount.incrementAndGet();
+        totalAppendedCount.increment();
         if (isQueueBelowDiscardingThreshold() && isDiscardable(eventObject)) {
-            discardedByThresholdCount.incrementAndGet();
+            discardedByThresholdCount.increment();
             return;
         }
         preprocess(eventObject);
@@ -185,20 +183,12 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     private void put(E eventObject) {
         if (neverBlock) {
             boolean offered = blockingQueue.offer(eventObject);
-            if (offered) {
-                updatePeakQueueSize();
-            } else {
-                discardedByQueueFullCount.incrementAndGet();
+            if (!offered) {
+                discardedByQueueFullCount.increment();
             }
         } else {
             putUninterruptibly(eventObject);
-            updatePeakQueueSize();
         }
-    }
-
-    private void updatePeakQueueSize() {
-        int currentSize = blockingQueue.size();
-        peakQueueSize.updateAndGet(peak -> Math.max(peak, currentSize));
     }
 
     private void putUninterruptibly(E eventObject) {
@@ -284,7 +274,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * @since 1.5.27
      */
     public long getTotalAppendedCount() {
-        return totalAppendedCount.get();
+        return totalAppendedCount.sum();
     }
 
     /**
@@ -296,7 +286,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * @since 1.5.27
      */
     public long getDiscardedByThresholdCount() {
-        return discardedByThresholdCount.get();
+        return discardedByThresholdCount.sum();
     }
 
     /**
@@ -308,7 +298,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * @since 1.5.27
      */
     public long getDiscardedByQueueFullCount() {
-        return discardedByQueueFullCount.get();
+        return discardedByQueueFullCount.sum();
     }
 
     /**
@@ -320,7 +310,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * @since 1.5.27
      */
     public long getTotalDiscardedCount() {
-        return discardedByThresholdCount.get() + discardedByQueueFullCount.get();
+        return discardedByThresholdCount.sum() + discardedByQueueFullCount.sum();
     }
 
     /**
@@ -333,7 +323,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * @since 1.5.27
      */
     public long getDispatchedCount() {
-        return dispatchedCount.get();
+        return dispatchedCount.sum();
     }
 
     /**
@@ -346,19 +336,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * @since 1.5.27
      */
     public long getFailedDispatchCount() {
-        return failedDispatchCount.get();
-    }
-
-    /**
-     * Returns the maximum queue size observed since the appender was started
-     * or since the last call to {@link #resetMetrics()}. This is useful for
-     * capacity planning and understanding peak load patterns.
-     *
-     * @return the peak queue size
-     * @since 1.5.27
-     */
-    public int getPeakQueueSize() {
-        return peakQueueSize.get();
+        return failedDispatchCount.sum();
     }
 
     /**
@@ -368,12 +346,11 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * @since 1.5.27
      */
     public void resetMetrics() {
-        totalAppendedCount.set(0);
-        discardedByThresholdCount.set(0);
-        discardedByQueueFullCount.set(0);
-        dispatchedCount.set(0);
-        failedDispatchCount.set(0);
-        peakQueueSize.set(0);
+        totalAppendedCount.reset();
+        discardedByThresholdCount.reset();
+        discardedByQueueFullCount.reset();
+        dispatchedCount.reset();
+        failedDispatchCount.reset();
     }
 
     public void addAppender(Appender<E> newAppender) {
@@ -430,11 +407,11 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                             aai.appendLoopOnAppenders(e);
                             dispatched++;
                         } catch (Exception ex) {
-                            parent.failedDispatchCount.incrementAndGet();
+                            parent.failedDispatchCount.increment();
                             parent.addError("Failed to dispatch event to appender", ex);
                         }
                     }
-                    parent.dispatchedCount.addAndGet(dispatched);
+                    parent.dispatchedCount.add(dispatched);
                 } catch (InterruptedException e1) {
                     // exit if interrupted
                     break;
@@ -449,12 +426,12 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                     aai.appendLoopOnAppenders(e);
                     dispatched++;
                 } catch (Exception ex) {
-                    parent.failedDispatchCount.incrementAndGet();
+                    parent.failedDispatchCount.increment();
                     parent.addError("Failed to dispatch event to appender", ex);
                 }
                 parent.blockingQueue.remove(e);
             }
-            parent.dispatchedCount.addAndGet(dispatched);
+            parent.dispatchedCount.add(dispatched);
 
             aai.detachAndStopAllAppenders();
         }
