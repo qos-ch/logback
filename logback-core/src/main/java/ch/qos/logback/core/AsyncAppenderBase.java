@@ -75,6 +75,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     private final AtomicLong totalAppendedCount = new AtomicLong(0);
     private final AtomicLong discardedByThresholdCount = new AtomicLong(0);
     private final AtomicLong discardedByQueueFullCount = new AtomicLong(0);
+    private final AtomicLong dispatchedCount = new AtomicLong(0);
 
     /**
      * Is the eventObject passed as parameter discardable? The base class's
@@ -312,6 +313,19 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     }
 
     /**
+     * Returns the number of events that have been successfully dispatched to
+     * the attached appender by the worker thread. This represents the "output"
+     * side of the async appender and can be compared with {@link #getTotalAppendedCount()}
+     * to understand how many events are currently in-flight in the queue.
+     *
+     * @return number of events dispatched to the attached appender
+     * @since 1.5.27
+     */
+    public long getDispatchedCount() {
+        return dispatchedCount.get();
+    }
+
+    /**
      * Resets all metrics counters to zero. This can be useful for testing or
      * when you want to start fresh metrics collection at a specific point in time.
      *
@@ -321,6 +335,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         totalAppendedCount.set(0);
         discardedByThresholdCount.set(0);
         discardedByQueueFullCount.set(0);
+        dispatchedCount.set(0);
     }
 
     public void addAppender(Appender<E> newAppender) {
@@ -373,6 +388,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                     parent.blockingQueue.drainTo(elements);
                     for (E e : elements) {
                         aai.appendLoopOnAppenders(e);
+                        parent.dispatchedCount.incrementAndGet();
                     }
                 } catch (InterruptedException e1) {
                     // exit if interrupted
@@ -384,6 +400,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
             for (E e : parent.blockingQueue) {
                 aai.appendLoopOnAppenders(e);
+                parent.dispatchedCount.incrementAndGet();
                 parent.blockingQueue.remove(e);
             }
 

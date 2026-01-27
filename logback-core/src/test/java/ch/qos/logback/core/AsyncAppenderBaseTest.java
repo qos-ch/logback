@@ -439,6 +439,7 @@ public class AsyncAppenderBaseTest {
         Assertions.assertEquals(0, asyncAppenderBase.getDiscardedByThresholdCount());
         Assertions.assertEquals(0, asyncAppenderBase.getDiscardedByQueueFullCount());
         Assertions.assertEquals(0, asyncAppenderBase.getTotalDiscardedCount());
+        Assertions.assertEquals(0, asyncAppenderBase.getDispatchedCount());
 
         asyncAppenderBase.stop();
     }
@@ -458,5 +459,27 @@ public class AsyncAppenderBaseTest {
         Assertions.assertEquals(loopLen, asyncAppenderBase.getTotalAppendedCount());
         Assertions.assertEquals(0, asyncAppenderBase.getTotalDiscardedCount());
         verify(listAppender, loopLen);
+    }
+
+    @Test
+    @Timeout(value = 2, unit = TimeUnit.SECONDS)
+    public void metricsDispatchedCount() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        int loopLen = 10;
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
+        asyncAppenderBase.stop();
+
+        // All events should be dispatched (none discarded)
+        Assertions.assertEquals(loopLen, asyncAppenderBase.getTotalAppendedCount());
+        Assertions.assertEquals(loopLen, asyncAppenderBase.getDispatchedCount());
+        Assertions.assertEquals(0, asyncAppenderBase.getTotalDiscardedCount());
+
+        // Verify consistency: appended = dispatched + discarded + in-flight
+        // After stop(), in-flight should be 0
+        Assertions.assertEquals(asyncAppenderBase.getTotalAppendedCount(),
+                asyncAppenderBase.getDispatchedCount() + asyncAppenderBase.getTotalDiscardedCount());
     }
 }
