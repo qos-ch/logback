@@ -76,6 +76,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     private final AtomicLong discardedByThresholdCount = new AtomicLong(0);
     private final AtomicLong discardedByQueueFullCount = new AtomicLong(0);
     private final AtomicLong dispatchedCount = new AtomicLong(0);
+    private final AtomicLong failedDispatchCount = new AtomicLong(0);
+    private volatile int peakQueueSize = 0;
 
     /**
      * Is the eventObject passed as parameter discardable? The base class's
@@ -184,9 +186,19 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
             boolean offered = blockingQueue.offer(eventObject);
             if (!offered) {
                 discardedByQueueFullCount.incrementAndGet();
+            } else {
+                updatePeakQueueSize();
             }
         } else {
             putUninterruptibly(eventObject);
+            updatePeakQueueSize();
+        }
+    }
+
+    private void updatePeakQueueSize() {
+        int currentSize = blockingQueue.size();
+        if (currentSize > peakQueueSize) {
+            peakQueueSize = currentSize;
         }
     }
 
@@ -326,6 +338,31 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     }
 
     /**
+     * Returns the number of events that failed to be dispatched to the attached
+     * appender due to an exception. Note that most appenders catch exceptions
+     * internally, so this counter primarily tracks uncaught exceptions that
+     * propagate from the appender.
+     *
+     * @return number of events that failed during dispatch
+     * @since 1.5.27
+     */
+    public long getFailedDispatchCount() {
+        return failedDispatchCount.get();
+    }
+
+    /**
+     * Returns the maximum queue size observed since the appender was started
+     * or since the last call to {@link #resetMetrics()}. This is useful for
+     * capacity planning and understanding peak load patterns.
+     *
+     * @return the peak queue size
+     * @since 1.5.27
+     */
+    public int getPeakQueueSize() {
+        return peakQueueSize;
+    }
+
+    /**
      * Resets all metrics counters to zero. This can be useful for testing or
      * when you want to start fresh metrics collection at a specific point in time.
      *
@@ -336,6 +373,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         discardedByThresholdCount.set(0);
         discardedByQueueFullCount.set(0);
         dispatchedCount.set(0);
+        failedDispatchCount.set(0);
+        peakQueueSize = 0;
     }
 
     public void addAppender(Appender<E> newAppender) {
@@ -387,8 +426,13 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                     elements.add(e0);
                     parent.blockingQueue.drainTo(elements);
                     for (E e : elements) {
-                        aai.appendLoopOnAppenders(e);
-                        parent.dispatchedCount.incrementAndGet();
+                        try {
+                            aai.appendLoopOnAppenders(e);
+                            parent.dispatchedCount.incrementAndGet();
+                        } catch (Exception ex) {
+                            parent.failedDispatchCount.incrementAndGet();
+                            parent.addError("Failed to dispatch event to appender", ex);
+                        }
                     }
                 } catch (InterruptedException e1) {
                     // exit if interrupted
@@ -399,8 +443,13 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
             addInfo("Worker thread will flush remaining events before exiting. ");
 
             for (E e : parent.blockingQueue) {
-                aai.appendLoopOnAppenders(e);
-                parent.dispatchedCount.incrementAndGet();
+                try {
+                    aai.appendLoopOnAppenders(e);
+                    parent.dispatchedCount.incrementAndGet();
+                } catch (Exception ex) {
+                    parent.failedDispatchCount.incrementAndGet();
+                    parent.addError("Failed to dispatch event to appender", ex);
+                }
                 parent.blockingQueue.remove(e);
             }
 
