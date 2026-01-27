@@ -184,10 +184,10 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     private void put(E eventObject) {
         if (neverBlock) {
             boolean offered = blockingQueue.offer(eventObject);
-            if (!offered) {
-                discardedByQueueFullCount.incrementAndGet();
-            } else {
+            if (offered) {
                 updatePeakQueueSize();
+            } else {
+                discardedByQueueFullCount.incrementAndGet();
             }
         } else {
             putUninterruptibly(eventObject);
