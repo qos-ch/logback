@@ -425,25 +425,33 @@ public class AsyncAppenderBaseTest {
     @Test
     @Timeout(value = 2, unit = TimeUnit.SECONDS)
     public void metricsResetWorks() {
-        asyncAppenderBase.addAppender(listAppender);
-        asyncAppenderBase.start();
+        // Use fresh instances to avoid test pollution
+        AsyncAppenderBase<Integer> freshAsyncAppender = new AsyncAppenderBase<>();
+        freshAsyncAppender.setContext(context);
+        ListAppender<Integer> freshListAppender = new ListAppender<>();
+        freshListAppender.setContext(context);
+        freshListAppender.setName("freshList");
+        freshListAppender.start();
+
+        freshAsyncAppender.addAppender(freshListAppender);
+        freshAsyncAppender.start();
         for (int i = 0; i < 10; i++) {
-            asyncAppenderBase.doAppend(i);
+            freshAsyncAppender.doAppend(i);
         }
 
-        Assertions.assertEquals(10, asyncAppenderBase.getTotalAppendedCount());
+        Assertions.assertEquals(10, freshAsyncAppender.getTotalAppendedCount());
 
-        asyncAppenderBase.resetMetrics();
+        freshAsyncAppender.resetMetrics();
 
-        Assertions.assertEquals(0, asyncAppenderBase.getTotalAppendedCount());
-        Assertions.assertEquals(0, asyncAppenderBase.getDiscardedByThresholdCount());
-        Assertions.assertEquals(0, asyncAppenderBase.getDiscardedByQueueFullCount());
-        Assertions.assertEquals(0, asyncAppenderBase.getTotalDiscardedCount());
-        Assertions.assertEquals(0, asyncAppenderBase.getDispatchedCount());
-        Assertions.assertEquals(0, asyncAppenderBase.getFailedDispatchCount());
-        Assertions.assertEquals(0, asyncAppenderBase.getPeakQueueSize());
+        Assertions.assertEquals(0, freshAsyncAppender.getTotalAppendedCount());
+        Assertions.assertEquals(0, freshAsyncAppender.getDiscardedByThresholdCount());
+        Assertions.assertEquals(0, freshAsyncAppender.getDiscardedByQueueFullCount());
+        Assertions.assertEquals(0, freshAsyncAppender.getTotalDiscardedCount());
+        Assertions.assertEquals(0, freshAsyncAppender.getDispatchedCount());
+        Assertions.assertEquals(0, freshAsyncAppender.getFailedDispatchCount());
+        Assertions.assertEquals(0, freshAsyncAppender.getPeakQueueSize());
 
-        asyncAppenderBase.stop();
+        freshAsyncAppender.stop();
     }
 
     @Test

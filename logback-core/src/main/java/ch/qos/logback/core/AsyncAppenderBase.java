@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -77,7 +78,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     private final AtomicLong discardedByQueueFullCount = new AtomicLong(0);
     private final AtomicLong dispatchedCount = new AtomicLong(0);
     private final AtomicLong failedDispatchCount = new AtomicLong(0);
-    private volatile int peakQueueSize = 0;
+    private final AtomicInteger peakQueueSize = new AtomicInteger(0);
 
     /**
      * Is the eventObject passed as parameter discardable? The base class's
@@ -197,9 +198,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     private void updatePeakQueueSize() {
         int currentSize = blockingQueue.size();
-        if (currentSize > peakQueueSize) {
-            peakQueueSize = currentSize;
-        }
+        peakQueueSize.updateAndGet(peak -> Math.max(peak, currentSize));
     }
 
     private void putUninterruptibly(E eventObject) {
@@ -359,7 +358,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * @since 1.5.27
      */
     public int getPeakQueueSize() {
-        return peakQueueSize;
+        return peakQueueSize.get();
     }
 
     /**
@@ -374,7 +373,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         discardedByQueueFullCount.set(0);
         dispatchedCount.set(0);
         failedDispatchCount.set(0);
-        peakQueueSize = 0;
+        peakQueueSize.set(0);
     }
 
     public void addAppender(Appender<E> newAppender) {
