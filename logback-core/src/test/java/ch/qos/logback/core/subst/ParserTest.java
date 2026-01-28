@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -128,13 +129,9 @@ public class ParserTest {
     public void withNoClosingBraces() throws ScanException {
         Tokenizer tokenizer = new Tokenizer("a${b");
         Parser parser = new Parser(tokenizer.tokenize());
-        try {
-            parser.parse();
-        } catch (IllegalArgumentException e) {
-            assertEquals("All tokens consumed but was expecting \"}\"", e.getMessage());
-            return;
-        }
-        fail();
+
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, parser::parse);
+        assertEquals("All tokens consumed but was expecting \"}\"", e.getMessage());
     }
 
     @Test
