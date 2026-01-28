@@ -19,7 +19,6 @@ import ch.qos.logback.core.util.MD5Util;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -236,13 +235,17 @@ public class ConfigurationWatchList extends ContextAwareBase {
         }
     }
 
-    @SuppressWarnings("deprecation")
     File convertToFile(URL url) {
         String protocol = url.getProtocol();
-        if ("file".equals(protocol)) {
-            return new File(URLDecoder.decode(url.getFile()));
-        } else {
+        if (!"file".equals(protocol)) {
             addInfo("URL [" + url + "] is not of type file");
+            return null;
+        }
+
+        try {
+            return new File(url.toURI());
+        } catch (Exception e) {
+            addWarn("URL [" + url + "] can not be converted to a file", e);
             return null;
         }
     }
