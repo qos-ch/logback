@@ -332,4 +332,56 @@ public class AsyncAppenderBaseTest {
         // thread
         asyncAppenderBase.start();
     }
+
+    // AsyncAppenderBase can not addAppender after detachAppender
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
+    public void appenderShouldBeAddedSuccessfullyAfterDetachedByReference() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.doAppend(0);
+        asyncAppenderBase.detachAppender(listAppender);
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.doAppend(0);
+        asyncAppenderBase.stop();
+        verify(listAppender, 2);
+    }
+
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
+    public void appenderShouldBeAddedSuccessfullyAfterDetachedByName() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.doAppend(0);
+        asyncAppenderBase.detachAppender("list");
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.doAppend(0);
+        asyncAppenderBase.stop();
+        verify(listAppender, 2);
+    }
+
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
+    public void appenderShouldBeAddedSuccessfullyAfterAllAppendersDetachedAndStopeed() throws InterruptedException {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.doAppend(0);
+        TimeUnit.SECONDS.sleep(1);
+        asyncAppenderBase.detachAndStopAllAppenders();
+
+        ListAppender<Integer> listAppender2 = new ListAppender<Integer>();
+        listAppender2.setContext(context);
+        listAppender2.setName("list2");
+        listAppender2.start();
+
+        asyncAppenderBase.addAppender(listAppender2);
+        asyncAppenderBase.doAppend(0);
+
+        asyncAppenderBase.stop();
+
+        verify(listAppender, 1);
+        verify(listAppender2, 1);
+
+    }
+
 }
