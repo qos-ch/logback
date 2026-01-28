@@ -46,7 +46,7 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
      * 
      * @return
      */
-    abstract protected PrintStream getPrintStream();
+    abstract protected PrintStream getPrintStream(Status status);
 
     private void print(Status status) {
         StringBuilder sb = new StringBuilder();
@@ -54,7 +54,7 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
             sb.append(prefix);
 
         StatusPrinter.buildStr(sb, "", status);
-        getPrintStream().print(sb);
+        getPrintStream(status).print(sb);
     }
 
     public void addStatusEvent(Status status) {
