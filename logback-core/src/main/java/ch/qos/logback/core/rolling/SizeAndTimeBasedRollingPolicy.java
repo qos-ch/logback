@@ -18,6 +18,8 @@ import ch.qos.logback.core.util.FileSize;
 
 public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> {
 
+    static long MAX_COMPRESSION_FACTOR = 20;
+
     FileSize maxFileSize;
 
     @Override
@@ -33,10 +35,9 @@ public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> 
         sizeAndTimeBasedFNATP.setMaxFileSize(maxFileSize);
         timeBasedFileNamingAndTriggeringPolicy = sizeAndTimeBasedFNATP;
 
-        if (!isUnboundedTotalSizeCap() && totalSizeCap.getSize() < maxFileSize.getSize()) {
-            addError("totalSizeCap of [" + totalSizeCap + "] is smaller than maxFileSize [" + maxFileSize
-                    + "] which is non-sensical");
-            return;
+        if (!isUnboundedTotalSizeCap() && totalSizeCap.getSize() < maxFileSize.getSize()/MAX_COMPRESSION_FACTOR) {
+            addWarn("totalSizeCap of [" + totalSizeCap + "] is much smaller than maxFileSize [" + maxFileSize
+                    + "] which is non-sensical, even taking compression into account.");
         }
 
         // most work is done by the parent

@@ -82,7 +82,7 @@ public class ConfigurationWatchListUtil {
             if(createCWL && ConfigurationWatchList.isWatchableProtocol(url)) {
                 cwl = registerNewConfigurationWatchListWithContext(context);
             } else {
-                addWarn(context, "Null ConfigurationWatchList. Cannot add " + url);
+                addInfo(context, "ConfigurationWatchList not initialized due to absence of scan directive. Will not add " + url);
                 return;
             }
         }
