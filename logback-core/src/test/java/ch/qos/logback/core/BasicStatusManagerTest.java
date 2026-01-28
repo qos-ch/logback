@@ -114,4 +114,14 @@ public class BasicStatusManagerTest {
         }
     }
 
+    @Test(expected = Test.None.class /* no exception expected */)
+    public void testFireStatusAddEventConcurrentModificationException() {
+        bsm.add(new StatusListener() {
+            @Override
+            public void addStatusEvent(Status status) {
+                bsm.remove(this);
+            }
+        });
+        bsm.add(new ErrorStatus("testFireStatusAddEvent", this));
+    }
 }
