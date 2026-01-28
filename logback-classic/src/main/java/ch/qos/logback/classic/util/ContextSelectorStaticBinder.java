@@ -16,11 +16,15 @@ package ch.qos.logback.classic.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.naming.Context;
+import javax.naming.NamingException;
+
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextJNDISelector;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.selector.DefaultContextSelector;
+import ch.qos.logback.core.util.JNDIUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -60,6 +64,21 @@ public class ContextSelectorStaticBinder {
         }
 
         String contextSelectorStr = OptionHelper.getSystemProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
+
+        // If not there, then try the System properties
+        if (contextSelectorStr == null) {
+            contextSelectorStr = OptionHelper.getEnv(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
+        }
+
+        // If still null, check for a custom selector class specified by JNDI (this is not the same as specifying "JNDI")
+        if (contextSelectorStr == null) {
+            try {
+                Context ctx = JNDIUtil.getInitialContext();
+                contextSelectorStr = JNDIUtil.lookupString(ctx, ClassicConstants.JNDI_LOGBACK_CONTEXT_SELECTOR);
+            } catch (NamingException ne) {
+            }
+        }
+        
         if (contextSelectorStr == null) {
             contextSelector = new DefaultContextSelector(defaultLoggerContext);
         } else if (contextSelectorStr.equals("JNDI")) {
