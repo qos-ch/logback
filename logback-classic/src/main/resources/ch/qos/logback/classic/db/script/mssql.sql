@@ -6,7 +6,7 @@
 
 -- This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
 -- 
--- The event_id column type was recently changed from INT to DECIMAL(40)
+-- The event_id column type was recently changed from DECIMAL(40) to DECIMAL(38)
 -- without testing.
 
 DROP TABLE logging_event_property 
@@ -29,13 +29,13 @@ CREATE TABLE logging_event
     caller_class      VARCHAR(254) NOT NULL,
     caller_method     VARCHAR(254) NOT NULL,
     caller_line       CHAR(4) NOT NULL,
-    event_id          DECIMAL(40) NOT NULL identity,
+    event_id          DECIMAL(38) NOT NULL identity,
     PRIMARY KEY(event_id) 
   ) 
 
 CREATE TABLE logging_event_property 
   ( 
-    event_id          DECIMAL(40) NOT NULL, 
+    event_id          DECIMAL(38) NOT NULL, 
     mapped_key        VARCHAR(254) NOT NULL, 
     mapped_value      VARCHAR(1024), 
     PRIMARY KEY(event_id, mapped_key), 
@@ -44,7 +44,7 @@ CREATE TABLE logging_event_property
 
 CREATE TABLE logging_event_exception 
   ( 
-    event_id         DECIMAL(40) NOT NULL, 
+    event_id         DECIMAL(38) NOT NULL, 
     i                SMALLINT NOT NULL, 
     trace_line       VARCHAR(254) NOT NULL, 
     PRIMARY KEY(event_id, i), 
