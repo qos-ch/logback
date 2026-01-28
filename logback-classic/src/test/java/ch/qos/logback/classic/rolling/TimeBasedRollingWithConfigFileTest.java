@@ -192,9 +192,10 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         // expectedFilenameList.add(randomOutputDir + "z" + testId);
         RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
 
-        statusChecker.assertContainsMatch(
-                "totalSizeCap of \\[\\d* \\w*\\] is smaller than maxFileSize \\[\\d* \\w*\\] which is non-sensical");
-        assertFalse(rfa.isStarted());
+        // totalSizeCap of [10 Bytes] is much smaller than maxFileSize [250 Bytes] which is non-sensical, even taking compression into account.
+        statusChecker.assertContainsMatch(Status.WARN,
+                "totalSizeCap of \\[\\d* \\w*\\] is much smaller than maxFileSize \\[\\d* \\w*\\] which is non-sensical, even taking compression into account.");
+        assertTrue(rfa.isStarted());
 
     }
 
