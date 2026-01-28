@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.access.jetty;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,7 +32,15 @@ import org.eclipse.jetty.server.Response;
  * @author Joakim Erdfelt
  */
 public class JettyModernServerAdapter extends JettyServerAdapter {
+    private static final Method RESPONSE_GET_HTTP_FIELDS;
 
+    static {
+        try {
+            RESPONSE_GET_HTTP_FIELDS = Response.class.getDeclaredMethod("getHttpFields");
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public JettyModernServerAdapter(Request jettyRequest, Response jettyResponse) {
         super(jettyRequest, jettyResponse);
@@ -52,9 +62,16 @@ public class JettyModernServerAdapter extends JettyServerAdapter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, String> buildResponseHeaderMap() {
         Map<String, String> responseHeaderMap = new HashMap<String, String>();
-        Iterator<HttpField> httpFieldIter = response.getHttpFields().iterator();
+        Iterable<HttpField> httpFields;
+        try {
+            httpFields = (Iterable<HttpField>) RESPONSE_GET_HTTP_FIELDS.invoke(response);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+        Iterator<HttpField> httpFieldIter = httpFields.iterator();
         while (httpFieldIter.hasNext()) {
             HttpField httpField = httpFieldIter.next();
             String key = httpField.getName();
