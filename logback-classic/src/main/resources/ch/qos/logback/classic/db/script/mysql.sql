@@ -21,7 +21,7 @@ BEGIN;
 CREATE TABLE logging_event 
   (
     timestmp         BIGINT NOT NULL,
-    formatted_message  TEXT NOT NULL,
+    formatted_message  TEXT NULL,
     logger_name       VARCHAR(254) NOT NULL,
     level_string      VARCHAR(254) NOT NULL,
     thread_name       VARCHAR(254),
