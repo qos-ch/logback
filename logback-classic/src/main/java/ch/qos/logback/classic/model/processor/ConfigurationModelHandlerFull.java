@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * This is a subclass of {@link ConfigurationModelHandler} offering configuration reloading support.
  *
+ * <p>This class is also called by logback-tyler.</p>
+ *
  */
 public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
 
@@ -48,76 +50,81 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
     }
 
     @Override
-    protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
-        // override parent to do nothing
-    }
-
-    @Override
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         ConfigurationModel configurationModel = (ConfigurationModel) model;
-        // post handling of scan attribute works even we need to watch for included files because the main url is
-        // set in GenericXMLConfigurator very early in the configuration process
-        postProcessScanAttrib(mic, configurationModel);
+
+        // scanning is disabled
+        if (!(scanning == Boolean.TRUE)) {
+            return;
+        }
+
+        String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
+        scheduleReconfigureOnChangeTask(scanPeriodStr);
 
         ConfigurationWatchList cwl = ConfigurationWatchListUtil.getConfigurationWatchList(getContext());
         if (cwl != null) {
             try {
-                addInfo("Main configuration file URL: " + cwl.getMainURL());
-                addInfo("FileWatchList= {" + cwl.getFileWatchListAsStr()+"}");
-                addInfo("URLWatchList= {" + cwl.getUrlWatchListAsStr()+"}");
-            } catch(NoSuchMethodError e) {
+                addInfo("Main configuration file URL: " + cwl.getTopURL());
+                addInfo("FileWatchList= {" + cwl.getFileWatchListAsStr() + "}");
+                addInfo("URLWatchList= {" + cwl.getUrlWatchListAsStr() + "}");
+            } catch (NoSuchMethodError e) {
                 addWarn("It looks like the version of logback-classic is more recent than");
                 addWarn("the version of logback-core. Please align the two versions.");
             }
         }
     }
 
-    protected void postProcessScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
-        String scanStr = mic.subst(configurationModel.getScanStr());
-        String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
-        detachedPostProcess(scanStr, scanPeriodStr);
-    }
 
     /**
      * This method is called from this class but also from logback-tyler.
-     *
+     * <p>
      * This method assumes that the variables scanStr and scanPeriodStr have undergone variable substitution
      * as applicable to their current environment
      *
-     * @param scanStr
      * @param scanPeriodStr
      * @since 1.5.0
      */
     public void detachedPostProcess(String scanStr, String scanPeriodStr) {
-        if (!OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
-            ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
-            boolean watchPredicateFulfilled = ConfigurationWatchListUtil.watchPredicateFulfilled(context);
-            if (!watchPredicateFulfilled) {
-                addWarn(FAILED_WATCH_PREDICATE_MESSAGE_1);
-                addWarn(FAILED_WATCH_PREDICATE_MESSAGE_2);
-                return;
-            }
-            ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
-            rocTask.setContext(context);
-
-            addInfo("Registering a new ReconfigureOnChangeTask " + rocTask);
-
-            context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectorRegisteredEvent(rocTask));
-
-            Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
-
-            addInfo("Will scan for changes in [" + ConfigurationWatchListUtil.getConfigurationWatchList(context) + "] ");
-            // Given that included files are encountered at a later phase, the complete list
-            // of files to scan can only be determined when the configuration is loaded in full.
-            // However, scan can be active if mainURL is set. Otherwise, when changes are
-            // detected the top level config file cannot be accessed.
-            addInfo("Setting ReconfigureOnChangeTask scanning period to " + duration);
-
-            ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask, duration.getMilliseconds(), duration.getMilliseconds(),
-                            TimeUnit.MILLISECONDS);
-            rocTask.setScheduledFuture(scheduledFuture);
-            context.addScheduledFuture(scheduledFuture);
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) || "false".equalsIgnoreCase(scanStr)) {
+            return;
         }
+
+        scheduleReconfigureOnChangeTask(scanPeriodStr);
+    }
+
+    private void scheduleReconfigureOnChangeTask(String scanPeriodStr) {
+
+        ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
+        boolean watchPredicateFulfilled = ConfigurationWatchListUtil.watchPredicateFulfilled(context);
+        if (!watchPredicateFulfilled) {
+            addWarn(FAILED_WATCH_PREDICATE_MESSAGE_1);
+            addWarn(FAILED_WATCH_PREDICATE_MESSAGE_2);
+            return;
+        }
+        ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
+        rocTask.setContext(context);
+
+        addInfo("Registering a new ReconfigureOnChangeTask " + rocTask);
+
+        context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectorRegisteredEvent(rocTask));
+
+        Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
+
+        ConfigurationWatchList cwl = ConfigurationWatchListUtil.getConfigurationWatchList(context);
+
+        String fileWatchListAsStr = (cwl != null) ? cwl.getFileWatchListAsStr() : "";
+
+        addInfo("Will scan for changes in [" + fileWatchListAsStr + "] ");
+        // Given that included files are encountered at a later phase, the complete list
+        // of files to scan can only be determined when the configuration is loaded in full.
+        // However, scan can be active if mainURL is set. Otherwise, when changes are
+        // detected the top level config file cannot be accessed.
+        addInfo("Setting ReconfigureOnChangeTask scanning period to " + duration);
+
+        ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask, duration.getMilliseconds(), duration.getMilliseconds(),
+                TimeUnit.MILLISECONDS);
+        rocTask.setScheduledFuture(scheduledFuture);
+        context.addScheduledFuture(scheduledFuture);
 
     }
 

@@ -59,7 +59,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     public void start() {
         configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(context);
         if (configurationWatchList != null) {
-            mainConfigurationURL = configurationWatchList.getMainURL();
+            mainConfigurationURL = configurationWatchList.getTopURL();
             if (mainConfigurationURL == null) {
                 addWarn("Due to missing top level configuration file, automatic reconfiguration is impossible.");
                 return;

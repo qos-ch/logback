@@ -98,7 +98,6 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
         configure(file);
         List<File> fileList = getConfigurationWatchList(loggerContext);
         assertThatListContainsFile(fileList, file);
-        statusPrinter2.print(loggerContext);
         checkThatTaskHasRan();
         checkThatTaskCanBeStopped();
     }
@@ -203,10 +202,10 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
         configure(asBAIS(configurationStr));
 
         ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
-        assertNull(configurationWatchList);
+
+        assertNotNull(configurationWatchList);
         assertFalse(ConfigurationWatchListUtil.watchPredicateFulfilled(loggerContext));
         statusChecker.containsMatch(Status.WARN, ConfigurationModelHandlerFull.FAILED_WATCH_PREDICATE_MESSAGE_1);
-        StatusPrinter.print(loggerContext);
 
         assertFalse(listener.changeDetectorRegisteredEventOccurred);
         assertEquals(0, loggerContext.getCopyOfScheduledFutures().size());
@@ -222,7 +221,7 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
         addResetResistantOnConsoleStatusListener();
         configure(topLevelFile);
-
+        //statusPrinter2.print(loggerContext);
         CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
         CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneSuccessfullyListener();
 
@@ -251,12 +250,13 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
             statusChecker.assertIsErrorFree();
             statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
         } finally {
-            StatusPrinter.print(loggerContext);
+            //StatusPrinter.print(loggerContext);
         }
     }
 
     private void addResetResistantOnConsoleStatusListener() {
-        if (1 == 1)
+        // enable when debugging
+        if(1==1)
             return;
         OnConsoleStatusListener ocs = new OnConsoleStatusListener();
         ocs.setContext(loggerContext);
@@ -285,7 +285,6 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
         ReconfigureOnChangeTask roct = roctRegisteredListener.reconfigureOnChangeTask;
 
-        System.out.println("===================================================");
 
         CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
         CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneSuccessfullyListener(roct);
@@ -298,6 +297,8 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
         statusChecker.assertContainsMatch(Status.ERROR, CoreConstants.XML_PARSING);
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
         statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
+
+        //statusPrinter2.print(loggerContext);
 
         loggerContext.getStatusManager().clear();
 

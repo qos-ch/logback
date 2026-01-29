@@ -259,16 +259,47 @@ public class OptionHelper {
         return result;
     }
 
+
     /**
-     * If <code>value</code> is "true", then <code>true</code> is returned. If
-     * <code>value</code> is "false", then <code>true</code> is returned. Otherwise,
-     * <code>default</code> is returned.
-     * <p>
-     * Case of value is unimportant.
+     * Converts a string representation of a boolean value to a {@link Boolean} object.
+     * If the input string is "true" (case-insensitive), returns {@code Boolean.TRUE}.
+     * If the input string is "false" (case-insensitive), returns {@code Boolean.FALSE}.
+     * Returns {@code null} if the input string is null, empty, or does not match "true" or "false".
+     *
+     * @param value the string representation of a boolean value, may be null or empty
+     * @return a {@link Boolean} object corresponding to the input string, or {@code null} if the input is invalid
      */
-    public static boolean toBoolean(String value, boolean dEfault) {
+    public static Boolean toBooleanObject(String value) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(value)) {
+            return null;
+        }
+
+        String trimmedVal = value.trim();
+
+        if ("true".equalsIgnoreCase(trimmedVal)) {
+            return true;
+        }
+
+        if ("false".equalsIgnoreCase(trimmedVal)) {
+            return false;
+        }
+        return null;
+    }
+
+    /**
+     * <p>If <code>value</code> is "true", then <code>true</code> is returned. If
+     * <code>value</code> is "false", then <code>true</code> is returned. Otherwise,
+     * <code>defaultVal</code> is returned.
+     * </p>
+     *
+     * <p>Comparisons are case-insensitive.</p>
+     *
+     * @param value a string representation of a boolean value
+     * @param defaultVal the default value to return if <code>value</code> is null, empty or not a valid boolean value
+     */
+    public static boolean toBoolean(String value, boolean defaultVal) {
         if (value == null) {
-            return dEfault;
+            return defaultVal;
         }
 
         String trimmedVal = value.trim();
@@ -281,7 +312,7 @@ public class OptionHelper {
             return false;
         }
 
-        return dEfault;
+        return defaultVal;
     }
 
     /**

@@ -43,7 +43,7 @@ public class ConfigurationWatchList extends ContextAwareBase {
 
     static final byte[] BUF_ZERO = new byte[] { 0 };
 
-    URL mainURL;
+    URL topURL;
     List<File> fileWatchList = new ArrayList<>();
     List<URL> urlWatchList = new ArrayList<>();
     List<byte[]> lastHashList = new ArrayList<>();
@@ -52,7 +52,7 @@ public class ConfigurationWatchList extends ContextAwareBase {
 
     public ConfigurationWatchList buildClone() {
         ConfigurationWatchList out = new ConfigurationWatchList();
-        out.mainURL = this.mainURL;
+        out.topURL = this.topURL;
         out.fileWatchList = new ArrayList<File>(this.fileWatchList);
         out.lastModifiedList = new ArrayList<Long>(this.lastModifiedList);
         out.lastHashList = new ArrayList<>(this.lastHashList);
@@ -60,23 +60,23 @@ public class ConfigurationWatchList extends ContextAwareBase {
     }
 
     public void clear() {
-        this.mainURL = null;
-        lastModifiedList.clear();
-        fileWatchList.clear();
-        urlWatchList.clear();
-        lastHashList.clear();
+        this.topURL = null;
+        this.lastModifiedList.clear();
+        this.fileWatchList.clear();
+        this.urlWatchList.clear();
+        this.lastHashList.clear();
     }
 
     /**
-     * The mainURL for the configuration file. Null values are allowed.
+     * The topURL for the configuration file. Null values are allowed.
      *
-     * @param mainURL
+     * @param topURL
      */
-    public void setMainURL(URL mainURL) {
-        // main url can be null
-        this.mainURL = mainURL;
-        if (mainURL != null)
-            addAsFileToWatch(mainURL);
+    public void setTopURL(URL topURL) {
+        // topURL can be null
+        this.topURL = topURL;
+        if (topURL != null)
+            addAsFileToWatch(topURL);
     }
 
     public boolean watchPredicateFulfilled() {
@@ -97,7 +97,7 @@ public class ConfigurationWatchList extends ContextAwareBase {
     }
 
     private boolean hasMainURLAndNonEmptyFileList() {
-        return mainURL != null && !fileWatchList.isEmpty();
+        return topURL != null && !fileWatchList.isEmpty();
     }
 
     private boolean fileWatchListContainsProperties() {
@@ -144,8 +144,8 @@ public class ConfigurationWatchList extends ContextAwareBase {
         }
     }
 
-    public URL getMainURL() {
-        return mainURL;
+    public URL getTopURL() {
+        return topURL;
     }
 
     public List<File> getCopyOfFileWatchList() {

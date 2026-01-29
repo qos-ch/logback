@@ -16,6 +16,7 @@ package ch.qos.logback.core.joran.util;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
+import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
@@ -39,15 +40,27 @@ public class ConfigurationWatchListUtil {
         context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST, cwl);
     }
 
+    /**
+     * Sets the main configuration watch URL in the given context's configuration watch list.
+     * If the provided URL is null, the method exits without making any changes.
+     * If the configuration watch list is not initialized, an error is added to the context's status.
+     * Otherwise, the configuration watch list is cleared and the given URL is set as the main URL.
+     *
+     * @param context the context in which the configuration watch list is managed
+     * @param url the main configuration watch URL to be set; if null, no action is taken
+     */
     public static void setMainWatchURL(Context context, URL url) {
+        if(url == null) {
+            return;
+        }
         ConfigurationWatchList cwl = getConfigurationWatchList(context);
         if (cwl == null) {
-            cwl = registerNewConfigurationWatchListWithContext(context);
+            addError(context, "ConfigurationWatchList should have been initialized at this stage.");
+            return;
         } else {
             cwl.clear();
         }
-        // setConfigurationWatchListResetFlag(context, true);
-        cwl.setMainURL(url);
+        cwl.setTopURL(url);
     }
 
     /**
@@ -68,7 +81,7 @@ public class ConfigurationWatchListUtil {
         if (cwl == null) {
             return null;
         } else {
-            return cwl.getMainURL();
+            return cwl.getTopURL();
         }
     }
 
@@ -97,7 +110,7 @@ public class ConfigurationWatchListUtil {
         }
     }
 
-    private static ConfigurationWatchList registerNewConfigurationWatchListWithContext(Context context) {
+    public static ConfigurationWatchList registerNewConfigurationWatchListWithContext(Context context) {
         ConfigurationWatchList cwl = new ConfigurationWatchList();
         cwl.setContext(context);
         context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST, cwl);
@@ -123,7 +136,10 @@ public class ConfigurationWatchListUtil {
        addStatus(context, new InfoStatus(msg, ORIGIN));
     }
 
-     static void addWarn(Context context, String msg) {
+    static void addWarn(Context context, String msg) {
         addStatus(context, new WarnStatus(msg, ORIGIN));
+    }
+    static void addError(Context context, String msg) {
+        addStatus(context, new ErrorStatus(msg, ORIGIN));
     }
 }

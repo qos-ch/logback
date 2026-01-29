@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.model.processor;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,6 +38,10 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
 
     Stack<Object> objectStack;
     Stack<Model> modelStack;
+
+
+    URL topURL;
+    Boolean topScanBoolean =  null;
 
     /**
      * A supplier of JoranConfigurator instances.
@@ -314,5 +319,21 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
      */
     public void setConfiguratorSupplier(Supplier<? extends GenericXMLConfigurator> configuratorSupplier) {
         this.configuratorSupplier = configuratorSupplier;
+    }
+
+
+    public URL getTopURL() {
+        return topURL;
+    }
+
+    public void setTopURL(URL topURL) {
+        this.topURL = topURL;
+    }
+
+    public Boolean getTopScanBoolean() {
+        return topScanBoolean;
+    }
+    public void setTopScanBoolean(Boolean topScanBoolean) {
+        this.topScanBoolean = topScanBoolean;
     }
 }

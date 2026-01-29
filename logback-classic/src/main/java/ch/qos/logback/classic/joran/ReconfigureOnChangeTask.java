@@ -67,7 +67,6 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
 
         context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectedEvent(this));
         addInfo(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
-
         if(changedFile != null) {
             changeInFile(changedFile, configurationWatchList);
         }
@@ -84,6 +83,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         }
     }
     private void changeInFile(File changedFile, ConfigurationWatchList configurationWatchList) {
+
         if(changedFile.getName().endsWith(PROPERTIES_FILE_EXTENSION)) {
             runPropertiesConfigurator(changedFile);
             return;
@@ -92,13 +92,11 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         // ======== fuller processing below
         addInfo(CoreConstants.RESET_MSG_PREFIX + "named [" + context.getName() + "]");
         cancelFutureInvocationsOfThisTaskInstance();
-        URL mainConfigurationURL = configurationWatchList.getMainURL();
+        URL mainConfigurationURL = configurationWatchList.getTopURL();
 
         LoggerContext lc = (LoggerContext) context;
         if (mainConfigurationURL.toString().endsWith("xml")) {
             performXMLConfiguration(lc, mainConfigurationURL);
-        } else if (mainConfigurationURL.toString().endsWith("groovy")) {
-            addError("Groovy configuration disabled due to Java 9 compilation issues.");
         }
     }
 
@@ -127,50 +125,54 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         }
     }
 
-    private void performXMLConfiguration(LoggerContext lc, URL mainConfigurationURL) {
+    private void performXMLConfiguration(LoggerContext loggerContext, URL mainConfigurationURL) {
+
         JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(context);
-        StatusUtil statusUtil = new StatusUtil(context);
+        jc.setContext(loggerContext);
+        StatusUtil statusUtil = new StatusUtil(loggerContext);
         Model failsafeTop = jc.recallSafeConfiguration();
-        URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
-        addInfo("Resetting loggerContext ["+lc.getName()+"]");
-        lc.reset();
+        URL topURL = ConfigurationWatchListUtil.getMainWatchURL(context);
+        addInfo("Resetting loggerContext ["+loggerContext.getName()+"]");
+        loggerContext.reset();
         long threshold = System.currentTimeMillis();
         try {
             jc.doConfigure(mainConfigurationURL);
             // e.g. IncludeAction will add a status regarding XML parsing errors but no exception will reach here
             if (statusUtil.hasXMLParsingErrors(threshold)) {
-                fallbackConfiguration(lc, failsafeTop, mainURL);
+                fallbackConfiguration(loggerContext, failsafeTop, topURL);
             }
         } catch (JoranException e) {
             addWarn("Exception occurred during reconfiguration", e);
-            fallbackConfiguration(lc, failsafeTop, mainURL);
+            fallbackConfiguration(loggerContext, failsafeTop, topURL);
         }
     }
 
-    private void fallbackConfiguration(LoggerContext lc, Model failsafeTop, URL mainURL) {
+    private void fallbackConfiguration(LoggerContext loggerContext, Model failsafeTopModel, URL topURL) {
         // failsafe events are used only in case of errors. Therefore, we must *not*
         // invoke file inclusion since the included files may be the cause of the error.
 
         // List<SaxEvent> failsafeEvents = removeIncludeEvents(eventList);
         JoranConfigurator joranConfigurator = new JoranConfigurator();
-        joranConfigurator.setContext(context);
-        ConfigurationWatchList oldCWL = ConfigurationWatchListUtil.getConfigurationWatchList(context);
-        ConfigurationWatchList newCWL = oldCWL.buildClone();
+        joranConfigurator.setContext(loggerContext);
+        joranConfigurator.setTopURL(topURL);
 
-        if (failsafeTop == null) {
+//        ConfigurationWatchList oldCWL = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
+//        System.out.println("--------oldCWL:"+oldCWL);
+//        ConfigurationWatchList newCWL = oldCWL.buildClone();
+
+        if (failsafeTopModel == null) {
             addWarn("No previous configuration to fall back on.");
             return;
         } else {
             addWarn(FALLING_BACK_TO_SAFE_CONFIGURATION);
-            addInfo("Safe model "+failsafeTop);
+            addInfo("Safe model "+failsafeTopModel);
             try {
-                lc.reset();
-                ConfigurationWatchListUtil.registerConfigurationWatchList(context, newCWL);
-                ModelUtil.resetForReuse(failsafeTop);
-                joranConfigurator.processModel(failsafeTop);
+                loggerContext.reset();
+//                ConfigurationWatchListUtil.registerConfigurationWatchList(context, newCWL);
+                ModelUtil.resetForReuse(failsafeTopModel);
+                joranConfigurator.processModel(failsafeTopModel);
                 addInfo(RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
-                joranConfigurator.registerSafeConfiguration(failsafeTop);
+                joranConfigurator.registerSafeConfiguration(failsafeTopModel);
                 context.fireConfigurationEvent(newConfigurationEndedSuccessfullyEvent(this));
             } catch (Exception e) {
                 addError("Unexpected exception thrown by a configuration considered safe.", e);

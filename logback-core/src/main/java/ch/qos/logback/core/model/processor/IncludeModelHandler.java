@@ -61,7 +61,10 @@ public class IncludeModelHandler extends ResourceHandlerBase {
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         IncludeModel includeModel = (IncludeModel) model;
-        Model modelFromIncludedFile = buildModelFromIncludedFile(mic, includeModel);
+
+        URL topURL = mic.getTopURL();
+        Boolean topScan = mic.getTopScanBoolean();
+        Model modelFromIncludedFile = buildModelFromIncludedFile(mic, topURL, topScan, includeModel);
         if (modelFromIncludedFile == null) {
             warnIfRequired("Failed to build include model from included file");
             return;
@@ -77,7 +80,7 @@ public class IncludeModelHandler extends ResourceHandlerBase {
      * @throws ModelHandlerException
      * @since 1.5.11
      */
-    public Model buildModelFromIncludedFile(ContextAwarePropertyContainer capc, IncludeModel includeModel) throws ModelHandlerException {
+    public Model buildModelFromIncludedFile(ContextAwarePropertyContainer capc, URL topURL, Boolean topScan, IncludeModel includeModel) throws ModelHandlerException {
 
         this.optional = OptionHelper.toBoolean(includeModel.getOptional(), false);
 
@@ -86,11 +89,21 @@ public class IncludeModelHandler extends ResourceHandlerBase {
             return null;
         }
 
-        InputStream in = getInputStream(capc, includeModel);
+
+        URL inputURL = getInputURL(capc, includeModel);
+        if (inputURL == null) {
+            inError = true;
+            return null;
+        }
+
+        InputStream in = openURL(inputURL);
         if (in == null) {
             inError = true;
             return null;
         }
+
+        updateConfigurationWatchList(inputURL, topURL, topScan);
+
 
         SaxEventRecorder recorder = null;
 
@@ -132,12 +145,16 @@ public class IncludeModelHandler extends ResourceHandlerBase {
         return recorder;
     }
 
-    private InputStream getInputStream(ContextAwarePropertyContainer capc, IncludeModel includeModel) {
-        URL inputURL = getInputURL(capc, includeModel);
-        if (inputURL == null)
-            return null;
-        ConfigurationWatchListUtil.addToWatchList(context, inputURL);
-        return openURL(inputURL);
+    private void updateConfigurationWatchList(URL inputURL, URL topURL, Boolean topScan) throws ModelHandlerException {
+
+        if(topScan == Boolean.TRUE) {
+            if(topURL != null) {
+                ConfigurationWatchListUtil.addToWatchList(context, inputURL);
+            } else {
+                addWarn("No top URL for XML configuration file. Will not add [" + inputURL + "] to watch list.");
+            }
+        }
+
     }
 
 }

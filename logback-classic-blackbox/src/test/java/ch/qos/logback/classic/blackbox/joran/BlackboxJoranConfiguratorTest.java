@@ -14,6 +14,7 @@
 
 package ch.qos.logback.classic.blackbox.joran;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -21,23 +22,25 @@ import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.jul.JULHelper;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.DefaultJoranConfigurator;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BlackboxJoranConfiguratorTest {
+
     LoggerContext loggerContext = new LoggerContext();
     LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     Logger logger = loggerContext.getLogger(this.getClass().getName());
@@ -51,8 +54,9 @@ public class BlackboxJoranConfiguratorTest {
         jc.setContext(loggerContext);
         loggerContext.putProperty("diff", "" + diff);
         jc.doConfigure(file);
-
     }
+
+
 
     @Test
     public void eval() throws JoranException {
@@ -190,5 +194,21 @@ public class BlackboxJoranConfiguratorTest {
         }
     }
 
+    // See https://github.com/qos-ch/logback/issues/1001
+    // See https://github.com/qos-ch/logback/issues/997
+    @Test
+    public void fileAsResource() throws JoranException, IOException, InterruptedException {
+        JoranConfigurator joranConfigurator = new JoranConfigurator();
+        joranConfigurator.setContext(loggerContext);
+        ClassLoader classLoader = Loader.getClassLoaderOfObject(joranConfigurator);
+        String logbackConfigFile = "asResource/topFile.xml";
+        URL aURL = Loader.getResource(logbackConfigFile, classLoader);
+        InputStream inputStream = aURL.openStream();
+        assertNotNull(inputStream);
+        joranConfigurator.doConfigure(inputStream);
+        StatusPrinter.print(loggerContext);
+        checker.assertIsWarningOrErrorFree();
+        fail();
+    }
 
 }

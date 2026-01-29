@@ -53,10 +53,20 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     }
     private RuleStore ruleStore;
 
+    public URL getTopURL() {
+        return topURL;
+    }
+
+    public void setTopURL(URL topURL) {
+        this.topURL = topURL;
+    }
+
+    URL topURL;
+
     public final void doConfigure(URL url) throws JoranException {
         InputStream in = null;
         try {
-            informContextOfURLUsedForConfiguration(getContext(), url);
+            topURL = url;
             URLConnection urlConnection = url.openConnection();
             // per http://jira.qos.ch/browse/LOGBACK-117  LBCORE-105
             // per http://jira.qos.ch/browse/LOGBACK-163  LBCORE-127
@@ -89,7 +99,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         FileInputStream fis = null;
         try {
             URL url = file.toURI().toURL();
-            informContextOfURLUsedForConfiguration(getContext(), url);
+            topURL = url;
             fis = new FileInputStream(file);
             doConfigure(fis, url.toExternalForm());
         } catch (IOException ioe) {
@@ -109,8 +119,14 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         }
     }
 
+    /**
+     * Removed in 1.5.27 with no replacement.
+     *
+     * @deprecated
+     */
+    @Deprecated
     public static void informContextOfURLUsedForConfiguration(Context context, URL url) {
-        ConfigurationWatchListUtil.setMainWatchURL(context, url);
+        //
     }
 
     public final void doConfigure(InputStream inputStream) throws JoranException {
@@ -153,6 +169,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
     protected void buildModelInterpretationContext() {
         this.modelInterpretationContext = new ModelInterpretationContext(context);
+        this.modelInterpretationContext.setTopURL(topURL);
         addDefaultNestedComponentRegistryRules(modelInterpretationContext.getDefaultNestedComponentRegistry());
     }
 
@@ -256,4 +273,5 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     public Model recallSafeConfiguration() {
         return (Model) context.getObject(SAFE_JORAN_CONFIGURATION);
     }
+
 }

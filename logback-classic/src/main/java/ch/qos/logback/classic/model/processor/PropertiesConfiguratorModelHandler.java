@@ -15,6 +15,7 @@
 package ch.qos.logback.classic.model.processor;
 
 import ch.qos.logback.classic.joran.PropertiesConfigurator;
+import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.model.PropertiesConfiguratorModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -45,7 +46,9 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
 
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-        detachedHandle(mic, model);
+
+        Boolean topScanBoolean = mic.getTopScanBoolean();
+        detachedHandle(mic, model, topScanBoolean);
     }
 
     /**
@@ -58,7 +61,7 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
      * @throws ModelHandlerException
      * @since 1.5.10
      */
-    public void detachedHandle(ContextAwarePropertyContainer capc, Model model) throws ModelHandlerException {
+    public void detachedHandle(ContextAwarePropertyContainer capc, Model model, Boolean topScanBoolean) throws ModelHandlerException {
 
         PropertiesConfiguratorModel propertyConfiguratorModel = (PropertiesConfiguratorModel) model;
 
@@ -69,11 +72,31 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
             return;
         }
 
-        InputStream in = getInputStream(capc, propertyConfiguratorModel);
+        URL inputURL = getInputURL(capc, propertyConfiguratorModel);
+        if (inputURL == null) {
+            inError = true;
+            return;
+        }
+
+
+        Boolean localScan = OptionHelper.toBooleanObject(propertyConfiguratorModel.getScanStr());
+
+        InputStream in = openURL(inputURL);
         if (in == null) {
             inError = true;
             return;
         }
+
+        if(localScan == Boolean.TRUE || topScanBoolean == Boolean.TRUE) {
+            if(topScanBoolean != Boolean.TRUE) {
+                // if topScanBoolean ia not TRUE, then a ConfigurationWatchList has not been created and registered, yet
+                // we need to do so now
+                ConfigurationWatchListUtil.registerNewConfigurationWatchListWithContext(context);
+            }
+            ConfigurationWatchListUtil.addToWatchList(context, inputURL, CREATE_CWL_IF_NOT_ALREADY_CREATED);
+        }
+
+
 
         addInfo("Reading configuration from [" + getAttribureInUse() + "]");
 
@@ -92,6 +115,8 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
         URL inputURL = getInputURL(capc, resourceModel);
         if (inputURL == null)
             return null;
+
+
 
         ConfigurationWatchListUtil.addToWatchList(context, inputURL, CREATE_CWL_IF_NOT_ALREADY_CREATED);
         return openURL(inputURL);

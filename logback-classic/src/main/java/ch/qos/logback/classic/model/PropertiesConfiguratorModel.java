@@ -19,4 +19,15 @@ import ch.qos.logback.core.model.ResourceModel;
 public class PropertiesConfiguratorModel extends ResourceModel {
 
     private static final long serialVersionUID = -2009536798661734346L;
+
+    String scanStr;
+
+    public String getScanStr() {
+        return scanStr;
+    }
+
+    public void setScanStr(String scanStr) {
+        this.scanStr = scanStr;
+    }
+
 }
