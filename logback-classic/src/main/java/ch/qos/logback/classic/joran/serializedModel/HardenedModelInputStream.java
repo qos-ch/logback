@@ -43,7 +43,6 @@ public class HardenedModelInputStream extends HardenedObjectInputStream {
         whitelist.add(ch.qos.logback.core.model.DefineModel.class.getName());
         whitelist.add(ch.qos.logback.core.model.SequenceNumberGeneratorModel.class.getName());
         whitelist.add(ch.qos.logback.core.model.ImplicitModel.class.getName());
-        whitelist.add(ch.qos.logback.classic.model.ReceiverModel.class.getName());
         whitelist.add(ch.qos.logback.classic.model.LoggerContextListenerModel.class.getName());
         whitelist.add(ch.qos.logback.core.model.conditional.ThenModel.class.getName());
         whitelist.add(ch.qos.logback.core.model.conditional.IfModel.class.getName());
