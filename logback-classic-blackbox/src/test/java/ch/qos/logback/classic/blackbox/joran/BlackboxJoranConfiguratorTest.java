@@ -57,7 +57,6 @@ public class BlackboxJoranConfiguratorTest {
     }
 
 
-
     @Test
     public void eval() throws JoranException {
         configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "callerData.xml");
@@ -115,14 +114,14 @@ public class BlackboxJoranConfiguratorTest {
     }
 
     @Test
-    public void conditional1673() throws JoranException  {
+    public void conditional1673() throws JoranException {
         loggerContext.putProperty("EXTRA", "true");
         String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673.xml";
         configure(configFileAsStr);
     }
 
     @Test
-    public void conditional1673bisWithActiveThen() throws JoranException  {
+    public void conditional1673bisWithActiveThen() throws JoranException {
         loggerContext.putProperty("EXTRA", "true");
         String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673bis.xml";
         configure(configFileAsStr);
@@ -135,7 +134,7 @@ public class BlackboxJoranConfiguratorTest {
     }
 
     @Test
-    public void conditional1673bisWithActiveElse() throws JoranException  {
+    public void conditional1673bisWithActiveElse() throws JoranException {
         String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673bis.xml";
         configure(configFileAsStr);
         Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -147,7 +146,7 @@ public class BlackboxJoranConfiguratorTest {
     }
 
     @Test
-    public void nestedIf() throws JoranException  {
+    public void nestedIf() throws JoranException {
         loggerContext.putProperty("EXTRA", "true");
         String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1678.xml";
         configure(configFileAsStr);
@@ -201,14 +200,30 @@ public class BlackboxJoranConfiguratorTest {
         JoranConfigurator joranConfigurator = new JoranConfigurator();
         joranConfigurator.setContext(loggerContext);
         ClassLoader classLoader = Loader.getClassLoaderOfObject(joranConfigurator);
+
+
         String logbackConfigFile = "asResource/topFile.xml";
+        // asResource/topFile.xml
+        //<configuration xscan="true" scanPeriod="50 millisecond">
+        //        <include resource="asResource/inner1.xml"/>
+        //</configuration>
+
+        // inner1.xml
+        //  <included>
+        //        <root level="ERROR"/>
+        //  </included>
+
         URL aURL = Loader.getResource(logbackConfigFile, classLoader);
         InputStream inputStream = aURL.openStream();
         assertNotNull(inputStream);
         joranConfigurator.doConfigure(inputStream);
-        StatusPrinter.print(loggerContext);
+
+        assertEquals(Level.ERROR, root.getLevel());
+
+        //StatusPrinter.print(loggerContext);
+        inputStream.close();
+        checker.assertContainsMatch("Scan attribute not set or set to unrecognized value.");
         checker.assertIsWarningOrErrorFree();
-        fail();
     }
 
 }
