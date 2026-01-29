@@ -62,7 +62,7 @@
     <junit-vintage-engine.version>5.9.1</junit-vintage-engine.version>
     <junit-jupiter-params.version>5.9.1</junit-jupiter-params.version>
     <junit-platform.version>1.10.5</junit-platform.version>
-    <assertj-core.version>3.23.1</assertj-core.version>
+    <assertj-core.version>3.27.7</assertj-core.version>
     <hamcrest.version>2.2</hamcrest.version>
     <jakarta.mail.version>2.1.5</jakarta.mail.version>
     <jakarta.activation.version>2.1.4</jakarta.activation.version>
