@@ -26,6 +26,7 @@ public class LoggingEventPreSerializationTransformer implements PreSerialization
         if (event == null) {
             return null;
         }
+        // Note that preprocessing is presumed to be already done
         if (event instanceof LoggingEvent) {
             return LoggingEventVO.build(event);
         } else if (event instanceof LoggingEventVO) {

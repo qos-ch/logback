@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.SocketFactory;
 
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.CloseUtil;
 import ch.qos.logback.core.util.Duration;
@@ -176,6 +177,12 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
             return;
 
         try {
+
+            // otherwise MDC information is not transferred. See also logback/issues/1010
+            if(event instanceof DeferredProcessingAware) {
+                ((DeferredProcessingAware) event).prepareForDeferredProcessing();
+            }
+
             final boolean inserted = deque.offer(event, eventDelayLimit.getMilliseconds(), TimeUnit.MILLISECONDS);
             if (!inserted) {
                 addInfo("Dropping event due to timeout limit of [" + eventDelayLimit + "] being exceeded");

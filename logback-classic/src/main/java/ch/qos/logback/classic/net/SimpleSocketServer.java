@@ -77,6 +77,8 @@ public class SimpleSocketServer extends Thread {
         configureLC(lc, configFile);
 
         SimpleSocketServer sss = new SimpleSocketServer(lc, port);
+
+        // start the server in a separate thread
         sss.start();
     }
 

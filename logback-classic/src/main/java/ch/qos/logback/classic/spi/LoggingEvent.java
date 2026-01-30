@@ -454,10 +454,11 @@ public class LoggingEvent implements ILoggingEvent {
         // populate mdcPropertyMap if null
         if (mdcPropertyMap == null) {
             MDCAdapter mdcAdapter = loggerContext.getMDCAdapter();
-            if (mdcAdapter instanceof LogbackMDCAdapter)
+            if (mdcAdapter instanceof LogbackMDCAdapter) {
                 mdcPropertyMap = ((LogbackMDCAdapter) mdcAdapter).getPropertyMap();
-            else
+            } else {
                 mdcPropertyMap = mdcAdapter.getCopyOfContextMap();
+            }
         }
         // mdcPropertyMap still null, use emptyMap()
         if (mdcPropertyMap == null)
