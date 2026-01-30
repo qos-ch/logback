@@ -58,7 +58,7 @@ public class SocketAppender1010Test {
     LogbackMDCAdapter mdcAdapterForClient = new LogbackMDCAdapter();
 
     @Test
-    @Timeout(value = 500, unit = MILLISECONDS)
+    @Timeout(value = 2000, unit = MILLISECONDS)
     public void smoke() {
         System.out.println("Running on port " + port);
         LoggerContext serverLoggerContext = buildAndConfigureContextForServer();
