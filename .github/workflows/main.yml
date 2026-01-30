@@ -1,12 +1,12 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
+  workflow_dispatch:    # ← this enables manual runs
+
+  # Trigger on push to any branch
+  #push:
+  #  branches:
+  #    - '*'
 
 # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/software-installed-on-github-hosted-runners
 
