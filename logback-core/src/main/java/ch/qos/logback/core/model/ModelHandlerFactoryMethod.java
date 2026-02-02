@@ -20,5 +20,5 @@ import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 @FunctionalInterface
 public interface ModelHandlerFactoryMethod {
 
-    public ModelHandlerBase make(Context context, ModelInterpretationContext ic);
+    public ModelHandlerBase make(Context context, ModelInterpretationContext mic);
 }

@@ -16,6 +16,7 @@ package ch.qos.logback.classic.model.processor;
 import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
@@ -38,14 +39,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
 
-    public static String FAILED_WATCH_PREDICATE_MESSAGE_1 = "Missing watchable .xml or .properties files.";
-    public static String FAILED_WATCH_PREDICATE_MESSAGE_2 = "Watching .xml files requires that the main configuration file is reachable as a URL";
+    public static final String FAILED_WATCH_PREDICATE_MESSAGE_1 = "Missing watchable .xml or .properties files.";
+    public static final String FAILED_WATCH_PREDICATE_MESSAGE_2 = "Watching .xml files requires that the main configuration file is reachable as a URL";
 
     public ConfigurationModelHandlerFull(Context context) {
         super(context);
     }
 
-    static public ModelHandlerBase makeInstance2(Context context, ModelInterpretationContext mic) {
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext mic) {
         return new ConfigurationModelHandlerFull(context);
     }
 
@@ -54,7 +55,7 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
         ConfigurationModel configurationModel = (ConfigurationModel) model;
 
         // scanning is disabled
-        if (!(scanning == Boolean.TRUE)) {
+        if (scanning != Boolean.TRUE) {
             return;
         }
 
@@ -76,7 +77,7 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
 
 
     /**
-     * This method is called from this class but also from logback-tyler.
+     * This method is called from logback-tyler version 1.0.4 and earlier.
      * <p>
      * This method assumes that the variables scanStr and scanPeriodStr have undergone variable substitution
      * as applicable to their current environment
@@ -85,22 +86,45 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
      * @since 1.5.0
      */
     public void detachedPostProcess(String scanStr, String scanPeriodStr) {
-        if (OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) || "false".equalsIgnoreCase(scanStr)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) || CoreConstants.FALSE_STR.equalsIgnoreCase(scanStr)) {
             return;
         }
 
         scheduleReconfigureOnChangeTask(scanPeriodStr);
     }
 
+    /**
+     * This method is called from logback-tyler version 1.0.x and later.
+     * <p>
+     * This method assumes that the variables scanPeriodStr has undergone variable substitution
+     * as applicable to their current environment
+     *
+     * @param scanPeriodStr
+     * @since 1.5.28
+     */
+    public void detachedPostProcess(String scanPeriodStr) {
+        scheduleReconfigureOnChangeTask(scanPeriodStr);
+    }
+
+
+    /**
+     * Schedules a task to monitor configuration changes and reconfigure the application when changes are detected.
+     * The task periodically scans for changes based on the given scan period and reconfigures the system if needed.
+     * This method ensures a valid configuration watch is in place before scheduling the task.
+     *
+     * @param scanPeriodStr the string value representing the scanning period, which will determine how often
+     *                      the task checks for configuration changes. The value is expected to have undergone
+     *                      necessary variable substitution for the current environment.
+     */
     private void scheduleReconfigureOnChangeTask(String scanPeriodStr) {
 
-        ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
         boolean watchPredicateFulfilled = ConfigurationWatchListUtil.watchPredicateFulfilled(context);
         if (!watchPredicateFulfilled) {
             addWarn(FAILED_WATCH_PREDICATE_MESSAGE_1);
             addWarn(FAILED_WATCH_PREDICATE_MESSAGE_2);
             return;
         }
+
         ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
         rocTask.setContext(context);
 
@@ -121,6 +145,7 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
         // detected the top level config file cannot be accessed.
         addInfo("Setting ReconfigureOnChangeTask scanning period to " + duration);
 
+        ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
         ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask, duration.getMilliseconds(), duration.getMilliseconds(),
                 TimeUnit.MILLISECONDS);
         rocTask.setScheduledFuture(scheduledFuture);

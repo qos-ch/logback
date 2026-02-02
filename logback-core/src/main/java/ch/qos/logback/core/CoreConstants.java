@@ -25,6 +25,9 @@ public class CoreConstants {
 
     final public static String STDOUT = "STDOUT";
 
+    final public static String FALSE_STR = "false";
+    final public static String TRUE_STR = "true";
+
     /**
      * Number of idle threads to retain in a context's executor service.
      */

@@ -88,7 +88,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
     @Override
     protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
         ModelClassToModelHandlerLinker m = new ModelClassToModelHandlerLinker(context);
-        m.setConfigurationModelHandlerFactoryMethod(ConfigurationModelHandlerFull::makeInstance2);
+        m.setConfigurationModelHandlerFactoryMethod(ConfigurationModelHandlerFull::makeInstance);
         m.link(defaultProcessor);
     }
 
