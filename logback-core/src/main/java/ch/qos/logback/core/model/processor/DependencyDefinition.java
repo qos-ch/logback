@@ -26,6 +26,10 @@ import ch.qos.logback.core.model.Model;
  */
 public class DependencyDefinition {
 
+    // depender depends on dependency (new terminology)
+    // dependency synonym dependee
+    // depender synonym dependent
+
     // OLD terminology: dependee (=dependency), dependent(=depender)
     //
     // NEW terminology: *dependent*: a component of type Model which depends on a *dependency*

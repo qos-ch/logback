@@ -182,6 +182,11 @@ public class VersionUtil {
         // the dependent depends on the dependency
         addFoundVersionStatus(context, dependentName, dependentVersion);
 
+        if(dependencyVersion == null) {
+            String nullDependencyVersion = String.format("Failed to find version for %s.", dependencyName);
+            context.getStatusManager().add(new WarnStatus(nullDependencyVersion, context));
+            return;
+        }
         if (dependentVersion.equals(NA) || !dependentVersion.equals(dependencyVersion)) {
             addFoundVersionStatus(context, dependencyName, dependencyVersion);
             String discrepancyMsg = String.format("Versions of %s and %s are different!", dependencyName, dependentName);
