@@ -66,6 +66,24 @@ public class PreconditionValidator extends ContextAwareBase {
         return validateGivenAttribute(JoranConstants.REF_ATTRIBUTE);
     }
 
+    public PreconditionValidator validateOneAndOnlyOneAttributeProvided(String... names) {
+        int validCount = 0;
+        for(String name : names) {
+            boolean invalid = isInvalidAttribute(name);
+            if(!invalid) {
+                validCount++;
+            }
+        }
+        if(validCount == 1) {
+            this.valid = true;
+        } else {
+            this.valid = false;
+            addError("Element [" + tag + "] should have at least one of [" + names + "] as an attribute, near line "
+                    + Action.getLineNumber(seic));
+        }
+        return this;
+    }
+
     public boolean isInvalidAttribute(String attributeName) {
         String attributeValue = attributes.getValue(attributeName);
         return OptionHelper.isNullOrEmptyOrAllSpaces(attributeValue);

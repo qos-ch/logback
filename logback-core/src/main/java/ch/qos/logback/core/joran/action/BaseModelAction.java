@@ -46,6 +46,19 @@ public abstract class BaseModelAction extends Action {
         saxEventInterpretationContext.pushModel(currentModel);
     }
 
+    /**
+     * Builds and returns a Model instance for the current XML element being processed.
+     *
+     * <p>This method is called during the begin phase of XML processing to create a Model
+     * object that represents the current element. The returned model will be configured with
+     * the element's tag name, line number, and will be pushed onto the model stack.</p>
+     *
+     * @param interpretationContext the context for interpreting SAX events, providing access to
+     *                              the model stack and other interpretation state
+     * @param name the name of the XML element being processed
+     * @param attributes the attributes of the XML element
+     * @return a new Model instance representing the current XML element
+     */
     abstract protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
             Attributes attributes);
 

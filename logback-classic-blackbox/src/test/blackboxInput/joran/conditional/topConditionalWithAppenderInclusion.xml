@@ -1,0 +1,11 @@
+<configuration>
+
+    <if condition='p("missing").equals("true")'>
+        <then>
+            <include optional="true" resource="missing.xml"/>
+        </then>
+        <else>
+            <include resource="src/test/input/joran/collision/included.xml"/>
+        </else>
+    </if>
+</configuration>

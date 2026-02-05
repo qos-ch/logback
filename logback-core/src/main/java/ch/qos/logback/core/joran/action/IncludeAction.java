@@ -24,6 +24,7 @@ import ch.qos.logback.core.model.ResourceModel;
  */
 public class IncludeAction extends ResourceAction {
 
+    @Override
     protected ResourceModel makeNewResourceModel() {
         return new IncludeModel();
     }
