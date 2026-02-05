@@ -14,13 +14,21 @@
 package ch.qos.logback.core.model.processor;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * The AppenderRefDependencyAnalyser class is responsible for analyzing dependencies
+ * related to appender references within a logging model. This class extends
+ * ModelHandlerBase and operates during the dependency analysis phase of processing.
+ *
+ * The primary responsibilities of this class include:
+ * - Identifying instances of {@link AppenderRefModel} within a model hierarchy.
+ * - Substituting references to appender models using the context's interpretation logic.
+ * - Adding dependency definitions for the identified appender references to the interpretation context.
+ */
 @PhaseIndicator(phase = ProcessingPhase.DEPENDENCY_ANALYSIS)
 public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
@@ -36,10 +44,11 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
     @Override
     public void handle(ModelInterpretationContext mic, Model parentModel) throws ModelHandlerException {
         List<AppenderRefModel> appenderRefModelList = new java.util.ArrayList<>();
-        getAllAppenderRefModels(appenderRefModelList, parentModel);
+        collectAllAppenderRefModels(appenderRefModelList, parentModel);
 
         for (AppenderRefModel appenderRefModel : appenderRefModelList) {
-            String ref = mic.subst(appenderRefModel.getRef());
+            // TODO: prevent substitution of references
+            String ref = appenderRefModel.getRef();
             DependencyDefinition dd = new DependencyDefinition(parentModel, ref);
             mic.addDependencyDefinition(dd);
         }
@@ -53,13 +62,13 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
      * @param list the list to which AppenderRefModel instances are added
      * @param model the root Model object from which to start the extraction
      */
-    public void getAllAppenderRefModels(List<AppenderRefModel> list, Model model) {
+    public void collectAllAppenderRefModels(List<AppenderRefModel> list, Model model) {
         if(model == null)
             return;
         if(model instanceof AppenderRefModel) {
             list.add((AppenderRefModel) model);
         }
-        model.getSubModels().forEach(subModel -> getAllAppenderRefModels(list, subModel));
+        model.getSubModels().forEach(subModel -> collectAllAppenderRefModels(list, subModel));
     }
 
 }

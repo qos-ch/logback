@@ -179,26 +179,24 @@ public class JoranConfiguratorTest {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderRefByProperty.xml");
         final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
         final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) logger.getAppender("A");
-        assertEquals(0, listAppender.list.size());
+        // appender names or refs not subject to substitution
+        assertNull(listAppender);
+
         final String msg = "hello world";
         logger.info(msg);
 
-        assertEquals(1, listAppender.list.size());
         System.clearProperty(propertyName);
     }
+
     @Test
     public void appenderRefSettingBySystemPropertyDefault() throws JoranException {
 
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderRefByPropertyDefault.xml");
-        StatusPrinter.print(loggerContext);
         final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
         final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("A");
-        assertNotNull(listAppender);
-        assertEquals(0, listAppender.list.size());
-        final String msg = "hello world";
-        logger.info(msg);
+        // appender names not subjected to substitution
+        assertNull(listAppender);
 
-        assertEquals(1, listAppender.list.size());
     }
 
 
@@ -223,13 +221,12 @@ public class JoranConfiguratorTest {
     public void refViaDefaultSubstitution() throws JoranException {
 
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "refViaDefaultSubstitution.xml");
-        StatusPrinter.print(loggerContext);
         final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
         final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("A");
         final NOPAppender<ILoggingEvent> nopAppender = (NOPAppender) root.getAppender("NOP");
 
         assertNotNull(listAppender);
-        assertNotNull(nopAppender);
+        assertNull(nopAppender);
 
         assertEquals(0, listAppender.list.size());
         final String msg = "hello world";
@@ -237,7 +234,7 @@ public class JoranConfiguratorTest {
 
         assertEquals(1, listAppender.list.size());
 
-        checker.assertIsWarningOrErrorFree();
+        checker.assertContainsMatch("Appender named \\[\\$\\{NONEXISTENT:-NOP\\}\\] could not be found.");
     }
 
     @Test

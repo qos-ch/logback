@@ -47,7 +47,8 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 
         AppenderModel appenderModel = (AppenderModel) model;
 
-        String appenderName = mic.subst(appenderModel.getName());
+        // appender names should not be subjected to substitution
+        String appenderName = appenderModel.getName();
 
         if (!mic.hasDependers(appenderName)) {
             addWarn("Appender named [" + appenderName + "] not referenced. Skipping further processing.");

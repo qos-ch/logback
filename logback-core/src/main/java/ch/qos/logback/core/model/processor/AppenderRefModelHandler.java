@@ -64,7 +64,8 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void attachReferencedAppenders(ModelInterpretationContext mic, AppenderRefModel appenderRefModel,
             AppenderAttachable<?> appenderAttachable) {
-        String appenderName = mic.subst(appenderRefModel.getRef());
+        // appender ref should not be subject to substitution
+        String appenderName = appenderRefModel.getRef();
 
         if(!isAppenderDeclared(mic, appenderName)) {
             addWarn("Appender named [" + appenderName + "] could not be found. Skipping attachment to "+appenderAttachable+".");
