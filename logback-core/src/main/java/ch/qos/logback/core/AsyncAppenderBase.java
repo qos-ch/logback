@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * This appender and derived classes, log events asynchronously. In order to
@@ -69,6 +70,13 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      */
     public static final int DEFAULT_MAX_FLUSH_TIME = 1000;
     int maxFlushTime = DEFAULT_MAX_FLUSH_TIME;
+
+    // Metrics counters for observability
+    private final LongAdder totalAppendedCount = new LongAdder();
+    private final LongAdder discardedByThresholdCount = new LongAdder();
+    private final LongAdder discardedByQueueFullCount = new LongAdder();
+    private final LongAdder dispatchedCount = new LongAdder();
+    private final LongAdder failedDispatchCount = new LongAdder();
 
     /**
      * Is the eventObject passed as parameter discardable? The base class's
@@ -159,7 +167,9 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     @Override
     protected void append(E eventObject) {
+        totalAppendedCount.increment();
         if (isQueueBelowDiscardingThreshold() && isDiscardable(eventObject)) {
+            discardedByThresholdCount.increment();
             return;
         }
         preprocess(eventObject);
@@ -172,7 +182,10 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     private void put(E eventObject) {
         if (neverBlock) {
-            blockingQueue.offer(eventObject);
+            boolean offered = blockingQueue.offer(eventObject);
+            if (!offered) {
+                discardedByQueueFullCount.increment();
+            }
         } else {
             putUninterruptibly(eventObject);
         }
@@ -250,6 +263,96 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         return blockingQueue.remainingCapacity();
     }
 
+    // ========== Metrics for observability ==========
+
+    /**
+     * Returns the total number of events that have been submitted to this appender
+     * for logging. This includes events that were successfully queued as well as
+     * events that were discarded.
+     *
+     * @return total number of events submitted to append()
+     * @since 1.5.27
+     */
+    public long getTotalAppendedCount() {
+        return totalAppendedCount.sum();
+    }
+
+    /**
+     * Returns the number of events that were discarded because the queue was
+     * nearly full (remaining capacity below discarding threshold) and the event
+     * was deemed discardable by the {@link #isDiscardable(Object)} method.
+     *
+     * @return number of events discarded due to threshold policy
+     * @since 1.5.27
+     */
+    public long getDiscardedByThresholdCount() {
+        return discardedByThresholdCount.sum();
+    }
+
+    /**
+     * Returns the number of events that were discarded because the queue was
+     * completely full and {@link #neverBlock} was set to true. In this mode,
+     * when the queue cannot accept new events, they are dropped immediately.
+     *
+     * @return number of events discarded due to full queue in non-blocking mode
+     * @since 1.5.27
+     */
+    public long getDiscardedByQueueFullCount() {
+        return discardedByQueueFullCount.sum();
+    }
+
+    /**
+     * Returns the total number of events that were discarded for any reason.
+     * This is the sum of {@link #getDiscardedByThresholdCount()} and
+     * {@link #getDiscardedByQueueFullCount()}.
+     *
+     * @return total number of discarded events
+     * @since 1.5.27
+     */
+    public long getTotalDiscardedCount() {
+        return discardedByThresholdCount.sum() + discardedByQueueFullCount.sum();
+    }
+
+    /**
+     * Returns the number of events that have been successfully dispatched to
+     * the attached appender by the worker thread. This represents the "output"
+     * side of the async appender and can be compared with {@link #getTotalAppendedCount()}
+     * to understand how many events are currently in-flight in the queue.
+     *
+     * @return number of events dispatched to the attached appender
+     * @since 1.5.27
+     */
+    public long getDispatchedCount() {
+        return dispatchedCount.sum();
+    }
+
+    /**
+     * Returns the number of events that failed to be dispatched to the attached
+     * appender due to an exception. Note that most appenders catch exceptions
+     * internally, so this counter primarily tracks uncaught exceptions that
+     * propagate from the appender.
+     *
+     * @return number of events that failed during dispatch
+     * @since 1.5.27
+     */
+    public long getFailedDispatchCount() {
+        return failedDispatchCount.sum();
+    }
+
+    /**
+     * Resets all metrics counters to zero. This can be useful for testing or
+     * when you want to start fresh metrics collection at a specific point in time.
+     *
+     * @since 1.5.27
+     */
+    public void resetMetrics() {
+        totalAppendedCount.reset();
+        discardedByThresholdCount.reset();
+        discardedByQueueFullCount.reset();
+        dispatchedCount.reset();
+        failedDispatchCount.reset();
+    }
+
     public void addAppender(Appender<E> newAppender) {
         if (appenderCount == 0) {
             appenderCount++;
@@ -298,9 +401,19 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                     E e0 = parent.blockingQueue.take();
                     elements.add(e0);
                     parent.blockingQueue.drainTo(elements);
+                    int dispatched = 0;
+                    int failed = 0;
                     for (E e : elements) {
-                        aai.appendLoopOnAppenders(e);
+                        try {
+                            aai.appendLoopOnAppenders(e);
+                            dispatched++;
+                        } catch (Exception ex) {
+                            failed++;
+                            parent.addError("Failed to dispatch event to appender", ex);
+                        }
                     }
+                    parent.dispatchedCount.add(dispatched);
+                    parent.failedDispatchCount.add(failed);
                 } catch (InterruptedException e1) {
                     // exit if interrupted
                     break;
@@ -309,10 +422,20 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
             addInfo("Worker thread will flush remaining events before exiting. ");
 
+            int dispatched = 0;
+            int failed = 0;
             for (E e : parent.blockingQueue) {
-                aai.appendLoopOnAppenders(e);
+                try {
+                    aai.appendLoopOnAppenders(e);
+                    dispatched++;
+                } catch (Exception ex) {
+                    failed++;
+                    parent.addError("Failed to dispatch event to appender", ex);
+                }
                 parent.blockingQueue.remove(e);
             }
+            parent.dispatchedCount.add(dispatched);
+            parent.failedDispatchCount.add(failed);
 
             aai.detachAndStopAllAppenders();
         }
