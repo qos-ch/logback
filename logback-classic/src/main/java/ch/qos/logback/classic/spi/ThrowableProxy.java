@@ -86,7 +86,7 @@ public class ThrowableProxy implements IThrowableProxy {
         Throwable[] throwableSuppressed = throwable.getSuppressed();
         // while JDK's implementation of getSuppressed() will always return a non-null array,
         // this might not be the case in mocked throwables. We are being extra defensive here.
-        if (OptionHelper.isNotEmtpy(throwableSuppressed)) {
+        if (OptionHelper.isNotEmpty(throwableSuppressed)) {
             List<ThrowableProxy> suppressedList = new ArrayList<>(throwableSuppressed.length);
             for (Throwable sup : throwableSuppressed) {
                 if (alreadyProcessedSet.contains(sup)) {
