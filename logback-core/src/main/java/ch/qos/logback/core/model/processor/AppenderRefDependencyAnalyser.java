@@ -35,10 +35,7 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
     @Override
     public void handle(ModelInterpretationContext mic, Model parentModel) throws ModelHandlerException {
-
-        System.out.println("Handling " + parentModel);
         List<AppenderRefModel> appenderRefModelList = new java.util.ArrayList<>();
-
         getAllAppenderRefModels(appenderRefModelList, parentModel);
 
         for (AppenderRefModel appenderRefModel : appenderRefModelList) {
@@ -49,6 +46,13 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
     }
 
+    /**
+     * Recursively processes the given Model object and its submodels, extracting instances
+     * of AppenderRefModel and adding them to the provided list.
+     *
+     * @param list the list to which AppenderRefModel instances are added
+     * @param model the root Model object from which to start the extraction
+     */
     public void getAllAppenderRefModels(List<AppenderRefModel> list, Model model) {
         if(model == null)
             return;
