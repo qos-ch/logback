@@ -24,6 +24,7 @@ import ch.qos.logback.classic.jul.JULHelper;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.DefaultJoranConfigurator;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -131,6 +132,19 @@ public class BlackboxJoranConfiguratorTest {
 
         ListAppender<ILoggingEvent> listElse = (ListAppender<ILoggingEvent>) root.getAppender("LIST_ELSE");
         assertNull(listElse);
+    }
+
+    // See also https://github.com/qos-ch/logback/issues/1016
+    @Test
+    public void conditionalWithAppenderInclusion() throws JoranException {
+        String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/topConditionalWithAppenderInclusion.xml";
+        configure(configFileAsStr);
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        Appender<ILoggingEvent> appender = root.getAppender("MISSING");
+        assertNull(appender);
+
+        ListAppender<ILoggingEvent> listElse = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(listElse);
     }
 
     @Test

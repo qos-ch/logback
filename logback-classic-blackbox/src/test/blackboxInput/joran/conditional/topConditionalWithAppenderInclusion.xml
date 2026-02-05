@@ -5,7 +5,7 @@
             <include optional="true" resource="missing.xml"/>
         </then>
         <else>
-            <include resource="src/test/input/joran/collision/included.xml"/>
+            <include file="src/test/blackboxInput/joran/conditional/includedConditionalWithAppenderInclusion.xml"/>
         </else>
     </if>
 </configuration>
