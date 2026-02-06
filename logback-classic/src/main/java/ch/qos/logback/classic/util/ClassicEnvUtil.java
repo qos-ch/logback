@@ -36,11 +36,6 @@ public class ClassicEnvUtil {
     static public boolean isGroovyAvailable() {
         return EnvUtil.isClassAvailable(ClassicEnvUtil.class, "groovy.lang.Binding");
     }
-//
-//    private static ClassLoader getServiceLoaderClassLoader() {
-//        return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(ClassicEnvUtil.class)
-//                : testServiceLoaderClassLoader;
-//    }
 
     public static <T> List<T> loadFromServiceLoader(Class<T> c, ClassLoader classLoader) {
         ServiceLoader<T> loader = ServiceLoader.load(c, classLoader);
@@ -58,9 +53,12 @@ public class ClassicEnvUtil {
      * available.
      * </p>
      *
+     * TODO: remove in 1.6
+     *
      * @since 1.5.15
      * @return current version or null if missing version data
-     * @deprecated See {@link ch.qos.logback.core.util.VersionUtil#getVersionOfArtifact(Class)}
+     * @deprecated See {@link ch.qos.logback.classic.util.ClassicVersionUtil#getVersionBySelfDeclaredProperties()}
+     *
      */
     @Deprecated
     static public String getVersionOfLogbackClassic() {

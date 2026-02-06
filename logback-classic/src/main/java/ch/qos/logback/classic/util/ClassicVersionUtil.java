@@ -20,9 +20,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Utility class for retrieving version information for the "logback-classic" module.
+ * This class provides functionality to read and parse self-declared properties files
+ * containing version metadata specific to the logback-classic module.
+ *
+ * It includes methods to locate the version properties file, extract the version string
+ * based on specified conventions, and return the retrieved information.
+ */
 public class ClassicVersionUtil {
 
-    // copied from VersionUtil
+    // Code copied from VersionUtil. It must be located in the encompassing module and cannot be
+    // shared.
+    //
+    // Retrieving version information by self-declared properties solves the issue of collapsed
+    // MANIFEST.MF files as encountered in fat-jars.
+    //
+    // this code further assumes that the properties file is located in the same package as the aClass
+    // parameter.
     static String getVersionBySelfDeclaredProperties(Class<?> aClass, String moduleName) {
         Properties props = new Properties();
         // example propertiesFileName: logback-core-version.properties
