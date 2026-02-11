@@ -145,6 +145,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
                 }
             }
         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
             assert true; // ok... we'll shut down
         } catch (Exception ex) {
             addError("listener: " + ex);

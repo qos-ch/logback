@@ -302,6 +302,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                         aai.appendLoopOnAppenders(e);
                     }
                 } catch (InterruptedException e1) {
+                    Thread.currentThread().interrupt();
                     // exit if interrupted
                     break;
                 }

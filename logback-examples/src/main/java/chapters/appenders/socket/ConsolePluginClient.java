@@ -110,6 +110,7 @@ public class ConsolePluginClient {
                 try {
                     Thread.sleep(SLEEP);
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     e.printStackTrace();
                 }
             }

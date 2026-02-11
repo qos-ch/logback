@@ -188,6 +188,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
                 addInfo("Dropping event due to timeout limit of [" + eventDelayLimit + "] being exceeded");
             }
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             addError("Interrupted while appending event to SocketAppender", e);
         }
     }
@@ -211,6 +212,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
                 }
             }
         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
             assert true; // ok... we'll exit now
         }
         addInfo("shutting down");

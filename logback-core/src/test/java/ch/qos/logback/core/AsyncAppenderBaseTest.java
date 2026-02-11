@@ -220,6 +220,7 @@ public class AsyncAppenderBaseTest {
     @Test
     public void stopExitsWhenMaxRuntimeReached() throws InterruptedException {
         int maxFlushTime = 1; // runtime of 0 means wait forever, so use 1 ms instead
+        Thread.interrupted(); // clear any prior interrupt to ensure test stability
         int loopLen = 10;
         ListAppender<Integer> la = delayingListAppender;
         asyncAppenderBase.addAppender(la);
