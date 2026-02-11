@@ -62,6 +62,7 @@ public class DefaultShutdownHook extends ShutdownHookBase {
             try {
                 Thread.sleep(delay.getMilliseconds());
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
         super.stop();

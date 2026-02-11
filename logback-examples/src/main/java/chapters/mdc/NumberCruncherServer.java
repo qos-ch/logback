@@ -118,6 +118,7 @@ public class NumberCruncherServer extends UnicastRemoteObject implements NumberC
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
