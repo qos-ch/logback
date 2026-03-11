@@ -24,13 +24,17 @@
 
   <licenses>
     <license>
-      <name>Eclipse Public License - v 2.0</name>
+      <!-- https://spdx.org/licenses/EPL-2.0.html -->
+      <name>EPL-2.0</name>
       <url>https://www.eclipse.org/legal/epl-v20.html</url>
+      <comments>Eclipse Public License 2.0</comments>
     </license>
 
     <license>
-      <name>GNU Lesser General Public License</name>
+      <!-- https://spdx.org/licenses/LGPL-2.1-only.html -->
+      <name>LGPL-2.1-only</name>
       <url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+      <comments>GNU Lesser General Public License v2.1 only</comments>
     </license>
   </licenses>
 
@@ -462,7 +466,7 @@
        <plugin>
          <groupId>org.sonatype.central</groupId>
          <artifactId>central-publishing-maven-plugin</artifactId>
-         <version>${central-publishing-maven-plugin.version}</version>         
+         <version>${central-publishing-maven-plugin.version}</version>
          <extensions>true</extensions>
          <configuration>
            <publishingServerId>central</publishingServerId>
