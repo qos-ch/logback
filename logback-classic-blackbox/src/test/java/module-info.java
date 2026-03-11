@@ -5,7 +5,7 @@ module logback.classic.blackbox {
     requires jakarta.mail;
     requires janino;
 
-    requires dom4j;
+    requires org.dom4j;
     requires greenmail;
 
     requires org.junit.jupiter.api;
