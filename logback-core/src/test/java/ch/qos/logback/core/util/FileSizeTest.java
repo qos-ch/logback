@@ -36,6 +36,11 @@ public class FileSizeTest {
         }
 
         {
+            FileSize fs = FileSize.valueOf("8kbs");
+            assertEquals(8 * KB_CO, fs.getSize());
+        }
+
+        {
             FileSize fs = FileSize.valueOf("8 kb");
             assertEquals(8 * KB_CO, fs.getSize());
         }
