@@ -50,12 +50,20 @@ public class SocketNode implements Runnable {
     boolean closed = false;
     SimpleSocketServer socketServer;
 
-    public SocketNode(SimpleSocketServer socketServer, Socket socket, LoggerContext context) {
+    // Set this appender as the sole appender for the remoteLogger
+    private String serverAppender;
+
+    public SocketNode(SimpleSocketServer socketServer, Socket socket, LoggerContext context, String serverAppender) {
         this.socketServer = socketServer;
         this.socket = socket;
         remoteSocketAddress = socket.getRemoteSocketAddress();
         this.context = context;
-        logger = context.getLogger(SocketNode.class);
+        logger = context.getLogger(ch.qos.logback.classic.net.SocketNode.class);
+        this.serverAppender = serverAppender;
+    }
+
+    public SocketNode(SimpleSocketServer socketServer, Socket socket, LoggerContext context) {
+        this(socketServer, socket, context, null);
     }
 
     // public
@@ -75,15 +83,24 @@ public class SocketNode implements Runnable {
         }
 
         ILoggingEvent event;
-        Logger remoteLogger;
+        Logger remoteLogger = null;
 
         try {
             while (!closed) {
                 // read an event from the wire
                 event = (ILoggingEvent) hardenedLoggingEventInputStream.readObject();
-                // get a logger from the hierarchy. The name of the logger is taken to
-                // be the name contained in the event.
-                remoteLogger = context.getLogger(event.getLoggerName());
+
+                if (serverAppender != null) {
+                    // if a server appender is specified, use it
+                    remoteLogger = context.getLogger(serverAppender);
+                }
+
+                if (remoteLogger == null) {
+                    // get a logger from the hierarchy. The name of the logger is taken to
+                    // be the name contained in the event.
+                    remoteLogger = context.getLogger(event.getLoggerName());
+                }
+
                 // apply the logger-level filter
                 if (remoteLogger.isEnabledFor(event.getLevel())) {
                     // finally log the event as if was generated locally
