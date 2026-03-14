@@ -81,6 +81,9 @@
          logback-classic/pom.xml, /logback-examples/src/main/resources/setClasspath.cmd, download.html
     -->
     <slf4j.version>2.0.17</slf4j.version>
+    <!-- logback-access-project.version property is used in logback-access/pom.xml -->
+    <!-- It can momentarily point to a not yet released future version of logback-access. -->
+    <logback-access-project.version>2.0.12</logback-access-project.version>
     <cal10n.version>0.8.1</cal10n.version>
     <consolePlugin.version>1.1.0</consolePlugin.version>
     <jackson.version>2.15.0</jackson.version>

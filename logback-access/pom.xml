@@ -23,7 +23,7 @@
     <relocation>
         <groupId>ch.qos.logback.access</groupId>
         <artifactId>logback-access-common</artifactId>
-        <version>2.0.6</version>
+        <version>${logback-access-project.version}</version>
     </relocation>
   </distributionManagement>
 
