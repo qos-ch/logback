@@ -117,6 +117,12 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         // worker Thread
         super.start();
         worker.start();
+        // LOGBACK-1469: appenders not referenced by any logger are not reached by
+        // Logger.recursiveReset(); register so ContextBase.reset() stops the worker.
+        Context ctx = getContext();
+        if (ctx != null) {
+            ctx.register(this);
+        }
     }
 
     @Override

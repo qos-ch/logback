@@ -22,7 +22,10 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.slf4j.MDC;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -94,5 +97,53 @@ public class AsyncAppenderTest {
         assertTrue(e.hasCallerData());
         StackTraceElement ste = e.getCallerData()[0];
         assertEquals(thisClassName, ste.getClassName());
+    }
+
+    /**
+     * LOGBACK-1469: an {@link AsyncAppender} with a delegate that is never attached to any logger
+     * must still be stopped on {@link LoggerContext#reset()} (via {@code Context} life-cycle
+     * registration), not only via {@code Logger.recursiveReset()}.
+     */
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    public void orphanAsyncAppenderShouldStopWhenContextResets() {
+        LoggerContext ctx = new LoggerContext();
+        ctx.setMDCAdapter(logbackMDCAdapter);
+        AsyncAppender async = new AsyncAppender();
+        ListAppender<ILoggingEvent> delegate = new ListAppender<>();
+        delegate.setContext(ctx);
+        delegate.setName("list");
+        delegate.start();
+        async.setContext(ctx);
+        async.setName("orphan-async");
+        async.addAppender(delegate);
+        async.start();
+
+        assertTrue(async.isStarted());
+        ctx.reset();
+
+        assertFalse(async.isStarted(), "orphan AsyncAppender should be stopped when the context is reset");
+        assertFalse(delegate.isStarted(), "nested appender should be stopped when AsyncAppender stops");
+    }
+
+    /**
+     * Contrast to {@link #orphanAsyncAppenderShouldStopWhenContextResets()}: when the
+     * async appender is attached to a logger, reset reaches it via {@code Logger.recursiveReset()}.
+     */
+    @Test
+    @Timeout(value = 5, unit = TimeUnit.SECONDS)
+    public void asyncAppenderAttachedToLoggerIsStoppedWhenContextResets() {
+        asyncAppender.setName("async-with-logger");
+        asyncAppender.addAppender(listAppender);
+        asyncAppender.start();
+
+        Logger root = loggerContext.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        root.addAppender(asyncAppender);
+
+        assertTrue(asyncAppender.isStarted());
+        loggerContext.reset();
+
+        assertFalse(asyncAppender.isStarted(), "AsyncAppender attached to a logger should be stopped on context reset");
+        assertFalse(listAppender.isStarted(), "nested appender should be stopped when AsyncAppender stops");
     }
 }
