@@ -56,6 +56,7 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
         defaultProcessor.addHandler(RootLoggerModel.class, RootLoggerModelHandler::makeInstance);
         defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler::makeInstance);
         defaultProcessor.addHandler(LevelModel.class, LevelModelHandler::makeInstance);
+        defaultProcessor.addHandler(ReceiverModel.class, ReceiverModelHandler::makeInstance);
 
         defaultProcessor.addAnalyser(RootLoggerModel.class,
                 () -> new AppenderRefDependencyAnalyser(context));
