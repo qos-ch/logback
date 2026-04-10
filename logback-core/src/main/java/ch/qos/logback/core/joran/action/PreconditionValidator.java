@@ -21,6 +21,8 @@ import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.OptionHelper;
 
+import java.util.Arrays;
+
 public class PreconditionValidator extends ContextAwareBase {
 
     boolean valid = true;
@@ -78,7 +80,7 @@ public class PreconditionValidator extends ContextAwareBase {
             this.valid = true;
         } else {
             this.valid = false;
-            addError("Element [" + tag + "] should have at least one of [" + names + "] as an attribute, near line "
+            addError("Element [" + tag + "] should have at least one of [" + Arrays.toString(names) + "] as an attribute, near line "
                     + Action.getLineNumber(seic));
         }
         return this;
