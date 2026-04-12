@@ -51,6 +51,7 @@
     <module>logback-classic-blackbox</module>
     <module>logback-access</module>
     <module>logback-examples</module>
+    <module>logback-scoped-mdc</module>
   </modules>
 
   <properties>
@@ -190,6 +191,11 @@
             <artifactId>logback-classic-misc</artifactId>
             <version>${project.version}</version>
         </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-scoped-mdc</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -473,7 +479,7 @@
          <extensions>true</extensions>
          <configuration>
            <publishingServerId>central</publishingServerId>
-           <excludeArtifacts>logback-core-blackbox,logback-classic-misc,logback-classic-blackbox,logback-examples</excludeArtifacts>
+           <excludeArtifacts>logback-core-blackbox,logback-classic-misc,logback-classic-blackbox,logback-examples,logback-scoped-mdc</excludeArtifacts>
          </configuration>
        </plugin>
 
