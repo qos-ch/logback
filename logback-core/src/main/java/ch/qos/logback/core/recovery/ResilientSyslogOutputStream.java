@@ -33,12 +33,12 @@ public class ResilientSyslogOutputStream extends ResilientOutputStreamBase {
     }
 
     @Override
-    String getDescription() {
+    protected String getDescription() {
         return "syslog [" + syslogHost + ":" + port + "]";
     }
 
     @Override
-    OutputStream openNewOutputStream() throws IOException {
+    protected OutputStream openNewOutputStream() throws IOException {
         return new SyslogOutputStream(syslogHost, port);
     }
 
