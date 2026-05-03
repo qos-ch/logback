@@ -8,8 +8,8 @@
  *
  *   or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by
+ * the Free Software Foundation.
  */
 package ch.qos.logback.core.rolling.helper;
 
@@ -79,18 +79,15 @@ public class RollingCalendar extends GregorianCalendar {
 
         // set sate to 1970-01-01 00:00:00 GMT
         Instant epoch = Instant.ofEpochMilli(0);
-        ZoneId gmtZone = ZoneId.of("UTC");
         if (datePattern != null) {
             for (PeriodicityType i : PeriodicityType.VALID_ORDERED_LIST) {
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern).withZone(gmtZone);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern, Locale.getDefault());
+                simpleDateFormat.setTimeZone(GMT_TIMEZONE);
 
-                //SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
-                //simpleDateFormat.setTimeZone(GMT_TIMEZONE); // all date formatting done in GMT
-
-                String r0 = dtf.format(epoch);
+                String r0 = simpleDateFormat.format(new java.util.Date(0));
 
                 Instant next = innerGetEndOfThisPeriod(calendar, i, epoch);
-                String r1 = dtf.format(next);
+                String r1 = simpleDateFormat.format(new java.util.Date(next.toEpochMilli()));
 
                 // System.out.println("Type = "+i+", r0 = "+r0+", r1 = "+r1);
                 if ((r0 != null) && (r1 != null) && !r0.equals(r1)) {
