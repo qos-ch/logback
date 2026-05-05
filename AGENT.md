@@ -9,4 +9,7 @@
 - You may run tests, build commands, invoke linters to validate changes or check your work as needed.
 - If you believe a commit or any other git action is needed, ask me first.
 
+- The code is widely used. Thus, any changes must preserve backward
+  compatibility, especially changes in interfaces or super classes.
+
 Follow these rules at all times.
