@@ -317,6 +317,52 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
 
     @Test
+    @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
+    public void scanWithIncludedPropertiesFileCreatedLater() throws IOException, JoranException, InterruptedException {
+        try {
+            ReconfigurationTaskRegisteredConfigEventListener roctRegisteredListener = new ReconfigurationTaskRegisteredConfigEventListener();
+            loggerContext.addConfigurationEventListener(roctRegisteredListener);
+            addResetResistantOnConsoleStatusListener();
+            String propertiesFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "scanWithIncludedPropertiesFileCreatedLater-" + diff + ".properties";
+            System.setProperty("propertiesFileCreatedLater", propertiesFileAsStr);
+            String configurationStr = "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><propertiesConfigurator file=\"${propertiesFileCreatedLater}\"/></configuration>";
+            configure(asBAIS(configurationStr));
+
+            File propertiesFile = new File(propertiesFileAsStr);
+
+            List<File> fileList = getConfigurationWatchList(loggerContext);
+            assertThatListContainsFile(fileList, propertiesFile);
+
+            CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
+            CountDownLatch configurationDoneLatch = registerPartialConfigurationEndedSuccessfullyEventListener();
+
+            // Write initial properties file content
+            writeToFile(propertiesFile, "logback.logger.com.test=INFO");
+            changeDetectedLatch.await();
+            configurationDoneLatch.await();
+
+            // Verify the property was loaded
+            Logger testLogger = loggerContext.getLogger("com.test");
+            assertEquals(Level.INFO, testLogger.getLevel());
+
+            // Now test that a change to the existing file is detected
+            loggerContext.getStatusManager().clear();
+
+            CountDownLatch changeDetectedLatch2 = registerChangeDetectedListener();
+            CountDownLatch configurationDoneLatch2 = registerPartialConfigurationEndedSuccessfullyEventListener();
+
+            writeToFile(propertiesFile, "logback.logger.com.test=WARN");
+            changeDetectedLatch2.await();
+            configurationDoneLatch2.await();
+
+            assertEquals(Level.WARN, testLogger.getLevel());
+
+        } finally {
+            System.getProperties().remove("propertiesFileCreatedLater");
+        }
+    }
+
+    @Test
     @Timeout(value = TIMEOUT_LONG, unit = TimeUnit.SECONDS)
     public void fallbackToSafeWithIncludedFile_FollowedByRecovery() throws IOException, JoranException, InterruptedException, ExecutionException {
         String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff + ".xml";

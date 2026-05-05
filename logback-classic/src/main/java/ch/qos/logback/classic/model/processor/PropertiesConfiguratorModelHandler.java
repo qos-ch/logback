@@ -78,8 +78,16 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
             return;
         }
 
-
         Boolean localScan = OptionHelper.toBooleanObject(propertyConfiguratorModel.getScanStr());
+
+        if(localScan == Boolean.TRUE || topScanBoolean == Boolean.TRUE) {
+            if(topScanBoolean != Boolean.TRUE) {
+                // if topScanBoolean is not TRUE, then a ConfigurationWatchList has not been created and registered yet.
+                // We need to do so now
+                ConfigurationWatchListUtil.registerNewConfigurationWatchListWithContext(context);
+            }
+            ConfigurationWatchListUtil.addToWatchList(context, inputURL, CREATE_CWL_IF_NOT_ALREADY_CREATED);
+        }
 
         InputStream in = openURL(inputURL);
         if (in == null) {
