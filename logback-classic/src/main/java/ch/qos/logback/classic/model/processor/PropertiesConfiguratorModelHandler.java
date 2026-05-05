@@ -95,17 +95,6 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
             return;
         }
 
-        if(localScan == Boolean.TRUE || topScanBoolean == Boolean.TRUE) {
-            if(topScanBoolean != Boolean.TRUE) {
-                // if topScanBoolean ia not TRUE, then a ConfigurationWatchList has not been created and registered, yet
-                // we need to do so now
-                ConfigurationWatchListUtil.registerNewConfigurationWatchListWithContext(context);
-            }
-            ConfigurationWatchListUtil.addToWatchList(context, inputURL, CREATE_CWL_IF_NOT_ALREADY_CREATED);
-        }
-
-
-
         addInfo("Reading configuration from [" + getAttribureInUse() + "]");
 
         PropertiesConfigurator propertiesConfigurator = new PropertiesConfigurator();
