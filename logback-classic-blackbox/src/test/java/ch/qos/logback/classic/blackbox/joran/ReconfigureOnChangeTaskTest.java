@@ -55,6 +55,31 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
     final static int TIMEOUT = 4;
     final static int TIMEOUT_LONG = 10;
 
+    enum ConfigurationDoneType {
+        PARTIAL,
+        FULL
+    }
+
+    @FunctionalInterface
+    interface ThrowingRunnable {
+        void run() throws Exception;
+    }
+
+    void awaitChangeAndConfiguration(ConfigurationDoneType type, ThrowingRunnable trigger) throws Exception {
+        CountDownLatch changeDetected = registerChangeDetectedListener();
+        CountDownLatch configurationDone;
+        if (type == ConfigurationDoneType.PARTIAL) {
+            configurationDone = registerPartialConfigurationEndedSuccessfullyEventListener();
+        } else {
+            configurationDone = registerNewReconfigurationDoneSuccessfullyListener();
+        }
+
+        trigger.run();
+
+        changeDetected.await();
+        configurationDone.await();
+    }
+
     // the space in the file name mandated by
     // http://jira.qos.ch/browse/LOGBACK-67
     final static String SCAN1_FILE_AS_STR = JORAN_INPUT_PREFIX + "roct/scan 1.xml";
@@ -155,7 +180,7 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
     @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
     @Test
-    public void propertiesConfigurationTest() throws IOException, JoranException, InterruptedException {
+    public void propertiesConfigurationTest() throws Exception {
         String loggerName = "abc";
         String propertiesFileStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "roct-" + diff + ".properties";
         File propertiesFile = new File(propertiesFileStr);
@@ -165,20 +190,14 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
         Logger abcLogger = loggerContext.getLogger(loggerName);
         assertEquals(Level.INFO, abcLogger.getLevel());
 
-        CountDownLatch changeDetectedLatch0 = registerChangeDetectedListener();
-        CountDownLatch configurationDoneLatch0 = registerPartialConfigurationEndedSuccessfullyEventListener();
-
-        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=WARN");
-        changeDetectedLatch0.await();
-        configurationDoneLatch0.await();
+        awaitChangeAndConfiguration(ConfigurationDoneType.PARTIAL, () -> 
+            writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=WARN")
+        );
         assertEquals(Level.WARN, abcLogger.getLevel());
 
-        CountDownLatch changeDetectedLatch1 = registerChangeDetectedListener();
-        CountDownLatch configurationDoneLatch1 = registerPartialConfigurationEndedSuccessfullyEventListener();
-        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=ERROR");
-        changeDetectedLatch1.await();
-        configurationDoneLatch1.await();
-
+        awaitChangeAndConfiguration(ConfigurationDoneType.PARTIAL, () -> 
+            writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=ERROR")
+        );
         assertEquals(Level.ERROR, abcLogger.getLevel());
 
     }
@@ -225,7 +244,7 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
     @Test
     @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
-    public void fallbackToSafe_FollowedByRecovery() throws IOException, JoranException, InterruptedException {
+    public void fallbackToSafe_FollowedByRecovery() throws Exception {
         addInfo("Start fallbackToSafe_FollowedByRecovery", this);
         String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_fallbackToSafe-" + diff + ".xml";
         File topLevelFile = new File(path);
@@ -233,37 +252,26 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
         addResetResistantOnConsoleStatusListener();
         configure(topLevelFile);
-        //statusPrinter2.print(loggerContext);
-        CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
-        CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneSuccessfullyListener();
 
-        String badXML = "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>";
-        writeToFile(topLevelFile, badXML);
-        changeDetectedLatch.await();
-        configurationDoneLatch.await();
+        awaitChangeAndConfiguration(ConfigurationDoneType.FULL, () -> 
+            writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n  <root></configuration>")
+        );
+        addInfo("Woke from configurationDoneLatch.await()", this);
 
         statusChecker.assertContainsMatch(Status.ERROR, CoreConstants.XML_PARSING);
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
         statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
 
-        // clear required for checks down below
+        statusPrinter2.print(loggerContext);
+
         loggerContext.getStatusManager().clear();
 
-        addInfo("RECOVERY - Writing error-free config file  ", this);
-        CountDownLatch secondConfigEndedLatch = registerNewReconfigurationDoneSuccessfullyListener();
+        awaitChangeAndConfiguration(ConfigurationDoneType.FULL, () -> 
+            writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ")
+        );
 
-        // recovery
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
-
-        try {
-            addInfo("Awaiting secondConfigEndedLatch ", this);
-            secondConfigEndedLatch.await(5, TimeUnit.SECONDS);
-            addInfo("after secondConfigEndedLatch.await ", this);
-            statusChecker.assertIsErrorFree();
-            statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
-        } finally {
-            //StatusPrinter.print(loggerContext);
-        }
+        statusChecker.assertIsErrorFree();
+        statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
     }
 
     private void addResetResistantOnConsoleStatusListener() {
@@ -279,7 +287,7 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
     @Test
     @Timeout(value = 2, unit = TimeUnit.SECONDS)
-    public void scanWithIncludedFileCreatedLater() throws IOException, JoranException, InterruptedException {
+    public void scanWithIncludedFileCreatedLater() throws Exception {
 
         try {
             ReconfigurationTaskRegisteredConfigEventListener roctRegisteredListener = new ReconfigurationTaskRegisteredConfigEventListener();
@@ -298,12 +306,9 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
             List<File> fileList = getConfigurationWatchList(loggerContext);
             assertThatListContainsFile(fileList, innerFile);
 
-            CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
-            CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneSuccessfullyListener();
-
-            writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
-            changeDetectedLatch.await();
-            configurationDoneLatch.await();
+            awaitChangeAndConfiguration(ConfigurationDoneType.FULL, () -> 
+                writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ")
+            );
 
             //statusPrinter2.print(loggerContext);
             Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -318,7 +323,7 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
     @Test
     @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
-    public void scanWithIncludedPropertiesFileCreatedLater() throws IOException, JoranException, InterruptedException {
+    public void scanWithIncludedPropertiesFileCreatedLater() throws Exception {
         try {
             ReconfigurationTaskRegisteredConfigEventListener roctRegisteredListener = new ReconfigurationTaskRegisteredConfigEventListener();
             loggerContext.addConfigurationEventListener(roctRegisteredListener);
@@ -333,13 +338,9 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
             List<File> fileList = getConfigurationWatchList(loggerContext);
             assertThatListContainsFile(fileList, propertiesFile);
 
-            CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
-            CountDownLatch configurationDoneLatch = registerPartialConfigurationEndedSuccessfullyEventListener();
-
-            // Write initial properties file content
-            writeToFile(propertiesFile, "logback.logger.com.test=INFO");
-            changeDetectedLatch.await();
-            configurationDoneLatch.await();
+            awaitChangeAndConfiguration(ConfigurationDoneType.PARTIAL, () -> 
+                writeToFile(propertiesFile, "logback.logger.com.test=INFO")
+            );
 
             // Verify the property was loaded
             Logger testLogger = loggerContext.getLogger("com.test");
@@ -348,12 +349,9 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
             // Now test that a change to the existing file is detected
             loggerContext.getStatusManager().clear();
 
-            CountDownLatch changeDetectedLatch2 = registerChangeDetectedListener();
-            CountDownLatch configurationDoneLatch2 = registerPartialConfigurationEndedSuccessfullyEventListener();
-
-            writeToFile(propertiesFile, "logback.logger.com.test=WARN");
-            changeDetectedLatch2.await();
-            configurationDoneLatch2.await();
+            awaitChangeAndConfiguration(ConfigurationDoneType.PARTIAL, () -> 
+                writeToFile(propertiesFile, "logback.logger.com.test=WARN")
+            );
 
             assertEquals(Level.WARN, testLogger.getLevel());
 
@@ -364,7 +362,7 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
     @Test
     @Timeout(value = TIMEOUT_LONG, unit = TimeUnit.SECONDS)
-    public void fallbackToSafeWithIncludedFile_FollowedByRecovery() throws IOException, JoranException, InterruptedException, ExecutionException {
+    public void fallbackToSafeWithIncludedFile_FollowedByRecovery() throws Exception {
         String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff + ".xml";
         String innerFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_inner-" + diff + ".xml";
         File topLevelFile = new File(topLevelFileAsStr);
@@ -377,14 +375,9 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
         configure(topLevelFile);
 
-
-
-        CountDownLatch changeDetectedLatch = registerChangeDetectedListener();
-        CountDownLatch configurationDoneLatch = registerNewReconfigurationDoneSuccessfullyListener();
-
-        writeToFile(innerFile, "<included>\n<root>\n</included>");
-        changeDetectedLatch.await();
-        configurationDoneLatch.await();
+        awaitChangeAndConfiguration(ConfigurationDoneType.FULL, () -> 
+            writeToFile(innerFile, "<included>\n<root>\n</included>")
+        );
         addInfo("Woke from configurationDoneLatch.await()", this);
 
         statusChecker.assertContainsMatch(Status.ERROR, CoreConstants.XML_PARSING);
@@ -395,9 +388,9 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
         loggerContext.getStatusManager().clear();
 
-        CountDownLatch secondDoneLatch = registerNewReconfigurationDoneSuccessfullyListener();
-        writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
-        secondDoneLatch.await();
+        awaitChangeAndConfiguration(ConfigurationDoneType.FULL, () -> 
+            writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ")
+        );
 
         statusChecker.assertIsErrorFree();
         statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
