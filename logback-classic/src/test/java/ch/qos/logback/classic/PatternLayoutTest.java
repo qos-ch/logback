@@ -23,12 +23,12 @@ import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
-import ch.qos.logback.core.pattern.parser.test.AbstractPatternLayoutBaseTest;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
@@ -38,8 +38,9 @@ import static ch.qos.logback.classic.ClassicTestConstants.MAIN_REGEX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.Instant;
+
+import ch.qos.logback.core.pattern.parser.test.AbstractPatternLayoutBaseTest;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEvent> {
 
@@ -297,6 +298,17 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals(1, sla.strList.size());
         // Verify that the conversion rule works (uses 'class' attribute)
         assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
+    }
+
+    @Test
+    public void testConversionRuleWithDifferentAttributes() throws JoranException {
+        // Test that when both converterClass and class attributes are specified with different values, an error is reported
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/conversionRuleDifferentAttributes.xml");
+
+        StatusPrinter.print(loggerContext);
+
+        StatusChecker checker = new StatusChecker(loggerContext.getStatusManager());
+        checker.assertContainsMatch("Both \\[converterClass\\] and \\[class\\] attributes are specified but have different values.");
     }
 
     @Test

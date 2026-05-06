@@ -91,6 +91,10 @@ public class PreconditionValidator extends ContextAwareBase {
         return OptionHelper.isNullOrEmptyOrAllSpaces(attributeValue);
     }
 
+    public boolean isValidAttribute(String attributeName) {
+        return !isInvalidAttribute(attributeName);
+    }
+
     public PreconditionValidator validateGivenAttribute(String attributeName) {
         boolean invalid = isInvalidAttribute(attributeName);
         if (invalid) {

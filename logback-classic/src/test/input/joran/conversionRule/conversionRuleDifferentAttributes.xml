@@ -1,0 +1,17 @@
+<configuration>
+
+  <!-- Test that when both converterClass and class attributes are specified with different values, an error is reported -->
+  <conversionRule conversionWord="sample"
+    converterClass="ch.qos.logback.classic.pattern.MessageConverter"
+    class="ch.qos.logback.classic.pattern.LevelConverter" />
+
+  <appender name="LIST" class="ch.qos.logback.core.testUtil.StringListAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%sample - %msg</Pattern>
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>

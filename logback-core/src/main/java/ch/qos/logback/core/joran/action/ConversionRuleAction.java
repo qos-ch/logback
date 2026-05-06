@@ -35,26 +35,39 @@ public class ConversionRuleAction extends BaseModelAction {
     protected boolean validPreconditions(SaxEventInterpretationContext seic, String name, Attributes attributes) {
         PreconditionValidator pv = new PreconditionValidator(this, seic, name, attributes);
 
-        boolean invalidConverterClassAttribute = pv.isInvalidAttribute(CONVERTER_CLASS_ATTRIBUTE);
-        boolean invalidClassAttribute = pv.isInvalidAttribute(CLASS_ATTRIBUTE);
+        pv.validateGivenAttribute(CONVERSION_WORD_ATTRIBUTE);
 
-        boolean multipleClassAttributes = (!invalidClassAttribute) && (!invalidConverterClassAttribute);
+        if(!pv.isValid()) {
+            // no point in going further if the conversion word is not specified
+            return false;
+        }
+
+        boolean validConverterClassAttribute = pv.isValidAttribute(CONVERTER_CLASS_ATTRIBUTE);
+        boolean validClassAttribute = pv.isValidAttribute(CLASS_ATTRIBUTE);
+
+        boolean multipleClassAttributes = (validClassAttribute) && (validConverterClassAttribute);
         
         // If both attributes are specified, silently use 'class' (for backward compatibility)
         // Do not warn about deprecation when 'class' is present
-        if(!invalidConverterClassAttribute && !multipleClassAttributes) {
+        if(validConverterClassAttribute && !multipleClassAttributes) {
             pv.addWarn("["+CONVERTER_CLASS_ATTRIBUTE +"] attribute is deprecated and replaced by ["+CLASS_ATTRIBUTE+
                     "]. "+pv.getLocationSuffix());
         }
         
-        boolean missingClass = invalidClassAttribute && invalidConverterClassAttribute;
+        boolean missingClass = !validClassAttribute && !validConverterClassAttribute;
         if(missingClass) {
             pv.addMissingAttributeError(CLASS_ATTRIBUTE);
             return false;
         }
 
         if(multipleClassAttributes) {
-            pv.addInfo("Both ["+CONVERTER_CLASS_ATTRIBUTE+"] attribute and ["+CLASS_ATTRIBUTE+"] attribute specified. ");
+            String converterClass = attributes.getValue(CONVERTER_CLASS_ATTRIBUTE);
+            String classAttr = attributes.getValue(CLASS_ATTRIBUTE);
+            if (!converterClass.equals(classAttr)) {
+                pv.addWarn("Both ["+CONVERTER_CLASS_ATTRIBUTE+"] and ["+CLASS_ATTRIBUTE+"] attributes are specified but have different values.");
+            } else {
+                pv.addInfo("Both [" + CONVERTER_CLASS_ATTRIBUTE + "] attribute and [" + CLASS_ATTRIBUTE + "] attribute specified. ");
+            }
             pv.addInfo( "["+CLASS_ATTRIBUTE+"] attribute will be used. ");
         }
         pv.validateGivenAttribute(CONVERSION_WORD_ATTRIBUTE);
