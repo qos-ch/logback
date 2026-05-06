@@ -38,20 +38,24 @@ public class ConversionRuleAction extends BaseModelAction {
         boolean invalidConverterClassAttribute = pv.isInvalidAttribute(CONVERTER_CLASS_ATTRIBUTE);
         boolean invalidClassAttribute = pv.isInvalidAttribute(CLASS_ATTRIBUTE);
 
-        if(!invalidConverterClassAttribute) {
+        boolean multipleClassAttributes = (!invalidClassAttribute) && (!invalidConverterClassAttribute);
+        
+        // If both attributes are specified, silently use 'class' (for backward compatibility)
+        // Do not warn about deprecation when 'class' is present
+        if(!invalidConverterClassAttribute && !multipleClassAttributes) {
             pv.addWarn("["+CONVERTER_CLASS_ATTRIBUTE +"] attribute is deprecated and replaced by ["+CLASS_ATTRIBUTE+
                     "]. "+pv.getLocationSuffix());
         }
+        
         boolean missingClass = invalidClassAttribute && invalidConverterClassAttribute;
         if(missingClass) {
             pv.addMissingAttributeError(CLASS_ATTRIBUTE);
             return false;
         }
 
-        boolean multipleClassAttributes = (!invalidClassAttribute) && (!invalidConverterClassAttribute);
         if(multipleClassAttributes) {
-            pv.addWarn("Both ["+CONVERTER_CLASS_ATTRIBUTE+"] attribute and ["+CLASS_ATTRIBUTE+"] attribute specified. ");
-            pv.addWarn( "["+CLASS_ATTRIBUTE+"] attribute will override. ");
+            pv.addInfo("Both ["+CONVERTER_CLASS_ATTRIBUTE+"] attribute and ["+CLASS_ATTRIBUTE+"] attribute specified. ");
+            pv.addInfo( "["+CLASS_ATTRIBUTE+"] attribute will be used. ");
         }
         pv.validateGivenAttribute(CONVERSION_WORD_ATTRIBUTE);
         return pv.isValid();

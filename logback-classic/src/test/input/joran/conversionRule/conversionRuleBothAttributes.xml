@@ -1,0 +1,18 @@
+<configuration>
+
+  <!-- Test that when both converterClass and class attributes are specified,
+       class attribute takes precedence and no deprecation warning is issued -->
+  <conversionRule conversionWord="sample"
+    converterClass="ch.qos.logback.classic.pattern.SampleConverter"
+    class="ch.qos.logback.classic.pattern.SampleConverter" />
+
+  <appender name="LIST" class="ch.qos.logback.core.testUtil.StringListAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>%sample - %msg</Pattern>
+    </layout>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>
