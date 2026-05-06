@@ -285,6 +285,21 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     }
 
     @Test
+    public void testConversionRuleWithBothAttributes() throws JoranException {
+        // Test that both converterClass and class attributes can be specified together
+        // The 'class' attribute should take precedence without deprecation warning
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/conversionRuleBothAttributes.xml");
+        root.getAppender("LIST");
+        String msg = "testConversionRuleWithBothAttributes";
+        logger.debug(msg);
+        StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(sla);
+        assertEquals(1, sla.strList.size());
+        // Verify that the conversion rule works (uses 'class' attribute)
+        assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
+    }
+
+    @Test
     public void smokeReplace() {
         pl.setPattern("%replace(a1234b){'\\d{4}', 'XXXX'}");
         pl.start();
