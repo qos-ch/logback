@@ -34,6 +34,7 @@ import org.slf4j.spi.MDCAdapter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static ch.qos.logback.core.CoreConstants.EVALUATOR_MAP;
 
@@ -54,7 +55,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     public static final boolean DEFAULT_PACKAGING_DATA = false;
 
     final Logger root;
-    private int size;
+    private final AtomicInteger size = new AtomicInteger(0);
     private int noAppenderWarning = 0;
     final private List<LoggerContextListener> loggerContextListenerList = new ArrayList<LoggerContextListener>();
 
@@ -81,7 +82,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         this.root.setLevel(Level.DEBUG);
         loggerCache.put(Logger.ROOT_LOGGER_NAME, root);
         initEvaluatorMap();
-        size = 1;
+        size.set(1);
         this.frameworkPackages = new ArrayList<String>();
         // In 1.5.7, the stop() method assumes that at some point the context has been started
         // since earlier versions of logback did not mandate calling the start method
@@ -169,11 +170,11 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     private void incSize() {
-        size++;
+        size.incrementAndGet();
     }
 
     int size() {
-        return size;
+        return size.get();
     }
 
     /**
