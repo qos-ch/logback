@@ -65,7 +65,7 @@ Nicolai Parlog           Germany               2019-11-25
 Antonio Tomac            Croatia               2020-08-11 
 Matthias Kiefer          Germany               2024-01-14
 Duncan Jauncey           United Kingdom        2026-01-15
-Philip Egeric            Germany               2026-05-15
+Filip Egeric             Germany               2026-05-15
 
 Justification for CLAs
 ----------------------
