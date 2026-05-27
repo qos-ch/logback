@@ -16,7 +16,6 @@ package ch.qos.logback.core.net;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
@@ -84,7 +83,7 @@ public class HardenedObjectInputStream extends ObjectInputStream {
     }
     public HardenedObjectInputStream(Context context, InputStream in, List<String> whitelist) throws IOException {
         super(in);
-        
+
         if(context != null)
             this.contextAware = new ContextAwareImpl(context, this);
          else
