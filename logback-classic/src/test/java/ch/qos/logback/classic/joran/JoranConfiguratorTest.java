@@ -844,7 +844,7 @@ public class JoranConfiguratorTest {
         StatusPrinter.print(loggerContext);
 
         FileInputStream fis = new FileInputStream(outputPath);
-        HardenedModelInputStream hmis = new HardenedModelInputStream(fis);
+        HardenedModelInputStream hmis = new HardenedModelInputStream(loggerContext, fis);
 
         Model model = (Model) hmis.readObject();
 

@@ -42,7 +42,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 public class SocketNode implements Runnable {
 
     Socket socket;
-    LoggerContext context;
+    LoggerContext loggerContext;
     HardenedLoggingEventInputStream hardenedLoggingEventInputStream;
     SocketAddress remoteSocketAddress;
 
@@ -54,7 +54,7 @@ public class SocketNode implements Runnable {
         this.socketServer = socketServer;
         this.socket = socket;
         remoteSocketAddress = socket.getRemoteSocketAddress();
-        this.context = context;
+        this.loggerContext = context;
         logger = context.getLogger(SocketNode.class);
     }
 
@@ -67,7 +67,7 @@ public class SocketNode implements Runnable {
     public void run() {
 
         try {
-            hardenedLoggingEventInputStream = new HardenedLoggingEventInputStream(
+            hardenedLoggingEventInputStream = new HardenedLoggingEventInputStream(loggerContext,
                     new BufferedInputStream(socket.getInputStream()));
         } catch (Exception e) {
             logger.error("Could not open ObjectInputStream to " + socket, e);
@@ -83,7 +83,7 @@ public class SocketNode implements Runnable {
                 event = (ILoggingEvent) hardenedLoggingEventInputStream.readObject();
                 // get a logger from the hierarchy. The name of the logger is taken to
                 // be the name contained in the event.
-                remoteLogger = context.getLogger(event.getLoggerName());
+                remoteLogger = loggerContext.getLogger(event.getLoggerName());
                 // apply the logger-level filter
                 if (remoteLogger.isEnabledFor(event.getLevel())) {
                     // finally log the event as if was generated locally

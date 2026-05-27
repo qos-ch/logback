@@ -39,7 +39,7 @@ public class LoggerSerializationTest {
 
     // force SLF4J initialization for subsequent Logger readResolve operation
     org.slf4j.Logger unused = LoggerFactory.getLogger(this.getClass());
-    LoggerContext lc;
+    LoggerContext loggerContext;
     Logger logger;
 
     ByteArrayOutputStream bos;
@@ -49,9 +49,9 @@ public class LoggerSerializationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        lc = new LoggerContext();
-        lc.setName("testContext");
-        logger = lc.getLogger(LoggerSerializationTest.class);
+        loggerContext = new LoggerContext();
+        loggerContext.setName("testContext");
+        logger = loggerContext.getLogger(LoggerSerializationTest.class);
         // create the byte output stream
         bos = new ByteArrayOutputStream();
         oos = new ObjectOutputStream(bos);
@@ -60,7 +60,7 @@ public class LoggerSerializationTest {
 
     @AfterEach
     public void tearDown() throws Exception {
-        lc = null;
+        loggerContext = null;
         logger = null;
     }
 
@@ -75,32 +75,32 @@ public class LoggerSerializationTest {
     @Test
     public void deepTreeSerialization() throws IOException {
         // crate a tree of loggers under "aaaaaaaa"
-        Logger a = lc.getLogger("aaaaaaaa");
-        lc.getLogger("aaaaaaaa.a");
-        lc.getLogger("aaaaaaaa.a.a");
-        lc.getLogger("aaaaaaaa.a.b");
-        lc.getLogger("aaaaaaaa.a.c");
-        lc.getLogger("aaaaaaaa.a.d");
+        Logger a = loggerContext.getLogger("aaaaaaaa");
+        loggerContext.getLogger("aaaaaaaa.a");
+        loggerContext.getLogger("aaaaaaaa.a.a");
+        loggerContext.getLogger("aaaaaaaa.a.b");
+        loggerContext.getLogger("aaaaaaaa.a.c");
+        loggerContext.getLogger("aaaaaaaa.a.d");
 
-        lc.getLogger("aaaaaaaa.b");
-        lc.getLogger("aaaaaaaa.b.a");
-        lc.getLogger("aaaaaaaa.b.b");
-        lc.getLogger("aaaaaaaa.b.c");
-        lc.getLogger("aaaaaaaa.b.d");
+        loggerContext.getLogger("aaaaaaaa.b");
+        loggerContext.getLogger("aaaaaaaa.b.a");
+        loggerContext.getLogger("aaaaaaaa.b.b");
+        loggerContext.getLogger("aaaaaaaa.b.c");
+        loggerContext.getLogger("aaaaaaaa.b.d");
 
-        lc.getLogger("aaaaaaaa.c");
-        lc.getLogger("aaaaaaaa.c.a");
-        lc.getLogger("aaaaaaaa.c.b");
-        lc.getLogger("aaaaaaaa.c.c");
-        lc.getLogger("aaaaaaaa.c.d");
+        loggerContext.getLogger("aaaaaaaa.c");
+        loggerContext.getLogger("aaaaaaaa.c.a");
+        loggerContext.getLogger("aaaaaaaa.c.b");
+        loggerContext.getLogger("aaaaaaaa.c.c");
+        loggerContext.getLogger("aaaaaaaa.c.d");
 
-        lc.getLogger("aaaaaaaa.d");
-        lc.getLogger("aaaaaaaa.d.a");
-        lc.getLogger("aaaaaaaa.d.b");
-        lc.getLogger("aaaaaaaa.d.c");
-        lc.getLogger("aaaaaaaa.d.d");
+        loggerContext.getLogger("aaaaaaaa.d");
+        loggerContext.getLogger("aaaaaaaa.d.a");
+        loggerContext.getLogger("aaaaaaaa.d.b");
+        loggerContext.getLogger("aaaaaaaa.d.c");
+        loggerContext.getLogger("aaaaaaaa.d.d");
 
-        Logger b = lc.getLogger("b");
+        Logger b = loggerContext.getLogger("b");
 
         writeObject(oos, a);
         oos.close();
@@ -122,7 +122,7 @@ public class LoggerSerializationTest {
     private Foo writeAndRead(Foo foo) throws IOException, ClassNotFoundException {
         writeObject(oos, foo);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        hardenedLoggingEventInputStream = new HardenedLoggingEventInputStream(bis, whitelist);
+        hardenedLoggingEventInputStream = new HardenedLoggingEventInputStream(loggerContext, bis, whitelist);
         Foo fooBack = readFooObject(hardenedLoggingEventInputStream);
         hardenedLoggingEventInputStream.close();
         return fooBack;
@@ -145,7 +145,7 @@ public class LoggerSerializationTest {
     @Test
     public void testCompatibilityWith_v1_0_11() throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX + "logger_v1.0.11.ser");
-        HardenedObjectInputStream ois = new HardenedLoggingEventInputStream(fis); // new String[]
+        HardenedObjectInputStream ois = new HardenedLoggingEventInputStream(loggerContext, fis); // new String[]
         // {Logger.class.getName(),
         // LoggerRemoteView.class.getName()});
         Logger a = (Logger) ois.readObject();
@@ -161,7 +161,7 @@ public class LoggerSerializationTest {
     @Test
     public void testCompatibilityWith_v1_0_12() throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX + "logger_v1.0.12.ser");
-        HardenedObjectInputStream ois = new HardenedObjectInputStream(fis, new String[]{Logger.class.getName()});
+        HardenedObjectInputStream ois = new HardenedObjectInputStream(loggerContext, fis, new String[]{Logger.class.getName()});
         Logger a = (Logger) ois.readObject();
         ois.close();
         assertEquals("a", a.getName());

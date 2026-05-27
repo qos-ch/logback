@@ -22,6 +22,8 @@ import java.io.ObjectOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,7 @@ public class HardenedObjectInputStreamTest {
     ByteArrayOutputStream bos;
     ObjectOutputStream oos;
     HardenedObjectInputStream inputStream;
+    Context context = new ContextBase();
     String[] whitelist = new String[] { Innocent.class.getName() };
 
     @BeforeEach
@@ -60,7 +63,7 @@ public class HardenedObjectInputStreamTest {
     private Innocent writeAndRead(Innocent innocent) throws IOException, ClassNotFoundException {
         writeObject(oos, innocent);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        inputStream = new HardenedObjectInputStream(bis, whitelist);
+        inputStream = new HardenedObjectInputStream(context, bis, whitelist);
         Innocent fooBack = (Innocent) inputStream.readObject();
         inputStream.close();
         return fooBack;
@@ -75,7 +78,7 @@ public class HardenedObjectInputStreamTest {
     @Test
     public void denialOfService() throws ClassNotFoundException, IOException {
         ByteArrayInputStream bis = new ByteArrayInputStream(payload());
-        inputStream = new HardenedObjectInputStream(bis, whitelist);
+        inputStream = new HardenedObjectInputStream(context, bis, whitelist);
         try {
             assertThrows(InvalidClassException.class, () -> inputStream.readObject());
         } finally {

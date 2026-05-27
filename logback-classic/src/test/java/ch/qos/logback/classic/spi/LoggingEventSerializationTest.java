@@ -250,7 +250,7 @@ public class LoggingEventSerializationTest {
         Serializable ser = pst.transform(event);
         oos.writeObject(ser);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        inputStream = new HardenedLoggingEventInputStream(bis);
+        inputStream = new HardenedLoggingEventInputStream(loggerContext, bis);
 
         return (ILoggingEvent) inputStream.readObject();
     }

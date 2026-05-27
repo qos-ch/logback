@@ -14,6 +14,7 @@
 
 package ch.qos.logback.classic.joran.serializedModel;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.net.HardenedObjectInputStream;
 
@@ -60,7 +61,7 @@ public class HardenedModelInputStream extends HardenedObjectInputStream {
 
         return whitelist;
     }
-    public HardenedModelInputStream(InputStream is) throws IOException {
-        super(is, getWhilelist());
+    public HardenedModelInputStream(Context context, InputStream is) throws IOException {
+        super(context, is, getWhilelist());
     }
 }

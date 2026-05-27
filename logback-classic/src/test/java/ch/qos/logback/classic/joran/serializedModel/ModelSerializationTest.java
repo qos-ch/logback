@@ -14,6 +14,7 @@
 
 package ch.qos.logback.classic.joran.serializedModel;
 
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.core.model.Model;
@@ -35,6 +36,9 @@ public class ModelSerializationTest {
     ByteArrayOutputStream bos;
     ObjectOutputStream oos;
     HardenedObjectInputStream inputStream;
+
+    LoggerContext loggerContext = new LoggerContext();
+
     //String[] whitelist = new String[] {  };
 
 
@@ -66,7 +70,7 @@ public class ModelSerializationTest {
     private Model writeAndRead(Model model) throws IOException, ClassNotFoundException {
         writeObject(oos, model);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        inputStream = new HardenedModelInputStream(bis);
+        inputStream = new HardenedModelInputStream(loggerContext, bis);
         Model fooBack = (Model) inputStream.readObject();
         inputStream.close();
         return fooBack;

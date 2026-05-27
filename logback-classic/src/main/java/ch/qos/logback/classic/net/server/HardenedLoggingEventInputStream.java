@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.helpers.BasicMarker;
 
 import ch.qos.logback.classic.Level;
@@ -58,13 +59,13 @@ public class HardenedLoggingEventInputStream extends HardenedObjectInputStream {
         return whitelist;
     }
 
-    public HardenedLoggingEventInputStream(InputStream is) throws IOException {
-        super(is, getWhilelist());
+    public HardenedLoggingEventInputStream(LoggerContext loggerContext, InputStream is) throws IOException {
+        super(loggerContext, is, getWhilelist());
     }
 
-    public HardenedLoggingEventInputStream(InputStream is, List<String> additionalAuthorizedClasses)
+    public HardenedLoggingEventInputStream(LoggerContext loggerContext, InputStream is, List<String> additionalAuthorizedClasses)
             throws IOException {
-        this(is);
+        this(loggerContext, is);
         super.addToWhitelist(additionalAuthorizedClasses);
     }
 }
