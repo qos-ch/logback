@@ -21,7 +21,7 @@ package ch.qos.logback.core.net.ssl;
 public interface SSL {
 
     /** Default secure transport protocol */
-    String DEFAULT_PROTOCOL = "SSL";
+    String DEFAULT_PROTOCOL = "TLSv1.2";
 
     /** Default key store type */
     String DEFAULT_KEYSTORE_TYPE = "JKS";
