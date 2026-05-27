@@ -164,7 +164,8 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
         buf.append("    <td class=\"date\">").append(dateStr).append("</td>\r\n");
         buf.append("    <td class=\"level\">").append(statusLevelAsString(s)).append("</td>\r\n");
         buf.append("    <td>").append(abbreviatedOrigin(s)).append("</td>\r\n");
-        buf.append("    <td>").append(s.getMessage()).append("</td>\r\n");
+        String sanitizedMessage = Transform.escapeTags(s.getMessage());
+        buf.append("    <td>").append(sanitizedMessage).append("</td>\r\n");
         buf.append("  </tr>\r\n");
         if (s.getThrowable() != null) {
             printThrowable(buf, s.getThrowable());
