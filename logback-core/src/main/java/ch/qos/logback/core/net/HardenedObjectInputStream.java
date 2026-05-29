@@ -113,6 +113,23 @@ public class HardenedObjectInputStream extends ObjectInputStream {
         return super.resolveClass(anObjectStreamClass);
     }
 
+    /**
+     * There is no reason to have proxy classes in logback deserialization, so we just
+     * throw an exception here to prevent any potential bypasses that could be achieved
+     * through proxy classes.
+     *
+     * @param interfaces the list of interface names that were
+     *                deserialized in the proxy class descriptor
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @since 1.5.34
+     */
+    @Override
+    protected Class<?> resolveProxyClass(String[] interfaces) throws IOException, ClassNotFoundException {
+        throw new InvalidClassException("Unauthorized deserialization attempt ", Arrays.toString(interfaces));
+    }
+
     private boolean isWhitelisted(String incomingClassName) {
         for (String javaClass : JAVA_CLASSES) {
             if (incomingClassName.equals(javaClass))
