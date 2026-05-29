@@ -13,7 +13,16 @@
  */
 package ch.qos.logback.classic.spi;
 
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.core.CoreConstants;
+
 import java.io.Serializable;
+import java.util.Objects;
+
+import static ch.qos.logback.classic.ClassicConstants.DECLARING_CLASS_NA;
+import static ch.qos.logback.classic.ClassicConstants.FILENAME_NA;
+import static ch.qos.logback.classic.ClassicConstants.LINE_NUMBER_NA;
+import static ch.qos.logback.classic.ClassicConstants.METHOD_NAME_NA;
 
 public class StackTraceElementProxy implements Serializable {
 
@@ -27,11 +36,13 @@ public class StackTraceElementProxy implements Serializable {
     @Deprecated
     ClassPackagingData classPackagingData;
 
+    // See https://github.com/qos-ch/logback/issues/1040
+    static final StackTraceElement NA_SUBSTITUTE = new StackTraceElement(DECLARING_CLASS_NA, METHOD_NAME_NA,
+                                                                        FILENAME_NA, LINE_NUMBER_NA);
+
     public StackTraceElementProxy(StackTraceElement ste) {
-        if (ste == null) {
-            throw new IllegalArgumentException("ste cannot be null");
-        }
-        this.ste = ste;
+        // while null StackTraceElement is not expected, we defensively replace it with NA_SUBSTITUTE.
+        this.ste = Objects.requireNonNullElse(ste, NA_SUBSTITUTE);
     }
 
     public String getSTEAsString() {

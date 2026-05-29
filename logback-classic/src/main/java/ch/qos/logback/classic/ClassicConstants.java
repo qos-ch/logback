@@ -66,4 +66,13 @@ public class ClassicConstants {
     public static final String LOGBACK_CLASSIC_VERSION_MESSAGE = "This is logback-classic version ";
     public static final String LOGBACK_VERSIONS_MISMATCH = "Versions of logback-core and logback-classic are different!";
 
+    public static final String DECLARING_CLASS_NA = "declaringClassNA";
+    public static final String METHOD_NAME_NA = "methodNA";
+    public static final String FILENAME_NA = "fileNA";
+    public static final int LINE_NUMBER_NA = 1;
+
+
+    public static final String CLASS_NA = "unknownClass";
+
+
 }
