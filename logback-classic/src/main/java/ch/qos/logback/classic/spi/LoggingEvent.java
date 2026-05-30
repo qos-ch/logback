@@ -382,9 +382,6 @@ public class LoggingEvent implements ILoggingEvent {
     }
 
     public void setLevel(Level level) {
-        if (this.level != null) {
-            throw new IllegalStateException("The level has been already set for this event.");
-        }
         this.level = level;
     }
 
