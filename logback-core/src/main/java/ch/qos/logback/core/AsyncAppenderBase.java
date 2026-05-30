@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This appender and derived classes, log events asynchronously. In order to
@@ -44,6 +45,9 @@ import java.util.concurrent.BlockingQueue;
  * @since 1.0.4
  */
 public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implements AppenderAttachable<E> {
+
+    private final AtomicInteger droppedEvents = new AtomicInteger(0);
+    private final AtomicInteger discardedEvents = new AtomicInteger(0);
 
     AppenderAttachableImpl<E> aai = new AppenderAttachableImpl<E>();
     BlockingQueue<E> blockingQueue;
@@ -160,6 +164,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     @Override
     protected void append(E eventObject) {
         if (isQueueBelowDiscardingThreshold() && isDiscardable(eventObject)) {
+            discardedEvents.incrementAndGet();
             return;
         }
         preprocess(eventObject);
@@ -172,7 +177,10 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     private void put(E eventObject) {
         if (neverBlock) {
-            blockingQueue.offer(eventObject);
+          boolean inserted = blockingQueue.offer(eventObject);
+          if (!inserted) {
+            droppedEvents.incrementAndGet();
+          }
         } else {
             putUninterruptibly(eventObject);
         }
@@ -194,6 +202,27 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    /**
+     * Returns the total number of discarded events due to reaching the discardingThreshold,
+     * since the creation of this appender.
+     *
+     * @return number of discarded events.
+     */
+    public int getDiscardedEvents() {
+        return discardedEvents.get();
+    }
+
+    /**
+     * Returns the total number of dropped events since the creation of this appender.
+     * This can only return a non-zero value if the appender has been configured with
+     * {@link #setNeverBlock(boolean)} set to true and exceeding the queue size.
+     *
+     * @return number of dropped events.
+     */
+    public int getDroppedEvents() {
+        return droppedEvents.get();
     }
 
     public int getQueueSize() {
