@@ -19,6 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -108,5 +112,62 @@ public class HardenedObjectInputStreamTest {
             s2 = t2;
         }
         return root;
+    }
+
+    /**
+     * Demonstrates that HardenedObjectInputStream.resolveProxyClass works correctly
+     * by rejecting deserialization of dynamic proxy classes, even when the interfaces
+     * they implement are whitelisted.
+     */
+    @Test
+    public void resolveProxyClassRejectsDynamicProxies() throws Exception {
+        ProxyInterface proxy = (ProxyInterface) Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class<?>[]{ProxyInterface.class},
+                new TestInvocationHandler()
+        );
+
+        // Serialize the proxy instance
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+            oos.writeObject(proxy);
+        }
+
+        // Attempt to deserialize using HardenedObjectInputStream.
+        // We deliberately whitelist both the interface and the invocation handler.
+        // Despite this, deserialization must fail because resolveProxyClass always
+        // throws InvalidClassException for proxy classes.
+        String[] whitelist = new String[]{
+                ProxyInterface.class.getName(),
+                TestInvocationHandler.class.getName()
+        };
+
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        HardenedObjectInputStream hardenedOis = new HardenedObjectInputStream(context, bis, whitelist);
+
+        assertThrows(InvalidClassException.class, hardenedOis::readObject);
+        hardenedOis.close();
+    }
+
+    /**
+     * A marker interface for the dynamic proxy used in the resolveProxyClass test.
+     */
+    interface ProxyInterface extends Serializable {
+        String getMessage();
+    }
+
+    /**
+     * A serializable InvocationHandler used to create the test dynamic proxy.
+     */
+    static class TestInvocationHandler implements InvocationHandler, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if ("getMessage".equals(method.getName())) {
+                return "hello from proxy";
+            }
+            return null;
+        }
     }
 }
