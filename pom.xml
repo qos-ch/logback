@@ -473,7 +473,7 @@
          <extensions>true</extensions>
          <configuration>
            <publishingServerId>central</publishingServerId>
-           <excludeArtifacts>logback-core-blackbox,logback-classic-misc,logback-classic-blackbox,logback-examples</excludeArtifacts>
+           <excludeArtifacts>logback-core-blackbox,logback-classic-misc,logback-classic-blackbox</excludeArtifacts>
          </configuration>
        </plugin>
 
