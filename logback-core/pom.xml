@@ -105,6 +105,7 @@
                         </configuration>
                     </execution>
 
+                    <!--
                     <execution>
                         <id>java21-compile</id>
                         <phase>compile</phase>
@@ -119,7 +120,7 @@
                             <multiReleaseOutput>true</multiReleaseOutput>
                         </configuration>
                     </execution>
-
+                    -->
                     <execution>
                         <id>default-testCompile</id>
                         <phase>test-compile</phase>
