@@ -57,7 +57,7 @@ public class DefaultJoranConfigurator extends ContextAwareBase implements Config
         }
     }
 
-    private URL performMultiStepConfigurationFileSearch(boolean updateStatus) {
+    protected URL performMultiStepConfigurationFileSearch(boolean updateStatus) {
         ClassLoader myClassLoader = Loader.getClassLoaderOfObject(this);
         URL url = findConfigFileURLFromSystemProperties(myClassLoader, updateStatus);
         if (url != null) {

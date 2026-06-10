@@ -38,5 +38,7 @@ public @interface ConfiguratorRank {
     static public int CUSTOM_HIGH_PRIORITY = 40;
 
     static public int CUSTOM_TOP_PRIORITY = 50;
+
+    static public int AUTHENTICATING = 100;
     public int value() default DEFAULT;
 }

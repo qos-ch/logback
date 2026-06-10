@@ -40,7 +40,7 @@ import java.util.List;
 public class ContextInitializer {
 
     /**
-     *  @deprecated Please use ClassicConstants.AUTOCONFIG_FILE instead
+     * @deprecated Please use ClassicConstants.AUTOCONFIG_FILE instead
      */
     final public static String AUTOCONFIG_FILE = ClassicConstants.AUTOCONFIG_FILE;
     /**
@@ -87,6 +87,14 @@ public class ContextInitializer {
             printConfiguratorOrder(configuratorList);
         }
 
+        int authConfiguratorCount = authConfiguratorCount(configuratorList);
+        if (authConfiguratorCount > 1) {
+            contextAware.addError("Multiple custom configurators of rank AUTHENTICATING were discovered as a service. This is not allowed.");
+            contextAware.addError("Ensure that at most one AUTHENTICATING configurator exists on the classpath.");
+            return;
+        }
+
+        // invoke custom configurators
         for (Configurator c : configuratorList) {
             if (invokeConfigure(c) == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY)
                 return;
@@ -94,13 +102,27 @@ public class ContextInitializer {
 
         // invoke internal configurators
         for (String configuratorClassName : INTERNAL_CONFIGURATOR_CLASSNAME_LIST) {
-            contextAware.addInfo("Trying to configure with "+configuratorClassName);
+            contextAware.addInfo("Trying to configure with " + configuratorClassName);
             Configurator c = instantiateConfiguratorByClassName(configuratorClassName, classLoader);
-            if(c == null)
+            if (c == null)
                 continue;
             if (invokeConfigure(c) == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY)
                 return;
         }
+    }
+
+    private int authConfiguratorCount(List<Configurator> configuratorList) {
+        int count = 0;
+        for (Configurator c : configuratorList) {
+            if (c.getClass().getAnnotation(ConfiguratorRank.class) != null
+                    && c.getClass().getAnnotation(ConfiguratorRank.class).value() == ConfiguratorRank.AUTHENTICATING) {
+                contextAware.addInfo("Configurator of rank AUTHENTICATING discovered: " + c.getClass().getName());
+                count++;
+
+            }
+        }
+        return count;
+
     }
 
     private void checkVersions() {
@@ -108,7 +130,7 @@ public class ContextInitializer {
             String coreVersion = CoreVersionUtil.getCoreVersionBySelfDeclaredProperties();
             String classicVersion = ClassicVersionUtil.getVersionBySelfDeclaredProperties();
             VersionUtil.checkForVersionEquality(loggerContext, coreVersion, classicVersion, "logback-core", "logback-classic");
-        }  catch(NoClassDefFoundError e) {
+        } catch (NoClassDefFoundError e) {
             contextAware.addWarn("Missing ch.logback.core.util.VersionUtil class on classpath. The version of logback-core is probably older than 1.5.26.");
         } catch (NoSuchMethodError e) {
             contextAware.addWarn(e.toString());
@@ -120,7 +142,7 @@ public class ContextInitializer {
         try {
             Class<?> classObj = classLoader.loadClass(configuratorClassName);
             return (Configurator) classObj.getConstructor().newInstance();
-        } catch (ReflectiveOperationException  e) {
+        } catch (ReflectiveOperationException e) {
             contextAware.addInfo("Instantiation failure: " + e.toString());
             return null;
         }
@@ -148,8 +170,8 @@ public class ContextInitializer {
 
     private void printConfiguratorOrder(List<Configurator> configuratorList) {
         contextAware.addInfo("Here is a list of configurators discovered as a service, by rank: ");
-        for(Configurator c: configuratorList) {
-            contextAware.addInfo("  "+c.getClass().getName());
+        for (Configurator c : configuratorList) {
+            contextAware.addInfo("  " + c.getClass().getName());
         }
         contextAware.addInfo("They will be invoked in order until ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY is returned.");
     }
@@ -157,7 +179,7 @@ public class ContextInitializer {
     private void printDuration(long start, Configurator configurator, Configurator.ExecutionStatus executionStatus) {
         long end = System.currentTimeMillis();
         long diff = end - start;
-        contextAware.addInfo( configurator.getClass().getName()+".configure() call lasted "+diff + " milliseconds. ExecutionStatus="+executionStatus);
+        contextAware.addInfo(configurator.getClass().getName() + ".configure() call lasted " + diff + " milliseconds. ExecutionStatus=" + executionStatus);
     }
 
     private Configurator.ExecutionStatus attemptConfigurationUsingJoranUsingReflexion(ClassLoader classLoader) {
@@ -191,7 +213,7 @@ public class ContextInitializer {
     };
 
     private int compareRankValue(int value1, int value2) {
-        if(value1 > value2)
+        if (value1 > value2)
             return 1;
         else if (value1 == value2)
             return 0;
