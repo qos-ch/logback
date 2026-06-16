@@ -74,7 +74,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         LogbackClassicDefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
     }
 
-    private JoranConfigurator makeAnotherInstance() {
+    protected JoranConfigurator makeAnotherInstance() {
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(context);
         return jc;
