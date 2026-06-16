@@ -60,6 +60,8 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.function.Supplier;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class IfThenElseTest {
 
     Context context = new ContextBase();
@@ -135,6 +137,8 @@ public class IfThenElseTest {
         verifyConfig(new String[] { "BEGIN", "a", "END" });
     }
 
+
+
     @Test
     public void whenContextPropertyIsSet_IfThenBranchIsEvaluated_WithoutJoran() throws JoranException {
         context.putProperty(ki1, val1);
@@ -147,10 +151,20 @@ public class IfThenElseTest {
     public void ifWithNew() throws JoranException {
         context.putProperty(ki1, val1);
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifNew.xml");
-        checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_MSG);
-        checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_SEE);
+        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_MSG));
+        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_SEE));
         verifyConfig(new String[] { "BEGIN", "END" });
     }
+
+    @Test
+    public void ifWithNewSlashU() throws JoranException {
+        context.putProperty(ki1, val1);
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifNewSlashU.xml");
+        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_MSG));
+        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_SEE));
+        verifyConfig(new String[] { "BEGIN", "END" });
+    }
+
 
     // ----------------------------------------------------------------------------------------------------
     @Test
@@ -196,14 +210,14 @@ public class IfThenElseTest {
     public void whenNoPropertyIsDefined_IfThenBranchIsNotEvaluated_NO_ELSE_DEFINED() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithoutElse.xml");
         verifyConfig(new String[] { "BEGIN", "END" });
-        Assertions.assertTrue(checker.isErrorFree(0));
+        assertTrue(checker.isErrorFree(0));
     }
 
     @Test
     public void whenNoPropertyIsDefined_IfThenBranchIsNotEvaluated_NO_ELSE_DEFINED_NoJoran() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithoutElse_NoJoran.xml");
         verifyConfig(new String[] { "BEGIN", "END" });
-        Assertions.assertTrue(checker.isErrorFree(0));
+        assertTrue(checker.isErrorFree(0));
     }
     // ----------------------------------------------------------------------------------------------------
     @Test
@@ -211,14 +225,14 @@ public class IfThenElseTest {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "nestedIf.xml");
         //StatusPrinter.print(context);
         verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
-        Assertions.assertTrue(checker.isErrorFree(0));
+        assertTrue(checker.isErrorFree(0));
     }
     @Test
     public void nestedIf_NoJoran() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "nestedIf_NoJoran.xml");
         //StatusPrinter.print(context);
         verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
-        Assertions.assertTrue(checker.isErrorFree(0));
+        assertTrue(checker.isErrorFree(0));
     }
     // ----------------------------------------------------------------------------------------------------
     @Test
