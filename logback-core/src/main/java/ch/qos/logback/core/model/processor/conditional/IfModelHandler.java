@@ -36,6 +36,10 @@ public class IfModelHandler extends ModelHandlerBase {
     public static final String NEW_OPERATOR_DISALLOWED_MSG = "The 'condition' attribute may not contain the 'new' operator.";
     public static final String NEW_OPERATOR_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionNew";
 
+    public static final String UNICODE_DISALLOWED_MSG = "The 'condition' attribute may not contain uncode escape.";
+    public static final String UNICODER_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionUnicode";
+
+
     public static final String CONDITION_ATTR_DEPRECATED_MSG = "The 'condition' attribute in <if> element is deprecated and slated for removal. Use <condition> element instead.";
     public static final String CONDITION_ATTR_DEPRECATED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionAttributeDeprecation";
 
@@ -95,6 +99,12 @@ public class IfModelHandler extends ModelHandlerBase {
                 return;
             }
 
+            if(OptionHelper.containsUnicodeEscape(conditionStr)) {
+                addError(NEW_OPERATOR_DISALLOWED_MSG);
+                addError(NEW_OPERATOR_DISALLOWED_SEE);
+                return;
+            }
+
             // do not allow 'new' operator
             if(hasNew(conditionStr)) {
                 addError(NEW_OPERATOR_DISALLOWED_MSG);
@@ -123,6 +133,7 @@ public class IfModelHandler extends ModelHandlerBase {
             }
         }
     }
+
 
     private void emitDeprecationWarningIfNecessary(String conditionStr) {
         if(!OptionHelper.isNullOrEmptyOrAllSpaces(conditionStr)) {

@@ -16,9 +16,7 @@ package ch.qos.logback.core.util;
 import static ch.qos.logback.core.subst.NodeToStringTransformer.CIRCULAR_VARIABLE_REFERENCE_DETECTED;
 import static ch.qos.logback.core.subst.Parser.EXPECTING_DATA_AFTER_LEFT_ACCOLADE;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -391,5 +389,14 @@ public class OptionHelperTest {
             String r = OptionHelper.substVars(input, context);
             assertEquals(input, r);
         }
+    }
+
+    @Test
+    public void containsUnicodeEscape() throws ScanException {
+        assertFalse(OptionHelper.containsUnicodeEscape("hello world"));
+
+        assertTrue(OptionHelper.containsUnicodeEscape("hello \\u0077orld"));
+        assertTrue(OptionHelper.containsUnicodeEscape("hello \\\\U0001F600"));
+
     }
 }

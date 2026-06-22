@@ -315,6 +315,10 @@ public class OptionHelper {
         return defaultVal;
     }
 
+    public static boolean containsUnicodeEscape(String value) {
+        return value.contains("\\u") || value.contains("\\U");
+    }
+
     /**
      * @deprecated
      * @since 1.3
