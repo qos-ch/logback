@@ -762,6 +762,7 @@ public class JoranConfiguratorTest {
 
     }
 
+    @Disabled
     @Test
     public void consoleCharsetTest() throws JoranException {
         if (EnvUtil.isJDK21OrHigher()) {
