@@ -72,6 +72,9 @@ public class SyslogOutputStream extends OutputStream {
     }
 
     public void close() {
+        if (ds != null) {
+            ds.close();
+        }
         address = null;
         ds = null;
     }
