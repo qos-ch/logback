@@ -49,7 +49,6 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.EnvUtil;
-import ch.qos.logback.core.util.StatusPrinter;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -161,13 +160,10 @@ public class IfThenElseTest {
     public void ifWithNewSlashU() throws JoranException {
         context.putProperty(ki1, val1);
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifNewSlashU.xml");
-        if(EnvUtil.isWindows()) {
-            assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.UNICODE_DISALLOWED_MSG));
-            assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.UNICODER_DISALLOWED_SEE));
-        } else {
-            assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_MSG));
-            assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_SEE));
-        }
+        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.UNICODE_DISALLOWED_MSG));
+        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.UNICODE_DISALLOWED_SEE));
+        //    assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_MSG));
+        //assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_SEE));
         verifyConfig(new String[] { "BEGIN", "END" });
     }
 

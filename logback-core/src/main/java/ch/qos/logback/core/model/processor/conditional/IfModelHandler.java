@@ -36,8 +36,8 @@ public class IfModelHandler extends ModelHandlerBase {
     public static final String NEW_OPERATOR_DISALLOWED_MSG = "The 'condition' attribute may not contain the 'new' operator.";
     public static final String NEW_OPERATOR_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionNew";
 
-    public static final String UNICODE_DISALLOWED_MSG = "The 'condition' attribute may not contain uncode escape.";
-    public static final String UNICODER_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionUnicode";
+    public static final String UNICODE_DISALLOWED_MSG = "The 'condition' attribute may not contain unicode escape characters.";
+    public static final String UNICODE_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionUnicode";
 
 
     public static final String CONDITION_ATTR_DEPRECATED_MSG = "The 'condition' attribute in <if> element is deprecated and slated for removal. Use <condition> element instead.";
@@ -100,8 +100,8 @@ public class IfModelHandler extends ModelHandlerBase {
             }
 
             if(OptionHelper.containsUnicodeEscape(conditionStr)) {
-                addError(NEW_OPERATOR_DISALLOWED_MSG);
-                addError(NEW_OPERATOR_DISALLOWED_SEE);
+                addError(UNICODE_DISALLOWED_MSG);
+                addError(UNICODE_DISALLOWED_SEE);
                 return;
             }
 
