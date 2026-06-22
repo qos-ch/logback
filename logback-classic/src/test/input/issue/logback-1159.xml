@@ -10,12 +10,11 @@
 	<appender name="JOURNAL"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 
-		<file>target/test.log</file>
+		<file>${lltTargetDir}/test.log</file>
 
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<!-- daily rollover -->
-			<fileNamePattern>target/test.${logback.rollingPattern}.log
-			</fileNamePattern>
+			<fileNamePattern>${lltTargetDir}/test.${logback.rollingPattern}.log</fileNamePattern>
 			<maxHistory>30</maxHistory>
 		</rollingPolicy>
 		<encoder>

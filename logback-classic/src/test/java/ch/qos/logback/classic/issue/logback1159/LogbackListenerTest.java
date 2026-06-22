@@ -26,28 +26,36 @@ import java.util.Set;
 //import org.apache.commons.io.FileUtils;
 //import org.apache.commons.lang3.RandomStringUtils;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.testUtil.FileTestUtil;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.FileUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactoryFriend;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import org.slf4j.spi.MDCAdapter;
 
 public class LogbackListenerTest {
-    private File logFile = new File("target/test.log");
+    static String LLT_TARGET_DIR_KEY = "lltTargetDir";
+    static String LLT_TARGET_DIR_PREFIX = "target/llt";
+
+    int diff = RandomUtil.getPositiveInt();
+    private String lltTargetDirValue = LLT_TARGET_DIR_PREFIX+diff;
+    private File logFile = new File(lltTargetDirValue +"/test.log");
 
     LoggerContext loggerContext = new LoggerContext();
     LogbackMDCAdapter mdcAdapter = new LogbackMDCAdapter();
 
     @BeforeEach
     void setUp() {
+        loggerContext.putProperty(LLT_TARGET_DIR_KEY, lltTargetDirValue);
         loggerContext.setMDCAdapter(mdcAdapter);
+
     }
 
     private void doConfigure() throws JoranException {
@@ -62,6 +70,7 @@ public class LogbackListenerTest {
     }
 
     private void disableLogFileAccess() throws IOException {
+        FileUtil.createMissingParentDirectories(logFile);
         logFile.createNewFile();
         logFile.deleteOnExit();
         Path path = Paths.get(logFile.toURI());
