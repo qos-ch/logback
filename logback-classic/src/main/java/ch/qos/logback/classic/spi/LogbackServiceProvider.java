@@ -72,7 +72,7 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
             }
             // contextSelectorBinder.init(defaultLoggerContext, KEY);
 
-        } catch (Exception t) { // see LOGBACK-1159
+        } catch (Exception t) { // see LOGBACK-1159 -- do not swallow Errors
             Util.report("Failed to instantiate [" + LoggerContext.class.getName() + "]", t);
         }
     }
