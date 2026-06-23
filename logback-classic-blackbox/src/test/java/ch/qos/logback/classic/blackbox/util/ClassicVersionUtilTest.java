@@ -21,12 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClassicVersionUtilTest {
+    // Beware: ----------------------------------------
+    // Beware:  needs to be updated upon version change
+    // Beware: ----------------------------------------
+    static final String EXPECTED_VERSION = "2.0";
 
     @Test
     public void bySelfDeclaredProperties() {
         String version = ClassicVersionUtil.getVersionBySelfDeclaredProperties();
         assertNotNull(version);
-        assertTrue(version.startsWith("1.5"));
+        assertTrue(version.startsWith(EXPECTED_VERSION));
     }
 
 }

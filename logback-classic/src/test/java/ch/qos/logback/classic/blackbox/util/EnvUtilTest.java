@@ -36,7 +36,7 @@ public class EnvUtilTest {
     // Beware: ----------------------------------------
     // Beware:  needs to be updated upon version change
     // Beware: ----------------------------------------
-    static final String EXPECTED_VERSION = "1.5";
+    static final String EXPECTED_VERSION = "2.0";
 
 
     @BeforeEach
