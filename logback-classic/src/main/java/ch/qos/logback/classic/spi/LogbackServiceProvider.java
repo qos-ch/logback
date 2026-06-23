@@ -78,7 +78,6 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     }
 
     @Override
-
     public ILoggerFactory getLoggerFactory() {
         return defaultLoggerContext;
     }
