@@ -48,7 +48,6 @@ import ch.qos.logback.core.model.processor.conditional.ThenModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -151,8 +150,8 @@ public class IfThenElseTest {
     public void ifWithNew() throws JoranException {
         context.putProperty(ki1, val1);
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifNew.xml");
-        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_MSG));
-        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.NEW_OPERATOR_DISALLOWED_SEE));
+        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.BLACKLISTED_REF_DISALLOWED_MSG));
+        assertTrue(checker.containsMatch(Status.ERROR, IfModelHandler.BLACKLISTED_REF_DISALLOWED_SEE));
         verifyConfig(new String[] { "BEGIN", "END" });
     }
 

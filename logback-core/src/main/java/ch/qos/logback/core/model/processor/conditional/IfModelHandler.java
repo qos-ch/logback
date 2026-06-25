@@ -33,8 +33,8 @@ public class IfModelHandler extends ModelHandlerBase {
     public static final String MISSING_JANINO_MSG = "Could not find Janino library on the class path. Skipping conditional processing.";
     public static final String MISSING_JANINO_SEE = "See also " + CoreConstants.CODES_URL + "#ifJanino";
 
-    public static final String NEW_OPERATOR_DISALLOWED_MSG = "The 'condition' attribute may not contain the 'new' operator.";
-    public static final String NEW_OPERATOR_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionNew";
+    public static final String BLACKLISTED_REF_DISALLOWED_MSG = "The 'condition' attribute may not contain blacklisted references.";
+    public static final String BLACKLISTED_REF_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionBlacklisted";
 
     public static final String UNICODE_DISALLOWED_MSG = "The 'condition' attribute may not contain unicode escape characters.";
     public static final String UNICODE_DISALLOWED_SEE = "See also " + CoreConstants.CODES_URL + "#conditionUnicode";
@@ -106,9 +106,9 @@ public class IfModelHandler extends ModelHandlerBase {
             }
 
             // do not allow 'new' operator
-            if(hasNew(conditionStr)) {
-                addError(NEW_OPERATOR_DISALLOWED_MSG);
-                addError(NEW_OPERATOR_DISALLOWED_SEE);
+            if(hasBlacklistedReferences(conditionStr)) {
+                addError(BLACKLISTED_REF_DISALLOWED_MSG);
+                addError(BLACKLISTED_REF_DISALLOWED_SEE);
                 return;
             }
 
@@ -143,8 +143,15 @@ public class IfModelHandler extends ModelHandlerBase {
     }
 
 
-    private boolean hasNew(String conditionStr) {
-        return conditionStr.contains("new ");
+    static String[] BLACKLISTED_REFERENCES_IN_CONDITIONAL = new String[] {"new ", "Runtime", "springframework"};
+
+    static boolean hasBlacklistedReferences(String conditionStr) {
+        for (String fishyReference : BLACKLISTED_REFERENCES_IN_CONDITIONAL) {
+            if (conditionStr.contains(fishyReference)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
