@@ -13,7 +13,10 @@
   -->
 
 <included>
-    <if condition="true">
+    <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+        <expression>true</expression>
+    </condition>
+    <if>
         <then>
             <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
                 <encoder>

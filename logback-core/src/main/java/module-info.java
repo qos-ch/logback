@@ -5,9 +5,6 @@ module ch.qos.logback.core {
     // required by the optional SMTPAppenderBase component
     requires static java.naming;
 
-    requires static janino;
-    requires static commons.compiler;
-
     // transitive _imposes_ the presence of jakarta.mail on downstream users,
     // let them declare it if they need it
     requires static jakarta.mail;

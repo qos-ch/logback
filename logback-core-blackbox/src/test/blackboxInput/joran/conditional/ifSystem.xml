@@ -3,6 +3,9 @@
 <x>
   <stack name="BEGIN"/>
 
+  <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+    <expression>isNull("sysKey")</expression>
+  </condition>
   <if condition='isNull("sysKey")'>
     <then>
       <property scope="context" name="dynaKey" value="dynaVal"/>

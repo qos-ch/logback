@@ -2,7 +2,10 @@
 
 <x>
     <stack name="BEGIN"/>
-    <if condition='n\u0067w Integer(1).equals(1)'>
+    <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+        <expression>property("ki1").equals("val1")</expression>
+    </condition>
+    <if>
         <then>
             <stack name="a"/>
         </then>

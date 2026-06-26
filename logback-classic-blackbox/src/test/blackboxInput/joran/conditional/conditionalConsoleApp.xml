@@ -13,7 +13,10 @@
   </root>
 
 
-  <if condition='property("HOSTNAME").contains("${aHost}")'>
+  <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+    <expression>propertyContains("HOSTNAME", "${aHost}")</expression>
+  </condition>
+  <if>
     <then>
       <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

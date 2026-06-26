@@ -4,7 +4,10 @@
     <appender name="LIST"  class="ch.qos.logback.core.read.ListAppender"/>
 
     <root level="INFO">
-        <if condition='p("missing").equals("true")'>
+        <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+            <expression>propertyEquals("missing","true")</expression>
+        </condition>
+        <if>
             <then>
                 <appender-ref ref="MISSING" />
             </then>

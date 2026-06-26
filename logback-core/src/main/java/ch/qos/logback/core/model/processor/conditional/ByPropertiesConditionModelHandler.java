@@ -29,6 +29,10 @@ import static ch.qos.logback.core.model.conditional.IfModel.BranchState.IF_BRANC
 
 public class ByPropertiesConditionModelHandler extends ModelHandlerBase {
 
+    static final String EVALUTATOR_IS_IN_ERROR_MSG0 = "The [if] statement will be marked IN_ERROR and none of its branches will be executed.";
+    static final String EVALUTATOR_IS_IN_ERROR_MSG1 = "The [if] statement will be marked IN_ERROR and none of its branches will be executed.";
+
+
     private boolean inError = false;
     PropertyCondition propertyEvaluator;
 
@@ -88,6 +92,7 @@ public class ByPropertiesConditionModelHandler extends ModelHandlerBase {
         propertyEvaluator.start();
         if(!propertyEvaluator.isStarted()) {
             addError("PropertyEvaluator of type ["+propertyEvaluator.getClass().getName()+"] did not start successfully.");
+            addError(EVALUTATOR_IS_IN_ERROR_MSG0);
             mic.pushObject(IfModel.BranchState.IN_ERROR);
             return;
         }

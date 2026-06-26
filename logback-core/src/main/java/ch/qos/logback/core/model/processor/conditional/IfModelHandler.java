@@ -18,7 +18,6 @@ import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.conditional.Condition;
-import ch.qos.logback.core.joran.conditional.PropertyEvalScriptBuilder;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.model.conditional.IfModel.BranchState;
@@ -75,62 +74,6 @@ public class IfModelHandler extends ModelHandlerBase {
             ifModel.setBranchState(branchState);
             // consume the BranchState at top of the object stack
             mic.popObject();
-        } else {
-            janinoFallback(mic, model, conditionStr);
-        }
-    }
-
-    private void janinoFallback(ModelInterpretationContext mic, Model model, String conditionStr) {
-        if (!EnvUtil.isJaninoAvailable()) {
-            addError(MISSING_JANINO_MSG);
-            addError(MISSING_JANINO_SEE);
-            return;
-        }
-
-        Condition condition = null;
-        int lineNum = model.getLineNumber();
-
-        if (!OptionHelper.isNullOrEmptyOrAllSpaces(conditionStr)) {
-            try {
-                conditionStr = OptionHelper.substVars(conditionStr, mic, context);
-            } catch (ScanException e) {
-               addError("Failed to parse input [" + conditionStr + "] on line "+lineNum, e);
-               ifModel.setBranchState(BranchState.IN_ERROR);
-                return;
-            }
-
-            if(OptionHelper.containsUnicodeEscape(conditionStr)) {
-                addError(UNICODE_DISALLOWED_MSG);
-                addError(UNICODE_DISALLOWED_SEE);
-                return;
-            }
-
-            // do not allow 'new' operator
-            if(hasBlacklistedReferences(conditionStr)) {
-                addError(BLACKLISTED_REF_DISALLOWED_MSG);
-                addError(BLACKLISTED_REF_DISALLOWED_SEE);
-                return;
-            }
-
-            try {
-                PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(mic);
-                pesb.setContext(context);
-                condition = pesb.build(conditionStr);
-            } catch (Exception|NoClassDefFoundError e) {
-                ifModel.setBranchState(BranchState.IN_ERROR);
-                addError("Failed to parse condition [" + conditionStr + "] on line "+lineNum, e);
-                return;
-            }
-
-            if (condition != null) {
-                boolean boolResult = condition.evaluate();
-                addInfo("Condition ["+conditionStr+"] evaluated to "+boolResult+ " on line "+lineNum);
-                ifModel.setBranchState(boolResult);
-            } else {
-                addError("The condition variable is null. This should not occur.");
-                ifModel.setBranchState(BranchState.IN_ERROR);
-                return;
-            }
         }
     }
 
@@ -143,16 +86,6 @@ public class IfModelHandler extends ModelHandlerBase {
     }
 
 
-    static String[] BLACKLISTED_REFERENCES_IN_CONDITIONAL = new String[] {"new ", "Runtime", "springframework"};
-
-    static boolean hasBlacklistedReferences(String conditionStr) {
-        for (String fishyReference : BLACKLISTED_REFERENCES_IN_CONDITIONAL) {
-            if (conditionStr.contains(fishyReference)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {

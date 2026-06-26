@@ -29,19 +29,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-        <!--     <dependency>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-ext</artifactId>
-              <version>${slf4j.version}</version>
-              <scope>test</scope>
-            </dependency> -->
-
-        <!--     <dependency>
-              <groupId>ch.qos.cal10n.plugins</groupId>
-              <artifactId>maven-cal10n-plugin</artifactId>
-              <version>${cal10n.version}</version>
-              <scope>test</scope>
-            </dependency> -->
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -96,12 +83,6 @@
             <groupId>org.eclipse.angus</groupId>
             <artifactId>angus-mail</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.janino</groupId>
-            <artifactId>janino</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>

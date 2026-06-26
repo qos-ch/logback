@@ -1,7 +1,10 @@
 
 <configuration>
 
-  <if condition='property("HOSTNAME").equals("XYZ87")'>
+  <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+    <expression>propertyEquals("HOSTNAME", "XYZ87")</expression>
+  </condition>
+  <if>
     <then>
 
       <appender name="CON" class="ch.qos.logback.core.ConsoleAppender">
