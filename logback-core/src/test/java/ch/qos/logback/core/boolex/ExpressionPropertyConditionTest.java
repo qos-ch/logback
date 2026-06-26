@@ -17,9 +17,12 @@ package ch.qos.logback.core.boolex;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static ch.qos.logback.core.boolex.ExpressionPropertyCondition.MALFORMED_EXPRESSION;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,7 +32,7 @@ public class ExpressionPropertyConditionTest {
     Context context = new ContextBase();
     ModelInterpretationContext mic = new ModelInterpretationContext(context);
     ExpressionPropertyCondition epc = new ExpressionPropertyCondition();
-
+    StatusChecker statusChecker = new StatusChecker(context);
 
     static final String SMOKE_KEY = "SMOKE_KEY";
     static final String UNDEFINED_KEY = "UNDEFINED_KEY";
@@ -104,6 +107,59 @@ public class ExpressionPropertyConditionTest {
         String expression = String.format("!propertyEquals(\"%s\", \"%s\") || !isNull(\"%s\")" , SMOKE_KEY, SMOKE_VALUE, UNDEFINED_KEY);
         check(expression, false);
     }
+
+    @Test
+    public void trueLiteral() {
+        check("true", true);
+    }
+
+    @Test
+    public void falseLiteral() {
+        check("false", false);
+    }
+
+    @Test
+    public void trueAndSmokeDefined() {
+        String expression = String.format("true && isDefined(\"%s\")", SMOKE_KEY);
+        check(expression, true);
+    }
+
+    @Test
+    public void falseOrSmokeDefined() {
+        String expression = String.format("false || isDefined(\"%s\")", SMOKE_KEY);
+        check(expression, true);
+    }
+
+    @Test
+    public void notFalse() {
+        check("!false", true);
+    }
+
+    @Test
+    public void trueAndFalse() {
+        check("true && false", false);
+    }
+
+    @Test
+    public void dotIsUnexpectedCharacter() {
+        epc.setExpression(".");
+        epc.start();
+
+        assertFalse(epc.isStarted());
+        assertFalse(epc.evaluate());
+
+        statusChecker.assertContainsMatch(MALFORMED_EXPRESSION);
+    }
+
+    @Test
+    public void numerical() {
+        epc.setExpression("1 != 2");
+        epc.start();
+        assertFalse(epc.isStarted());
+        assertFalse(epc.evaluate());
+        statusChecker.assertContainsMatch(MALFORMED_EXPRESSION);
+    }
+
 
 
     void check(String expression, boolean expected) {

@@ -3,7 +3,10 @@
 
 <configuration debug="false">
 
-    <if condition='property("HOSTNAME") != null'>
+    <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+        <expression>isDefined("HOSTNAME")</expression>
+    </condition>
+    <if>
         <then>
             <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
 

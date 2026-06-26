@@ -3,7 +3,10 @@
 <x>
   <stack name="BEGIN"/>
   <property name="Ki1" value="Val1"/>
-  <if condition='p("Ki1").equals("Val1")'>
+  <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+    <expression>propertyEquals("Ki1","Val1")</expression>
+  </condition>
+  <if>
     <then>
       <stack name="a"/>
     </then>

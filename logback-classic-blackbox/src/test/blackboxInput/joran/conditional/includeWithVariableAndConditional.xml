@@ -16,8 +16,11 @@
 
   
   <variable scope="system" name="JO_PREFIX" value="src/test/blackboxInput/joran"/>
-  
-  <if condition='isDefined("JO_PREFIX")'>
+
+  <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+    <expression>isDefined("JO_PREFIX")</expression>
+  </condition>
+  <if>
     <then>
       <include file="${JO_PREFIX}/conditional/includedFile.xml"/>
     </then>

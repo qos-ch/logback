@@ -76,7 +76,6 @@
     <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
     <greenmail.version>2.1.7</greenmail.version>
 
-    <janino.version>3.1.8</janino.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml, /logback-examples/src/main/resources/setClasspath.cmd, download.html
     -->
@@ -212,16 +211,6 @@
         <groupId>org.tukaani</groupId>
         <artifactId>xz</artifactId>
         <version>${xz.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.janino</groupId>
-        <artifactId>janino</artifactId>
-        <version>${janino.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.janino</groupId>
-        <artifactId>commons-compiler</artifactId>
-        <version>${janino.version}</version>
       </dependency>
 
       <dependency>

@@ -23,18 +23,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.codehaus.janino</groupId>
-            <artifactId>janino</artifactId>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.janino</groupId>
-            <artifactId>commons-compiler</artifactId>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
             <optional>true</optional>
@@ -220,8 +208,6 @@
                             jakarta.*;resolution:=optional,
                             org.xml.*;resolution:=optional,
                             org.fusesource.jansi;resolution:=optional,
-                            org.codehaus.janino;resolution:=optional,
-                            org.codehaus.commons.compiler;resolution:=optional,
                             org.tukaani.xz;resolution:=optional,
                             *
                         </Import-Package>

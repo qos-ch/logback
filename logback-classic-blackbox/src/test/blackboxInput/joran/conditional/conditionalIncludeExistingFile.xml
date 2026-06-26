@@ -23,8 +23,11 @@
           class="ch.qos.logback.core.property.FileExistsPropertyDefiner">
       <path>src/test/blackboxInput/joran/conditional/includedFile.xml</path>
   </define>
-  
-   <if condition='property("INCLUDED_FILE_EXISTS").equals("true")'>
+
+    <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+        <expression>propertyEquals("INCLUDED_FILE_EXISTS", "true")</expression>
+    </condition>
+   <if>
     <then>
         <include file="src/test/blackboxInput/joran/conditional/includedFile.xml"/>
     </then>

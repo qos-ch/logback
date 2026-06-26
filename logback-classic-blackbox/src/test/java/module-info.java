@@ -3,7 +3,6 @@ module logback.classic.blackbox {
     requires ch.qos.logback.core;
     requires ch.qos.logback.classic;
     requires jakarta.mail;
-    requires janino;
 
     requires org.dom4j;
     requires greenmail;

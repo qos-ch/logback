@@ -26,12 +26,13 @@ import java.util.function.Function;
 
 /**
  * This class evaluates boolean expressions based on property lookups.
- * <p>It supports logical operators (NOT, AND, OR) and functions like isNull, isDefined,
- * propertyEquals, and propertyContains. Expressions are parsed using the Shunting-Yard
- * algorithm into Reverse Polish Notation (RPN) for evaluation.
+ * <p>It supports logical operators (NOT, AND, OR), boolean literals ({@code true} and
+ * {@code false}), and functions like isNull, isDefined, propertyEquals, and propertyContains.
+ * Expressions are parsed using the Shunting-Yard algorithm into Reverse Polish Notation (RPN)
+ * for evaluation.
  * </p>
  *
- * <p>Example expression: {@code isDefined("key1") && propertyEquals("key2", "value")}</p>
+ * <p>Example expression: {@code true && isDefined("key1") && propertyEquals("key2", "value")}</p>
  *
  * <p>Properties are resolved via {@link PropertyConditionBase#property(String)}.</p>
  *
@@ -39,6 +40,8 @@ import java.util.function.Function;
  */
 public class ExpressionPropertyCondition extends PropertyConditionBase {
 
+
+    public static final String MALFORMED_EXPRESSION = "Malformed expression: ";
 
     /**
      * A map that associates a string key with a function for evaluating boolean conditions.
@@ -64,10 +67,13 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
     protected Map<String, BiFunction<String, String, Boolean>> biFunctionMap = new HashMap<>();
 
     private static final String IS_NULL_FUNCTION_KEY = "isNull";
-    private static final String IS_DEFINEDP_FUNCTION_KEY = "isDefined";
+    private static final String IS_DEFINED_FUNCTION_KEY = "isDefined";
 
     private static final String PROPERTY_EQUALS_FUNCTION_KEY = "propertyEquals";
     private static final String PROPERTY_CONTAINS_FUNCTION_KEY = "propertyContains";
+
+    private static final String TRUE_LITERAL = "true";
+    private static final String FALSE_LITERAL = "false";
 
     private static final char QUOTE = '"';
     private static final char COMMA = ',';
@@ -84,7 +90,7 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
     }
 
     enum TokenType {
-        NOT, AND, OR, FUNCTION, BI_FUNCTION, LEFT_PAREN, RIGHT_PAREN;
+        NOT, AND, OR, TRUE, FALSE, FUNCTION, BI_FUNCTION, LEFT_PAREN, RIGHT_PAREN;
 
         boolean isLogicalOperator() {
             return this == NOT || this == AND || this == OR;
@@ -107,6 +113,8 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
                 case NOT:
                 case AND:
                 case OR:
+                case TRUE:
+                case FALSE:
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + tokenType);
@@ -140,7 +148,7 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
      */
     public ExpressionPropertyCondition() {
         functionMap.put(IS_NULL_FUNCTION_KEY, this::isNull);
-        functionMap.put(IS_DEFINEDP_FUNCTION_KEY, this::isDefined);
+        functionMap.put(IS_DEFINED_FUNCTION_KEY, this::isDefined);
         biFunctionMap.put(PROPERTY_EQUALS_FUNCTION_KEY, this::propertyEquals);
         biFunctionMap.put(PROPERTY_CONTAINS_FUNCTION_KEY, this::propertyContains);
     }
@@ -161,7 +169,7 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
             List<Token> tokens = tokenize(expression.trim());
             this.rpn = infixToReversePolishNotation(tokens);
         } catch (IllegalArgumentException|IllegalStateException e) {
-            addError("Malformed expression: " + e.getMessage());
+            addError(MALFORMED_EXPRESSION + e.getMessage());
             return;
         }
         super.start();
@@ -262,7 +270,18 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
                 while (i < expr.length() && Character.isLetter(expr.charAt(i))) {
                     sb.append(expr.charAt(i++));
                 }
-                String functionName = sb.toString();
+                String identifier = sb.toString();
+
+                if (TRUE_LITERAL.equals(identifier)) {
+                    tokens.add(new Token(TokenType.TRUE));
+                    continue;
+                }
+                if (FALSE_LITERAL.equals(identifier)) {
+                    tokens.add(new Token(TokenType.FALSE));
+                    continue;
+                }
+
+                String functionName = identifier;
 
                 // Skip spaces
                 i = skipWhitespaces(i);
@@ -294,6 +313,8 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
 
                 continue;
             }
+
+            throw new IllegalArgumentException("Unexpected character '" + c + "' at position " + i + " in [" + expr + "]");
         }
         return tokens;
     }
@@ -383,7 +404,11 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
     }
 
     private boolean isPredicate(Token token) {
-        return token.tokenType == TokenType.FUNCTION || token.tokenType == TokenType.BI_FUNCTION;
+        TokenType tokenType = token.tokenType;
+        return tokenType == TokenType.FUNCTION
+                || tokenType == TokenType.BI_FUNCTION
+                || tokenType == TokenType.TRUE
+                || tokenType == TokenType.FALSE;
     }
 
     private int precedence(Token token) {
@@ -444,8 +469,15 @@ public class ExpressionPropertyCondition extends PropertyConditionBase {
         return resultStack.pop();
     }
 
-    // Evaluate a single predicate like isNull("key1")
+    // Evaluate a single predicate like isNull("key1") or a boolean literal
     private boolean evaluateFunctions(Token token) throws IllegalStateException {
+        if (token.tokenType == TokenType.TRUE) {
+            return true;
+        }
+        if (token.tokenType == TokenType.FALSE) {
+            return false;
+        }
+
         String functionName = token.functionName;
         String param0 = token.param0;
         String param1 = token.param1;

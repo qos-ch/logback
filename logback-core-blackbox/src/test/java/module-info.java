@@ -5,9 +5,6 @@ module ch.qos.logback.core.blackbox {
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.engine;
 
-    requires janino;
-    requires commons.compiler;
-
     requires org.fusesource.jansi;
 
     requires org.tukaani.xz;

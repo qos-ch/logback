@@ -4,10 +4,16 @@
 <x>
   <stack name="BEGIN"/>
 
-  <if condition='1 == 1'>
+  <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+    <expression>true</expression>
+  </condition>
+  <if>
     <then>
       <stack name="a"/>
-      <if condition='1 != 1'>
+      <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+        <expression>false</expression>
+      </condition>
+      <if>
         <then>
           <stack name="b"/>
         </then>

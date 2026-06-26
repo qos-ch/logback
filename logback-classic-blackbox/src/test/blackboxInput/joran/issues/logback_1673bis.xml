@@ -7,7 +7,10 @@
 
     <root level="INFO"/>
 
-    <if condition='isDefined("EXTRA")'>
+    <condition class="ch.qos.logback.core.boolex.ExpressionPropertyCondition">
+        <expression>isDefined("EXTRA")</expression>
+    </condition>
+    <if>
         <then>
             <root>
                 <appender-ref ref="LIST_THEN"/>
