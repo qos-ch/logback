@@ -490,36 +490,6 @@
         <maven.test.skip>true</maven.test.skip>
       </properties>
     </profile>
-    <profile>
-      <id>license</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.mycila</groupId>
-            <artifactId>license-maven-plugin</artifactId>
-            <version>${license-maven-plugin.version}</version>
-            <configuration>
-              <header>src/main/licenseHeader.txt</header>
-              <quiet>false</quiet>
-              <failIfMissing>true</failIfMissing>
-              <aggregate>true</aggregate>
-              <includes>
-                <include>src/**/*.java</include>
-                <include>src/**/*.groovy</include>
-              </includes>
-              <useDefaultExcludes>true</useDefaultExcludes>
-              <useDefaultMapping>true</useDefaultMapping>
-              <properties>
-                <year>1999</year>
-              </properties>
-              <headerDefinitions>
-                <headerDefinition>src/main/javadocHeaders.xml</headerDefinition>
-              </headerDefinitions>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
 
     <profile>
       <id>javadocjar</id>
