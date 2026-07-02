@@ -53,7 +53,7 @@ public class HardenedObjectInputStream extends ObjectInputStream {
             "java.lang.Number",
             "java.lang.Short",
             "java.lang.String",
-            "java,lang.Throwable",
+            "java.lang.Throwable",
             "java.util.ArrayList",
             "java.util.Collections$EmptyMap",
             "java.util.Collections$UnmodifiableMap",
