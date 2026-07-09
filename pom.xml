@@ -109,6 +109,7 @@
     <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
     <maven-bundle-plugin.version>5.1.9</maven-bundle-plugin.version>
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
+    <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <ant.version>1.10.13</ant.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
     <jetty.version>12.0.13</jetty.version>
@@ -525,7 +526,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
+            <version>${maven-gpg-plugin.version}</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
