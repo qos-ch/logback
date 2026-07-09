@@ -18,12 +18,10 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.WarnStatus;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.module.ModuleDescriptor;
 import java.util.Optional;
-import java.util.Properties;
 
+import static ch.qos.logback.core.CoreConstants.CODES_URL;
 import static ch.qos.logback.core.CoreConstants.NA;
 
 // depender depends on dependency
@@ -42,6 +40,7 @@ import static ch.qos.logback.core.CoreConstants.NA;
  */
 public class VersionUtil {
 
+    static final String DEPENDER_S_WAS_EXPECTING_PATTERN = "Depender [%s] was expecting version %s for dependency [%s] but found version %s";
     /**
      * @since 1.5.30
      */
@@ -168,8 +167,13 @@ public class VersionUtil {
         addFoundVersionStatus(context, dependerName, dependerVersion);
 
         if (!safeExpectedDependencyVersion.equals(actualDependencyVersion)) {
-            String discrepancyMsg = String.format("For %s, expected version %s but found %s", dependencyName, safeExpectedDependencyVersion, actualDependencyVersion);
+            String discrepancyMsg = String.format(DEPENDER_S_WAS_EXPECTING_PATTERN, dependerName,
+                    safeExpectedDependencyVersion, dependencyName, actualDependencyVersion);
             context.getStatusManager().add(new WarnStatus(discrepancyMsg, context));
+
+            String seeMsg = "See also "+CODES_URL+"#versionMismatch";
+            context.getStatusManager().add(new WarnStatus(seeMsg, context));
+
         }
     }
 }
