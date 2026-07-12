@@ -48,7 +48,11 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     protected ConsoleTarget target = ConsoleTarget.SystemOut;
     protected boolean withJansi = false;
 
-    private final static String AnsiConsole_CLASS_NAME = "org.fusesource.jansi.AnsiConsole";
+    // Jansi was migrated from FuseSource (org.fusesource.jansi) to JLine (org.jline.jansi), which
+    // changed the package of AnsiConsole. Probe the JLine coordinates first, then fall back to the
+    // legacy FuseSource ones so that <withJansi> keeps working with both artifacts. See LOGBACK issue 1043.
+    private final static String[] ANSI_CONSOLE_CLASS_NAMES = { "org.jline.jansi.AnsiConsole",
+            "org.fusesource.jansi.AnsiConsole" };
     private final static String JANSI2_OUT_METHOD_NAME = "out";
     private final static String JANSI2_ERR_METHOD_NAME = "err";
     private final static String WRAP_SYSTEM_OUT_METHOD_NAME = "wrapSystemOut";
@@ -114,7 +118,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
         try {
             addInfo("Enabling JANSI AnsiPrintStream for the console.");
             ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
-            Class<?> classObj = classLoader.loadClass(AnsiConsole_CLASS_NAME);
+            Class<?> classObj = loadAnsiConsoleClass(classLoader);
 
             Method systemInstallMethod  = classObj.getMethod(SYSTEM_INSTALL_METHOD_NAME);
             if(systemInstallMethod != null) {
@@ -155,6 +159,26 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
             addWarn("Failed to create AnsiPrintStream. Falling back on the default stream.", e);
         }
         return targetStream;
+    }
+
+    /**
+     * Loads the Jansi {@code AnsiConsole} class, probing the candidate class names in
+     * {@link #ANSI_CONSOLE_CLASS_NAMES} order (JLine's {@code org.jline.jansi} first, then the legacy
+     * FuseSource {@code org.fusesource.jansi}). This keeps {@code <withJansi>} working across the Jansi
+     * migration from FuseSource to JLine.
+     *
+     * @throws ClassNotFoundException if none of the candidate classes is available.
+     */
+    Class<?> loadAnsiConsoleClass(ClassLoader classLoader) throws ClassNotFoundException {
+        ClassNotFoundException lastException = null;
+        for (String className : ANSI_CONSOLE_CLASS_NAMES) {
+            try {
+                return classLoader.loadClass(className);
+            } catch (ClassNotFoundException e) {
+                lastException = e;
+            }
+        }
+        throw lastException;
     }
 
     /**
