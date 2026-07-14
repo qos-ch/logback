@@ -105,6 +105,10 @@ public class RollingCalendar extends GregorianCalendar {
             // isolated hh or KK
             return !collision(12 * MILLIS_IN_ONE_HOUR);
 
+        case HALF_DAY:
+            // isolated 'a' (AM/PM) without a date component repeats every day
+            return !collision(MILLIS_IN_ONE_DAY);
+
         case TOP_OF_DAY:
             // EE or uu
             if (collision(7 * MILLIS_IN_ONE_DAY))
@@ -198,6 +202,8 @@ public class RollingCalendar extends GregorianCalendar {
             return diff / MILLIS_IN_ONE_MINUTE;
         case TOP_OF_HOUR:
             return diff / MILLIS_IN_ONE_HOUR;
+        case HALF_DAY:
+            return diff / (12 * MILLIS_IN_ONE_HOUR);
         case TOP_OF_DAY:
             return diff / MILLIS_IN_ONE_DAY;
         case TOP_OF_WEEK:
@@ -249,6 +255,15 @@ public class RollingCalendar extends GregorianCalendar {
             cal.set(Calendar.SECOND, 0);
             cal.set(Calendar.MILLISECOND, 0);
             cal.add(Calendar.HOUR_OF_DAY, numPeriods);
+            break;
+
+        case HALF_DAY:
+            // floor to the start of the current half-day (00:00 or 12:00), then advance
+            cal.set(Calendar.HOUR_OF_DAY, cal.get(Calendar.HOUR_OF_DAY) < 12 ? 0 : 12);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.add(Calendar.HOUR_OF_DAY, numPeriods * 12);
             break;
 
         case TOP_OF_DAY:
