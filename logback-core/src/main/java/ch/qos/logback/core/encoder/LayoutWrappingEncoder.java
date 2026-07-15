@@ -111,6 +111,9 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     }
 
     public byte[] encode(E event) {
+        if (layout == null) {
+            return null;
+        }
         String txt = layout.doLayout(event);
         return convertToBytes(txt);
     }
@@ -120,6 +123,10 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     }
 
     public void start() {
+        if (layout == null) {
+            addError("No layout set for the encoder. This encoder will produce no output. "
+                    + "Please set a layout, or check for an ignored <if>/<then>/<else> block in your configuration.");
+        }
         if (immediateFlush != null) {
             if (parent instanceof OutputStreamAppender) {
                 addWarn("Setting the \"immediateFlush\" property of the enclosing appender to " + immediateFlush);
