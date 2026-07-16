@@ -170,7 +170,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         return (blockingQueue.remainingCapacity() < discardingThreshold);
     }
 
-    private void put(E eventObject) {
+    protected void put(E eventObject) {
         if (neverBlock) {
             blockingQueue.offer(eventObject);
         } else {
