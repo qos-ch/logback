@@ -19,9 +19,11 @@ import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.SiftModel;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,17 @@ public class FileCollisionAnalyser extends ModelHandlerBase {
         String className = mic.getImport(originalClassName);
 
         String appenderName = appenderModel.getName();
+
+        // A SiftingAppender instantiates its nested appender once per discriminator
+        // value at runtime, so the nested appender escapes the static collision maps
+        // handled below. If its file/fileNamePattern does not reference the
+        // discriminator key, every instance resolves to the same target and their
+        // output silently collides. Detect that at model-analysis time (see #1041).
+        Model siftModel = firstSubModelOfClass(appenderModel, SiftModel.class);
+        if (siftModel != null) {
+            checkSiftingAppenderForCollision(mic, appenderModel, siftModel, appenderName);
+            return;
+        }
 
         if (!fileAppenderOrRollingFileAppender(className)) {
             return;
@@ -123,5 +136,71 @@ public class FileCollisionAnalyser extends ModelHandlerBase {
     private void addErrorForCollision(String optionName, String appenderName, String previousAppenderName, String optionValue) {
         addError(String.format(COLLISION_DETECTED, appenderName));
         addError(String.format(COLLISION_MESSAGE, appenderName, optionName, optionValue, previousAppenderName));
+    }
+
+    static public final String SIFT_COLLISION_MESSAGE = "The nested appender of SiftingAppender [%s] does not reference the discriminator key [%s] in its 'file'/'fileNamePattern'. Every sifted appender will therefore write to the same file [%s] and their output will collide. Consider embedding ${%s} in the file path.";
+
+    /**
+     * Detect the SiftingAppender variant of a file collision: the nested appender is
+     * created once per discriminator value, so unless its file/fileNamePattern embeds a
+     * reference to the discriminator key, all instances resolve to the same target.
+     */
+    private void checkSiftingAppenderForCollision(ModelInterpretationContext mic, AppenderModel appenderModel,
+            Model siftModel, String appenderName) {
+
+        String discriminatorKey = findDiscriminatorKey(appenderModel);
+        if (discriminatorKey == null || discriminatorKey.isEmpty()) {
+            // discriminator key not declared in XML (e.g. a discriminator with a built-in
+            // default key); can't reason about the file pattern, so stay silent.
+            return;
+        }
+
+        Model nestedAppenderModel = firstSubModelOfClass(siftModel, AppenderModel.class);
+        if (nestedAppenderModel == null) {
+            return;
+        }
+
+        List<String> fileValues = new ArrayList<>();
+        collectBodyText(nestedAppenderModel, "file", fileValues);
+        collectBodyText(nestedAppenderModel, "fileNamePattern", fileValues);
+
+        if (fileValues.isEmpty()) {
+            // nested appender writes to no file (e.g. ConsoleAppender); nothing to collide.
+            return;
+        }
+
+        String keyReference = "${" + discriminatorKey;
+        boolean referencesKey = fileValues.stream().anyMatch(v -> v.contains(keyReference));
+        if (!referencesKey) {
+            String resolvedTarget = mic.subst(fileValues.get(0));
+            addWarn(String.format(SIFT_COLLISION_MESSAGE, appenderName, discriminatorKey, resolvedTarget,
+                    discriminatorKey));
+        }
+    }
+
+    private Model firstSubModelOfClass(Model parent, Class<? extends Model> modelClass) {
+        return parent.getSubModels().stream().filter(modelClass::isInstance).findFirst().orElse(null);
+    }
+
+    private String findDiscriminatorKey(AppenderModel appenderModel) {
+        Optional<Model> discriminator = appenderModel.getSubModels().stream()
+                .filter(m -> "discriminator".equalsIgnoreCase(m.getTag())).findFirst();
+        if (!discriminator.isPresent()) {
+            return null;
+        }
+        return discriminator.get().getSubModels().stream().filter(m -> "key".equalsIgnoreCase(m.getTag()))
+                .map(Model::getBodyText).filter(b -> b != null).map(String::trim).findFirst().orElse(null);
+    }
+
+    /**
+     * Collect the raw body text of every {@code <tagName>} element nested (one or two levels
+     * deep) inside the given appender model. Raw text is used on purpose: the discriminator
+     * key is only bound as a substitution property at runtime, so it must be matched textually.
+     */
+    private void collectBodyText(Model appenderModel, String tagName, List<String> out) {
+        Stream<Model> level1 = appenderModel.getSubModels().stream();
+        Stream<Model> level2 = appenderModel.getSubModels().stream().flatMap(child -> child.getSubModels().stream());
+        Stream.concat(level1, level2).filter(m -> tagPredicate(m, tagName)).map(Model::getBodyText)
+                .filter(b -> b != null).forEach(out::add);
     }
 }

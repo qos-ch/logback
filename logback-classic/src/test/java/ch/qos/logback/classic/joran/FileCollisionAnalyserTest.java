@@ -85,6 +85,25 @@ public class FileCollisionAnalyserTest {
         runCollisionTest(configFile, 1, 0, "file", outputTargetVal);
     }
 
+    // see https://github.com/qos-ch/logback/issues/1041
+    @Test
+    public void siftingAppenderSharedFileIsDetected() throws JoranException {
+        String configFile = ClassicTestConstants.JORAN_INPUT_PREFIX + "collision/siftShared.xml";
+        configure(configFile);
+        //statusPrinter2.print(loggerContext);
+        checker.assertContainsMatch(Status.WARN, ".*does not reference the discriminator key \\[userId\\].*");
+    }
+
+    // when the nested appender embeds the discriminator key, each sifted appender resolves
+    // to a distinct file, so no collision warning must be emitted. see #1041
+    @Test
+    public void siftingAppenderDistinctFileIsNotFlagged() throws JoranException {
+        String configFile = ClassicTestConstants.JORAN_INPUT_PREFIX + "collision/siftDistinct.xml";
+        configure(configFile);
+        //statusPrinter2.print(loggerContext);
+        checker.assertMatchCount(".*does not reference the discriminator key.*", 0);
+    }
+
     @Test
     public void testConditionalFileCollision() throws JoranException {
         String configFile = ClassicTestConstants.JORAN_INPUT_PREFIX + "collision/conditionalRepeat.xml";
