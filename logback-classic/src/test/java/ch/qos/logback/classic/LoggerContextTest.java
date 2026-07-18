@@ -19,6 +19,14 @@ import ch.qos.logback.core.status.StatusManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LoggerContextTest {
@@ -250,6 +258,50 @@ public class LoggerContextTest {
             lc.putProperty("a" + i, "val");
             Thread.yield();
         }
+    }
+
+    // https://github.com/qos-ch/logback/issues/1038
+    // getLogger() creates loggers under the per-parent monitor, so concurrent
+    // creations below distinct parents run under different locks. The internal
+    // logger count must be maintained atomically; otherwise incSize()'s size++
+    // races and increments are lost, leaving size() below the real count.
+    @Test
+    public void concurrentGetLoggerKeepsSizeConsistent() throws InterruptedException {
+        final int threadCount = 16;
+        final int loggersPerThread = 500;
+        // each thread works under its own parent ("t<idx>") so its child
+        // creations hold a distinct monitor, maximising contention on size.
+        ExecutorService pool = Executors.newFixedThreadPool(threadCount);
+        final CyclicBarrier start = new CyclicBarrier(threadCount);
+        List<Future<?>> futures = new ArrayList<Future<?>>();
+        for (int t = 0; t < threadCount; t++) {
+            final int idx = t;
+            futures.add(pool.submit(new Runnable() {
+                public void run() {
+                    try {
+                        start.await();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    for (int j = 0; j < loggersPerThread; j++) {
+                        lc.getLogger("t" + idx + ".c" + j);
+                    }
+                }
+            }));
+        }
+        for (Future<?> f : futures) {
+            try {
+                f.get();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e.getCause());
+            }
+        }
+        pool.shutdown();
+
+        // root + one "t<idx>" parent per thread + all children
+        int expected = 1 + threadCount + threadCount * loggersPerThread;
+        assertEquals(expected, lc.getLoggerList().size());
+        assertEquals(expected, lc.size());
     }
 
 }
