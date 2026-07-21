@@ -64,6 +64,8 @@ public class XZCompressionStrategy extends CompressionStrategyBase {
             }
         } catch (Exception e) {
             addError("Error occurred while compressing [" + nameOfFile2xz + "] into [" + nameOfxzedFile + "].", e);
+            discardPartialCompressedFile(xzedFile);
+            return;
         }
 
         if (!file2xz.delete()) {
