@@ -15,6 +15,9 @@ module ch.qos.logback.core {
     // optionally require jansi
     requires static org.fusesource.jansi;
 
+    // optionally require jline.jansi
+    requires static org.jline.jansi.core;
+
     // optionally require tukaani
     requires static org.tukaani.xz;
 

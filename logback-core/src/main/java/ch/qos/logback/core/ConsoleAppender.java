@@ -48,11 +48,18 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     protected ConsoleTarget target = ConsoleTarget.SystemOut;
     protected boolean withJansi = false;
 
+
+    public final static String JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME = "org.jline.jansi.AnsiConsole";
+    public final static String FUSESOURCE_JANSI_ANSI_CONSOLE_CLASS_NAME = "org.fusesource.jansi.AnsiConsole";
+
     // Jansi was migrated from FuseSource (org.fusesource.jansi) to JLine (org.jline.jansi), which
     // changed the package of AnsiConsole. Probe the JLine coordinates first, then fall back to the
     // legacy FuseSource ones so that <withJansi> keeps working with both artifacts. See LOGBACK issue 1043.
-    private final static String[] ANSI_CONSOLE_CLASS_NAMES = { "org.jline.jansi.AnsiConsole",
-            "org.fusesource.jansi.AnsiConsole" };
+    private final static String[] ANSI_CONSOLE_CLASS_NAMES = { JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME,
+            FUSESOURCE_JANSI_ANSI_CONSOLE_CLASS_NAME };
+
+    protected String preferredJansiClassName = null;
+
     private final static String JANSI2_OUT_METHOD_NAME = "out";
     private final static String JANSI2_ERR_METHOD_NAME = "err";
     private final static String WRAP_SYSTEM_OUT_METHOD_NAME = "wrapSystemOut";
@@ -83,6 +90,25 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
      */
     public String getTarget() {
         return target.getName();
+    }
+
+    /**
+     *
+     * @return the preferred Jansi class name
+     */
+    public String getPreferredJansiClassName() {
+        return preferredJansiClassName;
+    }
+
+    /**
+     * It allows to force Jansi class name used for probing.
+     *
+     * <p>Used for testing purposes.</p>
+     * @param preferredJansiClassName the preferred Jansi class name
+     * @since 1.6.1
+     */
+    public void setPreferredJansiClassName(String preferredJansiClassName) {
+        this.preferredJansiClassName = preferredJansiClassName;
     }
 
     private void targetWarn(String val) {
@@ -124,17 +150,6 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
             if(systemInstallMethod != null) {
                 systemInstallMethod.invoke(null);
             }
-
-//            final Optional<Method> optSystemInstallMethod = Arrays.stream(classObj.getMethods())
-//                            .filter(m -> m.getName().equals(SYSTEM_INSTALL_METHOD_NAME))
-//                            .filter(m -> m.getParameters().length == 0)
-//                            .filter(m -> Modifier.isStatic(m.getModifiers()))
-//                            .findAny();
-//
-//            if (optSystemInstallMethod.isPresent()) {
-//                final Method systemInstallMethod = optSystemInstallMethod.orElseThrow(() -> new NoSuchElementException("No systemInstall method present"));
-//                systemInstallMethod.invoke(null);
-//            }
 
             // check for JAnsi 2
             String methodNameJansi2 = target == ConsoleTarget.SystemOut ? JANSI2_OUT_METHOD_NAME

@@ -90,6 +90,7 @@
 
     <!--<jansi.version>1.18</jansi.version>-->
     <jansi.version>2.4.0</jansi.version>
+    <jline.jansi.version>4.3.1</jline.jansi.version>
 
     <mockito-core.version>4.8.0</mockito-core.version>
     <byte-buddy.version>1.12.14</byte-buddy.version>
@@ -219,6 +220,13 @@
         <artifactId>jansi</artifactId>
         <version>${jansi.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jansi-core</artifactId>
+        <version>${jline.jansi.version}</version>
+      </dependency>
+
 
       <dependency>
         <groupId>jakarta.mail</groupId>
