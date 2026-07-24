@@ -104,11 +104,26 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
      * It allows to force Jansi class name used for probing.
      *
      * <p>Used for testing purposes.</p>
+     * <p>Valid values are {@link #JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME} and
+     * {@link #FUSESOURCE_JANSI_ANSI_CONSOLE_CLASS_NAME}.</p>
+     *
      * @param preferredJansiClassName the preferred Jansi class name
      * @since 1.6.1
      */
     public void setPreferredJansiClassName(String preferredJansiClassName) {
         this.preferredJansiClassName = preferredJansiClassName;
+    }
+
+    private boolean isValidPreferredJansiClassName(String className) {
+        return JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME.equals(className)
+                || FUSESOURCE_JANSI_ANSI_CONSOLE_CLASS_NAME.equals(className);
+    }
+
+    private void preferredJansiClassNameWarn(String val) {
+        Status status = new WarnStatus(
+                "[" + val + "] should be one of " + Arrays.toString(ANSI_CONSOLE_CLASS_NAMES), this);
+        status.add(new WarnStatus("Ignoring preferredJansiClassName, using default probing order.", this));
+        addStatus(status);
     }
 
     private void targetWarn(String val) {
@@ -177,7 +192,13 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     }
 
     /**
-     * Loads the Jansi {@code AnsiConsole} class, probing the candidate class names in
+     * Loads the Jansi {@code AnsiConsole} class.
+     * <p>
+     * If {@link #preferredJansiClassName} is set to a valid value
+     * ({@link #JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME} or {@link #FUSESOURCE_JANSI_ANSI_CONSOLE_CLASS_NAME}),
+     * that class is loaded. An invalid preferred value is reported and ignored.
+     * <p>
+     * If {@code preferredJansiClassName} is not set (or was invalid), candidates are probed in
      * {@link #ANSI_CONSOLE_CLASS_NAMES} order (JLine's {@code org.jline.jansi} first, then the legacy
      * FuseSource {@code org.fusesource.jansi}). This keeps {@code <withJansi>} working across the Jansi
      * migration from FuseSource to JLine.
@@ -185,6 +206,13 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
      * @throws ClassNotFoundException if none of the candidate classes is available.
      */
     Class<?> loadAnsiConsoleClass(ClassLoader classLoader) throws ClassNotFoundException {
+        if (preferredJansiClassName != null) {
+            if (isValidPreferredJansiClassName(preferredJansiClassName)) {
+                return classLoader.loadClass(preferredJansiClassName);
+            } else {
+                preferredJansiClassNameWarn(preferredJansiClassName);
+            }
+        }
         ClassNotFoundException lastException = null;
         for (String className : ANSI_CONSOLE_CLASS_NAMES) {
             try {

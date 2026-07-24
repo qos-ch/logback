@@ -6,7 +6,7 @@ module ch.qos.logback.core.blackbox {
     requires org.junit.jupiter.engine;
 
     requires org.fusesource.jansi;
-
+    requires org.jline.jansi.core;
     requires org.tukaani.xz;
 
     exports ch.qos.logback.core.blackbox;

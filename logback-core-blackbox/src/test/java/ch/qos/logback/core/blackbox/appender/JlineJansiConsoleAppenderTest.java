@@ -1,16 +1,3 @@
-/*
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2026, QOS.ch. All rights reserved.
- *
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v2.0 as published by
- * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
- */
 package ch.qos.logback.core.blackbox.appender;
 
 import ch.qos.logback.core.Appender;
@@ -20,8 +7,8 @@ import ch.qos.logback.core.ContextBase;
 
 import ch.qos.logback.core.testUtil.DummyEncoder;
 import ch.qos.logback.core.testUtil.XTeeOutputStream;
-import org.fusesource.jansi.AnsiConsole;
-import org.fusesource.jansi.AnsiPrintStream;
+import org.jline.jansi.AnsiConsole;
+import org.jline.jansi.AnsiPrintStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,11 +19,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 
-/**
- * Redirecting System.out is quite messy. Disable this test in Maven but not in
- * Package.class
- */
-public class JansiConsoleAppenderTest {
+
+public class JlineJansiConsoleAppenderTest {
+
     Context context = new ContextBase();
     ConsoleAppender<Object> ca = new ConsoleAppender<Object>();
 
@@ -49,21 +34,6 @@ public class JansiConsoleAppenderTest {
     public void setUp() {
         originalOut = System.out;
         originalErr = System.err;
-        // teeOut will output bytes on System out but it will also
-        // collect them so that the output can be compared against
-        // some expected output data
-        // teeOut = new TeeOutputStream(originalOut);
-
-        // keep the console quiet
-        //teeOut = new XTeeOutputStream(null);
-        //teeErr = new XTeeOutputStream(null);
-
-        //System.setOut(new PrintStream(teeOut));
-        //System.setErr(new PrintStream(teeErr));
-
-        // redirect System.out to teeOut and System.err to teeErr
-        //replace(originalOut, teeOut);
-        //replace(originalErr, teeErr);
     }
 
     @AfterEach
@@ -99,6 +69,7 @@ public class JansiConsoleAppenderTest {
         ca.setTarget("System.out");
         ca.setContext(context);
         ca.setWithJansi(true);
+        //ca.setPreferredJansiClassName(ConsoleAppender.JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME);
         ca.start();
         Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
         ca.doAppend(new Object());
@@ -113,10 +84,12 @@ public class JansiConsoleAppenderTest {
         ca.setTarget("System.err");
         ca.setContext(context);
         ca.setWithJansi(true);
+        //ca.setPreferredJansiClassName(ConsoleAppender.FUSESOURCE_JANSI_ANSI_CONSOLE_CLASS_NAME);
         ca.start();
         Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
         ca.doAppend(new Object());
         // broken in Jansi 2.x as it uses java.io.FileDescriptor instead of System.err
         //Assertions.assertEquals("dummy", teeErr.toString().trim());
     }
+
 }
