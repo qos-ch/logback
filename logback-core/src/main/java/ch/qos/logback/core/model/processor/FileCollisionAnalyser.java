@@ -212,9 +212,23 @@ public class FileCollisionAnalyser extends ModelHandlerBase {
      * key is only bound as a substitution property at runtime, so it must be matched textually.
      */
     private void collectBodyText(Model appenderModel, String tagName, List<String> out) {
-        Stream<Model> level1 = appenderModel.getSubModels().stream();
-        Stream<Model> level2 = appenderModel.getSubModels().stream().flatMap(child -> child.getSubModels().stream());
-        Stream.concat(level1, level2).filter(m -> tagPredicate(m, tagName)).map(Model::getBodyText)
-                .filter(b -> b != null).forEach(out::add);
+        for (Model child : appenderModel.getSubModels()) {
+            // level 1: direct children of the appender (e.g. <file>)
+            addBodyTextIfMatching(child, tagName, out);
+            // level 2: grandchildren (e.g. <fileNamePattern> under a rolling policy)
+            for (Model grandChild : child.getSubModels()) {
+                addBodyTextIfMatching(grandChild, tagName, out);
+            }
+        }
+    }
+
+    private void addBodyTextIfMatching(Model model, String tagName, List<String> out) {
+        if (!tagPredicate(model, tagName)) {
+            return;
+        }
+        String bodyText = model.getBodyText();
+        if (bodyText != null) {
+            out.add(bodyText);
+        }
     }
 }
