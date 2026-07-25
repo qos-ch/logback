@@ -54,7 +54,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      * By default, this property has the value {@code null} which corresponds to the
      * system's default charset.
      *
-     * @param charset
+     * @param charset the charset to use
      */
     public void setCharset(Charset charset) {
         this.charset = charset;
