@@ -138,7 +138,11 @@ public class FileCollisionAnalyser extends ModelHandlerBase {
         addError(String.format(COLLISION_MESSAGE, appenderName, optionName, optionValue, previousAppenderName));
     }
 
-    static public final String SIFT_COLLISION_MESSAGE = "The nested appender of SiftingAppender [%s] does not reference the discriminator key [%s] in its 'file'/'fileNamePattern'. Every sifted appender will therefore write to the same file [%s] and their output will collide. Consider embedding ${%s} in the file path.";
+    static public final String SIFT_COLLISION_MESSAGE_0 =
+            "The nested appender of SiftingAppender [%s] does not reference the discriminator key [%s] in its 'file'/'fileNamePattern'. ";
+    static public final String SIFT_COLLISION_MESSAGE_1 =
+            "Every child appender will therefore write to the same file [%s] causing collisions. ";
+    static public final String SIFT_COLLISION_MESSAGE_2 = "Consider embedding ${%s} in the file path.";
 
     /**
      * Detect the SiftingAppender variant of a file collision: the nested appender is
@@ -173,8 +177,9 @@ public class FileCollisionAnalyser extends ModelHandlerBase {
         boolean referencesKey = fileValues.stream().anyMatch(v -> v.contains(keyReference));
         if (!referencesKey) {
             String resolvedTarget = mic.subst(fileValues.get(0));
-            addWarn(String.format(SIFT_COLLISION_MESSAGE, appenderName, discriminatorKey, resolvedTarget,
-                    discriminatorKey));
+            addWarn(String.format(SIFT_COLLISION_MESSAGE_0, appenderName, discriminatorKey));
+            addWarn(String.format(SIFT_COLLISION_MESSAGE_1, resolvedTarget));
+            addWarn(String.format(SIFT_COLLISION_MESSAGE_2, discriminatorKey));
         }
     }
 
@@ -185,11 +190,20 @@ public class FileCollisionAnalyser extends ModelHandlerBase {
     private String findDiscriminatorKey(AppenderModel appenderModel) {
         Optional<Model> discriminator = appenderModel.getSubModels().stream()
                 .filter(m -> "discriminator".equalsIgnoreCase(m.getTag())).findFirst();
-        if (!discriminator.isPresent()) {
+
+        if (discriminator.isEmpty()) {
             return null;
         }
-        return discriminator.get().getSubModels().stream().filter(m -> "key".equalsIgnoreCase(m.getTag()))
-                .map(Model::getBodyText).filter(b -> b != null).map(String::trim).findFirst().orElse(null);
+
+        for (Model child : discriminator.get().getSubModels()) {
+            if ("key".equalsIgnoreCase(child.getTag())) {
+                String bodyText = child.getBodyText();
+                if (bodyText != null) {
+                    return bodyText.trim();
+                }
+            }
+        }
+        return null;
     }
 
     /**
