@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.net;
 
+import ch.qos.logback.core.util.CloseUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -45,11 +47,20 @@ public class SyslogOutputStream extends OutputStream {
         this.ds = new DatagramSocket();
     }
 
+    boolean isInvalidState() {
+        if(ds == null || baos == null || address == null) {
+            return true;
+        }
+        return false;
+    }
+
     public void write(byte[] byteArray, int offset, int len) throws IOException {
+        if(isInvalidState()) return;
         baos.write(byteArray, offset, len);
     }
 
     public void flush() throws IOException {
+        if(isInvalidState()) return;
         byte[] bytes = baos.toByteArray();
         DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, port);
 
@@ -71,9 +82,13 @@ public class SyslogOutputStream extends OutputStream {
 
     }
 
+    @Override
     public void close() {
+        CloseUtil.closeQuietly(ds);
+        CloseUtil.closeQuietly(baos);
         address = null;
         ds = null;
+        baos = null;
     }
 
     public int getPort() {

@@ -260,10 +260,11 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
     @Override
     public void stop() {
+        super.stop();
         if (sos != null) {
             sos.close();
+            sos = null;
         }
-        super.stop();
     }
 
     /**
