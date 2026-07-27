@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.zip.GZIPOutputStream;
 
+import static ch.qos.logback.core.rolling.helper.CompressionMode.GZ_SUFFIX;
+
 public class GZCompressionStrategy extends CompressionStrategyBase {
 
 
@@ -36,8 +38,8 @@ public class GZCompressionStrategy extends CompressionStrategyBase {
             return;
         }
 
-        if (!compressedFileName.endsWith(".gz")) {
-            compressedFileName = compressedFileName + ".gz";
+        if (!compressedFileName.endsWith(GZ_SUFFIX)) {
+            compressedFileName = compressedFileName + GZ_SUFFIX;
         }
 
         File gzedFile = new File(compressedFileName);

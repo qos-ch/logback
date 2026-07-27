@@ -21,6 +21,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.DynamicClassLoadingException;
 import ch.qos.logback.core.util.IncompatibleClassException;
 
+import static ch.qos.logback.core.rolling.helper.CompressionMode.GZ_SUFFIX;
+import static ch.qos.logback.core.rolling.helper.CompressionMode.XZ_SUFFIX;
+import static ch.qos.logback.core.rolling.helper.CompressionMode.ZIP_SUFFIX;
 import static ch.qos.logback.core.util.OptionHelper.instantiateByClassName;
 
 /**
@@ -86,18 +89,18 @@ public class Compressor extends ContextAwareBase {
         int len = fileNamePatternStr.length();
         switch (compressionMode) {
         case GZ:
-            if (fileNamePatternStr.endsWith(".gz"))
-                return fileNamePatternStr.substring(0, len - 3);
+            if (fileNamePatternStr.endsWith(GZ_SUFFIX))
+                return fileNamePatternStr.substring(0, len - GZ_SUFFIX.length());
             else
                 return fileNamePatternStr;
         case ZIP:
-            if (fileNamePatternStr.endsWith(".zip"))
-                return fileNamePatternStr.substring(0, len - 4);
+            if (fileNamePatternStr.endsWith(ZIP_SUFFIX))
+                return fileNamePatternStr.substring(0, len - ZIP_SUFFIX.length());
             else
                 return fileNamePatternStr;
         case XZ:
-            if (fileNamePatternStr.endsWith(".xz"))
-                return fileNamePatternStr.substring(0, len - 3);
+            if (fileNamePatternStr.endsWith(XZ_SUFFIX))
+                return fileNamePatternStr.substring(0, len - XZ_SUFFIX.length());
             else
                 return fileNamePatternStr;
         case NONE:
