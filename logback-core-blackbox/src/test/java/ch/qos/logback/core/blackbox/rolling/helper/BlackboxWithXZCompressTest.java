@@ -19,21 +19,24 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.blackbox.joran.CoreBlackboxStatusChecker;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.Compressor;
-//import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import static ch.qos.logback.core.blackbox.BlackboxCoreTestConstants.TEST_SRC_PREFIX;
 import static ch.qos.logback.core.testUtil.CoreTestConstants.OUTPUT_DIR_PREFIX;
+
+//import ch.qos.logback.core.status.testUtil.StatusChecker;
 
 public class BlackboxWithXZCompressTest  {
     Context context = new ContextBase();
