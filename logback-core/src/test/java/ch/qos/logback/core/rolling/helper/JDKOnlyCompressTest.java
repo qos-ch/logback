@@ -15,9 +15,6 @@ package ch.qos.logback.core.rolling.helper;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.rolling.helper.CompressionMode;
-import ch.qos.logback.core.rolling.helper.Compressor;
-//import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -35,7 +32,6 @@ import static ch.qos.logback.core.rolling.helper.Compressor.COULD_NOT_OBTAIN_COM
 import static ch.qos.logback.core.rolling.helper.Compressor.XZ_COMPRESSION_STRATEGY_CLASS_NAME;
 import static ch.qos.logback.core.testUtil.CoreTestConstants.OUTPUT_DIR_PREFIX;
 import static ch.qos.logback.core.testUtil.CoreTestConstants.TEST_SRC_PREFIX;
-import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Ceki Gulcu

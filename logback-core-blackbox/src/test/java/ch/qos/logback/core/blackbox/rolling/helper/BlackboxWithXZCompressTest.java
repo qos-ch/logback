@@ -20,11 +20,15 @@ import ch.qos.logback.core.blackbox.joran.CoreBlackboxStatusChecker;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.Compressor;
 //import ch.qos.logback.core.status.testUtil.StatusChecker;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.*;
 
@@ -50,6 +54,10 @@ public class BlackboxWithXZCompressTest  {
     final String original4 = TEST_SRC_PREFIX + "blackboxInput/compress4.original";
     final String copy4 = TEST_SRC_PREFIX + "blackboxInput/compress4.txt";
     final String compressed4 = OUTPUT_DIR_PREFIX + "compress4.txt.xz";
+
+    int diff = RandomUtil.getPositiveInt();
+    String outputDir = OUTPUT_DIR_PREFIX + "xzCompress_" + diff + "/";
+
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -128,5 +136,45 @@ public class BlackboxWithXZCompressTest  {
         statusPrinter2.print(context);
         CoreBlackboxStatusChecker checker = new CoreBlackboxStatusChecker(context);
         Assertions.assertTrue(checker.isErrorFree(0));
+    }
+
+
+    /**
+     * On compression failure the source file must be left intact.
+     * <p>
+     * Failure strategy: make the compressed file's parent path a regular file so
+     * {@link java.io.FileOutputStream} cannot open the target (parent is not a
+     * directory). That is portable, deterministic, and exercises the exception
+     * path rather than the early "target already exists" abort.
+     */
+    @Test
+    public void compressionFailureLeavesOriginalFileIntact() throws Exception {
+        final String originalPath = outputDir + "compress-fail-original.txt";
+        final String parentAsFilePath = outputDir + "compress-fail-parent";
+        final String compressedPath = parentAsFilePath + "/compress-fail.txt";
+
+        File originalFile = new File(originalPath);
+        originalFile.getParentFile().mkdirs();
+        copy(new File(original1), originalFile);
+
+        File parentAsFile = new File(parentAsFilePath);
+        Assertions.assertTrue(parentAsFile.createNewFile(),
+                "parent path must be a regular file to force compression I/O failure");
+
+        File compressedFile = new File(compressedPath);
+
+        Compressor compressor = new Compressor(CompressionMode.XZ);
+        compressor.setContext(context);
+        compressor.compress(originalPath, compressedPath, null);
+
+        CoreBlackboxStatusChecker checker = new CoreBlackboxStatusChecker(context);
+        checker.assertContainsMatch(Status.ERROR, "Error occurred while compressing");
+        checker.assertContainsMatch(Status.WARN,
+                "Compression of \\[" + originalPath + "\\] failed. Original file left intact.");
+
+        Assertions.assertTrue(originalFile.exists(),
+                "original file must remain after failed XZ compression");
+        Assertions.assertFalse(compressedFile.exists(),
+                "compressed file must not be left behind after failed XZ compression");
     }
 }
