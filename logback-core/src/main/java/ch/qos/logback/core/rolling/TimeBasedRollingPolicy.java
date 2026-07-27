@@ -67,7 +67,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
 
         // find out period from the filename pattern
         if (fileNamePatternStr != null) {
-            determineCompressionMode();
+            compressionMode = fileNamePatternStrToCompressionMode(fileNamePatternStr);
+            outputCompressionModeMessage(compressionMode);
             adjustCompressionModeAndFileNamePatternStrIfNecessary();
             fileNamePattern = new FileNamePattern(fileNamePatternStr, this.context);
         } else {
@@ -83,7 +84,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         fileNamePatternWithoutCompSuffix = new FileNamePattern(
                 Compressor.computeFileNameStrWithoutCompSuffix(fileNamePatternStr, compressionMode), this.context);
 
-        addInfo("Will use the pattern " + fileNamePatternWithoutCompSuffix + " for the active file");
+        addInfo("Will use the FileNamePattern [" + fileNamePatternWithoutCompSuffix + "]");
 
         if (compressionMode == CompressionMode.ZIP) {
             String zipEntryFileNamePatternStr = transformFileNamePattern2ZipEntry(fileNamePatternStr);

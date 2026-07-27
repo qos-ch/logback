@@ -1,0 +1,20 @@
+
+<configuration>
+  <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
+  <import class="ch.qos.logback.core.rolling.RollingFileAppender"/>
+  <import class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"/>
+
+  <appender name="ROLLING" class="RollingFileAppender">
+    <file>${target}/basic.log</file>
+    <rollingPolicy class="TimeBasedRollingPolicy">
+      <fileNamePattern>${target}/basic-%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+    </rollingPolicy>
+    <encoder class="PatternLayoutEncoder">
+      <pattern>%msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="ROLLING"/>
+  </root>
+</configuration>

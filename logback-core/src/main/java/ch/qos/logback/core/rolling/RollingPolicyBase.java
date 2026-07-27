@@ -39,28 +39,54 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
     FileNamePattern zipEntryFileNamePattern;
     private boolean started;
 
+
+    /**
+     * @deprecated replaced by #fileNamePatternStrToCompressionMode(String) followed by #outputCompressionModeMessage(CompressionMode)
+     */
+    @Deprecated
+    protected void determineCompressionMode() {
+        compressionMode = fileNamePatternStrToCompressionMode(fileNamePatternStr);
+        outputCompressionModeMessage(compressionMode);
+    }
+
+    protected void outputCompressionModeMessage(CompressionMode compressionMode) {
+
+        switch (compressionMode) {
+            case GZ:
+                addInfo("Will use gz compression");
+                break;
+            case ZIP:
+                addInfo("Will use zip compression");
+                break;
+            case XZ:
+                addInfo("Will use xz compression");
+                break;
+            case NONE:
+                addInfo("No compression will be used");
+                break;
+        }
+    }
+
     /**
      * Given the FileNamePattern string, this method determines the compression mode
      * depending on last letters of the fileNamePatternStr. Patterns ending with .gz
      * imply GZIP compression, endings with '.zip' imply ZIP compression, endings with
      * .xz imply XZ compression. Otherwise and by default, there is no compression.
      *
+     * @since 1.6.1
      */
-    protected void determineCompressionMode() {
-        if (fileNamePatternStr.endsWith(CompressionMode.GZ_SUFFIX)) {
-            addInfo("Will use gz compression");
-            compressionMode = CompressionMode.GZ;
-        } else if (fileNamePatternStr.endsWith(CompressionMode.ZIP_SUFFIX)) {
-            addInfo("Will use zip compression");
-            compressionMode = CompressionMode.ZIP;
-        } else if (fileNamePatternStr.endsWith(CompressionMode.XZ_SUFFIX)) {
-            addInfo("Will use xz compression");
-            compressionMode = CompressionMode.XZ;
+    protected CompressionMode fileNamePatternStrToCompressionMode(String aFileNamePatternStr) {
+        if (aFileNamePatternStr.endsWith(CompressionMode.GZ_SUFFIX)) {
+            return CompressionMode.GZ;
+        } else if (aFileNamePatternStr.endsWith(CompressionMode.ZIP_SUFFIX)) {
+            return CompressionMode.ZIP;
+        } else if (aFileNamePatternStr.endsWith(CompressionMode.XZ_SUFFIX)) {
+            return CompressionMode.XZ;
         } else {
-            addInfo("No compression will be used");
-            compressionMode = CompressionMode.NONE;
+            return CompressionMode.NONE;
         }
     }
+
 
     /**
      * If compression mode is XZ but the XZ library is missing, then fallback to GZ compression.
