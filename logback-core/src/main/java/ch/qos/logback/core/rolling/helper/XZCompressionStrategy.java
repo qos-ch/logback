@@ -53,6 +53,7 @@ public class XZCompressionStrategy extends CompressionStrategyBase {
         addInfo("XZ compressing [" + file2xz + "] as [" + xzedFile + "]");
         createMissingTargetDirsIfNecessary(xzedFile);
 
+        boolean compressionSucceeded = false;
         try (FileInputStream fis = new FileInputStream(nameOfFile2xz);
              XZOutputStream xzos = new XZOutputStream(new BufferedOutputStream(new FileOutputStream(nameOfxzedFile), BUFFER_SIZE), new LZMA2Options())) {
 
@@ -62,12 +63,19 @@ public class XZCompressionStrategy extends CompressionStrategyBase {
             while ((n = fis.read(inbuf)) != -1) {
                 xzos.write(inbuf, 0, n);
             }
+
+            compressionSucceeded = true;
         } catch (Exception e) {
             addError("Error occurred while compressing [" + nameOfFile2xz + "] into [" + nameOfxzedFile + "].", e);
         }
 
-        if (!file2xz.delete()) {
-            addWarn("Could not delete [" + nameOfFile2xz + "].");
+        // Delete the original only after successful compression so a failure leaves it intact.
+        if (compressionSucceeded) {
+            if (!file2xz.delete()) {
+                addWarn("Could not delete [" + nameOfFile2xz + "].");
+            }
+        } else {
+            addWarn("Compression of [" + nameOfFile2xz + "] failed. Original file left intact.");
         }
     }
 }

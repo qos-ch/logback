@@ -62,6 +62,7 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
         addInfo("ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
         createMissingTargetDirsIfNecessary(zippedFile);
 
+        boolean compressionSucceeded = false;
         try (FileInputStream fis = new FileInputStream(originalFileName);
              ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(compressedFileName), BUFFER_SIZE))) {
 
@@ -75,12 +76,19 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
                 zos.write(inbuf, 0, n);
             }
 
+            compressionSucceeded = true;
             addInfo("Done ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
         } catch (Exception e) {
             addStatus(new ErrorStatus("Error occurred while compressing [" + originalFileName + "] into [" + compressedFileName + "].", this, e));
         }
-        if (!file2zip.delete()) {
-            addStatus(new WarnStatus("Could not delete [" + originalFileName + "].", this));
+
+        // Delete the original only after successful compression so a failure leaves it intact.
+        if (compressionSucceeded) {
+            if (!file2zip.delete()) {
+                addStatus(new WarnStatus("Could not delete [" + originalFileName + "].", this));
+            }
+        } else {
+            addStatus(new WarnStatus("Compression of [" + originalFileName + "] failed. Original file left intact.", this));
         }
     }
 

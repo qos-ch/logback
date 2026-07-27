@@ -20,11 +20,14 @@ import ch.qos.logback.core.rolling.helper.Compressor;
 //import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.Compare;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.io.*;
 
@@ -56,6 +59,9 @@ public class JDKOnlyCompressTest {
     final String original4 = TEST_SRC_PREFIX + "input/compress4.original";
     final String copy4 = TEST_SRC_PREFIX + "input/compress4.txt";
     final String compressed4 = OUTPUT_DIR_PREFIX + "compress4.txt.xz";
+
+    int diff = RandomUtil.getPositiveInt();
+    String outputDir = OUTPUT_DIR_PREFIX + "compress_" + diff + "/";
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -135,6 +141,50 @@ public class JDKOnlyCompressTest {
         //statusPrinter2.print(context);
         checker.assertContainsMatch(Status.ERROR, "Could not instantiate "+XZ_COMPRESSION_STRATEGY_CLASS_NAME);
         checker.assertContainsMatch(Status.WARN, COULD_NOT_OBTAIN_COMPRESSION_STRATEGY_MESSAGE);
+    }
+
+    /**
+     * On compression failure the source file must be left intact.
+     * <p>
+     * Failure strategy: make the compressed file's parent path a regular file so
+     * {@link java.io.FileOutputStream} cannot open the target (parent is not a
+     * directory). That is portable, deterministic, and exercises the exception
+     * path rather than the early "target already exists" abort.
+     */
+    @ParameterizedTest
+    @EnumSource(value = CompressionMode.class, names = { "GZ", "ZIP" })
+    public void compressionFailureLeavesOriginalFileIntact(CompressionMode compressionMode) throws Exception {
+        final String suffix = compressionMode == CompressionMode.GZ ? CompressionMode.GZ_SUFFIX : CompressionMode.ZIP_SUFFIX;
+        final String originalPath = outputDir + "compress-fail-original.txt";
+        final String parentAsFilePath = outputDir + "compress-fail-parent";
+        final String compressedPath = parentAsFilePath + "/compress-fail.txt" + suffix;
+        final String innerEntryName = compressionMode == CompressionMode.ZIP ? "compress-fail-original.txt" : null;
+
+        File originalFile = new File(originalPath);
+        originalFile.getParentFile().mkdirs();
+        copy(new File(original1), originalFile);
+
+        File parentAsFile = new File(parentAsFilePath);
+        Assertions.assertTrue(parentAsFile.createNewFile(),
+                "parent path must be a regular file to force compression I/O failure");
+
+        File compressedFile = new File(compressedPath);
+
+        Compressor compressor = new Compressor(compressionMode);
+        compressor.setContext(context);
+        compressor.compress(originalPath, compressedPath, innerEntryName);
+
+        StatusChecker checker = new StatusChecker(context);
+        checker.assertContainsMatch(Status.ERROR, "Error occurred while compressing");
+        checker.assertContainsMatch(Status.WARN,
+                "Compression of \\[" + originalPath + "\\] failed. Original file left intact.");
+
+        Assertions.assertTrue(originalFile.exists(),
+                "original file must remain after failed " + compressionMode + " compression");
+        Assertions.assertTrue(Compare.compare(originalPath, original1),
+                "original file content must be unchanged after failed " + compressionMode + " compression");
+        Assertions.assertFalse(compressedFile.exists(),
+                "compressed file must not be left behind after failed " + compressionMode + " compression");
     }
 
 }

@@ -51,6 +51,7 @@ public class GZCompressionStrategy extends CompressionStrategyBase {
 
         addInfo("GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         createMissingTargetDirsIfNecessary(gzedFile);
+        boolean compressionSucceeded = false;
         try (FileInputStream fis = new FileInputStream(originalFileName);
              GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(compressedFileName), BUFFER_SIZE)) {
 
@@ -61,14 +62,22 @@ public class GZCompressionStrategy extends CompressionStrategyBase {
                 gzos.write(inbuf, 0, n);
             }
 
+            compressionSucceeded = true;
             addInfo("Done GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         } catch (Exception e) {
             addStatus(new ErrorStatus("Error occurred while compressing [" + originalFileName + "] into [" + compressedFileName + "].", this, e));
         }
 
-        if (!file2gz.delete()) {
-            addStatus(new WarnStatus("Could not delete [" + originalFileName + "].", this));
+
+        // Delete the original only after successful compression so a failure leaves it intact.
+        if (compressionSucceeded) {
+            if (!file2gz.delete()) {
+                addStatus(new WarnStatus("Could not delete [" + originalFileName + "].", this));
+            }
+        } else {
+            addStatus(new WarnStatus("Compression of [" + originalFileName + "] failed. Original file left intact.", this));
         }
+
     }
 
 }
