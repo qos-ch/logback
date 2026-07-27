@@ -192,7 +192,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
 
     Future<?> renameRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
         String parentsRawFile = getParentsRawFileProperty();
-        String tmpTarget = nameOfCompressedFile + System.nanoTime() + ".tmp";
+        // tmpTarget is the compressed file name without the compression suffix (e.g. .gz, .zip)
+        String tmpTarget = Compressor.computeFileNameStrWithoutCompSuffix(nameOfCompressedFile, compressionMode);
         renameUtil.rename(parentsRawFile, tmpTarget);
         return compressor.asyncCompress(tmpTarget, nameOfCompressedFile, innerEntryName);
     }
