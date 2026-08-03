@@ -91,17 +91,17 @@ public class DefaultProcessor extends ContextAwareBase {
         }
     }
 
-    public void process(Model model) {
+    public void process(Model topModel) {
 
-        if (model == null) {
+        if (topModel == null) {
             addError("Expecting non null model to process");
             return;
         }
         initialObjectPush();
 
-        mainTraverse(model, getPhaseOneFilter());
-        analyseDependencies(model);
-        traversalLoop(this::secondPhaseTraverse, model, getPhaseTwoFilter(), "phase 2");
+        mainTraverse(topModel, getPhaseOneFilter());
+        analyseDependencies(topModel);
+        traversalLoop(this::secondPhaseTraverse, topModel, getPhaseTwoFilter(), "phase 2");
 
         addInfo("End of configuration.");
         finalObjectPop();
@@ -127,10 +127,10 @@ public class DefaultProcessor extends ContextAwareBase {
     protected void analyseDependencies(Model model) {
 
         List<Supplier<ModelHandlerBase>> analyserSupplierList = modelClassToDependencyAnalyserMap.get(model.getClass());
+        ModelHandlerBase analyser = null;
 
         if (analyserSupplierList != null) {
             for (Supplier<ModelHandlerBase> analyserSupplier : analyserSupplierList) {
-                ModelHandlerBase analyser = null;
 
                 if (analyserSupplier != null) {
                     analyser = analyserSupplier.get();
@@ -139,16 +139,17 @@ public class DefaultProcessor extends ContextAwareBase {
                 if (analyser != null && !model.isSkipped()) {
                     callAnalyserHandleOnModel(model, analyser);
                 }
-
-                if (analyser != null && !model.isSkipped()) {
-                    callAnalyserPostHandleOnModel(model, analyser);
-                }
             }
         }
 
         for (Model m : model.getSubModels()) {
             analyseDependencies(m);
         }
+
+        if (analyser != null && !model.isSkipped()) {
+            callAnalyserPostHandleOnModel(model, analyser);
+        }
+
 
     }
 

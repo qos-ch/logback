@@ -176,19 +176,19 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
             addWarn("Empty sax event list");
             return;
         }
-        Model top = buildModelFromSaxEventList(recorder.getSaxEventList());
-        if (top == null) {
+        Model topModel = buildModelFromSaxEventList(recorder.getSaxEventList());
+        if (topModel == null) {
             addError(ErrorCodes.EMPTY_MODEL_STACK);
             return;
         }
-        sanityCheck(top);
-        processModel(top);
+        sanityCheck(topModel);
+        processModel(topModel);
 
         // no exceptions at this level
         StatusUtil statusUtil = new StatusUtil(context);
         if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
             addInfo("Registering current configuration as safe fallback point");
-            registerSafeConfiguration(top);
+            registerSafeConfiguration(topModel);
             context.fireConfigurationEvent(newConfigurationEndedSuccessfullyEvent(this));
         } else {
             context.fireConfigurationEvent(newConfigurationEndedWithXMLParsingErrorsEvent(this));
@@ -214,9 +214,9 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         saxEventInterpreter.getEventPlayer().play();
     }
 
-    public void processModel(Model model) {
+    public void processModel(Model topModel) {
         buildModelInterpretationContext();
-        this.modelInterpretationContext.setTopModel(model);
+        this.modelInterpretationContext.setTopModel(topModel);
         modelInterpretationContext.setConfiguratorHint(this);
         DefaultProcessor defaultProcessor = new DefaultProcessor(context, this.modelInterpretationContext);
         addModelHandlerAssociations(defaultProcessor);
@@ -226,7 +226,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
         try {
             configurationLock.lock();
-            defaultProcessor.process(model);
+            defaultProcessor.process(topModel);
         } finally {
             configurationLock.unlock();
         }
