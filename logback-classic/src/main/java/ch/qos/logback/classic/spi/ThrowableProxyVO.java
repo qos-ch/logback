@@ -68,6 +68,54 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
         return cyclic;
     }
 
+    /**
+     * Returns a new {@link ThrowableProxyVOBuilder} for constructing a
+     * {@link ThrowableProxyVO} field by field.
+     *
+     * <p>This is a supplement to {@link #build(IThrowableProxy)}, which copies
+     * an existing {@link IThrowableProxy} in one step.</p>
+     *
+     * @return a new builder instance
+     * @since 1.6.2
+     */
+    public static ThrowableProxyVOBuilder builder() {
+        return new ThrowableProxyVOBuilder();
+    }
+
+    // package-private setters used by ThrowableProxyVOBuilder
+
+    void setClassName(String className) {
+        this.className = className;
+    }
+
+    void setMessage(String message) {
+        this.message = message;
+    }
+
+    void setOverridingMessage(String overridingMessage) {
+        this.overridingMessage = overridingMessage;
+    }
+
+    void setCommonFramesCount(int commonFramesCount) {
+        this.commonFramesCount = commonFramesCount;
+    }
+
+    void setStackTraceElementProxyArray(StackTraceElementProxy[] stackTraceElementProxyArray) {
+        this.stackTraceElementProxyArray = stackTraceElementProxyArray;
+    }
+
+    void setCause(IThrowableProxy cause) {
+        this.cause = cause;
+    }
+
+    void setSuppressed(IThrowableProxy[] suppressed) {
+        this.suppressed = suppressed;
+    }
+
+    void setCyclic(boolean cyclic) {
+        this.cyclic = cyclic;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
