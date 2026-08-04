@@ -72,6 +72,11 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
 
         defaultProcessor.addAnalyser(AppenderModel.class, () -> new AppenderDeclarationAnalyser(context));
 
+        defaultProcessor.addAnalyser(AppenderModel.class,
+                () -> new CallerContradictionAnalyser(context));
+        defaultProcessor.addAnalyser(ConfigurationModel.class,
+                () -> new CallerContradictionWarnAnalyser(context));
+
         sealModelFilters(defaultProcessor);
 
     }
