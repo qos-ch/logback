@@ -341,11 +341,6 @@ public final class Logger
         }
     }
 
-    /**
-     * The default size of child list arrays. The JDK 1.5 default is 10. We use a
-     * smaller value to save a little space.
-     */
-
     Logger createChildByName(final String childName) {
         int i_index = LoggerNameUtil.getSeparatorIndexOf(childName, this.name.length() + 1);
         if (i_index != -1) {
