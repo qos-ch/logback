@@ -27,11 +27,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.MDC;
 
 /**
- * A simple servlet filter that puts the username
- * found either in the Principal.
+ * A simple servlet filter that stores the username
+ * found in the Principal in the MDC.
  * 
- * <p> The value is removed from the MDC once the request has been
- * fully processed.
+ * <p> The value is removed from the MDC once all following
+ * filters/servlets have been fully processed. Note, however,
+ * the value is not available in an error handler servlet.
  *
  * @author S&eacute;bastien Pennec
  */
@@ -74,7 +75,7 @@ public class UserServletFilter implements Filter {
      * @return true id the user can be successfully registered
      */
     private boolean registerUsername(String username) {
-        if (username != null && username.trim().length() > 0) {
+        if (username != null && !username.trim().isEmpty()) {
             MDC.put(USER_KEY, username);
             return true;
         }
