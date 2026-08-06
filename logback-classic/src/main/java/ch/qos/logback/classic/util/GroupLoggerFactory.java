@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
  *       GroupLoggerFactory.clearGroup();
  *   }
  * </pre>
+ *
+ * @author YoranYe
  */
 public class GroupLoggerFactory {
 

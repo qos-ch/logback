@@ -10,6 +10,7 @@ import org.slf4j.Marker;
 /**
  * 自定义 TurboFilter：在日志事件创建前，将 GroupContext 中的 group 注入 MDC。
  * SiftingAppender 会根据 MDC 中的 LOG_GROUP 值路由到不同的日志文件。
+ * @author YoranYe
  */
 public class GroupRoutingFilter extends TurboFilter {
 

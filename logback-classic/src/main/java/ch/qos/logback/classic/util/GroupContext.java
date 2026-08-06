@@ -3,6 +3,7 @@ package ch.qos.logback.classic.util;
 /**
  * 基于 ThreadLocal 的日志分组上下文。
  * 用于在调用日志前设置 group，TurboFilter 会自动读取并注入 MDC。
+ * @author YoranYe
  */
 public class GroupContext {
 
