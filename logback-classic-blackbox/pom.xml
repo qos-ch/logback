@@ -156,7 +156,6 @@
                                     <systemPropertyVariables>
                                         <olderCore>${older-logback-core.version}</olderCore>
                                     </systemPropertyVariables>
-                                    <forkMode>once</forkMode>
                                     <!--<parallel>classes</parallel>-->
                                     <reportFormat>plain</reportFormat>
                                     <disableXmlReport>true</disableXmlReport>
