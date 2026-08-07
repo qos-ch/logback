@@ -89,6 +89,14 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
         }
     }
 
+    /**
+     * Note that in AsyncAppender includeCallerData is false by default, so if
+     * the tag is absent we treat it as false.
+     *
+     * @param mic
+     * @param appenderModel
+     * @return
+     */
     private boolean isIncludeCallerDataAbsentOrFalse(ModelInterpretationContext mic,
             AppenderModel appenderModel) {
         for (Model child : appenderModel.getSubModels()) {
