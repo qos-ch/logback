@@ -43,6 +43,11 @@
             <version>${jetty.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jansi-core</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>jakarta.servlet</groupId>

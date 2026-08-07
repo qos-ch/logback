@@ -71,7 +71,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <jakarta.mail.version>2.1.5</jakarta.mail.version>
     <jakarta.activation.version>2.1.4</jakarta.activation.version>
-    <jakarta.angus-mail.version>2.0.3</jakarta.angus-mail.version>
+    <jakarta.angus-mail.version>2.0.4</jakarta.angus-mail.version>
 
     <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
     <greenmail.version>2.1.7</greenmail.version>
@@ -113,7 +113,7 @@
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
     <ant.version>1.10.13</ant.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
-    <jetty.version>12.0.13</jetty.version>
+    <jetty.version>12.1.12</jetty.version>
 
     <central-publishing-maven-plugin.version>0.9.0</central-publishing-maven-plugin.version>
 

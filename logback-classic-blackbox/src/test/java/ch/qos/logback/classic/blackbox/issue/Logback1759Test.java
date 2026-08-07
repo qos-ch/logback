@@ -12,7 +12,7 @@
  * as published by the Free Software Foundation.
  */
 
-package ch.qos.logback.classic.issue.logback_1759;
+package ch.qos.logback.classic.blackbox.issue;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -21,6 +21,8 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,8 @@ public class Logback1759Test {
     @BeforeEach
     public void setup() {
         context.setMDCAdapter(logbackMDCAdapter);
+        OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
+        StatusListenerConfigHelper.addOnConsoleListenerInstance(context, onConsoleStatusListener);
         init();
     }
 

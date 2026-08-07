@@ -21,6 +21,7 @@ module logback.classic.blackbox {
     exports ch.qos.logback.classic.blackbox.joran.spi;
     exports ch.qos.logback.classic.blackbox.html;
     exports ch.qos.logback.classic.blackbox.net;
+    exports ch.qos.logback.classic.blackbox.issue;
 
     // resources in named modules are accessible only if opened
     opens asResource;
