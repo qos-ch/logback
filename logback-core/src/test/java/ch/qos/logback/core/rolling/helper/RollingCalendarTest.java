@@ -81,6 +81,17 @@ public class RollingCalendarTest {
         }
 
         {
+            // 'a' (AM/PM) without a finer time token means twice-a-day roll-over
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd-a");
+            assertEquals(PeriodicityType.HALF_DAY, rc.getPeriodicityType());
+        }
+
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd a");
+            assertEquals(PeriodicityType.HALF_DAY, rc.getPeriodicityType());
+        }
+
+        {
             RollingCalendar rc = new RollingCalendar("yyyy-MM-dd");
             assertEquals(PeriodicityType.TOP_OF_DAY, rc.getPeriodicityType());
         }
@@ -132,6 +143,23 @@ public class RollingCalendarTest {
         }
     }
 
+    @Test
+    public void testVaryingNumberOfHalfDailyPeriods() {
+        RollingCalendar rc = new RollingCalendar("yyyy-MM-dd-a");
+        final long MILLIS_IN_HALF_DAY = 12 * 3600 * 1000;
+
+        for (int p = 20; p > -100; p--) {
+            long now = 1223325293589L; // Mon Oct 06 22:34:53 CEST 2008
+            Instant nowInstant = Instant.ofEpochMilli(now);
+            Instant result = rc.getEndOfNextNthPeriod(nowInstant, p);
+            long offset = rc.getTimeZone().getRawOffset() + rc.getTimeZone().getDSTSavings();
+
+            long origin = now - ((now + offset) % (MILLIS_IN_HALF_DAY));
+            long expected = origin + p * MILLIS_IN_HALF_DAY;
+            assertEquals(expected, result.toEpochMilli(), "p=" + p);
+        }
+    }
+
     // Wed Mar 23 23:07:05 CET 2016
     final long WED_2016_03_23_T_230705_CET = 1458770825333L;
 
@@ -143,6 +171,8 @@ public class RollingCalendarTest {
                 WED_2016_03_23_T_230705_CET + 3 * CoreConstants.MILLIS_IN_ONE_MINUTE, 3);
         checkPeriodBarriersCrossed("yyyy-MM-dd'T'HH", WED_2016_03_23_T_230705_CET,
                 WED_2016_03_23_T_230705_CET + 3 * CoreConstants.MILLIS_IN_ONE_HOUR, 3);
+        checkPeriodBarriersCrossed("yyyy-MM-dd-a", WED_2016_03_23_T_230705_CET,
+                WED_2016_03_23_T_230705_CET + 3 * 12 * CoreConstants.MILLIS_IN_ONE_HOUR, 3);
         checkPeriodBarriersCrossed("yyyy-MM-dd", WED_2016_03_23_T_230705_CET,
                 WED_2016_03_23_T_230705_CET + 3 * CoreConstants.MILLIS_IN_ONE_DAY, 3);
     }
@@ -163,6 +193,10 @@ public class RollingCalendarTest {
 
         checkCollisionFreeness("yyyy-MM-dd KK", false);
         checkCollisionFreeness("yyyy-MM-dd KK a", true);
+
+        // half-daily
+        checkCollisionFreeness("yyyy-MM-dd-a", true);
+        checkCollisionFreeness("a", false);
 
         // daily
         checkCollisionFreeness("yyyy-MM-dd", true);
