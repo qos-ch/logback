@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.net;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -37,18 +38,22 @@ import ch.qos.logback.core.util.IpAddressMatcher;
  * 
  * <pre>
  *      &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SimpleSocketServer port configFile
+ *                     allowedAddress [allowedAddress ...]
  * </pre>
  * 
- * where <em>port</em> is a port number where the server listens and
+ * where <em>port</em> is a port number where the server listens,
  * <em>configFile</em> is an XML configuration file fed to
- * {@link JoranConfigurator}.
+ * {@link JoranConfigurator}, and each <em>allowedAddress</em> is a client IP
+ * or CIDR range that is permitted to connect (e.g. {@code 192.168.1.10} or
+ * {@code 192.168.1.0/24}). At least one allowed address must be specified on
+ * the command line.
  * 
  * <p>
- * Client access can be restricted by registering allowed addresses with
- * {@link #addAllowedClientAddress(String)}. Supported forms are single IPs
- * (e.g. {@code 192.168.1.10}) and CIDR network ranges (e.g.
- * {@code 192.168.1.0/24}). If no allowed addresses are configured, every client
- * is accepted (backward compatible default).
+ * When embedding the server programmatically, allowed client addresses must be
+ * registered with {@link #addAllowedClientAddress(String)} or
+ * {@link #setAllowedClientAddresses(Collection)} before clients can connect.
+ * Supported forms are single IPs and CIDR network ranges. An empty whitelist
+ * means no clients are allowed.
  * </p>
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -67,8 +72,8 @@ public class SimpleSocketServer extends Thread {
     private List<SocketNode> socketNodeList = new ArrayList<SocketNode>();
 
     /**
-     * When non-empty, only clients whose remote address matches one of these
-     * matchers are accepted. Empty means all clients are allowed.
+     * Only clients whose remote address matches one of these matchers are
+     * accepted. Empty means no clients are allowed.
      */
     private final List<IpAddressMatcher> allowedClientAddresses = new ArrayList<IpAddressMatcher>();
 
@@ -80,21 +85,40 @@ public class SimpleSocketServer extends Thread {
     }
 
     protected static void doMain(Class<? extends SimpleSocketServer> serverClass, String argv[]) throws Exception {
-        int port = -1;
-        if (argv.length == 2) {
-            port = parsePortNumber(argv[0]);
-        } else {
-            usage("Wrong number of arguments.");
+        if (argv.length < 3) {
+            if (argv.length == 2) {
+                usage("No allowed client IP addresses specified. Please explicitly whitelist client IPs"
+                        + " or CIDR ranges on the command line (e.g. 192.168.1.0/24).", serverClass);
+            } else {
+                usage("Wrong number of arguments.", serverClass);
+            }
         }
 
+        int port = parsePortNumber(argv[0]);
         String configFile = argv[1];
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         configureLC(lc, configFile);
 
-        SimpleSocketServer sss = new SimpleSocketServer(lc, port);
+        SimpleSocketServer sss = createServer(serverClass, lc, port);
+        for (int i = 2; i < argv.length; i++) {
+            try {
+                sss.addAllowedClientAddress(argv[i]);
+            } catch (IllegalArgumentException e) {
+                usage("Invalid allowed client address [" + argv[i] + "]: " + e.getMessage(), serverClass);
+            }
+        }
+
+
 
         // start the server in a separate thread
         sss.start();
+    }
+
+    private static SimpleSocketServer createServer(Class<? extends SimpleSocketServer> serverClass, LoggerContext lc,
+            int port) throws Exception {
+        Constructor<? extends SimpleSocketServer> constructor = serverClass.getConstructor(LoggerContext.class,
+                int.class);
+        return constructor.newInstance(lc, port);
     }
 
     public SimpleSocketServer(LoggerContext lc, int port) {
@@ -105,9 +129,9 @@ public class SimpleSocketServer extends Thread {
     /**
      * Authorize a single client IP address or a CIDR network range.
      * <p>
-     * If at least one allowed address is registered, only matching clients are
-     * accepted; others are closed immediately after {@code accept()}. When no
-     * allowed addresses are registered, all clients are accepted.
+     * Only matching clients are accepted; others are closed immediately after
+     * {@code accept()}. When no allowed addresses are registered, no clients
+     * are accepted.
      * </p>
      *
      * @param addressOrCidr a single IP (e.g. {@code 10.0.0.5}) or CIDR range
@@ -122,7 +146,7 @@ public class SimpleSocketServer extends Thread {
     /**
      * Replace the set of authorized client addresses with the given collection.
      * Each entry must be a single IP or CIDR range. Passing an empty collection
-     * (or {@code null}) clears the restriction so that all clients are allowed.
+     * (or {@code null}) clears the whitelist so that no clients are allowed.
      *
      * @param addresses allowed addresses / CIDR ranges, or {@code null}
      * @throws IllegalArgumentException if any specification is invalid
@@ -141,7 +165,7 @@ public class SimpleSocketServer extends Thread {
     /**
      * Returns {@code true} if the client is allowed to connect.
      * <p>
-     * When no allowed addresses are configured, every client is allowed.
+     * When no allowed addresses are configured, no clients are allowed.
      * </p>
      *
      * @param clientAddress the remote address of the connecting client
@@ -149,10 +173,7 @@ public class SimpleSocketServer extends Thread {
      * @since 1.6.2
      */
     protected boolean isClientAllowed(InetAddress clientAddress) {
-        if (allowedClientAddresses.isEmpty()) {
-            return true;
-        }
-        if (clientAddress == null) {
+        if (allowedClientAddresses.isEmpty() || clientAddress == null) {
             return false;
         }
         for (IpAddressMatcher matcher : allowedClientAddresses) {
@@ -173,8 +194,11 @@ public class SimpleSocketServer extends Thread {
             Thread.currentThread().setName(newThreadName);
 
             logger.info("Listening on port " + port);
-            if (!allowedClientAddresses.isEmpty()) {
-                logger.info("Client IP restrictions are in effect ({} allowed address pattern(s))",
+            if (allowedClientAddresses.isEmpty()) {
+                logger.warn("No allowed client addresses configured; all incoming connections will be denied. "
+                        + "Use addAllowedClientAddress() or pass allowed addresses on the command line.");
+            } else {
+                logger.info("Client IP whitelist in effect ({} allowed address pattern(s))",
                         allowedClientAddresses.size());
             }
             serverSocket = getServerSocketFactory().createServerSocket(port);
@@ -308,8 +332,16 @@ public class SimpleSocketServer extends Thread {
     }
 
     static void usage(String msg) {
+        usage(msg, SimpleSocketServer.class);
+    }
+
+    static void usage(String msg, Class<? extends SimpleSocketServer> serverClass) {
         System.err.println(msg);
-        System.err.println("Usage: java " + SimpleSocketServer.class.getName() + " port configFile");
+        System.err.println("Usage: java " + serverClass.getName()
+                + " port configFile allowedAddress [allowedAddress ...]");
+        System.err.println(
+                "  allowedAddress: a single IP (e.g. 192.168.1.10) or CIDR range (e.g. 192.168.1.0/24)");
+        System.err.println("  At least one allowedAddress must be specified.");
         System.exit(1);
     }
 

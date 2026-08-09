@@ -111,6 +111,8 @@ public class SocketAppenderMessageLossTest {
 
         CountDownLatch latch = new CountDownLatch(1);
         SimpleSocketServer simpleSocketServer = new SimpleSocketServer(serverLoggerContext, port);
+        simpleSocketServer.addAllowedClientAddress("127.0.0.1");
+        simpleSocketServer.addAllowedClientAddress("::1");
         simpleSocketServer.start();
         simpleSocketServer.setLatch(latch);
 

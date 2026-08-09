@@ -63,6 +63,8 @@ public class SocketAppender1010Test {
         System.out.println("Running on port " + port);
         LoggerContext serverLoggerContext = buildAndConfigureContextForServer();
         SimpleSocketServer simpleSocketServer = new SimpleSocketServer(serverLoggerContext, port);
+        simpleSocketServer.addAllowedClientAddress("127.0.0.1");
+        simpleSocketServer.addAllowedClientAddress("::1");
         simpleSocketServer.start();
 
         // wait until server is up

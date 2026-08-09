@@ -38,10 +38,10 @@ public class SimpleSocketServerAllowedClientTest {
     }
 
     @Test
-    public void allClientsAllowedWhenNoRestrictionConfigured() throws Exception {
-        assertTrue(server.isClientAllowed(InetAddress.getByName("203.0.113.1")));
-        assertTrue(server.isClientAllowed(InetAddress.getByName("127.0.0.1")));
-        assertTrue(server.isClientAllowed(null));
+    public void noClientsAllowedWhenWhitelistEmpty() throws Exception {
+        assertFalse(server.isClientAllowed(InetAddress.getByName("203.0.113.1")));
+        assertFalse(server.isClientAllowed(InetAddress.getByName("127.0.0.1")));
+        assertFalse(server.isClientAllowed(null));
     }
 
     @Test
@@ -79,22 +79,39 @@ public class SimpleSocketServerAllowedClientTest {
     }
 
     @Test
-    public void setAllowedClientAddressesNullClearsRestriction() throws Exception {
+    public void setAllowedClientAddressesNullDeniesAll() throws Exception {
         server.addAllowedClientAddress("10.0.0.1");
         server.setAllowedClientAddresses(null);
-        assertTrue(server.isClientAllowed(InetAddress.getByName("203.0.113.1")));
+        assertFalse(server.isClientAllowed(InetAddress.getByName("10.0.0.1")));
+        assertFalse(server.isClientAllowed(InetAddress.getByName("203.0.113.1")));
     }
 
     @Test
-    public void setAllowedClientAddressesEmptyClearsRestriction() throws Exception {
+    public void setAllowedClientAddressesEmptyDeniesAll() throws Exception {
         server.addAllowedClientAddress("10.0.0.1");
         server.setAllowedClientAddresses(Collections.emptyList());
-        assertTrue(server.isClientAllowed(InetAddress.getByName("203.0.113.1")));
+        assertFalse(server.isClientAllowed(InetAddress.getByName("10.0.0.1")));
+        assertFalse(server.isClientAllowed(InetAddress.getByName("203.0.113.1")));
     }
 
     @Test
     public void invalidAddressThrows() {
         assertThrows(IllegalArgumentException.class, () -> server.addAllowedClientAddress("not-valid"));
         assertThrows(IllegalArgumentException.class, () -> server.addAllowedClientAddress("1.2.3.4/99"));
+    }
+
+    /**
+     * Mirrors the command-line path in {@link SimpleSocketServer#doMain}: after
+     * port and configFile, each remaining argument is an allowed client address.
+     */
+    @Test
+    public void commandLineStyleAllowedAddresses() throws Exception {
+        String[] argv = new String[] { "6000", "logback-server.xml", "127.0.0.1", "192.168.1.0/24" };
+        for (int i = 2; i < argv.length; i++) {
+            server.addAllowedClientAddress(argv[i]);
+        }
+        assertTrue(server.isClientAllowed(InetAddress.getByName("127.0.0.1")));
+        assertTrue(server.isClientAllowed(InetAddress.getByName("192.168.1.50")));
+        assertFalse(server.isClientAllowed(InetAddress.getByName("10.0.0.1")));
     }
 }

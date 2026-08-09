@@ -27,16 +27,22 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  * A {@link SimpleSocketServer} that supports SSL.
  * 
  * <pre>
- *      &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.ssl.SimpleSSLSocketServer port configFile
+ *      &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SimpleSSLSocketServer port configFile
+ *                     allowedAddress [allowedAddress ...]
  * </pre>
  * 
- * where <em>port</em> is a port number where the server listens and
+ * where <em>port</em> is a port number where the server listens,
  * <em>configFile</em> is an XML configuration file fed to
- * {@link JoranConfigurator}.
+ * {@link JoranConfigurator}, and each <em>allowedAddress</em> is a client IP
+ * or CIDR range that is permitted to connect (e.g. {@code 192.168.1.10} or
+ * {@code 192.168.1.0/24}). At least one allowed address must be specified on
+ * the command line.
  * 
  * <p>
- * Client IP restrictions configured via
- * {@link SimpleSocketServer#addAllowedClientAddress(String)} apply here as well.
+ * Client IP whitelisting configured via
+ * {@link SimpleSocketServer#addAllowedClientAddress(String)} is mandatory and
+ * applies here as well when the server is embedded programmatically. An empty
+ * whitelist means no clients are allowed.
  * </p>
  * 
  * When running the SimpleSSLServerFactory as shown above, it is necessary to
