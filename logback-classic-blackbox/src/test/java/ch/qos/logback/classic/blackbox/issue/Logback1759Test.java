@@ -35,17 +35,19 @@ public class Logback1759Test {
     PatternLayoutEncoder patternLayoutEncoder = null;
     ConsoleAppender consoleAppender = null;
     LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+    int count = 0;
 
     @BeforeEach
     public void setup() {
         context.setMDCAdapter(logbackMDCAdapter);
         OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
         StatusListenerConfigHelper.addOnConsoleListenerInstance(context, onConsoleStatusListener);
-        init();
+        init(count++);
     }
 
-    void init() {
-        System.out.println("Init called");
+    void init(int count) {
+
+        System.out.println("Init called count=" + count);
         this.patternLayoutEncoder = new PatternLayoutEncoder();
         patternLayoutEncoder.setContext(context);
         patternLayoutEncoder.setPattern("%highlight(%level) %message%n");
@@ -64,18 +66,18 @@ public class Logback1759Test {
         //String fqcn, Logger logger, Level level, String message, Throwable throwable,
         //        Object[] argArray
 
-        LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello", null, null);
+        LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello world", null, null);
 
         consoleAppender.doAppend(le);
-
+        System.out.println("Before   consoleAppender.stop();");
         consoleAppender.stop();
+        System.out.println("After   consoleAppender.stop();");
+        init(count++);
+        //consoleAppender.setWithJansi(true);
 
-        init();
-        consoleAppender.setWithJansi(true);
         consoleAppender.start();
-
+        System.out.println("Second append");
         consoleAppender.doAppend(le);
 
-        //statusPrinter2.print(context);
     }
 }

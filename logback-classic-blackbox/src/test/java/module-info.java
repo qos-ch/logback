@@ -14,6 +14,9 @@ module logback.classic.blackbox {
     requires org.eclipse.jetty.ee10.servlet;
 
     requires java.logging;
+    requires org.jline.nativ;
+
+    requires org.jline.jansi.core;
 
     exports ch.qos.logback.classic.blackbox;
     exports ch.qos.logback.classic.blackbox.joran;
@@ -22,6 +25,8 @@ module logback.classic.blackbox {
     exports ch.qos.logback.classic.blackbox.html;
     exports ch.qos.logback.classic.blackbox.net;
     exports ch.qos.logback.classic.blackbox.issue;
+
+
 
     // resources in named modules are accessible only if opened
     opens asResource;
