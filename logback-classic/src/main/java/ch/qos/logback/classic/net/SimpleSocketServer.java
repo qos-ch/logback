@@ -14,9 +14,11 @@
 package ch.qos.logback.classic.net;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.IpAddressMatcher;
 
 /**
  * A simple {@link SocketNode} based server.
@@ -40,7 +43,13 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * <em>configFile</em> is an XML configuration file fed to
  * {@link JoranConfigurator}.
  * 
- * </pre>
+ * <p>
+ * Client access can be restricted by registering allowed addresses with
+ * {@link #addAllowedClientAddress(String)}. Supported forms are single IPs
+ * (e.g. {@code 192.168.1.10}) and CIDR network ranges (e.g.
+ * {@code 192.168.1.0/24}). If no allowed addresses are configured, every client
+ * is accepted (backward compatible default).
+ * </p>
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -56,6 +65,12 @@ public class SimpleSocketServer extends Thread {
     private boolean closed = false;
     private ServerSocket serverSocket;
     private List<SocketNode> socketNodeList = new ArrayList<SocketNode>();
+
+    /**
+     * When non-empty, only clients whose remote address matches one of these
+     * matchers are accepted. Empty means all clients are allowed.
+     */
+    private final List<IpAddressMatcher> allowedClientAddresses = new ArrayList<IpAddressMatcher>();
 
     // used for testing purposes
     private CountDownLatch latch;
@@ -87,6 +102,67 @@ public class SimpleSocketServer extends Thread {
         this.port = port;
     }
 
+    /**
+     * Authorize a single client IP address or a CIDR network range.
+     * <p>
+     * If at least one allowed address is registered, only matching clients are
+     * accepted; others are closed immediately after {@code accept()}. When no
+     * allowed addresses are registered, all clients are accepted.
+     * </p>
+     *
+     * @param addressOrCidr a single IP (e.g. {@code 10.0.0.5}) or CIDR range
+     *                      (e.g. {@code 192.168.1.0/24})
+     * @throws IllegalArgumentException if the specification is invalid
+     * @since 1.6.2
+     */
+    public void addAllowedClientAddress(String addressOrCidr) {
+        allowedClientAddresses.add(new IpAddressMatcher(addressOrCidr));
+    }
+
+    /**
+     * Replace the set of authorized client addresses with the given collection.
+     * Each entry must be a single IP or CIDR range. Passing an empty collection
+     * (or {@code null}) clears the restriction so that all clients are allowed.
+     *
+     * @param addresses allowed addresses / CIDR ranges, or {@code null}
+     * @throws IllegalArgumentException if any specification is invalid
+     * @since 1.6.2
+     */
+    public void setAllowedClientAddresses(Collection<String> addresses) {
+        allowedClientAddresses.clear();
+        if (addresses == null) {
+            return;
+        }
+        for (String addressOrCidr : addresses) {
+            addAllowedClientAddress(addressOrCidr);
+        }
+    }
+
+    /**
+     * Returns {@code true} if the client is allowed to connect.
+     * <p>
+     * When no allowed addresses are configured, every client is allowed.
+     * </p>
+     *
+     * @param clientAddress the remote address of the connecting client
+     * @return {@code true} if the connection should be accepted
+     * @since 1.6.2
+     */
+    protected boolean isClientAllowed(InetAddress clientAddress) {
+        if (allowedClientAddresses.isEmpty()) {
+            return true;
+        }
+        if (clientAddress == null) {
+            return false;
+        }
+        for (IpAddressMatcher matcher : allowedClientAddresses) {
+            if (matcher.matches(clientAddress)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void run() {
 
         final String oldThreadName = Thread.currentThread().getName();
@@ -97,12 +173,22 @@ public class SimpleSocketServer extends Thread {
             Thread.currentThread().setName(newThreadName);
 
             logger.info("Listening on port " + port);
+            if (!allowedClientAddresses.isEmpty()) {
+                logger.info("Client IP restrictions are in effect ({} allowed address pattern(s))",
+                        allowedClientAddresses.size());
+            }
             serverSocket = getServerSocketFactory().createServerSocket(port);
             while (!closed) {
                 logger.info("Waiting to accept a new client.");
                 signalAlmostReadiness();
                 Socket socket = serverSocket.accept();
-                logger.info("Connected to client at " + socket.getInetAddress());
+                InetAddress clientAddress = socket.getInetAddress();
+                logger.info("Connected to client at " + clientAddress);
+                if (!isClientAllowed(clientAddress)) {
+                    logger.warn("Denying connection from unauthorized client " + clientAddress);
+                    closeSocketQuietly(socket);
+                    continue;
+                }
                 logger.info("Starting new socket node.");
                 SocketNode newSocketNode = new SocketNode(this, socket, lc);
                 synchronized (socketNodeList) {
@@ -121,6 +207,14 @@ public class SimpleSocketServer extends Thread {
 
         finally {
             Thread.currentThread().setName(oldThreadName);
+        }
+    }
+
+    private void closeSocketQuietly(Socket socket) {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            logger.debug("Failed to close unauthorized client socket", e);
         }
     }
 

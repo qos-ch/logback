@@ -34,6 +34,11 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  * <em>configFile</em> is an XML configuration file fed to
  * {@link JoranConfigurator}.
  * 
+ * <p>
+ * Client IP restrictions configured via
+ * {@link SimpleSocketServer#addAllowedClientAddress(String)} apply here as well.
+ * </p>
+ * 
  * When running the SimpleSSLServerFactory as shown above, it is necessary to
  * configure JSSE system properties using {@code -Dname=value} on the
  * command-line when starting the server. In particular, you will probably
