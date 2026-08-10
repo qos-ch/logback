@@ -46,12 +46,6 @@ import ch.qos.logback.core.status.Status;
 @PhaseIndicator(phase = ProcessingPhase.DEPENDENCY_ANALYSIS)
 public class CallerContradictionWarnAnalyser extends ModelHandlerBase {
 
-    static final String CONTRADICTION_MESSAGE =
-            "AsyncAppender [%s] has includeCallerData=false (the default) but wraps appender [%s] "
-            + "whose pattern uses a caller-data converter (%%C/%%M/%%L/%%F/%%l/%%class/%%method/%%line/%%file/%%caller). "
-            + "Caller data will not be available for that appender. "
-            + "Consider setting <includeCallerData>true</includeCallerData> on AsyncAppender [%s].";
-
     public CallerContradictionWarnAnalyser(Context context) {
         super(context);
     }
