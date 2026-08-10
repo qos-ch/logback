@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Logback: the reliable, generic, fast and flexible logging framework.
+  ~  Copyright (C) 1999-2026, QOS.ch. All rights reserved.
+  ~
+  ~ This program and the accompanying materials are dual-licensed under
+  ~ either the terms of the Eclipse Public License v2.0 as published by
+  ~ the Eclipse Foundation
+  ~
+  ~     or (per the licensee's choosing)
+  ~
+  ~ under the terms of the GNU Lesser General Public License version 2.1
+  ~ as published by the Free Software Foundation.
+  -->
+
+<!-- Two AsyncAppenders (includeCallerData false and true) wrap a ConsoleAppender
+     whose pattern uses %caller. Expects two contradiction warnings:
+     DO_NOT_WANT vs PREPROCESS_WANT and DO_NOT_WANT vs DIRECT_WANT. -->
+<configuration debug="false">
+
+    <import class="ch.qos.logback.core.ConsoleAppender"/>
+    <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
+    <import class="ch.qos.logback.classic.AsyncAppender"/>
+
+    <appender name="CONSOLE" class="ConsoleAppender">
+        <encoder class="PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %caller{1} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_0" class="AsyncAppender">
+        <appender-ref ref="CONSOLE"/>
+    </appender>
+
+    <appender name="ASYNC_1" class="AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="CONSOLE"/>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="ASYNC_0"/>
+        <appender-ref ref="ASYNC_1"/>
+    </root>
+
+</configuration>

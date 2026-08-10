@@ -18,13 +18,21 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import org.junit.jupiter.api.Test;
 import org.slf4j.spi.MDCAdapter;
 
+import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.CALLER_CONTRADICTION_URL;
+import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.LONE_PREPROCESS_WANT_MSG_TEMPLATE;
 import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.NO_CONTRADICTIONS_MSG;
 import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.WARNING_MSG_TEMPLATE;
 
+/**
+ * End-to-end coverage of {@link CallerContradictionAnalyser},
+ * {@link CallerContradictionWarnAnalyser} and {@link CallerInstructionLogic}
+ * via real configuration files.
+ */
 public class CallerContradictionAnalyserTest {
 
     private static final String INPUT_DIR =
@@ -41,26 +49,92 @@ public class CallerContradictionAnalyserTest {
         jc.doConfigure(file);
     }
 
-    @Test
-    public void asyncDefaultIncludeCallerDataWrapsCallerPatternTriggersWarn() throws JoranException {
-        configure(INPUT_DIR + "asyncNoCallerDataWrapsCallerPattern.xml");
-
-        String msg = String.format(
-                WARNING_MSG_TEMPLATE, "ASYNC", "CONSOLE");
-        checker.assertContainsMatch(msg);
-        checker.assertContainsMatch("See https:\\/\\/logback.qos.ch/codes.html#callerContradiction for details");
-    }
+    // --- no contradiction ---
 
     @Test
     public void asyncIncludeCallerDataTrueWrapsCallerPatternNoWarn() throws JoranException {
+        // PREPROCESS_WANT (ASYNC) + DIRECT_WANT (CONSOLE) is allowed
         configure(INPUT_DIR + "asyncWithCallerDataWrapsCallerPattern.xml");
-        checker.assertMatchCount(NO_CONTRADICTIONS_MSG,1
-        );
+        assertNoContradiction();
     }
 
     @Test
     public void asyncDefaultIncludeCallerDataWrapsNonCallerPatternNoWarn() throws JoranException {
+        // DO_NOT_WANT (ASYNC) alone is allowed
         configure(INPUT_DIR + "asyncNoCallerDataWrapsNoCallerPattern.xml");
-        checker.assertMatchCount(NO_CONTRADICTIONS_MSG,1);
+        assertNoContradiction();
+    }
+
+    @Test
+    public void consoleWithCallerPatternOnlyNoWarn() throws JoranException {
+        // DIRECT_WANT (CONSOLE) alone is allowed
+        configure(INPUT_DIR + "consoleWithCallerPatternOnly.xml");
+        assertNoContradiction();
+    }
+
+    // --- DO_NOT_WANT vs DIRECT_WANT ---
+
+    @Test
+    public void asyncDefaultIncludeCallerDataWrapsCallerPatternTriggersWarn() throws JoranException {
+        // DO_NOT_WANT (ASYNC) + DIRECT_WANT (CONSOLE)
+        configure(INPUT_DIR + "asyncNoCallerDataWrapsCallerPattern.xml");
+
+        assertContradictionWarning(String.format(WARNING_MSG_TEMPLATE, "ASYNC", "CONSOLE"));
+    }
+
+    @Test
+    public void twoAsyncSuppressSameCallerPatternJoinsNamesInWarning() throws JoranException {
+        // DO_NOT_WANT (ASYNC1, ASYNC2) + DIRECT_WANT (CONSOLE, FILE)
+        configure(INPUT_DIR + "twoAsyncSuppressSameCallerPattern.xml");
+
+        assertContradictionWarning(String.format(WARNING_MSG_TEMPLATE, "ASYNC1, ASYNC2", "CONSOLE, FILE"));
+    }
+
+    // --- lone PREPROCESS_WANT ---
+
+    @Test
+    public void asyncIncludeCallerDataTrueWrapsNonCallerPatternTriggersLonePreprocessWarn()
+            throws JoranException {
+        // PREPROCESS_WANT (ASYNC) without any DIRECT_WANT
+        configure(INPUT_DIR + "asyncWithCallerDataWrapsNoCallerPattern.xml");
+
+        assertContradictionWarning(String.format(LONE_PREPROCESS_WANT_MSG_TEMPLATE, "ASYNC"));
+    }
+
+    // --- DO_NOT_WANT vs PREPROCESS_WANT ---
+
+    @Test
+    public void twoAsyncDifferentIncludeCallerDataNoCallerPatternTriggersWarn() throws JoranException {
+        // DO_NOT_WANT (ASYNC_0) + PREPROCESS_WANT (ASYNC_1)
+        configure(INPUT_DIR + "twoAsyncDifferentIncludeCallerDataNoCallerPattern.xml");
+
+        assertContradictionWarning(String.format(WARNING_MSG_TEMPLATE, "ASYNC_0", "ASYNC_1"));
+    }
+
+    // --- DO_NOT_WANT vs PREPROCESS_WANT and vs DIRECT_WANT ---
+
+    @Test
+    public void twoAsyncDifferentIncludeCallerDataWithCallerPatternTriggersTwoWarns()
+            throws JoranException {
+        // DO_NOT_WANT (ASYNC_0) + PREPROCESS_WANT (ASYNC_1) + DIRECT_WANT (CONSOLE)
+        configure(INPUT_DIR + "twoAsyncDifferentIncludeCallerDataWithCallerPattern.xml");
+
+        checker.assertContainsMatch(Status.WARN,
+                String.format(WARNING_MSG_TEMPLATE, "ASYNC_0", "ASYNC_1"));
+        checker.assertContainsMatch(Status.WARN,
+                String.format(WARNING_MSG_TEMPLATE, "ASYNC_0", "CONSOLE"));
+        checker.assertContainsMatch(Status.WARN, "See " + CALLER_CONTRADICTION_URL + " for details");
+        checker.assertMatchCount(NO_CONTRADICTIONS_MSG, 0);
+    }
+
+    private void assertNoContradiction() {
+        checker.assertMatchCount(NO_CONTRADICTIONS_MSG, 1);
+        checker.assertMatchCount(CALLER_CONTRADICTION_URL, 0);
+    }
+
+    private void assertContradictionWarning(String expectedWarnMsg) {
+        checker.assertContainsMatch(Status.WARN, expectedWarnMsg);
+        checker.assertContainsMatch(Status.WARN, "See " + CALLER_CONTRADICTION_URL + " for details");
+        checker.assertMatchCount(NO_CONTRADICTIONS_MSG, 0);
     }
 }

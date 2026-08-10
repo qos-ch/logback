@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Logback: the reliable, generic, fast and flexible logging framework.
+  ~  Copyright (C) 1999-2026, QOS.ch. All rights reserved.
+  ~
+  ~ This program and the accompanying materials are dual-licensed under
+  ~ either the terms of the Eclipse Public License v2.0 as published by
+  ~ the Eclipse Foundation
+  ~
+  ~     or (per the licensee's choosing)
+  ~
+  ~ under the terms of the GNU Lesser General Public License version 2.1
+  ~ as published by the Free Software Foundation.
+  -->
+
+<!-- A ConsoleAppender with a caller-data converter and no AsyncAppender.
+     Lone DIRECT_WANT should not trigger a contradiction WARN. -->
+<configuration debug="false">
+
+    <import class="ch.qos.logback.core.ConsoleAppender"/>
+    <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
+
+    <appender name="CONSOLE" class="ConsoleAppender">
+        <encoder class="PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %class.%method:%line - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>
