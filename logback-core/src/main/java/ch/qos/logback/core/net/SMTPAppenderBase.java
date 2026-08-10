@@ -52,7 +52,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * An abstract class that provides support for sending events to an email
  * address.
  * <p>
- * See http://logback.qos.ch/manual/appenders.html#SMTPAppender for further
+ * See <a href="https://logback.qos.ch/manual/appenders.html#SMTPAppender">appenders.html#SMTPAppender</a> for further
  * documentation.
  *
  * @author Ceki G&uuml;lc&uuml;
