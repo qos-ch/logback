@@ -31,6 +31,7 @@ import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.PhaseIndicator;
 import ch.qos.logback.core.model.processor.ProcessingPhase;
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * Dependency-analysis pass over every {@link AppenderModel}: records which
@@ -46,6 +47,11 @@ import ch.qos.logback.core.model.processor.ProcessingPhase;
  * single SMTP appender (e.g. includeCallerData=false but layout uses
  * {@code %C}) can be detected.</p>
  *
+ * <p>Analysis is skipped when the variable
+ * {@value #SKIP_CALLER_CONTRADICTION_ANALYSIS_PROPERTY} is set to
+ * {@code true} (context property, local property, system property or
+ * environment variable).</p>
+ *
  * <p>The contradiction check is performed by {@link CallerContradictionWarnAnalyser}
  * in its {@code postHandle()} on the enclosing {@code ConfigurationModel}, after
  * all appender models have been visited.</p>
@@ -57,6 +63,13 @@ import ch.qos.logback.core.model.processor.ProcessingPhase;
 public class CallerContradictionAnalyser extends ModelHandlerBase {
 
     static final String APPENDER_TO_CALLER_INSTRUCTION_MAP_KEY = "APPENDER_TO_CALLER_INSTRUCTION_MAP_KEY";
+
+    /**
+     * When this property/variable is {@code true}, caller-contradiction analysis
+     * is not performed.
+     */
+    public static final String SKIP_CALLER_CONTRADICTION_ANALYSIS_PROPERTY =
+            "logback.skipCallerContradictionAnalysis";
 
     /**
      * Map-key suffix for an SMTPAppender {@code includeCallerData} contribution.
@@ -89,6 +102,10 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
 
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        if (isSkipCallerContradictionAnalysis(mic)) {
+            return;
+        }
+
         AppenderModel appenderModel = (AppenderModel) model;
 
         Map<String, CallerInstructionLogic.Instruction> appenderNameToCallerInstructionMap
@@ -117,6 +134,17 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
         if (hasCallerDataConverters(appenderModel)) {
             appenderNameToCallerInstructionMap.put(appenderName, CallerInstructionLogic.Instruction.DIRECT_WANT);
         }
+    }
+
+    /**
+     * Returns {@code true} when {@value #SKIP_CALLER_CONTRADICTION_ANALYSIS_PROPERTY}
+     * resolves to {@code true}. Lookup order is local interpretation properties,
+     * context properties, system properties, then environment variables.
+     */
+    static boolean isSkipCallerContradictionAnalysis(ModelInterpretationContext mic) {
+        String value = OptionHelper.propertyLookup(SKIP_CALLER_CONTRADICTION_ANALYSIS_PROPERTY, mic,
+                mic.getContext());
+        return OptionHelper.toBoolean(value, false);
     }
 
     /**

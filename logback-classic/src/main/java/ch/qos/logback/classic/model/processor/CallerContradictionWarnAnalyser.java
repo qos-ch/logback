@@ -15,7 +15,6 @@ package ch.qos.logback.classic.model.processor;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
@@ -40,6 +39,10 @@ import ch.qos.logback.core.status.Status;
  * {@link ch.qos.logback.core.model.AppenderModel} has been visited by
  * {@link CallerContradictionAnalyser}, regardless of declaration order.</p>
  *
+ * <p>Analysis is skipped when the variable
+ * {@value CallerContradictionAnalyser#SKIP_CALLER_CONTRADICTION_ANALYSIS_PROPERTY}
+ * is set to {@code true}.</p>
+ *
  * @since 1.6.2
  * @see CallerContradictionAnalyser
  */
@@ -62,6 +65,10 @@ public class CallerContradictionWarnAnalyser extends ModelHandlerBase {
 
     @Override
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        if (CallerContradictionAnalyser.isSkipCallerContradictionAnalysis(mic)) {
+            return;
+        }
+
         Map<String, CallerInstructionLogic.Instruction> appenderNameToCallerInstructionMap =
                 CallerContradictionAnalyser.getAppenderNameToCallerInstructionMap(mic);
 
@@ -70,7 +77,5 @@ public class CallerContradictionWarnAnalyser extends ModelHandlerBase {
         List<Status> messages = callerInstructionLogic.contradiction(appenderNameToCallerInstructionMap);
 
         messages.forEach(message -> addStatus(message));
-
-
     }
 }
