@@ -83,6 +83,14 @@ public class CallerContradictionAnalyserTest {
     }
 
     @Test
+    public void socketDefaultIncludeCallerDataWithCallerPatternTriggersWarn() throws JoranException {
+        // DO_NOT_WANT (SOCKET) + DIRECT_WANT (CONSOLE)
+        configure(INPUT_DIR + "socketDefaultIncludeCallerDataWithCallerPattern.xml");
+
+        assertContradictionWarning(String.format(WARNING_MSG_TEMPLATE, "SOCKET", "CONSOLE"));
+    }
+
+    @Test
     public void twoAsyncSuppressSameCallerPatternJoinsNamesInWarning() throws JoranException {
         // DO_NOT_WANT (ASYNC1, ASYNC2) + DIRECT_WANT (CONSOLE, FILE)
         configure(INPUT_DIR + "twoAsyncSuppressSameCallerPattern.xml");

@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import ch.qos.logback.classic.AsyncAppender;
+import ch.qos.logback.classic.net.SocketAppender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.AppenderModel;
-import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
@@ -33,8 +33,8 @@ import ch.qos.logback.core.model.processor.ProcessingPhase;
 
 /**
  * Dependency-analysis pass over every {@link AppenderModel}: records which
- * appenders suppress caller data (AsyncAppender with
- * {@code includeCallerData=false} / default) and which appenders need it
+ * appenders suppress caller data ({@link AsyncAppender} or {@link SocketAppender}
+ * with {@code includeCallerData=false} / default) and which appenders need it
  * (pattern contains a caller-data converter).
  *
  * <p>The contradiction check is performed by {@link CallerContradictionWarnAnalyser}
@@ -79,14 +79,14 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
         String className = mic.getImport(originalClassName);
         String appenderName = mic.subst(appenderModel.getName());
 
-        if (AsyncAppender.class.getName().equals(className)) {
-
+        if (isCallerDataPreprocessingAppender(className)) {
             if (isIncludeCallerDataTrue(mic, appenderModel)) {
-                appenderNameToCallerInstructionMap.put(appenderName, CallerInstructionLogic.Instruction.PREPROCESS_WANT);
+                appenderNameToCallerInstructionMap.put(appenderName,
+                        CallerInstructionLogic.Instruction.PREPROCESS_WANT);
             } else {
-                appenderNameToCallerInstructionMap.put(appenderName, CallerInstructionLogic.Instruction.DO_NOT_WANT);
+                appenderNameToCallerInstructionMap.put(appenderName,
+                        CallerInstructionLogic.Instruction.DO_NOT_WANT);
             }
-
         }
 
         if (hasCallerDataConverters(appenderModel)) {
@@ -95,8 +95,18 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
     }
 
     /**
-     * Note that in AsyncAppender includeCallerData is false by default, so if
-     * the tag is absent we treat it as false.
+     * Appenders that optionally extract caller data before deferred processing
+     * or serialization, controlled by the {@code includeCallerData} property
+     * (default {@code false}).
+     */
+    private boolean isCallerDataPreprocessingAppender(String className) {
+        return AsyncAppender.class.getName().equals(className)
+                || SocketAppender.class.getName().equals(className);
+    }
+
+    /**
+     * Note that in AsyncAppender and SocketAppender includeCallerData is false
+     * by default, so if the tag is absent we treat it as false.
      *
      * @param mic
      * @param appenderModel
@@ -111,7 +121,7 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
                 return "true".equalsIgnoreCase(value);
             }
         }
-        return false; // absent → default false in AsyncAppender
+        return false; // absent → default false in AsyncAppender / SocketAppender
     }
 
     private boolean hasCallerDataConverters(AppenderModel appenderModel) {

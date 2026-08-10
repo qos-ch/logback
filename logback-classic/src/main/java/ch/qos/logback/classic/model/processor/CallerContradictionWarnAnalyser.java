@@ -29,8 +29,9 @@ import ch.qos.logback.core.status.Status;
 
 /**
  * Dependency-analysis handler for {@link ConfigurationModel} that warns when a
- * configuration contains an {@code AsyncAppender} with
- * {@code includeCallerData=false} (the default) that wraps an appender whose
+ * configuration contains contradictory caller-data instructions, for example an
+ * {@code AsyncAppender} or {@code SocketAppender} with
+ * {@code includeCallerData=false} (the default) alongside an appender whose
  * pattern uses a caller-data converter ({@code %C}, {@code %M}, {@code %L},
  * {@code %F}, {@code %l}, {@code %class}, {@code %method}, {@code %line},
  * {@code %file}, {@code %caller}).
