@@ -63,16 +63,18 @@ public class CallerInstructionLogic {
     enum Instruction {
         /**
          * Caller data should be extracted during preprocessing (for example by
-         * an {@code AsyncAppender} or {@code SocketAppender} with
-         * {@code includeCallerData} set to {@code true}) so that nested
-         * appenders or the remote peer can use it.
+         * an {@code AsyncAppender}, {@code SocketAppender} or
+         * {@code SMTPAppender} with {@code includeCallerData} set to
+         * {@code true}) so that nested appenders, the remote peer or the
+         * SMTP layout can use it.
          */
         PREPROCESS_WANT,
 
         /**
          * Caller data should not be extracted (for example an
-         * {@code AsyncAppender} or {@code SocketAppender} with
-         * {@code includeCallerData} false or absent, the default).
+         * {@code AsyncAppender}, {@code SocketAppender} or
+         * {@code SMTPAppender} with {@code includeCallerData} false or
+         * absent, the default).
          */
         DO_NOT_WANT,
 

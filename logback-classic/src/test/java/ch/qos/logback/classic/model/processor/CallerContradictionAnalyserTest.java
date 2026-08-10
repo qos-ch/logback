@@ -23,6 +23,8 @@ import ch.qos.logback.core.status.testUtil.StatusChecker;
 import org.junit.jupiter.api.Test;
 import org.slf4j.spi.MDCAdapter;
 
+import static ch.qos.logback.classic.model.processor.CallerContradictionAnalyser.INCLUDE_CALLER_DATA_NAME_SUFFIX;
+import static ch.qos.logback.classic.model.processor.CallerContradictionAnalyser.LAYOUT_NAME_SUFFIX;
 import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.CALLER_CONTRADICTION_URL;
 import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.LONE_PREPROCESS_WANT_MSG_TEMPLATE;
 import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.NO_CONTRADICTIONS_MSG;
@@ -91,6 +93,15 @@ public class CallerContradictionAnalyserTest {
     }
 
     @Test
+    public void smtpDefaultIncludeCallerDataLayoutWithCallerPatternTriggersWarn() throws JoranException {
+        // DO_NOT_WANT (EMAIL.includeCallerData) + DIRECT_WANT (EMAIL.layout)
+        configure(INPUT_DIR + "smtpDefaultIncludeCallerDataLayoutWithCallerPattern.xml");
+
+        assertContradictionWarning(String.format(WARNING_MSG_TEMPLATE,
+                "EMAIL" + INCLUDE_CALLER_DATA_NAME_SUFFIX, "EMAIL" + LAYOUT_NAME_SUFFIX));
+    }
+
+    @Test
     public void twoAsyncSuppressSameCallerPatternJoinsNamesInWarning() throws JoranException {
         // DO_NOT_WANT (ASYNC1, ASYNC2) + DIRECT_WANT (CONSOLE, FILE)
         configure(INPUT_DIR + "twoAsyncSuppressSameCallerPattern.xml");
@@ -107,6 +118,26 @@ public class CallerContradictionAnalyserTest {
         configure(INPUT_DIR + "asyncWithCallerDataWrapsNoCallerPattern.xml");
 
         assertContradictionWarning(String.format(LONE_PREPROCESS_WANT_MSG_TEMPLATE, "ASYNC"));
+    }
+
+    @Test
+    public void smtpIncludeCallerDataTrueLayoutWithoutCallerPatternTriggersLonePreprocessWarn()
+            throws JoranException {
+        // PREPROCESS_WANT (EMAIL.includeCallerData) without any DIRECT_WANT
+        // (Console and SMTP layout patterns do not use caller converters)
+        configure(INPUT_DIR + "smtpIncludeCallerDataTrueLayoutWithoutCallerPattern.xml");
+
+        assertContradictionWarning(String.format(LONE_PREPROCESS_WANT_MSG_TEMPLATE,
+                "EMAIL" + INCLUDE_CALLER_DATA_NAME_SUFFIX));
+    }
+
+    // --- SMTP PREPROCESS_WANT + DIRECT_WANT (consistent) ---
+
+    @Test
+    public void smtpIncludeCallerDataTrueLayoutWithCallerPatternNoWarn() throws JoranException {
+        // PREPROCESS_WANT (EMAIL.includeCallerData) + DIRECT_WANT (EMAIL.layout)
+        configure(INPUT_DIR + "smtpIncludeCallerDataTrueLayoutWithCallerPattern.xml");
+        assertNoContradiction();
     }
 
     // --- DO_NOT_WANT vs PREPROCESS_WANT ---

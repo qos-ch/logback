@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import ch.qos.logback.classic.AsyncAppender;
+import ch.qos.logback.classic.net.SMTPAppender;
 import ch.qos.logback.classic.net.SocketAppender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.AppenderModel;
@@ -33,9 +34,17 @@ import ch.qos.logback.core.model.processor.ProcessingPhase;
 
 /**
  * Dependency-analysis pass over every {@link AppenderModel}: records which
- * appenders suppress caller data ({@link AsyncAppender} or {@link SocketAppender}
- * with {@code includeCallerData=false} / default) and which appenders need it
- * (pattern contains a caller-data converter).
+ * appenders suppress caller data ({@link AsyncAppender}, {@link SocketAppender}
+ * or {@link SMTPAppender} with {@code includeCallerData=false} / default) and
+ * which appenders need it (pattern contains a caller-data converter).
+ *
+ * <p>{@link SMTPAppender} is special: it both preprocesses caller data
+ * ({@code includeCallerData}) and formats events via its own layout. Those two
+ * contributions are recorded as separate map entries under
+ * {@code name + }{@link #INCLUDE_CALLER_DATA_NAME_SUFFIX} and
+ * {@code name + }{@link #LAYOUT_NAME_SUFFIX} so that contradictions within a
+ * single SMTP appender (e.g. includeCallerData=false but layout uses
+ * {@code %C}) can be detected.</p>
  *
  * <p>The contradiction check is performed by {@link CallerContradictionWarnAnalyser}
  * in its {@code postHandle()} on the enclosing {@code ConfigurationModel}, after
@@ -48,6 +57,16 @@ import ch.qos.logback.core.model.processor.ProcessingPhase;
 public class CallerContradictionAnalyser extends ModelHandlerBase {
 
     static final String APPENDER_TO_CALLER_INSTRUCTION_MAP_KEY = "APPENDER_TO_CALLER_INSTRUCTION_MAP_KEY";
+
+    /**
+     * Map-key suffix for an SMTPAppender {@code includeCallerData} contribution.
+     */
+    static final String INCLUDE_CALLER_DATA_NAME_SUFFIX = ".includeCallerData";
+
+    /**
+     * Map-key suffix for an SMTPAppender layout pattern contribution.
+     */
+    static final String LAYOUT_NAME_SUFFIX = ".layout";
 
     /**
      * Matches caller-data converter words in a logback pattern string.
@@ -79,6 +98,12 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
         String className = mic.getImport(originalClassName);
         String appenderName = mic.subst(appenderModel.getName());
 
+        if (SMTPAppender.class.getName().equals(className)) {
+            recordSmtpAppenderInstructions(mic, appenderModel, appenderName,
+                    appenderNameToCallerInstructionMap);
+            return;
+        }
+
         if (isCallerDataPreprocessingAppender(className)) {
             if (isIncludeCallerDataTrue(mic, appenderModel)) {
                 appenderNameToCallerInstructionMap.put(appenderName,
@@ -95,9 +120,42 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
     }
 
     /**
+     * Records SMTPAppender contributions as two distinct instructions so that
+     * {@code includeCallerData} and the layout pattern can contradict each other.
+     * <p>
+     * The subject pattern is intentionally ignored; only the layout subtree is
+     * considered for {@link CallerInstructionLogic.Instruction#DIRECT_WANT}.
+     * </p>
+     */
+    private void recordSmtpAppenderInstructions(ModelInterpretationContext mic, AppenderModel appenderModel,
+            String appenderName, Map<String, CallerInstructionLogic.Instruction> map) {
+        String includeCallerDataKey = appenderName + INCLUDE_CALLER_DATA_NAME_SUFFIX;
+        if (isIncludeCallerDataTrue(mic, appenderModel)) {
+            map.put(includeCallerDataKey, CallerInstructionLogic.Instruction.PREPROCESS_WANT);
+        } else {
+            map.put(includeCallerDataKey, CallerInstructionLogic.Instruction.DO_NOT_WANT);
+        }
+
+        // Subject is not scanned — only layout patterns contribute DIRECT_WANT.
+        Model layoutModel = findLayoutSubModel(appenderModel);
+        if (layoutModel != null && hasCallerDataConvertersIn(layoutModel)) {
+            map.put(appenderName + LAYOUT_NAME_SUFFIX, CallerInstructionLogic.Instruction.DIRECT_WANT);
+        }
+    }
+
+    private Model findLayoutSubModel(AppenderModel appenderModel) {
+        for (Model child : appenderModel.getSubModels()) {
+            if ("layout".equalsIgnoreCase(child.getTag())) {
+                return child;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Appenders that optionally extract caller data before deferred processing
      * or serialization, controlled by the {@code includeCallerData} property
-     * (default {@code false}).
+     * (default {@code false}). {@link SMTPAppender} is handled separately.
      */
     private boolean isCallerDataPreprocessingAppender(String className) {
         return AsyncAppender.class.getName().equals(className)
@@ -105,8 +163,9 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
     }
 
     /**
-     * Note that in AsyncAppender and SocketAppender includeCallerData is false
-     * by default, so if the tag is absent we treat it as false.
+     * Note that includeCallerData is false by default on AsyncAppender,
+     * SocketAppender and SMTPAppender, so if the tag is absent we treat it as
+     * false.
      *
      * @param mic
      * @param appenderModel
@@ -121,11 +180,15 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
                 return "true".equalsIgnoreCase(value);
             }
         }
-        return false; // absent → default false in AsyncAppender / SocketAppender
+        return false; // absent → default false
     }
 
     private boolean hasCallerDataConverters(AppenderModel appenderModel) {
-        return collectPatternBodyTexts(appenderModel).stream()
+        return hasCallerDataConvertersIn(appenderModel);
+    }
+
+    private boolean hasCallerDataConvertersIn(Model model) {
+        return collectPatternBodyTexts(model).stream()
                 .anyMatch(p -> CALLER_PATTERN.matcher(p).find());
     }
 

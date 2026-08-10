@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Logback: the reliable, generic, fast and flexible logging framework.
+  ~  Copyright (C) 1999-2026, QOS.ch. All rights reserved.
+  ~
+  ~ This program and the accompanying materials are dual-licensed under
+  ~ either the terms of the Eclipse Public License v2.0 as published by
+  ~ the Eclipse Foundation
+  ~
+  ~     or (per the licensee's choosing)
+  ~
+  ~ under the terms of the GNU Lesser General Public License version 2.1
+  ~ as published by the Free Software Foundation.
+  -->
+
+<!-- SMTPAppender with includeCallerData=true and a layout (and ConsoleAppender)
+     that do NOT use caller-data converters. Lone PREPROCESS_WANT on
+     EMAIL.includeCallerData should trigger a WARN. -->
+<configuration debug="false">
+
+    <import class="ch.qos.logback.core.ConsoleAppender"/>
+    <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
+    <import class="ch.qos.logback.classic.net.SMTPAppender"/>
+    <import class="ch.qos.logback.classic.PatternLayout"/>
+
+    <appender name="CONSOLE" class="ConsoleAppender">
+        <encoder class="PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="EMAIL" class="SMTPAppender">
+        <includeCallerData>true</includeCallerData>
+        <smtpHost>localhost</smtpHost>
+        <to>test@localhost</to>
+        <from>test@localhost</from>
+        <layout class="PatternLayout">
+            <pattern>%d %-5level %logger - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="EMAIL"/>
+    </root>
+
+</configuration>

@@ -30,11 +30,11 @@ import ch.qos.logback.core.status.Status;
 /**
  * Dependency-analysis handler for {@link ConfigurationModel} that warns when a
  * configuration contains contradictory caller-data instructions, for example an
- * {@code AsyncAppender} or {@code SocketAppender} with
- * {@code includeCallerData=false} (the default) alongside an appender whose
- * pattern uses a caller-data converter ({@code %C}, {@code %M}, {@code %L},
- * {@code %F}, {@code %l}, {@code %class}, {@code %method}, {@code %line},
- * {@code %file}, {@code %caller}).
+ * {@code AsyncAppender}, {@code SocketAppender} or {@code SMTPAppender} with
+ * {@code includeCallerData=false} (the default) alongside an appender (or
+ * SMTP layout) whose pattern uses a caller-data converter ({@code %C},
+ * {@code %M}, {@code %L}, {@code %F}, {@code %l}, {@code %class},
+ * {@code %method}, {@code %line}, {@code %file}, {@code %caller}).
  *
  * <p>All work is done in {@link #postHandle} so that it runs after every child
  * {@link ch.qos.logback.core.model.AppenderModel} has been visited by
