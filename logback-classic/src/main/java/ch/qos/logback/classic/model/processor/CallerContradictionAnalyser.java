@@ -47,8 +47,7 @@ import ch.qos.logback.core.model.processor.ProcessingPhase;
 @PhaseIndicator(phase = ProcessingPhase.DEPENDENCY_ANALYSIS)
 public class CallerContradictionAnalyser extends ModelHandlerBase {
 
-    static final String ASYNC_SUPPRESSES_MAP_KEY = "ASYNC_SUPPRESSES_CALLER_DATA_MAP";
-    static final String NEEDS_CALLER_DATA_SET_KEY = "NEEDS_CALLER_DATA_SET";
+    static final String APPENDER_TO_CALLER_INSTRUCTION_MAP_KEY = "APPENDER_TO_CALLER_INSTRUCTION_MAP_KEY";
 
     /**
      * Matches caller-data converter words in a logback pattern string.
@@ -73,19 +72,25 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         AppenderModel appenderModel = (AppenderModel) model;
 
+        Map<String, CallerInstructionLogic.Instruction> appenderNameToCallerInstructionMap
+                = getAppenderNameToCallerInstructionMap(mic);
+
         String originalClassName = appenderModel.getClassName();
         String className = mic.getImport(originalClassName);
         String appenderName = mic.subst(appenderModel.getName());
 
         if (AsyncAppender.class.getName().equals(className)) {
-            if (isIncludeCallerDataAbsentOrFalse(mic, appenderModel)) {
-                Set<String> refs = collectAppenderRefNames(mic, appenderModel);
-                getAsyncSuppressesMap(mic).put(appenderName, refs);
+
+            if (isIncludeCallerDataTrue(mic, appenderModel)) {
+                appenderNameToCallerInstructionMap.put(appenderName, CallerInstructionLogic.Instruction.PREPROCESS_WANT);
+            } else {
+                appenderNameToCallerInstructionMap.put(appenderName, CallerInstructionLogic.Instruction.DO_NOT_WANT);
             }
+
         }
 
         if (hasCallerDataConverters(appenderModel)) {
-            getNeedsCallerDataSet(mic).add(appenderName);
+            appenderNameToCallerInstructionMap.put(appenderName, CallerInstructionLogic.Instruction.DIRECT_WANT);
         }
     }
 
@@ -97,28 +102,16 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
      * @param appenderModel
      * @return
      */
-    private boolean isIncludeCallerDataAbsentOrFalse(ModelInterpretationContext mic,
+    private boolean isIncludeCallerDataTrue(ModelInterpretationContext mic,
             AppenderModel appenderModel) {
         for (Model child : appenderModel.getSubModels()) {
             if (child instanceof ImplicitModel
                     && "includeCallerData".equalsIgnoreCase(child.getTag())) {
                 String value = mic.subst(((ImplicitModel) child).getBodyText());
-                return !"true".equalsIgnoreCase(value);
+                return "true".equalsIgnoreCase(value);
             }
         }
-        return true; // absent → default false in AsyncAppender
-    }
-
-    private Set<String> collectAppenderRefNames(ModelInterpretationContext mic,
-            AppenderModel appenderModel) {
-        Set<String> refs = new LinkedHashSet<>();
-        for (Model child : appenderModel.getSubModels()) {
-            if (child instanceof AppenderRefModel) {
-                String ref = mic.subst(((AppenderRefModel) child).getRef());
-                refs.add(ref);
-            }
-        }
-        return refs;
+        return false; // absent → default false in AsyncAppender
     }
 
     private boolean hasCallerDataConverters(AppenderModel appenderModel) {
@@ -145,23 +138,13 @@ public class CallerContradictionAnalyser extends ModelHandlerBase {
     }
 
     @SuppressWarnings("unchecked")
-    static Map<String, Set<String>> getAsyncSuppressesMap(ModelInterpretationContext mic) {
-        Map<String, Set<String>> map =
-                (Map<String, Set<String>>) mic.getObjectMap().get(ASYNC_SUPPRESSES_MAP_KEY);
+    static Map<String, CallerInstructionLogic.Instruction> getAppenderNameToCallerInstructionMap(ModelInterpretationContext mic) {
+        Map<String, CallerInstructionLogic.Instruction> map =
+                (Map<String, CallerInstructionLogic.Instruction>) mic.getObjectMap().get(APPENDER_TO_CALLER_INSTRUCTION_MAP_KEY);
         if (map == null) {
             map = new LinkedHashMap<>();
-            mic.getObjectMap().put(ASYNC_SUPPRESSES_MAP_KEY, map);
+            mic.getObjectMap().put(APPENDER_TO_CALLER_INSTRUCTION_MAP_KEY, map);
         }
         return map;
-    }
-
-    @SuppressWarnings("unchecked")
-    static Set<String> getNeedsCallerDataSet(ModelInterpretationContext mic) {
-        Set<String> set = (Set<String>) mic.getObjectMap().get(NEEDS_CALLER_DATA_SET_KEY);
-        if (set == null) {
-            set = new LinkedHashSet<>();
-            mic.getObjectMap().put(NEEDS_CALLER_DATA_SET_KEY, set);
-        }
-        return set;
     }
 }

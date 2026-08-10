@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.model.processor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.PhaseIndicator;
 import ch.qos.logback.core.model.processor.ProcessingPhase;
+import ch.qos.logback.core.status.Status;
 
 /**
  * Dependency-analysis handler for {@link ConfigurationModel} that warns when a
@@ -65,19 +67,15 @@ public class CallerContradictionWarnAnalyser extends ModelHandlerBase {
 
     @Override
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-        Map<String, Set<String>> asyncSuppressesMap =
-                CallerContradictionAnalyser.getAsyncSuppressesMap(mic);
-        Set<String> needsCallerDataSet =
-                CallerContradictionAnalyser.getNeedsCallerDataSet(mic);
+        Map<String, CallerInstructionLogic.Instruction> appenderNameToCallerInstructionMap =
+                CallerContradictionAnalyser.getAppenderNameToCallerInstructionMap(mic);
 
-        for (Map.Entry<String, Set<String>> entry : asyncSuppressesMap.entrySet()) {
-            String asyncName = entry.getKey();
-            for (String referencedName : entry.getValue()) {
-                if (needsCallerDataSet.contains(referencedName)) {
-                    addWarn(String.format(CONTRADICTION_MESSAGE,
-                            asyncName, referencedName, asyncName));
-                }
-            }
-        }
+        CallerInstructionLogic callerInstructionLogic = new CallerInstructionLogic();
+
+        List<Status> messages = callerInstructionLogic.contradiction(appenderNameToCallerInstructionMap);
+
+        messages.forEach(message -> addStatus(message));
+
+
     }
 }
