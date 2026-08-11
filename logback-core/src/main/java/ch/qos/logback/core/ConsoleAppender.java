@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
@@ -22,6 +23,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
+import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
@@ -239,6 +241,28 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
      */
     public void setWithJansi(boolean withJansi) {
         this.withJansi = withJansi;
+    }
+
+    /**
+     * Flush encoder footer and the underlying stream, but do not close it.
+     * <p>
+     * {@link ConsoleAppender} does not own {@code System.out}/{@code System.err}, nor the
+     * process-wide Jansi {@code AnsiPrintStream} returned when {@code withJansi} is enabled.
+     * Closing that stream (Jansi 2 sits on {@link java.io.FileDescriptor#out}) shuts down the
+     * JVM's stdout file descriptor permanently — see LOGBACK-1759 / issue #1063. This mirrors
+     * {@code java.util.logging.ConsoleHandler#close()}, which flushes without closing the console.
+     */
+    @Override
+    protected void closeOutputStream() {
+        if (getOutputStream() != null) {
+            try {
+                // write encoder footer before detaching from the stream
+                encoderClose();
+                getOutputStream().flush();
+            } catch (IOException e) {
+                addStatus(new ErrorStatus("Could not flush output stream for ConsoleAppender.", this, e));
+            }
+        }
     }
 
 }
