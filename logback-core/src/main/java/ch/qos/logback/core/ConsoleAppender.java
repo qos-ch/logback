@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
@@ -22,6 +23,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
+import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
@@ -37,10 +39,16 @@ import ch.qos.logback.core.util.ReentryGuardFactory;
  * </p>
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#ConsoleAppender
+ * <p>
+ * This appender does not own the console streams it writes to. On stop it
+ * flushes those streams but does not close them, so process-wide stdout/stderr
+ * (and Jansi streams wrapping them) remain usable after reconfiguration.
+ * </p>
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author Tom SH Liu
  * @author Ruediger Dohna
+ * @see <a href="https://github.com/qos-ch/logback/issues/1063">logback issue #1063</a>
  */
 
 public class ConsoleAppender<E> extends OutputStreamAppender<E> {
@@ -145,6 +153,31 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
         }
         setOutputStream(targetStream);
         super.start();
+    }
+
+    /**
+     * Flush the console target without closing it.
+     * <p>
+     * {@link System#out}, {@link System#err}, and Jansi streams built on
+     * {@code FileDescriptor.out}/{@code err} are process-wide resources. Closing
+     * them from {@link OutputStreamAppender#stop()} would poison stdout for the
+     * rest of the JVM (see
+     * <a href="https://github.com/qos-ch/logback/issues/1063">issue #1063</a>).
+     * The non-Jansi {@link ConsoleTarget} streams already no-op on
+     * {@code close()}; this override keeps the same contract when Jansi is used.
+     * </p>
+     */
+    @Override
+    protected void closeOutputStream() {
+        if (getOutputStream() != null) {
+            try {
+                // write encoder footer while the stream is still attached
+                encoderClose();
+                getOutputStream().flush();
+            } catch (IOException e) {
+                addStatus(new ErrorStatus("Could not flush output stream for ConsoleAppender.", this, e));
+            }
+        }
     }
 
     /**
