@@ -28,6 +28,12 @@ import ch.qos.logback.core.joran.spi.ConsoleTarget;
  * class calls {@link AnsiConsole} directly and does not use reflection. It
  * therefore requires {@code org.jline:jansi-core} on the classpath.
  * </p>
+ * <p>
+ * {@link AnsiConsole#systemInstall()} is paired with
+ * {@link AnsiConsole#systemUninstall()} on {@link #stop()} when this appender
+ * performed the install. Console streams are still only flushed on stop (not
+ * closed); see {@link ConsoleAppender#closeOutputStream()}.
+ * </p>
  *
  * @param <E> the type of logging events
  * @author Ceki G&uuml;lc&uuml;
@@ -36,6 +42,13 @@ import ch.qos.logback.core.joran.spi.ConsoleTarget;
  * @see ConsoleAppender#setWithJansi(boolean)
  */
 public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
+
+    /**
+     * True after this instance has successfully called
+     * {@link AnsiConsole#systemInstall()} and until the matching
+     * {@link AnsiConsole#systemUninstall()} on {@link #stop()}.
+     */
+    private boolean installedByThisAppender;
 
     /**
      * Always enables the Jansi-backed stream, then delegates to
@@ -48,17 +61,34 @@ public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
     }
 
     /**
+     * Flushes the console stream (via {@link ConsoleAppender#stop()}), then
+     * undoes {@link AnsiConsole#systemInstall()} if this appender performed it.
+     */
+    @Override
+    public void stop() {
+        try {
+            super.stop();
+        } finally {
+            uninstallAnsiConsoleIfInstalledByThisAppender();
+        }
+    }
+
+    /**
      * Installs Jansi and returns {@link AnsiConsole#out()} or
      * {@link AnsiConsole#err()} according to the configured target.
      * <p>
-     * No reflection is used.
+     * No reflection is used. {@link AnsiConsole#systemInstall()} is invoked at
+     * most once per successful install ownership of this instance.
      * </p>
      */
     @Override
     protected OutputStream wrapWithJansi(OutputStream targetStream) {
         try {
             addInfo("Enabling JANSI AnsiPrintStream via org.jline.jansi.AnsiConsole.");
-            AnsiConsole.systemInstall();
+            if (!installedByThisAppender) {
+                AnsiConsole.systemInstall();
+                installedByThisAppender = true;
+            }
             if (target == ConsoleTarget.SystemOut) {
                 return AnsiConsole.out();
             } else {
@@ -67,6 +97,19 @@ public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
         } catch (Exception e) {
             addWarn("Failed to create AnsiPrintStream. Falling back on the default stream.", e);
             return targetStream;
+        }
+    }
+
+    private void uninstallAnsiConsoleIfInstalledByThisAppender() {
+        if (!installedByThisAppender) {
+            return;
+        }
+        installedByThisAppender = false;
+        try {
+            AnsiConsole.systemUninstall();
+            addInfo("Uninstalled JANSI AnsiConsole previously installed by this appender.");
+        } catch (RuntimeException e) {
+            addWarn("Failed to uninstall AnsiConsole.", e);
         }
     }
 

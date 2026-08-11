@@ -51,8 +51,9 @@ import ch.qos.logback.core.testUtil.DummyEncoder;
  *
  * <p>
  * Expected correct behaviour: stopping the appender must not close the
- * process-wide stdout stream. These tests assert that behaviour and therefore
- * fail while #1063 is unfixed for {@link JansiConsoleAppender}.
+ * process-wide stdout stream (flush only). {@link JansiConsoleAppender#stop()}
+ * also balances {@link AnsiConsole#systemInstall()} with
+ * {@link AnsiConsole#systemUninstall()} when this appender installed.
  * </p>
  */
 public class JansiConsoleAppenderIssue1063Test {
@@ -69,10 +70,14 @@ public class JansiConsoleAppenderIssue1063Test {
 
     @AfterEach
     public void tearDown() {
+        // Appenders under test should have stopped and uninstalled; drain any
+        // leftover install count only if something failed mid-test.
         try {
-            AnsiConsole.systemUninstall();
+            while (AnsiConsole.isInstalled()) {
+                AnsiConsole.systemUninstall();
+            }
         } catch (Throwable ignored) {
-            // best-effort cleanup after a closed Jansi stream
+            // best-effort cleanup
         }
         System.setOut(originalOut);
         System.setErr(originalErr);
@@ -119,11 +124,15 @@ public class JansiConsoleAppenderIssue1063Test {
         assertFalse(jansiOut.checkError(), "stream should be healthy after append");
 
         ca.stop();
+        assertFalse(AnsiConsole.isInstalled(),
+                "stop() must systemUninstall when this appender called systemInstall");
 
-        // PrintStream does not throw on write-after-close; it sets the error flag.
+        // After uninstall, System.out is restored; write to the former Jansi stream
+        // must not have been closed by stop() (flush-only). PrintStream does not
+        // throw on write-after-close; it sets the error flag.
         jansiOut.println("write-after-jansi-console-appender-stop");
         assertFalse(jansiOut.checkError(),
-                "JansiConsoleAppender.stop() must not close the shared AnsiConsole/System.out stream "
+                "JansiConsoleAppender.stop() must not close the shared AnsiConsole stream "
                         + "(https://github.com/qos-ch/logback/issues/1063)");
     }
 

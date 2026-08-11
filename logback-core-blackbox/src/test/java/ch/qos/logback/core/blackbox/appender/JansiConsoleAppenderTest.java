@@ -46,10 +46,8 @@ public class JansiConsoleAppenderTest {
 
     @AfterEach
     public void tearDown() {
-        if (ca.isStarted()) {
-            ca.stop();
-        }
-        AnsiConsole.systemUninstall();
+        // stop() undoes systemInstall() when this appender performed it
+        ca.stop();
         System.setOut(originalOut);
         System.setErr(originalErr);
     }
@@ -65,8 +63,13 @@ public class JansiConsoleAppenderTest {
 
         Assertions.assertTrue(ca.isStarted());
         Assertions.assertTrue(ca.isWithJansi());
+        Assertions.assertTrue(AnsiConsole.isInstalled());
         Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
         ca.doAppend(new Object());
+
+        ca.stop();
+        Assertions.assertFalse(AnsiConsole.isInstalled(),
+                "stop() must systemUninstall when this appender called systemInstall");
     }
 
     @Test
@@ -79,8 +82,12 @@ public class JansiConsoleAppenderTest {
 
         Assertions.assertTrue(ca.isStarted());
         Assertions.assertTrue(ca.isWithJansi());
+        Assertions.assertTrue(AnsiConsole.isInstalled());
         Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
         ca.doAppend(new Object());
+
+        ca.stop();
+        Assertions.assertFalse(AnsiConsole.isInstalled());
     }
 
 }
