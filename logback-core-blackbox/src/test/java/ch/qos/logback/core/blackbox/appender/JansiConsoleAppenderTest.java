@@ -58,11 +58,10 @@ public class JansiConsoleAppenderTest {
         ca.setEncoder(dummyEncoder);
         ca.setTarget("System.out");
         ca.setContext(context);
-        // withJansi is forced true by JansiConsoleAppender.start()
+        // JansiConsoleAppender overrides wrapTarget(); does not use withJansi
         ca.start();
 
         Assertions.assertTrue(ca.isStarted());
-        Assertions.assertTrue(ca.isWithJansi());
         Assertions.assertTrue(AnsiConsole.isInstalled());
         Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
         ca.doAppend(new Object());
@@ -81,7 +80,6 @@ public class JansiConsoleAppenderTest {
         ca.start();
 
         Assertions.assertTrue(ca.isStarted());
-        Assertions.assertTrue(ca.isWithJansi());
         Assertions.assertTrue(AnsiConsole.isInstalled());
         Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
         ca.doAppend(new Object());

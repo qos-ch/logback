@@ -154,11 +154,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
         addInfo("NOTE: Writing to the console can be slow. Try to avoid logging to the ");
         addInfo("console in production environments, especially in high volume systems.");
         addInfo("See also "+CONSOLE_APPENDER_WARNING_URL);
-        OutputStream targetStream = target.getStream();
-        // enable jansi only if withJansi set to true
-        if (withJansi) {
-            targetStream = wrapWithJansi(targetStream);
-        }
+        OutputStream targetStream = wrapTarget(target.getStream());
         setOutputStream(targetStream);
         super.start();
     }
@@ -197,21 +193,41 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     }
 
     /**
-     * Wraps the console target stream with a Jansi ANSI-aware stream.
+     * Optionally wraps the raw console target stream before it is used for
+     * logging.
      * <p>
-     * This default implementation loads Jansi via reflection so that both
-     * {@code org.jline.jansi.AnsiConsole} and the legacy
-     * {@code org.fusesource.jansi.AnsiConsole} work when present. Subclasses
-     * may override to use a concrete Jansi API without reflection (see
-     * {@link JansiConsoleAppender}).
+     * The default implementation applies the deprecated {@code withJansi}
+     * reflection path when {@link #withJansi} is true. Subclasses such as
+     * {@link JansiConsoleAppender} should override this method to supply an
+     * alternate stream (without relying on {@code withJansi}).
      * </p>
+     *
+     * @param targetStream the raw stream for {@link #target}
+     * @return the stream to use as this appender's output stream
+     * @since 1.6.3
+     */
+    protected OutputStream wrapTarget(OutputStream targetStream) {
+        if (withJansi) {
+            return wrapWithJansi(targetStream);
+        } else {
+            return targetStream;
+        }
+    }
+
+    /**
+     * Wraps the console target stream with a Jansi ANSI-aware stream using
+     * reflection.
      * <p>
-     * This reflection-based path is deprecated; prefer {@link JansiConsoleAppender}.
+     * This path is <strong>deprecated</strong>. Prefer {@link JansiConsoleAppender},
+     * which overrides {@link #wrapTarget(OutputStream)} and calls
+     * {@code org.jline.jansi.AnsiConsole} directly.
      * </p>
      *
      * @param targetStream the raw console target stream
      * @return a Jansi-backed stream, or {@code targetStream} on failure
+     * @deprecated Use {@link JansiConsoleAppender} / override {@link #wrapTarget(OutputStream)}.
      */
+    @Deprecated
     protected OutputStream wrapWithJansi(OutputStream targetStream) {
         addWarn(WITH_JANSI_DEPRECATED_MSG);
         try {

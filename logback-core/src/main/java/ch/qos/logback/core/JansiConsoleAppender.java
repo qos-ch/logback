@@ -24,9 +24,10 @@ import ch.qos.logback.core.joran.spi.ConsoleTarget;
  * {@link AnsiConsole}, enabling ANSI sequences on platforms that need Jansi
  * (notably Windows).
  * <p>
- * Unlike {@link ConsoleAppender}'s optional {@code withJansi} path, this
- * class calls {@link AnsiConsole} directly and does not use reflection. It
- * therefore requires {@code org.jline:jansi-core} on the classpath.
+ * Unlike {@link ConsoleAppender}'s deprecated {@code withJansi} path, this
+ * class overrides {@link #wrapTarget(OutputStream)} and calls
+ * {@link AnsiConsole} directly (no reflection). It requires
+ * {@code org.jline:jansi-core} on the classpath.
  * </p>
  * <p>
  * {@link AnsiConsole#systemInstall()} is paired with
@@ -39,7 +40,7 @@ import ch.qos.logback.core.joran.spi.ConsoleTarget;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.6.3
  * @see AnsiConsole
- * @see ConsoleAppender#setWithJansi(boolean)
+ * @see ConsoleAppender#wrapTarget(OutputStream)
  */
 public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
 
@@ -49,16 +50,6 @@ public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
      * {@link AnsiConsole#systemUninstall()} on {@link #stop()}.
      */
     private boolean installedByThisAppender;
-
-    /**
-     * Always enables the Jansi-backed stream, then delegates to
-     * {@link ConsoleAppender#start()}.
-     */
-    @Override
-    public void start() {
-        withJansi = true;
-        super.start();
-    }
 
     /**
      * Flushes the console stream (via {@link ConsoleAppender#stop()}), then
@@ -77,12 +68,13 @@ public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
      * Installs Jansi and returns {@link AnsiConsole#out()} or
      * {@link AnsiConsole#err()} according to the configured target.
      * <p>
-     * No reflection is used. {@link AnsiConsole#systemInstall()} is invoked at
-     * most once per successful install ownership of this instance.
+     * Does not use the deprecated {@code withJansi} / {@code wrapWithJansi}
+     * path. {@link AnsiConsole#systemInstall()} is invoked at most once per
+     * install ownership of this instance.
      * </p>
      */
     @Override
-    protected OutputStream wrapWithJansi(OutputStream targetStream) {
+    protected OutputStream wrapTarget(OutputStream targetStream) {
         try {
             addInfo("Enabling JANSI AnsiPrintStream via org.jline.jansi.AnsiConsole.");
             if (!installedByThisAppender) {
