@@ -89,10 +89,10 @@ public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
                 AnsiConsole.systemInstall();
                 installedByThisAppender = true;
             }
-            if (target == ConsoleTarget.SystemOut) {
-                return AnsiConsole.out();
-            } else {
+            if (target == ConsoleTarget.SystemErr) {
                 return AnsiConsole.err();
+            } else {
+                return AnsiConsole.out();
             }
         } catch (Exception e) {
             addWarn("Failed to create AnsiPrintStream. Falling back on the default stream.", e);
