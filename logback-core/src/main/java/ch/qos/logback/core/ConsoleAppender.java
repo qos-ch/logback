@@ -78,6 +78,14 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     private final static String CONSOLE_APPENDER_WARNING_URL = CoreConstants.CODES_URL+"#slowConsole";
 
     /**
+     * Deprecation notice for {@link #setWithJansi(boolean)} / {@code <withJansi>}.
+     * {@link JansiConsoleAppender} is the recommended replacement.
+     */
+    static final String WITH_JANSI_DEPRECATED_MSG =
+            "ConsoleAppender.withJansi is deprecated and will be removed in a future release. "
+                    + "Use ch.qos.logback.core.JansiConsoleAppender instead.";
+
+    /**
      * Sets the value of the <b>Target</b> option. Recognized values are
      * "System.out" and "System.err". Any other value will be ignored.
      */
@@ -197,11 +205,15 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
      * may override to use a concrete Jansi API without reflection (see
      * {@link JansiConsoleAppender}).
      * </p>
+     * <p>
+     * This reflection-based path is deprecated; prefer {@link JansiConsoleAppender}.
+     * </p>
      *
      * @param targetStream the raw console target stream
      * @return a Jansi-backed stream, or {@code targetStream} on failure
      */
     protected OutputStream wrapWithJansi(OutputStream targetStream) {
+        addWarn(WITH_JANSI_DEPRECATED_MSG);
         try {
             addInfo("Enabling JANSI AnsiPrintStream for the console.");
             ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
@@ -272,19 +284,33 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
     /**
      * @return whether to use JANSI or not.
+     * @deprecated Use {@link JansiConsoleAppender} instead of {@code withJansi} on
+     *             {@link ConsoleAppender}.
      */
+    @Deprecated
     public boolean isWithJansi() {
         return withJansi;
     }
 
     /**
-     * If true, this appender will output to a stream provided by the JANSI library.
+     * If true, this appender will output to a stream provided by the JANSI library
+     * via reflection.
+     * <p>
+     * This option is <strong>deprecated</strong>. Use {@link JansiConsoleAppender},
+     * which talks to {@code org.jline.jansi.AnsiConsole} directly, instead of
+     * {@code <withJansi>true</withJansi>} on a plain {@link ConsoleAppender}.
+     * </p>
      *
      * @param withJansi whether to use JANSI or not.
      * @since 1.0.5
+     * @deprecated Use {@link JansiConsoleAppender} instead.
      */
+    @Deprecated
     public void setWithJansi(boolean withJansi) {
         this.withJansi = withJansi;
+        if (withJansi) {
+            addWarn(WITH_JANSI_DEPRECATED_MSG);
+        }
     }
 
 }
