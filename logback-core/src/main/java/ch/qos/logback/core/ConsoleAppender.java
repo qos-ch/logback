@@ -155,7 +155,20 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
         return ReentryGuardFactory.makeGuard(ReentryGuardFactory.GuardType.THREAD_LOCAL);
     }
 
-    private OutputStream wrapWithJansi(OutputStream targetStream) {
+    /**
+     * Wraps the console target stream with a Jansi ANSI-aware stream.
+     * <p>
+     * This default implementation loads Jansi via reflection so that both
+     * {@code org.jline.jansi.AnsiConsole} and the legacy
+     * {@code org.fusesource.jansi.AnsiConsole} work when present. Subclasses
+     * may override to use a concrete Jansi API without reflection (see
+     * {@link JansiConsoleAppender}).
+     * </p>
+     *
+     * @param targetStream the raw console target stream
+     * @return a Jansi-backed stream, or {@code targetStream} on failure
+     */
+    protected OutputStream wrapWithJansi(OutputStream targetStream) {
         try {
             addInfo("Enabling JANSI AnsiPrintStream for the console.");
             ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
