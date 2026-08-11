@@ -25,6 +25,7 @@ import org.slf4j.spi.MDCAdapter;
 
 import static ch.qos.logback.classic.model.processor.CallerContradictionAnalyser.INCLUDE_CALLER_DATA_NAME_SUFFIX;
 import static ch.qos.logback.classic.model.processor.CallerContradictionAnalyser.LAYOUT_NAME_SUFFIX;
+import static ch.qos.logback.classic.model.processor.CallerContradictionAnalyser.SKIP_CALLER_CONTRADICTION_ANALYSIS_PROPERTY;
 import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.CALLER_CONTRADICTION_URL;
 import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.LONE_PREPROCESS_WANT_MSG_TEMPLATE;
 import static ch.qos.logback.classic.model.processor.CallerInstructionLogic.NO_CONTRADICTIONS_MSG;
@@ -82,6 +83,22 @@ public class CallerContradictionAnalyserTest {
         configure(INPUT_DIR + "asyncNoCallerDataWrapsCallerPattern.xml");
 
         assertContradictionWarning(String.format(WARNING_MSG_TEMPLATE, "ASYNC", "CONSOLE"));
+    }
+
+    @Test
+    public void skipPropertyInConfigDisablesContradictionAnalysis() throws JoranException {
+        // Would warn without the skip property; with it, analysis is not run.
+        configure(INPUT_DIR + "asyncNoCallerDataWrapsCallerPatternSkipAnalysis.xml");
+
+        assertAnalysisSkipped();
+    }
+
+    @Test
+    public void skipPropertyOnContextDisablesContradictionAnalysis() throws JoranException {
+        loggerContext.putProperty(SKIP_CALLER_CONTRADICTION_ANALYSIS_PROPERTY, "true");
+        configure(INPUT_DIR + "asyncNoCallerDataWrapsCallerPattern.xml");
+
+        assertAnalysisSkipped();
     }
 
     @Test
@@ -175,5 +192,11 @@ public class CallerContradictionAnalyserTest {
         checker.assertContainsMatch(Status.WARN, expectedWarnMsg);
         checker.assertContainsMatch(Status.WARN, "See " + CALLER_CONTRADICTION_URL + " for details");
         checker.assertMatchCount(NO_CONTRADICTIONS_MSG, 0);
+    }
+
+    private void assertAnalysisSkipped() {
+        checker.assertMatchCount(NO_CONTRADICTIONS_MSG, 0);
+        checker.assertMatchCount(CALLER_CONTRADICTION_URL, 0);
+        checker.assertMatchCount(String.format(WARNING_MSG_TEMPLATE, "ASYNC", "CONSOLE"), 0);
     }
 }
