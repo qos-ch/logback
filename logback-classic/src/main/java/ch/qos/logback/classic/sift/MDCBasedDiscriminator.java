@@ -25,11 +25,18 @@ import java.util.Map;
  * <p/>
  * <p>
  * Both Key and the DefaultValue are user specified properties.
+ * </p>
+ * <p>
+ * Path characters ({@code /} and {@code \}) are removed from the discriminating
+ * value so that it is safe to use in file names or similar path segments.
+ * </p>
  *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
+    private static final char FORWARD_SLASH = '/';
+    private static final char BACKWARD_SLASH = '\\';
     private String key;
     private String defaultValue;
 
@@ -37,6 +44,9 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
      * Return the value associated with an MDC entry designated by the Key property.
      * If that value is null, then return the value assigned to the DefaultValue
      * property.
+     * <p>
+     * Path characters ({@code /} and {@code \}) are stripped from the result.
+     * </p>
      */
     public String getDiscriminatingValue(ILoggingEvent event) {
         // http://jira.qos.ch/browse/LBCLASSIC-213
@@ -48,8 +58,45 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
         if (mdcValue == null) {
             return defaultValue;
         } else {
-            return mdcValue;
+            return sanitizePathCharacters(mdcValue);
         }
+    }
+
+    /**
+     * Removes every {@code /} and {@code \} (any number of occurrences) so the
+     * value is safe as a file-name segment.
+     * <p>
+     * Optimized for the common case where neither character is present: a single
+     * scan and no allocation. When sanitization is needed, the prefix is kept and
+     * the remainder is copied while skipping all path separators.
+     * </p>
+     */
+    static String sanitizePathCharacters(String value) {
+        if (value == null) {
+            return null;
+        }
+        final int len = value.length();
+        int i = 0;
+        for (; i < len; i++) {
+            char c = value.charAt(i);
+            if (c == FORWARD_SLASH || c == BACKWARD_SLASH) {
+                break;
+            }
+        }
+        // no path separators → return original (fast path, zero allocation)
+        if (i == len) {
+            return value;
+        }
+
+        StringBuilder sb = new StringBuilder(len - 1);
+        sb.append(value, 0, i);
+        for (i++; i < len; i++) {
+            char c = value.charAt(i);
+            if (c != FORWARD_SLASH && c != BACKWARD_SLASH) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     @Override

@@ -57,8 +57,7 @@ public class MDCBasedDiscriminatorTest {
     }
 
     @AfterEach
-    public void teaDown() {
-        MDC.clear();
+    public void tearDown() {
     }
 
     @Test
@@ -67,6 +66,7 @@ public class MDCBasedDiscriminatorTest {
         event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
 
         String discriminatorValue = discriminator.getDiscriminatingValue(event);
+        // Clean MDC value should not be touched
         assertEquals(value, discriminatorValue);
     }
 
@@ -76,5 +76,28 @@ public class MDCBasedDiscriminatorTest {
         assertEquals(new HashMap<String, String>(), event.getMDCPropertyMap());
         String discriminatorValue = discriminator.getDiscriminatingValue(event);
         assertEquals(DEFAULT_VAL, discriminatorValue);
+    }
+
+    /**
+     * Path characters in the MDC value must be removed so the discriminating value
+     * is safe to use in file names (e.g. SiftingAppender nested FileAppenders).
+     * Multiple and consecutive {@code /} and {@code \} occurrences are all stripped.
+     */
+    @Test
+    public void pathCharactersAreSanitizedFromMdcValue() {
+        logbackMDCAdapter.put(key, "a/b\\c" + value);
+        event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
+
+        String discriminatorValue = discriminator.getDiscriminatingValue(event);
+        assertEquals("abc" + value, discriminatorValue);
+    }
+
+    @Test
+    public void multiplePathCharactersAreAllRemoved() {
+        logbackMDCAdapter.put(key, "///foo\\\\bar//baz\\");
+        event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
+
+        String discriminatorValue = discriminator.getDiscriminatingValue(event);
+        assertEquals("foobarbaz", discriminatorValue);
     }
 }
