@@ -58,6 +58,8 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.pattern.color;
     exports ch.qos.logback.core.pattern.parser;
 
+    exports ch.qos.logback.core.property;
+
     exports ch.qos.logback.core.recovery;
     exports ch.qos.logback.core.read;
     exports ch.qos.logback.core.rolling;
