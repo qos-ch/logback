@@ -42,8 +42,8 @@ public class InvocationGateTest {
 
     @Test
     public void smoke() {
-        InvocationGate sig = new SimpleInvocationGate();
-        long currentTime = SimpleInvocationGate.DEFAULT_INCREMENT.getMilliseconds() + 1;
+        InvocationGate sig = new FixedIntervalInvocationGate();
+        long currentTime = FixedIntervalInvocationGate.DEFAULT_INCREMENT.getMilliseconds() + 1;
         assertFalse(sig.isTooSoon(currentTime));
         currentTime++;
         assertTrue(sig.isTooSoon(currentTime));
@@ -52,14 +52,14 @@ public class InvocationGateTest {
     @Disabled
     @Test
     void checkThreadSafety() throws InterruptedException {
-        InvocationGate sig = new SimpleInvocationGate(Duration.buildByMilliseconds(1));
+        InvocationGate sig = new FixedIntervalInvocationGate(Duration.buildByMilliseconds(1));
 
         long initialTime = currentTime.get();
         sig.isTooSoon(initialTime); // sync invocation gate with current time
 
         AtomicInteger traversalCount = new AtomicInteger(0);
         RunnableWithCounterAndDone[] runnables = buildRunnables(sig, traversalCount);
-        SimpleInvocationGateHarness harness = new SimpleInvocationGateHarness(traversalCount);
+        FixedIntervalInvocationGateHarness harness = new FixedIntervalInvocationGateHarness(traversalCount);
         harness.execute(runnables);
 
         int tc = traversalCount.get();
@@ -87,11 +87,11 @@ public class InvocationGateTest {
         return runnables;
     }
 
-    class SimpleInvocationGateHarness extends AbstractMultiThreadedHarness {
+    class FixedIntervalInvocationGateHarness extends AbstractMultiThreadedHarness {
 
         AtomicInteger traversalCount;
 
-        public SimpleInvocationGateHarness(AtomicInteger traversalCount) {
+        public FixedIntervalInvocationGateHarness(AtomicInteger traversalCount) {
             this.traversalCount = traversalCount;
         }
 

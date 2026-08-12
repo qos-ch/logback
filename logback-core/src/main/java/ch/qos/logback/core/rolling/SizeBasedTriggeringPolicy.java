@@ -19,7 +19,7 @@ import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.DefaultInvocationGate;
 import ch.qos.logback.core.util.InvocationGate;
-import ch.qos.logback.core.util.SimpleInvocationGate;
+import ch.qos.logback.core.util.FixedIntervalInvocationGate;
 
 /**
  * SizeBasedTriggeringPolicy looks at size of the file being currently written
@@ -41,7 +41,7 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
     public static final long DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
     FileSize maxFileSize = new FileSize(DEFAULT_MAX_FILE_SIZE);
-    InvocationGate invocationGate = new SimpleInvocationGate();
+    InvocationGate invocationGate = new FixedIntervalInvocationGate();
     Duration checkIncrement = null;
 
     public SizeBasedTriggeringPolicy() {
@@ -49,7 +49,7 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
 
     public void start() {
         if(checkIncrement != null)
-            invocationGate = new SimpleInvocationGate(checkIncrement);
+            invocationGate = new FixedIntervalInvocationGate(checkIncrement);
         super.start();
     }
 

@@ -20,18 +20,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for {@link BatchedSimpleInvocationGate}. Time is always injected via
- * {@link BatchedSimpleInvocationGate#isTooSoon(long)}; wall-clock time is not
- * used.
+ * Tests for {@link BatchedFixedIntervalInvocationGate}. Time is always injected
+ * via {@link BatchedFixedIntervalInvocationGate#isTooSoon(long)}; wall-clock
+ * time is not used.
  */
-public class BatchedSimpleInvocationGateTest {
+public class BatchedFixedIntervalInvocationGateTest {
 
     private static final Duration LULL = Duration.buildByMilliseconds(100);
 
     @Test
     public void allowsBatchSizeSuccessiveCallsThenLulls() {
         int batchSize = 3;
-        BatchedSimpleInvocationGate gate = new BatchedSimpleInvocationGate(batchSize, LULL);
+        BatchedFixedIntervalInvocationGate gate = new BatchedFixedIntervalInvocationGate(batchSize, LULL);
 
         long t = 1_000L;
         for (int i = 0; i < batchSize; i++) {
@@ -51,8 +51,8 @@ public class BatchedSimpleInvocationGateTest {
     }
 
     @Test
-    public void batchSizeOneMatchesSimpleGateShape() {
-        BatchedSimpleInvocationGate gate = new BatchedSimpleInvocationGate(1, LULL);
+    public void batchSizeOneMatchesFixedIntervalGateShape() {
+        BatchedFixedIntervalInvocationGate gate = new BatchedFixedIntervalInvocationGate(1, LULL);
 
         long t = 200L;
         assertFalse(gate.isTooSoon(t));
@@ -63,7 +63,8 @@ public class BatchedSimpleInvocationGateTest {
 
     @Test
     public void timeUnavailableAlwaysAllows() {
-        BatchedSimpleInvocationGate gate = new BatchedSimpleInvocationGate(2, Duration.buildByMilliseconds(10));
+        BatchedFixedIntervalInvocationGate gate = new BatchedFixedIntervalInvocationGate(2,
+                Duration.buildByMilliseconds(10));
         assertFalse(gate.isTooSoon(InvocationGate.TIME_UNAVAILABLE));
         assertFalse(gate.isTooSoon(-1));
     }
@@ -71,7 +72,7 @@ public class BatchedSimpleInvocationGateTest {
     @Test
     public void timeAdvancesWithinOpenBatchStillAllowsUntilBatchExhausted() {
         int batchSize = 4;
-        BatchedSimpleInvocationGate gate = new BatchedSimpleInvocationGate(batchSize, LULL);
+        BatchedFixedIntervalInvocationGate gate = new BatchedFixedIntervalInvocationGate(batchSize, LULL);
 
         // Inject increasing timestamps while still inside the batch; all should proceed.
         assertFalse(gate.isTooSoon(10L));
@@ -88,7 +89,7 @@ public class BatchedSimpleInvocationGateTest {
     public void multipleBatchesWithInjectedTime() {
         int batchSize = 2;
         Duration lull = Duration.buildByMilliseconds(20);
-        BatchedSimpleInvocationGate gate = new BatchedSimpleInvocationGate(batchSize, lull);
+        BatchedFixedIntervalInvocationGate gate = new BatchedFixedIntervalInvocationGate(batchSize, lull);
 
         long t = 0L;
         // batch 1
@@ -108,22 +109,22 @@ public class BatchedSimpleInvocationGateTest {
 
     @Test
     public void invalidBatchSizeRejected() {
-        assertThrows(IllegalArgumentException.class, () -> new BatchedSimpleInvocationGate(0, LULL));
-        assertThrows(IllegalArgumentException.class, () -> new BatchedSimpleInvocationGate(-1, LULL));
+        assertThrows(IllegalArgumentException.class, () -> new BatchedFixedIntervalInvocationGate(0, LULL));
+        assertThrows(IllegalArgumentException.class, () -> new BatchedFixedIntervalInvocationGate(-1, LULL));
     }
 
     @Test
     public void nullIncrementRejected() {
-        assertThrows(IllegalArgumentException.class, () -> new BatchedSimpleInvocationGate(2, null));
+        assertThrows(IllegalArgumentException.class, () -> new BatchedFixedIntervalInvocationGate(2, null));
     }
 
     @Test
     public void defaultConstructorIsUsableWithInjectedTime() {
-        BatchedSimpleInvocationGate gate = new BatchedSimpleInvocationGate();
+        BatchedFixedIntervalInvocationGate gate = new BatchedFixedIntervalInvocationGate();
         long t = 1L;
         assertFalse(gate.isTooSoon(t));
         // remaining DEFAULT_BATCH_SIZE - 1 still open at same t
-        for (int i = 1; i < BatchedSimpleInvocationGate.DEFAULT_BATCH_SIZE; i++) {
+        for (int i = 1; i < BatchedFixedIntervalInvocationGate.DEFAULT_BATCH_SIZE; i++) {
             assertFalse(gate.isTooSoon(t));
         }
         assertTrue(gate.isTooSoon(t));

@@ -56,7 +56,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
 
     private final Usage usage;
 
-    //InvocationGate invocationGate = new SimpleInvocationGate();
+    //InvocationGate invocationGate = new FixedIntervalInvocationGate();
 
     public SizeAndTimeBasedFileNamingAndTriggeringPolicy() {
         this(Usage.DIRECT);
@@ -90,7 +90,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
         }
 
         //if (checkIncrement != null)
-        //    invocationGate = new SimpleInvocationGate(checkIncrement);
+        //    invocationGate = new FixedIntervalInvocationGate(checkIncrement);
 
         if (!validateDateAndIntegerTokens()) {
             withErrors();

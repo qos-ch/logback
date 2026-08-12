@@ -28,17 +28,17 @@ import java.util.concurrent.atomic.AtomicLong;
  * is available.
  * </p>
  * <p>
- * This extends the idea of {@link SimpleInvocationGate} (at most one success
- * per interval) to batches of size N. Token accounting and the lull deadline
- * use atomics so concurrent callers share one batch.
+ * This extends the idea of {@link FixedIntervalInvocationGate} (at most one
+ * success per interval) to batches of size N. Token accounting and the lull
+ * deadline use atomics so concurrent callers share one batch.
  * </p>
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.6.3
  * @see InvocationGate
- * @see SimpleInvocationGate
+ * @see FixedIntervalInvocationGate
  */
-public class BatchedSimpleInvocationGate implements InvocationGate {
+public class BatchedFixedIntervalInvocationGate implements InvocationGate {
 
     /**
      * Default batch size: number of successive allowed passages before a lull.
@@ -47,9 +47,9 @@ public class BatchedSimpleInvocationGate implements InvocationGate {
 
     /**
      * Default lull duration after a batch is exhausted (same as
-     * {@link SimpleInvocationGate#DEFAULT_INCREMENT}).
+     * {@link FixedIntervalInvocationGate#DEFAULT_INCREMENT}).
      */
-    public static final Duration DEFAULT_INCREMENT = SimpleInvocationGate.DEFAULT_INCREMENT;
+    public static final Duration DEFAULT_INCREMENT = FixedIntervalInvocationGate.DEFAULT_INCREMENT;
 
     /**
      * Number of successive allowed invocations per open batch.
@@ -78,7 +78,7 @@ public class BatchedSimpleInvocationGate implements InvocationGate {
      * Creates a gate with {@link #DEFAULT_BATCH_SIZE} and
      * {@link #DEFAULT_INCREMENT}.
      */
-    public BatchedSimpleInvocationGate() {
+    public BatchedFixedIntervalInvocationGate() {
         this(DEFAULT_BATCH_SIZE, DEFAULT_INCREMENT);
     }
 
@@ -88,7 +88,7 @@ public class BatchedSimpleInvocationGate implements InvocationGate {
      * @param batchSize number of successive allowed invocations per batch; must
      *                  be at least 1
      */
-    public BatchedSimpleInvocationGate(int batchSize) {
+    public BatchedFixedIntervalInvocationGate(int batchSize) {
         this(batchSize, DEFAULT_INCREMENT);
     }
 
@@ -101,7 +101,7 @@ public class BatchedSimpleInvocationGate implements InvocationGate {
      * @param anIncrement lull duration after a batch is exhausted; must not be
      *                    {@code null}
      */
-    public BatchedSimpleInvocationGate(int batchSize, Duration anIncrement) {
+    public BatchedFixedIntervalInvocationGate(int batchSize, Duration anIncrement) {
         if (batchSize < 1) {
             throw new IllegalArgumentException("batchSize must be at least 1, was " + batchSize);
         }
