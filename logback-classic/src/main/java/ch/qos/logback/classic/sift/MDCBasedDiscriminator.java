@@ -15,6 +15,8 @@ package ch.qos.logback.classic.sift;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.sift.AbstractDiscriminator;
+import ch.qos.logback.core.util.BatchedFixedIntervalInvocationGate;
+import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.Map;
@@ -37,8 +39,28 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
 
     private static final char FORWARD_SLASH = '/';
     private static final char BACKWARD_SLASH = '\\';
+    static final String REQUIRED_SANITIZING_WARNING = "Required sanitizing of path characters from MDC value [%s]";
     private String key;
     private String defaultValue;
+    /** Limits how often path-sanitization warnings are emitted on the hot path. */
+    private final BatchedFixedIntervalInvocationGate invocationGate =
+            new BatchedFixedIntervalInvocationGate(4, Duration.buildByMinutes(10));
+
+    @Override
+    public void start() {
+        int errors = 0;
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(key)) {
+            errors++;
+            addError("The \"Key\" property must be set");
+        }
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(defaultValue)) {
+            errors++;
+            addError("The \"DefaultValue\" property must be set");
+        }
+        if (errors == 0) {
+            started = true;
+        }
+    }
 
     /**
      * Return the value associated with an MDC entry designated by the Key property.
@@ -58,7 +80,7 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
         if (mdcValue == null) {
             return defaultValue;
         } else {
-            return sanitizePathCharacters(mdcValue);
+            return sanitizePathCharacters(mdcValue, event.getTimeStamp());
         }
     }
 
@@ -71,7 +93,7 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
      * the remainder is copied while skipping all path separators.
      * </p>
      */
-    static String sanitizePathCharacters(String value) {
+     String sanitizePathCharacters(String value, long timestamp) {
         if (value == null) {
             return null;
         }
@@ -88,6 +110,10 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
             return value;
         }
 
+        if(!invocationGate.isTooSoon(timestamp)) {
+            addWarn(String.format(REQUIRED_SANITIZING_WARNING, value));
+        }
+
         StringBuilder sb = new StringBuilder(len - 1);
         sb.append(value, 0, i);
         for (i++; i < len; i++) {
@@ -99,21 +125,6 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
         return sb.toString();
     }
 
-    @Override
-    public void start() {
-        int errors = 0;
-        if (OptionHelper.isNullOrEmptyOrAllSpaces(key)) {
-            errors++;
-            addError("The \"Key\" property must be set");
-        }
-        if (OptionHelper.isNullOrEmptyOrAllSpaces(defaultValue)) {
-            errors++;
-            addError("The \"DefaultValue\" property must be set");
-        }
-        if (errors == 0) {
-            started = true;
-        }
-    }
 
     public String getKey() {
         return key;

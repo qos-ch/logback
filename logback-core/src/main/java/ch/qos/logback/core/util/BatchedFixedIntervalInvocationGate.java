@@ -43,7 +43,7 @@ public class BatchedFixedIntervalInvocationGate implements InvocationGate {
     /**
      * Default batch size: number of successive allowed passages before a lull.
      */
-    public static final int DEFAULT_BATCH_SIZE = 8;
+    public static final int DEFAULT_BATCH_SIZE = 4;
 
     /**
      * Default lull duration after a batch is exhausted (same as

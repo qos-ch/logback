@@ -18,11 +18,13 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.Duration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
 
 import java.util.HashMap;
 
@@ -99,5 +101,58 @@ public class MDCBasedDiscriminatorTest {
 
         String discriminatorValue = discriminator.getDiscriminatingValue(event);
         assertEquals("foobarbaz", discriminatorValue);
+    }
+
+    /**
+     * When path characters are stripped, a WARN is emitted, but only through the
+     * {@link ch.qos.logback.core.util.BatchedFixedIntervalInvocationGate}: up to
+     * four warnings are allowed, then a 10-minute lull suppresses further ones.
+     */
+    @Test
+    public void sanitizationWarnIsGatedByInvocationGate() {
+        final String mdcWithPathChars = "a/b\\" + value;
+        final String sanitized = "ab" + value;
+        final String warnSnippet = "Required sanitizing of path characters from MDC value";
+        // Matches the gate configured on MDCBasedDiscriminator (batch of 4, 10-minute lull).
+        final int batchSize = 4;
+        final long lullMillis = Duration.buildByMinutes(10).getMilliseconds();
+        final long t0 = 1_000_000L;
+
+        logbackMDCAdapter.put(key, mdcWithPathChars);
+        StatusChecker statusChecker = new StatusChecker(loggerContext);
+
+        for (int i = 0; i < batchSize; i++) {
+            assertEquals(sanitized, discriminatingValueAt(t0));
+        }
+        statusChecker.assertMatchCount(warnSnippet, batchSize);
+        statusChecker.assertContainsMatch(Status.WARN, warnSnippet);
+
+        // Still within the lull: further sanitization must not emit more warnings.
+        assertEquals(sanitized, discriminatingValueAt(t0));
+        assertEquals(sanitized, discriminatingValueAt(t0 + lullMillis - 1));
+        statusChecker.assertMatchCount(warnSnippet, batchSize);
+
+        // After the lull, warnings are allowed again (new batch).
+        assertEquals(sanitized, discriminatingValueAt(t0 + lullMillis));
+        statusChecker.assertMatchCount(warnSnippet, batchSize + 1);
+    }
+
+    /**
+     * Sanitization is a no-op when the MDC value has no path characters, so no
+     * status warning should be produced.
+     */
+    @Test
+    public void noSanitizationWarnWhenMdcValueHasNoPathCharacters() {
+        logbackMDCAdapter.put(key, value);
+        StatusChecker statusChecker = new StatusChecker(loggerContext);
+
+        assertEquals(value, discriminatingValueAt(1_000L));
+        statusChecker.assertMatchCount("Required sanitizing of path characters from MDC value \\[.*\\]", 0);
+    }
+
+    private String discriminatingValueAt(long timestamp) {
+        event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
+        event.setTimeStamp(timestamp);
+        return discriminator.getDiscriminatingValue(event);
     }
 }
