@@ -76,8 +76,7 @@ public abstract class SiftingAppenderBase<E> extends AppenderBase<E> {
         if (discriminator == null) {
             addError("Missing discriminator. Aborting");
             errors++;
-        }
-        if (!discriminator.isStarted()) {
+        } else if (!discriminator.isStarted()) {
             addError("Discriminator has not started successfully. Aborting");
             errors++;
         }
