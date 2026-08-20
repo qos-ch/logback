@@ -78,7 +78,8 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
             return;
         }
 
-        Boolean localScan = OptionHelper.toBooleanObject(propertyConfiguratorModel.getScanStr());
+        Boolean localScan = ConfigurationModelHandler.scanStringToBoolean(
+                capc.subst(propertyConfiguratorModel.getScanStr()));
 
         if(localScan == Boolean.TRUE || topScanBoolean == Boolean.TRUE) {
             if(topScanBoolean != Boolean.TRUE) {

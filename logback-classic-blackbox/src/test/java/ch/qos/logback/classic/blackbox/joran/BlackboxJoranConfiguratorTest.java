@@ -251,7 +251,7 @@ public class BlackboxJoranConfiguratorTest {
 
         //StatusPrinter.print(loggerContext);
         inputStream.close();
-        checker.assertContainsMatch("Scan attribute not set or set to unrecognized value.");
+        checker.assertContainsMatch("Scan attribute not set.");
         checker.assertIsWarningOrErrorFree();
     }
 

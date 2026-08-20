@@ -466,6 +466,57 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
     }
 
+    @Test
+    public void scanAttributeVariableSubstitutionUsesDefaultTrue() throws JoranException, IOException {
+        File file = writeScanConfig("${logback.scan.enabled:-true}", "${logback.scan.interval.seconds:-30} seconds");
+        configure(file);
+
+        assertFalse(loggerContext.getCopyOfScheduledFutures().isEmpty());
+        statusChecker.assertContainsMatch("Scan attribute set to true");
+        statusChecker.assertContainsMatch("value \"true\" substituted for \"\\$\\{logback.scan.enabled:-true\\}\"");
+        statusChecker.assertContainsMatch("Setting ReconfigureOnChangeTask scanning period to 30 seconds");
+    }
+
+
+    @Test
+    public void scanAttributeVariableSubstitutionHonorsSystemPropertyFalse() throws JoranException, IOException {
+        String key = "logback.scan.enabled";
+        try {
+            System.setProperty(key, "false");
+            File file = writeScanConfig("${" + key + ":-true}", "50 millisecond");
+            configure(file);
+
+            assertTrue(loggerContext.getCopyOfScheduledFutures().isEmpty());
+            statusChecker.assertContainsMatch("Scan attribute set to false");
+            statusChecker.assertContainsMatch("value \"false\" substituted for \"\\$\\{" + key + ":-true\\}\"");
+        } finally {
+            System.clearProperty(key);
+        }
+    }
+
+    @Test
+    public void scanAttributeUnrecognizedValueDefaultsToTrue() throws JoranException, IOException {
+        File file = writeScanConfig("yes", "50 millisecond");
+        configure(file);
+
+        assertFalse(loggerContext.getCopyOfScheduledFutures().isEmpty());
+        statusChecker.assertContainsMatch("Scan attribute set to true");
+    }
+
+    @Test
+    public void propertiesConfiguratorScanAttributeHonorsVariableSubstitution() throws JoranException, IOException {
+        String propertiesFileStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "propsScan-" + diff + ".properties";
+        File propertiesFile = new File(propertiesFileStr);
+        writeToFile(propertiesFile, "logback.logger.abc=INFO");
+        String configurationStr = "<configuration><propertiesConfigurator file=\"" + propertiesFileStr
+                + "\" scan=\"${logback.scan.enabled:-true}\"/></configuration>";
+        configure(asBAIS(configurationStr));
+
+        List<File> fileList = getConfigurationWatchList(loggerContext);
+        assertThatListContainsFile(fileList, propertiesFile);
+        statusChecker.assertContainsMatch("value \"true\" substituted for \"\\$\\{logback.scan.enabled:-true\\}\"");
+    }
+
     // check for deadlocks
     @Test
     @Timeout(value = 4, unit = TimeUnit.SECONDS)
@@ -515,6 +566,13 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
 
     enum UpdateType {
         TOUCH, MALFORMED, MALFORMED_INNER
+    }
+
+    File writeScanConfig(String scanAttr, String scanPeriodAttr) throws IOException {
+        File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "scanAttr-" + diff + ".xml");
+        writeToFile(file, "<configuration scan=\"" + scanAttr + "\" scanPeriod=\"" + scanPeriodAttr
+                + "\"><root level=\"ERROR\"/></configuration>");
+        return file;
     }
 
     void writeToFile(File file, String contents) throws IOException {

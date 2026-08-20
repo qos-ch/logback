@@ -78,9 +78,9 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
             StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
         }
 
-        // It is hard to gauge at this stage which URL ares watchable
+        // It is hard to gauge at this stage which URL are watchable
         // However, we know for sure if the user wants scanning or not
-        this.scanning = scanAttrToBoolean(configurationModel);
+        this.scanning = scanAttrToBoolean(mic, configurationModel);
 
         mic.setTopScanBoolean(scanning);
 
@@ -104,7 +104,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 
     void printScanMessage(Boolean scanning) {
         if (scanning == null) {
-            addInfo("Scan attribute not set or set to unrecognized value.");
+            addInfo("Scan attribute not set.");
             return;
         }
         if (scanning) {
@@ -124,25 +124,46 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
     /**
      * Converts the scan string attribute of the given model to a Boolean value.
      *
-     * <p>If the provided model is an instance of {@code ConfigurationModel}, the scan string is retrieved
-     * and converted to a {@code Boolean}. If the provided model is not a {@code ConfigurationModel},
-     * the method returns {@code null}.
-     * </p>
+     * <p>Variable substitution is applied first. If the provided model is not a
+     * {@code ConfigurationModel}, the method returns {@code null}.</p>
      *
+     * @param mic the interpretation context used for variable substitution
      * @param model the model object, which may be an instance of {@code ConfigurationModel}
      * @return a {@code Boolean} corresponding to the scan string attribute if the model is
      *         an instance of {@code ConfigurationModel}, or {@code null} otherwise
      *
      * @since 1.5.27
      */
-    private Boolean scanAttrToBoolean(Model model) {
+    private Boolean scanAttrToBoolean(ModelInterpretationContext mic, Model model) {
         if(model instanceof ConfigurationModel) {
             ConfigurationModel configurationModel = (ConfigurationModel) model;
-            String scanStr = configurationModel.getScanStr();
-            return OptionHelper.toBooleanObject(scanStr);
+            String scanStr = mic.subst(configurationModel.getScanStr());
+            return scanStringToBoolean(scanStr);
         } else {
             return null;
         }
 
+    }
+
+    /**
+     * Interprets a scan attribute after variable substitution.
+     *
+     * <p>Unset or blank values yield {@code null}. {@code "false"} (case-insensitive)
+     * yields {@link Boolean#FALSE}. Any other non-empty value, including unrecognized
+     * strings, yields {@link Boolean#TRUE}. This matches the pre-1.5.27 behavior where
+     * scanning was enabled unless the attribute was empty or explicitly {@code false}.</p>
+     *
+     * @param scanStr the scan attribute value, possibly already substituted; may be {@code null}
+     * @return {@code true}, {@code false}, or {@code null} if the attribute is unset
+     */
+    static Boolean scanStringToBoolean(String scanStr) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(scanStr)) {
+            return null;
+        }
+        Boolean parsed = OptionHelper.toBooleanObject(scanStr);
+        if (parsed != null) {
+            return parsed;
+        }
+        return Boolean.TRUE;
     }
 }
