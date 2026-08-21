@@ -80,6 +80,8 @@ public class ZipCompressionStrategy extends CompressionStrategyBase {
             addInfo("Done ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
         } catch (Exception e) {
             addStatus(new ErrorStatus("Error occurred while compressing [" + originalFileName + "] into [" + compressedFileName + "].", this, e));
+            discardPartialCompressedFile(zippedFile);
+            return;
         }
 
         // Delete the original only after successful compression so a failure leaves it intact.
