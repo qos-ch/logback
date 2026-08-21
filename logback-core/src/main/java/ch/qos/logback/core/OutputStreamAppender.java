@@ -85,8 +85,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
         // only error free appenders should be activated
         if (errors == 0) {
-            super.start();
             this.statefulEncoder = encoder.isStateful();
+            super.start();
             encoderInit();
         }
     }
@@ -215,11 +215,12 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         if (byteArray == null || byteArray.length == 0)
             return;
 
+        // for stateless encoders streamWriteLock protection is needed for writing to the outputStream
         if (!statefulEncoder) streamWriteLock.lock();
 
         try {
-            // guard against appender having been stop() in parallel
-            // note that the encoding step is performed outside the protection of the streamWriteLock
+            // guard against appender with stop() invoked in parallel
+
             if(isStarted()) {
                 writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
                 updateByteCount(byteArray);

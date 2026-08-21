@@ -235,7 +235,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
         FileLock fileLock = null;
         try {
             // File locks are held on behalf of the entire Java virtual machine. They are not suitable for controlling
-            // access to a file by multiple  threads within the same virtual machine. 
+            // access to a file by multiple  threads within the same virtual machine.
             fileLock = fileChannel.lock();
             long position = fileChannel.position();
             long size = fileChannel.size();
