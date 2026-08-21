@@ -54,6 +54,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     boolean immediateFlush = true;
 
+    boolean statefulEncoder = false;
+
     /**
      * The underlying output stream used by this appender.
      * 
@@ -70,17 +72,13 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     public void start() {
         int errors = 0;
         if (this.encoder == null) {
-            addStatus(new ErrorStatus("No encoder set for the appender named \"" + name + "\".", this));
+            addError("No encoder set for the appender named \"" + name + "\".");
+            addWarn("Encoder has not been set. Cannot invoke its init method.");
             errors++;
         }
 
         if (this.outputStream == null) {
-            addStatus(new ErrorStatus("No output stream set for the appender named \"" + name + "\".", this));
-            errors++;
-        }
-
-        if (encoder == null) {
-            addWarn("Encoder has not been set. Cannot invoke its init method.");
+            addError("No output stream set for the appender named \"" + name + "\".");
             errors++;
         }
 
@@ -88,6 +86,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         // only error free appenders should be activated
         if (errors == 0) {
             super.start();
+            this.statefulEncoder = encoder.isStateful();
             encoderInit();
         }
     }
@@ -188,6 +187,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     void encoderInit() {
         if (encoder != null && this.outputStream != null) {
+            if (statefulEncoder) streamWriteLock.lock();
             try {
                 byte[] header = encoder.headerBytes();
                 writeBytes(header);
@@ -195,6 +195,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
                 this.started = false;
                 addStatus(
                         new ErrorStatus("Failed to initialize encoder for appender named [" + name + "].", this, ioe));
+            } finally {
+                if (statefulEncoder) streamWriteLock.unlock();
             }
         }
     }
@@ -208,7 +210,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         if (byteArray == null || byteArray.length == 0)
             return;
 
-        streamWriteLock.lock();
+        if (!statefulEncoder) streamWriteLock.lock();
 
         try {
             // guard against appender having been stop() in parallel
@@ -218,7 +220,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
                 updateByteCount(byteArray);
             }
         } finally {
-            streamWriteLock.unlock();
+            if (!statefulEncoder) streamWriteLock.unlock();
         }
     }
 
