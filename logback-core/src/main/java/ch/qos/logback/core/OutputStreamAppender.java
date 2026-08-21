@@ -202,8 +202,13 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     }
 
     protected void writeOut(E event) throws IOException {
-        byte[] byteArray = this.encoder.encode(event);
-        writeBytes(byteArray);
+        if (statefulEncoder) streamWriteLock.lock();
+        try {
+            byte[] byteArray = this.encoder.encode(event);
+            writeBytes(byteArray);
+        } finally {
+            if (statefulEncoder) streamWriteLock.unlock();
+        }
     }
 
     private void writeBytes(byte[] byteArray) throws IOException {
