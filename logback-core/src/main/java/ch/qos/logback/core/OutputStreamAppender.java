@@ -86,8 +86,15 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         // only error free appenders should be activated
         if (errors == 0) {
             this.statefulEncoder = encoder.isStateful();
-            super.start();
-            encoderInit();
+            // Hold the lock across started=true and headerBytes so a concurrent
+            // append cannot encode before the header is written.
+            streamWriteLock.lock();
+            try {
+                super.start();
+                encoderInit();
+            } finally {
+                streamWriteLock.unlock();
+            }
         }
     }
 
@@ -145,14 +152,22 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         }
     }
 
+    /**
+     * Write the encoder's footer to the underlying {@link OutputStream}.
+     *
+     * It is assumed that the caller has acquired the streamWriteLock.
+     */
     void encoderClose() {
         if (encoder != null && this.outputStream != null) {
+            if (statefulEncoder) streamWriteLock.lock();
             try {
                 byte[] footer = encoder.footerBytes();
                 writeBytes(footer);
             } catch (IOException ioe) {
                 this.started = false;
                 addStatus(new ErrorStatus("Failed to write footer for appender named [" + name + "].", this, ioe));
+            } finally {
+                if (statefulEncoder) streamWriteLock.unlock();
             }
         }
     }
@@ -193,8 +208,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
                 writeBytes(header);
             } catch (IOException ioe) {
                 this.started = false;
-                addStatus(
-                        new ErrorStatus("Failed to initialize encoder for appender named [" + name + "].", this, ioe));
+                addError("Failed to initialize encoder for appender named [" + name + "].", ioe);
             } finally {
                 if (statefulEncoder) streamWriteLock.unlock();
             }
@@ -204,6 +218,11 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     protected void writeOut(E event) throws IOException {
         if (statefulEncoder) streamWriteLock.lock();
         try {
+            // Recheck under the lock: stop() may have written the footer since
+            // subAppend() observed isStarted().
+            if (!isStarted()) {
+                return;
+            }
             byte[] byteArray = this.encoder.encode(event);
             writeBytes(byteArray);
         } finally {

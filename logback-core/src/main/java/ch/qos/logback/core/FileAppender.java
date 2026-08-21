@@ -213,6 +213,9 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
         // We just lock the entire write operation for simplicity.
         streamWriteLock.lock();
         try {
+            if (!isStarted()) {
+                return;
+            }
             byte[] byteArray = this.encoder.encode(event);
             if (byteArray == null || byteArray.length == 0)
                 return;
