@@ -34,7 +34,7 @@ More details on building logback is documented at:
 
 In case of problems please do not hesitate to post on [github
 discussions](https://github.com/qos-ch/logback/discussions) forum.
-However, please do not directly e-mail logback developers. 
+Please do not directly e-mail logback developers. 
 
 # Urgent issues
 
