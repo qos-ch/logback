@@ -7,22 +7,24 @@ and flexible logging library for Java.
 The Logback documentation can be found on the [project
 web-site](https://logback.qos.ch/documentation.html).
 
-## On the 1.5.x series
+## On the 1.6.x series
 
-The 1.5.x series is a direct descendant of and a drop-in replacement
-for the 1.4.x series. It differs from the 1.4.x series by the
-relocation of the logback-access module which was moved to its [own
-separate github repository](https://github.com/qos-ch/logback-access).
+The 1.6.x series is a direct descendant of and a drop-in replacement
+for the 1.5.x series which is a direct descendant of and a drop-in
+replacement for the 1.4.x series. The 1.6.x differs from the 1.4.x
+series by the relocation of the logback-access module which was moved
+to its [own separate github
+repository](https://github.com/qos-ch/logback-access).
 
 Here is a summary of 1.5.x dependencies:
 
-|Logback version   |github branch   |SLF4J version  | JDK at runtime | JDK during build | Enterprise Edition (optional)|
-|:---------------:|:--------:|:---------:|:-------:|:--------:|------------------------------|
-| 1.5.x            | master         | 2.0.x         | 11             | 21            | Jakarta EE (jakarta.* namespace)|
+|Logback version   |github branch  |SLF4J version  | JDK at runtime | JDK during build | Enterprise Edition (optional)|
+|:---------------:|:--------------:|:-------------:|:--------------:|:----------------:|------------------------------|
+| 1.6.x           | master         | 2.0.x         | 11             |  17              | Jakarta EE (jakarta.* namespace)|
 
 # Building logback
 
-Version 1.5.x requires Java 21 to compile and build.
+Version 1.6.x requires Java 17 to compile and build.
 
 More details on building logback is documented at:
 
@@ -30,13 +32,9 @@ More details on building logback is documented at:
 
 # In case of problems
 
-In case of problems please do not hesitate to post an e-mail message
-on the logback-user@qos.ch mailing list. You may also post message on the 
-[github discussions](https://github.com/qos-ch/logback/discussions) forum. 
+In case of problems please do not hesitate to post on [github
+discussions](https://github.com/qos-ch/logback/discussions) forum.
 However, please do not directly e-mail logback developers. 
-The answer to your question might be useful to other users. Moreover, 
-there are many knowledgeable users on the logback-user mailing lists 
-who can quickly answer your questions.
 
 # Urgent issues
 
