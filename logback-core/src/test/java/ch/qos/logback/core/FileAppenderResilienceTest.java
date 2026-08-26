@@ -90,7 +90,7 @@ public class FileAppenderResilienceTest implements RecoveryListener {
 
         double delayCoefficient = 2.0;
         for (int i = 0; i < 5; i++) {
-            Thread.sleep((int) (RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * delayCoefficient));
+            Thread.sleep((int) (RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN * delayCoefficient) + 200);
             closeLogFileOnPurpose();
         }
         runner.setDone(true);
