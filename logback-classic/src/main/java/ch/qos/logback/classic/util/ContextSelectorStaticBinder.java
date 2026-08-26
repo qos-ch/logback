@@ -66,7 +66,12 @@ public class ContextSelectorStaticBinder {
             // if jndi is specified, let's use the appropriate class
             contextSelector = new ContextJNDISelector(defaultLoggerContext);
         } else {
-            contextSelector = dynamicalContextSelector(defaultLoggerContext, contextSelectorStr);
+            try {
+                contextSelector = dynamicalContextSelector(defaultLoggerContext, contextSelectorStr);
+            } catch (Exception e) {
+                // if dynamical selector throws exception, keep going with the default
+                contextSelector = new DefaultContextSelector(defaultLoggerContext);
+            }
         }
     }
 
