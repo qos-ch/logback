@@ -99,6 +99,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
                 setDateInCurrentPeriod(timestamp);
             }
         }
+        elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(new java.util.Date(getCurrentTime()), 0);
         addInfo("Setting initial period to " + dateInCurrentPeriod);
         long nextCheck = computeNextCheck(timestamp);
         atomicNextCheck.set(nextCheck);
