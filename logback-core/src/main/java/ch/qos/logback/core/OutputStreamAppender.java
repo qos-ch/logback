@@ -90,7 +90,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             // append cannot encode before the header is written.
             streamWriteLock.lock();
             try {
-                super.start();q
+                super.start();
                 encoderInit();
             } finally {
                 streamWriteLock.unlock();

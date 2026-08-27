@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic.util;
 
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +20,8 @@ import java.util.Set;
 
 import org.slf4j.helpers.ThreadLocalMapOfStacks;
 import org.slf4j.spi.MDCAdapter;
+
+import ch.qos.logback.core.util.MinimalUnmodifiableMap;
 
 /**
  * A <em>Mapped Diagnostic Context</em>, or MDC in short, is an instrument for
@@ -110,7 +111,7 @@ public class LogbackMDCAdapterSimple implements MDCAdapter {
     }
 
     private void makeUnmodifiableAndThreadLocalSet(Map<String, String> aMap) {
-        Map<String, String> unmodifiable = Collections.unmodifiableMap(aMap);
+        Map<String, String> unmodifiable = new MinimalUnmodifiableMap(aMap);
         threadLocalUnmodifiableMap.set(unmodifiable);
     }
 
