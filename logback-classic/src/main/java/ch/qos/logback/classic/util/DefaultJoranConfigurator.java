@@ -100,7 +100,7 @@ public class DefaultJoranConfigurator extends ContextAwareBase implements Config
 
     private URL findConfigFileURLFromSystemProperties(ClassLoader classLoader, boolean updateStatus) {
         String logbackConfigFile = OptionHelper.getSystemProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
-        if (logbackConfigFile != null) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(logbackConfigFile)) {
             URL result = null;
             try {
                 result = new URL(logbackConfigFile);
