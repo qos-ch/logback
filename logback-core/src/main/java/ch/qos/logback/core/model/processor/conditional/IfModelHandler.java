@@ -19,6 +19,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.conditional.Condition;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.conditional.ByPropertiesConditionModel;
 import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.model.conditional.IfModel.BranchState;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
@@ -63,6 +64,10 @@ public class IfModelHandler extends ModelHandlerBase {
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         
         ifModel = (IfModel) model;
+        if (ifModel.getSubModels().stream().anyMatch(ByPropertiesConditionModel.class::isInstance)) {
+            addWarn("The <condition> element must be placed before the <if> element, not inside it.");
+        }
+
         mic.pushModel(ifModel);
         Object micTopObject = mic.peekObject();
         String conditionStr = ifModel.getCondition();
