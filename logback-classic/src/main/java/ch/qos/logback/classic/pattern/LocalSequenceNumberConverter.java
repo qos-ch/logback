@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * future.
  *
  */
+@Deprecated
 public class LocalSequenceNumberConverter extends ClassicConverter {
 
     AtomicLong sequenceNumber = new AtomicLong(System.currentTimeMillis());

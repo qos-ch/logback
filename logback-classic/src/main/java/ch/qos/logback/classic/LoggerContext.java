@@ -67,7 +67,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     private LoggerContextVO loggerContextRemoteView;
     private final TurboFilterList turboFilterList = new TurboFilterList();
     private boolean packagingDataEnabled = DEFAULT_PACKAGING_DATA;
-    SequenceNumberGenerator sequenceNumberGenerator = null; // by default there is no SequenceNumberGenerator
 
     MDCAdapter mdcAdapter;
 
@@ -413,16 +412,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
      */
     public List<String> getFrameworkPackages() {
         return frameworkPackages;
-    }
-
-    @Override
-    public void setSequenceNumberGenerator(SequenceNumberGenerator sng) {
-        this.sequenceNumberGenerator = sng;
-    }
-
-    @Override
-    public SequenceNumberGenerator getSequenceNumberGenerator() {
-        return sequenceNumberGenerator;
     }
 
     public MDCAdapter getMDCAdapter() {
