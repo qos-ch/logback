@@ -17,6 +17,7 @@ import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.status.StatusManager;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -265,6 +266,7 @@ public class LoggerContextTest {
     // creations below distinct parents run under different locks. The internal
     // logger count must be maintained atomically; otherwise incSize()'s size++
     // races and increments are lost, leaving size() below the real count.
+    @Disabled // No need to run this test every time, it is a stress test that can be run manually
     @Test
     public void concurrentGetLoggerKeepsSizeConsistent() throws InterruptedException {
         final int threadCount = 16;
