@@ -19,6 +19,8 @@ import org.jline.jansi.AnsiConsole;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 
+import static ch.qos.logback.core.util.Loader.isClassLoadable;
+
 /**
  * A {@link ConsoleAppender} that always writes through JLine's
  * {@link AnsiConsole}, enabling ANSI sequences on platforms that need Jansi
@@ -43,6 +45,18 @@ import ch.qos.logback.core.joran.spi.ConsoleTarget;
  * @see ConsoleAppender#wrapTarget(OutputStream)
  */
 public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
+
+
+    static final String JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME = "org.jline.jansi.AnsiConsole";
+    /**
+     * Status message emitted when {@link #JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME}
+     * cannot be loaded. The appender then falls back on the raw console stream.
+     */
+    static final String JANSI_NOT_LOADABLE_MSG0 = "Could not find " + JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME
+            + " on the class path. Falling back on the default stream.";
+
+    static final String JANSI_NOT_LOADABLE_MSG1= "To enable JANSI, add org.jline:jansi-core to the class path.";
+    static final String JANSI_NOT_LOADABLE_MSG2= "See also "+CoreConstants.CODES_URL+"#missingJlineJansi";
 
     /**
      * True after this instance has successfully called
@@ -72,11 +86,22 @@ public class JansiConsoleAppender<E> extends ConsoleAppender<E> {
      * path. {@link AnsiConsole#systemInstall()} is invoked at most once per
      * install ownership of this instance.
      * </p>
+     * <p>
+     * If {@link #JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME} is not loadable, a warning
+     * is emitted and {@code targetStream} is returned unchanged.
+     * </p>
      */
     @Override
     protected OutputStream wrapTarget(OutputStream targetStream) {
+        boolean jansiLoadable = isClassLoadable(JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME, getContext());
+        if (!jansiLoadable) {
+            addWarn(JANSI_NOT_LOADABLE_MSG0);
+            addWarn(JANSI_NOT_LOADABLE_MSG1);
+            addWarn(JANSI_NOT_LOADABLE_MSG2);
+            return targetStream;
+        }
         try {
-            addInfo("Enabling JANSI AnsiPrintStream via org.jline.jansi.AnsiConsole.");
+            addInfo("Enabling JANSI AnsiPrintStream via " + JLINE_JANSI_ANSI_CONSOLE_CLASS_NAME + ".");
             if (!installedByThisAppender) {
                 AnsiConsole.systemInstall();
                 installedByThisAppender = true;

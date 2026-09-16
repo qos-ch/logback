@@ -16,6 +16,7 @@ package ch.qos.logback.core.blackbox.appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.JansiConsoleAppender;
+import ch.qos.logback.core.blackbox.joran.CoreBlackboxStatusChecker;
 import ch.qos.logback.core.testUtil.DummyEncoder;
 import org.jline.jansi.AnsiConsole;
 import org.jline.jansi.AnsiPrintStream;
@@ -64,6 +65,9 @@ public class JansiConsoleAppenderTest {
         Assertions.assertTrue(ca.isStarted());
         Assertions.assertTrue(AnsiConsole.isInstalled());
         Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
+        CoreBlackboxStatusChecker checker = new CoreBlackboxStatusChecker(context);
+        checker.assertContainsMatch("Enabling JANSI AnsiPrintStream via org.jline.jansi.AnsiConsole.");
+        checker.assertNoMatch("Could not find org.jline.jansi.AnsiConsole");
         ca.doAppend(new Object());
 
         ca.stop();
