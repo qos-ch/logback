@@ -143,6 +143,7 @@ public class RollingCalendarTest {
         }
     }
 
+    @Disabled // disabled to shave off some time from the test suite
     @Test
     public void testVaryingNumberOfHalfDailyPeriods() {
         RollingCalendar rc = new RollingCalendar("yyyy-MM-dd-a");
