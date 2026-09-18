@@ -67,6 +67,8 @@ public class XZCompressionStrategy extends CompressionStrategyBase {
             compressionSucceeded = true;
         } catch (Exception e) {
             addError("Error occurred while compressing [" + nameOfFile2xz + "] into [" + nameOfxzedFile + "].", e);
+            discardPartialCompressedFile(xzedFile);
+            return;
         }
 
         // Delete the original only after successful compression so a failure leaves it intact.
