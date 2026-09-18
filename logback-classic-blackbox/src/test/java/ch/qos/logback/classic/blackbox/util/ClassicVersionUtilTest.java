@@ -24,7 +24,7 @@ public class ClassicVersionUtilTest {
     // Beware: ----------------------------------------
     // Beware:  needs to be updated upon version change
     // Beware: ----------------------------------------
-    static final String EXPECTED_VERSION = "1.6";
+    static final String EXPECTED_VERSION = "1.7";
 
     @Test
     public void bySelfDeclaredProperties() {
