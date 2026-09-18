@@ -842,6 +842,10 @@ public final class Logger
             markers.forEach(m -> lle.addMarker(m));
         }
 
+        // Set the caller data if it is available. This is typically set by SLF4J's fluent API, i.e. by {@link LoggingEventBuilder}.
+        // Note calling slf4jEvent.getCallerData()) does not trigger the computation of caller data.
+        lle.setCallerData(slf4jEvent.getCallerData());
+
         lle.setKeyValuePairs(slf4jEvent.getKeyValuePairs());
 
         // Note that at this point, any calls made with a logger disabled

@@ -124,6 +124,10 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         DEFAULT_CONVERTER_SUPPLIER_MAP.put("caller", CallerDataConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(CallerDataConverter.class.getName(), "caller");
 
+        DEFAULT_CONVERTER_SUPPLIER_MAP.put("peCaller", PreexistingCallerDataConverter::new);
+        CONVERTER_CLASS_TO_KEY_MAP.put(PreexistingCallerDataConverter.class.getName(), "peCaller");
+
+
         DEFAULT_CONVERTER_SUPPLIER_MAP.put("marker", MarkerConverter::new);
         CONVERTER_CLASS_TO_KEY_MAP.put(MarkerConverter.class.getName(), "marker");
 
