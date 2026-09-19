@@ -22,6 +22,11 @@ import java.lang.reflect.Field;
 
 public class JlineJansiConsoleAppenderTest {
 
+    static {
+        System.setProperty("org.jline.terminal.exec", "false");
+        System.setProperty("org.jline.terminal.dumb", "true");
+    }
+
     Context context = new ContextBase();
     ConsoleAppender<Object> ca = new ConsoleAppender<Object>();
 

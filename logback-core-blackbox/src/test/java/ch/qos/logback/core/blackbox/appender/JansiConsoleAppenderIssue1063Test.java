@@ -58,6 +58,19 @@ import ch.qos.logback.core.testUtil.DummyEncoder;
  */
 public class JansiConsoleAppenderIssue1063Test {
 
+    /**
+     * JLine 4 {@link AnsiConsole#systemInstall()} builds a system terminal via
+     * {@code TerminalBuilder}. The test classpath only has the {@code exec}
+     * provider (no JNI/FFM), which probes the TTY by spawning {@code test}/
+     * {@code tty}/{@code stty}. Under Maven Surefire on Windows those children
+     * inherit redirected pipes and can deadlock (see jline/jline3#1115).
+     * Disable exec and force the dumb fallback before the first install.
+     */
+    static {
+        System.setProperty("org.jline.terminal.exec", "false");
+        System.setProperty("org.jline.terminal.dumb", "true");
+    }
+
     Context context = new ContextBase();
     PrintStream originalOut;
     PrintStream originalErr;
@@ -73,7 +86,7 @@ public class JansiConsoleAppenderIssue1063Test {
         // Appenders under test should have stopped and uninstalled; drain any
         // leftover install count only if something failed mid-test.
         try {
-            while (AnsiConsole.isInstalled()) {
+            for (int i = 0; i < 8 && AnsiConsole.isInstalled(); i++) {
                 AnsiConsole.systemUninstall();
             }
         } catch (Throwable ignored) {
@@ -104,8 +117,10 @@ public class JansiConsoleAppenderIssue1063Test {
     }
 
     /**
-     * Issue #1063 adapted to {@link JansiConsoleAppender}: after stop(), a write
-     * to the stream that was in use must not set the PrintStream error flag.
+     * Issue #1063 adapted to {@link JansiConsoleAppender}: after stop(),
+     * process-wide stdout must still accept writes (flush-only close, then
+     * uninstall). Do not write to the former Jansi stream — uninstall closes
+     * the JLine Terminal behind it, and that write can hang on Windows.
      */
     @Test
     public void jansiConsoleAppenderStopMustNotCloseSharedStdout() {
@@ -127,12 +142,15 @@ public class JansiConsoleAppenderIssue1063Test {
         assertFalse(AnsiConsole.isInstalled(),
                 "stop() must systemUninstall when this appender called systemInstall");
 
-        // After uninstall, System.out is restored; write to the former Jansi stream
-        // must not have been closed by stop() (flush-only). PrintStream does not
-        // throw on write-after-close; it sets the error flag.
-        jansiOut.println("write-after-jansi-console-appender-stop");
-        assertFalse(jansiOut.checkError(),
-                "JansiConsoleAppender.stop() must not close the shared AnsiConsole stream "
+        // After uninstall, System.out is restored and the JLine Terminal behind
+        // jansiOut is closed. Issue #1063 is about the process-wide stdout FD
+        // remaining usable — not about writing to that stale AnsiPrintStream.
+        // A write to the stale stream can block in Windows console I/O.
+        assertTrue(FileDescriptor.out.valid(),
+                "stop() must not close FileDescriptor.out");
+        System.out.println("write-after-jansi-console-appender-stop");
+        assertFalse(System.out.checkError(),
+                "JansiConsoleAppender.stop() must not close process-wide stdout "
                         + "(https://github.com/qos-ch/logback/issues/1063)");
     }
 

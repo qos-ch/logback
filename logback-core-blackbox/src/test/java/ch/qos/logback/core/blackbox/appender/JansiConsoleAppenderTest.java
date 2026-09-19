@@ -33,6 +33,11 @@ import java.io.PrintStream;
  */
 public class JansiConsoleAppenderTest {
 
+    static {
+        System.setProperty("org.jline.terminal.exec", "false");
+        System.setProperty("org.jline.terminal.dumb", "true");
+    }
+
     Context context = new ContextBase();
     JansiConsoleAppender<Object> ca = new JansiConsoleAppender<>();
 

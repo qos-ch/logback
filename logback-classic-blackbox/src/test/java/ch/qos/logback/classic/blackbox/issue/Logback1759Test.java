@@ -44,6 +44,13 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
  */
 public class Logback1759Test {
 
+    static {
+        // See JansiConsoleAppenderIssue1063Test: JLine exec provider can deadlock
+        // under Windows/Surefire when probing the TTY.
+        System.setProperty("org.jline.terminal.exec", "false");
+        System.setProperty("org.jline.terminal.dumb", "true");
+    }
+
     /** Marker printed after {@code consoleAppender.stop()}; must remain effective. */
     static final String AFTER_STOP_LINE = "After   consoleAppender.stop()";
 
