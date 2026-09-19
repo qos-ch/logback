@@ -15,6 +15,7 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
@@ -91,6 +92,24 @@ public class ContextInitializerTest {
         doAutoConfigFromSystemProperties("autoConfigAsResource.xml");
         // test passing a URL. note the relative path syntax with file:src/test/...
         doAutoConfigFromSystemProperties("file://./" + ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
+    }
+
+    @Test
+    public void emptyConfigurationFilePropertyFallsBackToDefaultDiscovery() throws JoranException {
+        doAutoConfigWithBlankConfigurationFileProperty("");
+    }
+
+    @Test
+    public void whitespaceConfigurationFilePropertyFallsBackToDefaultDiscovery() throws JoranException {
+        doAutoConfigWithBlankConfigurationFileProperty("  \t  ");
+    }
+
+    private void doAutoConfigWithBlankConfigurationFileProperty(String propertyValue) throws JoranException {
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, propertyValue);
+        DefaultJoranConfigurator configurator = new DefaultJoranConfigurator();
+        configurator.setContext(loggerContext);
+        Configurator.ExecutionStatus status = configurator.configure(loggerContext);
+        assertEquals(Configurator.ExecutionStatus.INVOKE_NEXT_IF_ANY, status);
     }
 
     public void doAutoConfigFromSystemProperties(String val) throws JoranException {
