@@ -32,7 +32,6 @@ import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyVO;
 import ch.qos.logback.core.net.HardenedObjectInputStream;
-import ch.qos.logback.core.util.MinimalUnmodifiableMap;
 
 public class HardenedLoggingEventInputStream extends HardenedObjectInputStream {
 
@@ -56,7 +55,6 @@ public class HardenedLoggingEventInputStream extends HardenedObjectInputStream {
         whitelist.add(StackTraceElementProxy.class.getName());
         whitelist.add(StackTraceElementProxy[].class.getName());
         whitelist.add(ClassPackagingData.class.getName());
-        whitelist.add(MinimalUnmodifiableMap.class.getName());
 
         return whitelist;
     }
