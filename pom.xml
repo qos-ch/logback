@@ -8,7 +8,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.6.4-SNAPSHOT</version>
+  <version>1.6.4</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -55,7 +55,7 @@
 
   <properties>
     <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
-    <project.build.outputTimestamp>2026-08-14T09:27:46Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-09-24T18:50:00Z</project.build.outputTimestamp>
 
     <!-- minimal JDK version at runtime -->
     <jdk.version>11</jdk.version>
@@ -79,7 +79,7 @@
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml, /logback-examples/src/main/resources/setClasspath.cmd, download.html
     -->
-    <slf4j.version>2.0.18</slf4j.version>
+    <slf4j.version>2.0.19</slf4j.version>
     <!-- logback-access-project.version property is used in logback-access/pom.xml -->
     <!-- It can momentarily point to a not yet released future version of logback-access. -->
     <logback-access-project.version>2.0.14</logback-access-project.version>
