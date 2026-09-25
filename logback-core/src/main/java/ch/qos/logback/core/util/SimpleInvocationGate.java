@@ -26,7 +26,7 @@ package ch.qos.logback.core.util;
  * @deprecated Use {@link FixedIntervalInvocationGate} instead.
  * @see FixedIntervalInvocationGate
  */
-@Deprecated
+@Deprecated(since = "1.6.3", forRemoval = true)
 public class SimpleInvocationGate extends FixedIntervalInvocationGate {
 
     /**
