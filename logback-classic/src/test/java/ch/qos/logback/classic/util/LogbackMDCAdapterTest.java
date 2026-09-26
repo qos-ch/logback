@@ -18,6 +18,8 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.Duration;
+import ch.qos.logback.core.util.StatusPrinter;
+import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -73,6 +75,8 @@ public class LogbackMDCAdapterTest {
         checker.assertNoMatch("Null value for MDC key");
 
         mdcAdapter.put("k", null);
+        StatusPrinter2 s2 = new StatusPrinter2();
+        s2.print(context);
         Assertions.assertTrue(mdcAdapter.getPropertyMap().containsKey("k"));
         Assertions.assertNull(mdcAdapter.get("k"));
         checker.assertContainsMatch(Status.WARN,

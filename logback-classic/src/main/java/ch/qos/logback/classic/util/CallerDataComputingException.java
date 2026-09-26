@@ -26,7 +26,7 @@ class CallerDataComputingException extends IllegalArgumentException {
 
     @Override
     public String getMessage() {
-        return "Special throwable used to compute caller data.";
+        return "Special throwable used to compute caller data. See stack trace below for caller location.";
     }
 
     /**

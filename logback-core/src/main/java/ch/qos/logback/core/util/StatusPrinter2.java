@@ -152,18 +152,9 @@ public class StatusPrinter2 {
     }
 
     private void appendThrowable(StringBuilder sb, Throwable t) {
+        // ThrowableToStringArray already renders 'at', 'Caused by', and omitted-frame lines.
         String[] stringRep = ThrowableToStringArray.convert(t);
-
         for (String s : stringRep) {
-            if (s.startsWith(CoreConstants.CAUSED_BY)) {
-                // nothing
-            } else if (Character.isDigit(s.charAt(0))) {
-                // if line resembles "48 common frames omitted"
-                sb.append("\t... ");
-            } else {
-                // most of the time. just add a tab+"at"
-                sb.append("\tat ");
-            }
             sb.append(s).append(CoreConstants.LINE_SEPARATOR);
         }
     }

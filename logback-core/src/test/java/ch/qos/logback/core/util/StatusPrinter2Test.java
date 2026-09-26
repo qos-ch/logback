@@ -29,21 +29,22 @@ import ch.qos.logback.core.status.WarnStatus;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StatusPrinterTest {
+public class StatusPrinter2Test {
 
     ByteArrayOutputStream outputStream;
     PrintStream ps;
+    StatusPrinter2 statusPrinter2 = new StatusPrinter2();
 
     @BeforeEach
     public void setUp() throws Exception {
         outputStream = new ByteArrayOutputStream();
         ps = new PrintStream(outputStream);
-        StatusPrinter.setPrintStream(ps);
+        statusPrinter2.setPrintStream(ps);
     }
 
     @AfterEach
     public void tearDown() throws Exception {
-        StatusPrinter.setPrintStream(System.out);
+        statusPrinter2.setPrintStream(System.out);
         ps = null;
         outputStream = null;
     }
@@ -52,7 +53,7 @@ public class StatusPrinterTest {
     public void testBasic() {
         Context context = new ContextBase();
         context.getStatusManager().add(new InfoStatus("test", this));
-        StatusPrinter.print(context);
+        statusPrinter2.print(context);
         String result = outputStream.toString();
         assertTrue(result.contains("|-INFO in " + this.getClass().getName()));
     }
@@ -80,7 +81,7 @@ public class StatusPrinterTest {
         context.getStatusManager().add(s1);
         context.getStatusManager().add(s2);
 
-        StatusPrinter.print(context);
+        statusPrinter2.print(context);
         String result = outputStream.toString();
         assertTrue(result.contains("+ INFO in " + this.getClass().getName()));
         assertTrue(result.contains("+ WARN in " + this.getClass().getName()));
@@ -109,11 +110,12 @@ public class StatusPrinterTest {
         context.getStatusManager().add(s0);
         context.getStatusManager().add(s1);
         context.getStatusManager().add(s2);
-        StatusPrinter.print(context);
+        statusPrinter2.print(context);
         String result = outputStream.toString();
         assertTrue(result.contains("|-ERROR in " + this.getClass().getName()));
         assertTrue(result.contains("+ INFO in " + this.getClass().getName()));
-        assertTrue(result.contains("ch.qos.logback.core.util.StatusPrinterTest.testWithException"));
+        assertTrue(result.contains("ch.qos.logback.core.util.StatusPrinter2Test.testWithException"));
+        assertTrue(!result.contains("\tat \tat"));
     }
 
 }
