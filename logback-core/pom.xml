@@ -131,19 +131,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
 
+                <!-- argLine is declared at plugin level so that IDEs such as IntelliJ IDEA pick it up -->
+                <configuration>
+                    <argLine>
+                        --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
+                        --add-reads ch.qos.logback.core=ALL-UNNAMED,org.junit.jupiter.api
+                    </argLine>
+                </configuration>
+
                 <executions>
                     <execution>
                         <id>default-test</id>
                         <configuration>
-                            <!--<argLine>XXadd-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming</argLine>-->
-                            <!--<argLine>add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
-                               ==-add-opens org.tukaani.xz/org.tukaani.xz=ch.qos.logback.core
-                                         add-reads ch.qos.logback.core=ALL-UNNAMED</argLine>-->
-                            <argLine>
-                                --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
-
-                                --add-reads ch.qos.logback.core=ALL-UNNAMED
-                            </argLine>
                             <parallel>classes</parallel>
                             <threadCount>20</threadCount>
                             <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->

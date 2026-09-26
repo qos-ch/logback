@@ -234,19 +234,25 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+
+                <!-- argLine is declared at plugin level so that IDEs such as IntelliJ IDEA pick it up -->
+                <configuration>
+                    <!-- x-show-module-resolution -->
+                    <argLine>
+                        --add-modules jakarta.mail
+                        --add-modules jakarta.servlet
+                        --add-reads ch.qos.logback.classic=ALL-UNNAMED,org.junit.jupiter.api
+                        --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
+                        --add-opens ch.qos.logback.classic/ch.qos.logback.classic.issue.github450=ch.qos.logback.core
+                        --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core
+                        --add-opens ch.qos.logback.classic/ch.qos.logback.classic.jsonTest=ALL-UNNAMED
+                    </argLine>
+                </configuration>
+
                 <executions>
                     <execution>
                         <id>default-test</id>
                         <configuration>
-                            <!-- x-show-module-resolution -->
-                            <argLine>
-                                --add-modules jakarta.mail
-                                --add-modules jakarta.servlet
-                                --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
-                                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.issue.github450=ch.qos.logback.core
-                                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core
-                                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.jsonTest=ALL-UNNAMED
-                            </argLine>
                             <parallel>classes</parallel>
                             <threadCount>8</threadCount>
                             <forkCount>1C</forkCount>
