@@ -150,7 +150,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         }
 
         contextAware.addWarn(String.format(NULL_VALUE_ON_PUT_MSG, key),
-                new CallerDataThrowable(CALLER_DATA_FQNS_TO_SHAVE, NULL_VALUE_CALLER_DATA_DEPTH));
+                new CallerDataComputingException(CALLER_DATA_FQNS_TO_SHAVE, NULL_VALUE_CALLER_DATA_DEPTH));
     }
 
     /**
@@ -312,7 +312,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
             }
         }
 
-        CallerDataThrowable callerData = new CallerDataThrowable(CALLER_DATA_FQNS_TO_SHAVE,
+        CallerDataComputingException callerData = new CallerDataComputingException(CALLER_DATA_FQNS_TO_SHAVE,
                 NULL_VALUE_CALLER_DATA_DEPTH);
         if (hasNullKey) {
             String msg = (keysForDisplay == null) ? NULL_KEY_ON_SET_CONTEXT_MAP_MSG

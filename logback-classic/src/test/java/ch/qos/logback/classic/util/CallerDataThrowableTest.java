@@ -22,31 +22,31 @@ public class CallerDataThrowableTest {
 
     // Stands in for a facade such as org.slf4j.MDC, which forwards to Inner.
     static class Outer {
-        static CallerDataThrowable make(String... fqnsToShave) {
+        static CallerDataComputingException make(String... fqnsToShave) {
             return Inner.make(fqnsToShave);
         }
     }
 
     // Stands in for the adapter that creates the throwable.
     static class Inner {
-        static CallerDataThrowable make(String... fqnsToShave) {
-            return new CallerDataThrowable(fqnsToShave, DEPTH);
+        static CallerDataComputingException make(String... fqnsToShave) {
+            return new CallerDataComputingException(fqnsToShave, DEPTH);
         }
 
-        static CallerDataThrowable makeViaOuterCallback(String... fqnsToShave) {
+        static CallerDataComputingException makeViaOuterCallback(String... fqnsToShave) {
             return OuterCallback.make(fqnsToShave);
         }
     }
 
     static class OuterCallback {
-        static CallerDataThrowable make(String... fqnsToShave) {
+        static CallerDataComputingException make(String... fqnsToShave) {
             return Inner.make(fqnsToShave);
         }
     }
 
     @Test
     public void allDesignatedClassesAreShaved() {
-        CallerDataThrowable cdt = Outer.make(Inner.class.getName(), Outer.class.getName());
+        CallerDataComputingException cdt = Outer.make(Inner.class.getName(), Outer.class.getName());
         StackTraceElement[] stack = cdt.getStackTrace();
         Assertions.assertEquals(CallerDataThrowableTest.class.getName(), stack[0].getClassName());
         Assertions.assertEquals("allDesignatedClassesAreShaved", stack[0].getMethodName());
@@ -55,7 +55,7 @@ public class CallerDataThrowableTest {
     @Test
     public void shavingStopsAtFirstUndesignatedFrame() {
         // Only Outer is designated but Inner is on top, so nothing is shaved.
-        CallerDataThrowable cdt = Outer.make(Outer.class.getName());
+        CallerDataComputingException cdt = Outer.make(Outer.class.getName());
         StackTraceElement[] stack = cdt.getStackTrace();
         Assertions.assertEquals(Inner.class.getName(), stack[0].getClassName());
         Assertions.assertEquals(Outer.class.getName(), stack[1].getClassName());
@@ -64,7 +64,7 @@ public class CallerDataThrowableTest {
     @Test
     public void laterFramesOfDesignatedClassesAreKept() {
         // Stack: Inner.make, OuterCallback.make, Inner.makeViaOuterCallback, test method.
-        CallerDataThrowable cdt = Inner.makeViaOuterCallback(Inner.class.getName());
+        CallerDataComputingException cdt = Inner.makeViaOuterCallback(Inner.class.getName());
         StackTraceElement[] stack = cdt.getStackTrace();
         Assertions.assertEquals(OuterCallback.class.getName(), stack[0].getClassName());
         Assertions.assertEquals(Inner.class.getName(), stack[1].getClassName());
@@ -73,15 +73,22 @@ public class CallerDataThrowableTest {
 
     @Test
     public void stackIsCappedAtMaxDepth() {
-        CallerDataThrowable cdt = Outer.make(Inner.class.getName(), Outer.class.getName());
+        CallerDataComputingException cdt = Outer.make(Inner.class.getName(), Outer.class.getName());
         Assertions.assertTrue(cdt.getStackTrace().length <= DEPTH);
     }
 
     @Test
+    public void toStringNamesTheFirstRemainingFrame() {
+        CallerDataComputingException cdt = Outer.make(Inner.class.getName(), Outer.class.getName());
+        Assertions.assertEquals(cdt.getStackTrace()[0].toString(), cdt.toString());
+        Assertions.assertFalse(cdt.toString().startsWith(CallerDataComputingException.class.getName()));
+    }
+
+    @Test
     public void ownFramesAreNeverKept() {
-        CallerDataThrowable cdt = Outer.make();
+        CallerDataComputingException cdt = Outer.make();
         for (StackTraceElement frame : cdt.getStackTrace()) {
-            Assertions.assertNotEquals(CallerDataThrowable.class.getName(), frame.getClassName());
+            Assertions.assertNotEquals(CallerDataComputingException.class.getName(), frame.getClassName());
         }
         Assertions.assertEquals(Inner.class.getName(), cdt.getStackTrace()[0].getClassName());
     }

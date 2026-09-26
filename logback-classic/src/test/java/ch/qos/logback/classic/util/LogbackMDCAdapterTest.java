@@ -80,7 +80,7 @@ public class LogbackMDCAdapterTest {
 
         Status status = statusWithCallerData(context);
         StackTraceElement[] stack = status.getThrowable().getStackTrace();
-        Assertions.assertInstanceOf(CallerDataThrowable.class, status.getThrowable());
+        Assertions.assertInstanceOf(CallerDataComputingException.class, status.getThrowable());
         Assertions.assertTrue(stack.length > 0 && stack.length <= LogbackMDCAdapter.NULL_VALUE_CALLER_DATA_DEPTH);
         Assertions.assertEquals("nullValueIsStoredAndWarned", stack[0].getMethodName());
         assertCallerDataExcludesAdapter(stack);
@@ -248,7 +248,7 @@ public class LogbackMDCAdapterTest {
 
     private static Status statusWithCallerData(LoggerContext context) {
         for (Status status : context.getStatusManager().getCopyOfStatusList()) {
-            if (status.getThrowable() instanceof CallerDataThrowable) {
+            if (status.getThrowable() instanceof CallerDataComputingException) {
                 return status;
             }
         }
@@ -259,7 +259,7 @@ public class LogbackMDCAdapterTest {
     private static void assertCallerDataExcludesAdapter(StackTraceElement[] stack) {
         for (StackTraceElement frame : stack) {
             Assertions.assertNotEquals(LogbackMDCAdapter.class.getName(), frame.getClassName());
-            Assertions.assertNotEquals(CallerDataThrowable.class.getName(), frame.getClassName());
+            Assertions.assertNotEquals(CallerDataComputingException.class.getName(), frame.getClassName());
         }
     }
 

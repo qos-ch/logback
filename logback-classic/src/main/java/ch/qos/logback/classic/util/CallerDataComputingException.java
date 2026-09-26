@@ -19,15 +19,21 @@ package ch.qos.logback.classic.util;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-class CallerDataThrowable extends IllegalArgumentException {
+class CallerDataComputingException extends IllegalArgumentException {
 
     private static final long serialVersionUID = 1L;
+
+
+    @Override
+    public String getMessage() {
+        return "Special throwable used to compute caller data.";
+    }
 
     /**
      * @param fqnsToShave class names shaved from the top of the stack, together with this throwable
      * @param maxDepth maximum number of frames retained after shaving
      */
-    public CallerDataThrowable(String[] fqnsToShave, int maxDepth) {
+    public CallerDataComputingException(String[] fqnsToShave, int maxDepth) {
         super();
         if (fqnsToShave == null) {
             throw new IllegalArgumentException("fqnsToShave cannot be null");
@@ -42,6 +48,19 @@ class CallerDataThrowable extends IllegalArgumentException {
         StackTraceElement[] trimmed = new StackTraceElement[depth];
         System.arraycopy(steArray, start, trimmed, 0, depth);
         setStackTrace(trimmed);
+    }
+
+    /**
+     * The first remaining caller frame. Status lines append this text, so they name
+     * the caller rather than this class.
+     */
+    @Override
+    public String toString() {
+        StackTraceElement[] stack = getStackTrace();
+        if (stack.length == 0) {
+            return "";
+        }
+        return stack[0].toString();
     }
 
     /**
