@@ -13,7 +13,11 @@
  */
 package ch.qos.logback.classic.util;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.Duration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -56,6 +60,126 @@ public class LogbackMDCAdapterTest {
     @Test
     public void removeInexistentKey() {
         mdcAdapter.remove("abcdlw0");
+    }
+
+    @Test
+    public void nullValueIsStoredAndWarned() {
+        LoggerContext context = new LoggerContext();
+        mdcAdapter.setContext(context);
+        mdcAdapter.put("k", "v");
+
+        StatusChecker checker = new StatusChecker(context);
+        checker.assertNoMatch("Null value for MDC key");
+
+        mdcAdapter.put("k", null);
+        Assertions.assertTrue(mdcAdapter.getPropertyMap().containsKey("k"));
+        Assertions.assertNull(mdcAdapter.get("k"));
+        checker.assertContainsMatch(Status.WARN, "Null value for MDC key \\[k\\] is stored.");
+
+        Status status = statusWithCallerData(context);
+        StackTraceElement[] stack = status.getThrowable().getStackTrace();
+        Assertions.assertInstanceOf(CallerDataThrowable.class, status.getThrowable());
+        Assertions.assertTrue(stack.length > 0 && stack.length <= LogbackMDCAdapter.NULL_VALUE_CALLER_DATA_DEPTH);
+        Assertions.assertEquals("nullValueIsStoredAndWarned", stack[0].getMethodName());
+        assertCallerDataExcludesAdapter(stack);
+    }
+
+    @Test
+    public void nullValueCallerDataIsCappedAtEightFrames() {
+        LoggerContext context = new LoggerContext();
+        mdcAdapter.setContext(context);
+        putNullAtDepth(20);
+
+        Status status = statusWithCallerData(context);
+        StackTraceElement[] stack = status.getThrowable().getStackTrace();
+        Assertions.assertEquals(LogbackMDCAdapter.NULL_VALUE_CALLER_DATA_DEPTH, stack.length);
+        for (StackTraceElement frame : stack) {
+            Assertions.assertEquals("putNullAtDepth", frame.getMethodName());
+        }
+        assertCallerDataExcludesAdapter(stack);
+    }
+
+    @Test
+    public void nullValueWarningIsLimitedToABatchThenTwelveHours() {
+        LoggerContext context = new LoggerContext();
+        LogbackMDCAdapter adapter = new LogbackMDCAdapter();
+        adapter.setContext(context);
+        long start = 1_000L;
+        adapter.setCurrentTime(start);
+
+        int batch = LogbackMDCAdapter.DEFAULT_BATCH_SIZE;
+        for (int i = 0; i < batch; i++) {
+            adapter.put("k", null);
+        }
+        StatusChecker checker = new StatusChecker(context);
+        checker.assertMatchCount("Null value for MDC key \\[k\\] is stored.", batch);
+
+        adapter.put("k", null);
+        checker.assertMatchCount("Null value for MDC key \\[k\\] is stored.", batch);
+
+        long lull = Duration.buildByHours(LogbackMDCAdapter.DEFAULT_LULL_IN_HOURS).getMilliseconds();
+        adapter.setCurrentTime(start + lull - 1);
+        adapter.put("k", null);
+        checker.assertMatchCount("Null value for MDC key \\[k\\] is stored.", batch);
+
+        adapter.setCurrentTime(start + lull);
+        adapter.put("k", null);
+        checker.assertMatchCount("Null value for MDC key \\[k\\] is stored.", batch + 1);
+    }
+
+    @Test
+    public void setContextMapReportsNullKeyAsErrorAndNullValueAsWarning() {
+        LoggerContext context = new LoggerContext();
+        LogbackMDCAdapter adapter = new LogbackMDCAdapter();
+        adapter.setContext(context);
+
+        Map<String, String> clean = new HashMap<>();
+        clean.put("ok", "v");
+        adapter.setContextMap(clean);
+        StatusChecker checker = new StatusChecker(context);
+        checker.assertNoMatch("Null ");
+
+        Map<String, String> map = new HashMap<>();
+        map.put("ok", "v");
+        map.put("n", null);
+        map.put(null, null);
+        adapter.setContextMap(map);
+
+        checker.assertContainsMatch(Status.WARN, "Null value for MDC key \\[n\\] is stored.");
+        checker.assertContainsMatch(Status.WARN, "Null value for MDC key \\[null\\] is stored.");
+        checker.assertContainsMatch(Status.ERROR, "Null key in MDC context map is stored.");
+
+        Map<String, String> stored = adapter.getPropertyMap();
+        Assertions.assertEquals("v", stored.get("ok"));
+        Assertions.assertTrue(stored.containsKey("n"));
+        Assertions.assertNull(stored.get("n"));
+        Assertions.assertTrue(stored.containsKey(null));
+        Assertions.assertNull(stored.get(null));
+    }
+
+    private void putNullAtDepth(int depth) {
+        if (depth == 0) {
+            mdcAdapter.put("deep", null);
+        } else {
+            putNullAtDepth(depth - 1);
+        }
+    }
+
+    private static Status statusWithCallerData(LoggerContext context) {
+        for (Status status : context.getStatusManager().getCopyOfStatusList()) {
+            if (status.getThrowable() instanceof CallerDataThrowable) {
+                return status;
+            }
+        }
+        Assertions.fail("no status carried a CallerDataThrowable");
+        return null;
+    }
+
+    private static void assertCallerDataExcludesAdapter(StackTraceElement[] stack) {
+        for (StackTraceElement frame : stack) {
+            Assertions.assertNotEquals(LogbackMDCAdapter.class.getName(), frame.getClassName());
+            Assertions.assertNotEquals(CallerDataThrowable.class.getName(), frame.getClassName());
+        }
     }
 
     @Test

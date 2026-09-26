@@ -18,6 +18,7 @@ import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.TurboFilterList;
 import ch.qos.logback.classic.turbo.TurboFilter;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.boolex.EventEvaluator;
@@ -424,5 +425,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
             sm.add(new WarnStatus("mdcAdapter being reset a second time", this));
         }
         this.mdcAdapter = anAdapter;
+        if (anAdapter instanceof LogbackMDCAdapter) {
+            ((LogbackMDCAdapter) anAdapter).setContext(this);
+        }
     }
 }

@@ -13,6 +13,10 @@
  */
 package ch.qos.logback.classic.util;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.spi.ContextAwareImpl;
+import ch.qos.logback.core.util.BatchedFixedIntervalInvocationGate;
+import ch.qos.logback.core.util.Duration;
 import org.slf4j.helpers.ThreadLocalMapOfStacks;
 import org.slf4j.spi.MDCAdapter;
 
@@ -44,6 +48,40 @@ public class LogbackMDCAdapter implements MDCAdapter  {
     final ThreadLocal<Map<String, String>> readOnlyThreadLocalMap = new ThreadLocal<Map<String, String>>();
     private final ThreadLocalMapOfStacks threadLocalMapOfDeques = new ThreadLocalMapOfStacks();
 
+    static final int DEFAULT_LULL_IN_HOURS = 12;
+    static final int DEFAULT_BATCH_SIZE = 10;
+    static final int NULL_VALUE_CALLER_DATA_DEPTH = 8;
+
+    private Context context;
+    private volatile ContextAwareImpl contextAware;
+    // Negative means the system clock. See getCurrentTime().
+    long artificialTime = -1;
+    private final BatchedFixedIntervalInvocationGate nullValueWarningGate = new BatchedFixedIntervalInvocationGate(
+            DEFAULT_BATCH_SIZE, Duration.buildByHours(DEFAULT_LULL_IN_HOURS));
+
+    public void setContext(Context context) {
+        if(this.context != null) {
+            throw new IllegalStateException("Context has been already set");
+        }
+
+        this.context = context;
+        contextAware = new ContextAwareImpl(context, this);
+
+    }
+
+    void setCurrentTime(long time) {
+        artificialTime = time;
+    }
+
+    public long getCurrentTime() {
+        // if time is forced return the time set by user
+        if (artificialTime >= 0) {
+            return artificialTime;
+        } else {
+            return System.currentTimeMillis();
+        }
+    }
+
     /**
      * Put a context value (the <code>val</code> parameter) as identified with the
      * <code>key</code> parameter into the current thread's context map. Note that
@@ -65,6 +103,9 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         if (key == null) {
             throw new IllegalArgumentException("key cannot be null");
         }
+        if (val == null) {
+            warnOfNullValue(key);
+        }
         Map<String, String> current = readWriteThreadLocalMap.get();
         if (current == null) {
             current = new HashMap<String, String>();
@@ -73,6 +114,17 @@ public class LogbackMDCAdapter implements MDCAdapter  {
 
         current.put(key, val);
         nullifyReadOnlyThreadLocalMap();
+    }
+
+    private void warnOfNullValue(String key) {
+        if(contextAware == null) return;
+
+        if (nullValueWarningGate.isTooSoon(getCurrentTime())) {
+            return;
+        }
+
+        contextAware.addWarn("Null value for MDC key [" + key + "] is stored.",
+                new CallerDataThrowable(LogbackMDCAdapter.class.getName(), NULL_VALUE_CALLER_DATA_DEPTH));
     }
 
     /**
@@ -169,14 +221,39 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public void setContextMap(Map contextMap) {
+    @Override
+    public void setContextMap(Map<String, String> contextMap) {
         if (contextMap != null) {
+            reportNullKeysAndValues(contextMap);
             readWriteThreadLocalMap.set(new HashMap<String, String>(contextMap));
         } else {
             readWriteThreadLocalMap.set(null);
         }
         nullifyReadOnlyThreadLocalMap();
+    }
+
+    private void reportNullKeysAndValues(Map<String, String> contextMap) {
+        for (Map.Entry<String, String> entry : contextMap.entrySet()) {
+
+            String k = entry.getKey();
+            if (k == null)
+                errorOnNullKey();
+
+            if (entry.getValue() == null) {
+                warnOfNullValue(k == null ? null : String.valueOf(k));
+            }
+        }
+    }
+
+    private void errorOnNullKey() {
+        if(contextAware == null)
+            return;
+
+        if (nullValueWarningGate.isTooSoon(getCurrentTime())) {
+            return;
+        }
+        contextAware.addError("Null key in MDC context map is stored.",
+                new CallerDataThrowable(LogbackMDCAdapter.class.getName(), NULL_VALUE_CALLER_DATA_DEPTH));
     }
 
 
