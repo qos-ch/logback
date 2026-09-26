@@ -100,22 +100,6 @@
                         </configuration>
                     </execution>
 
-                    <!--
-                    <execution>
-                        <id>java21-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <release>21</release>
-                            <compileSourceRoots>
-                                <compileSourceRoot>${project.basedir}/src/main/java21</compileSourceRoot>
-                            </compileSourceRoots>
-                            <multiReleaseOutput>true</multiReleaseOutput>
-                        </configuration>
-                    </execution>
-                    -->
                     <execution>
                         <id>default-testCompile</id>
                         <phase>test-compile</phase>
