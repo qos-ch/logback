@@ -424,9 +424,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
             StatusManager sm = getStatusManager();
             sm.add(new WarnStatus("mdcAdapter being reset a second time", this));
         }
-        this.mdcAdapter = anAdapter;
         if (anAdapter instanceof LogbackMDCAdapter) {
             ((LogbackMDCAdapter) anAdapter).setContext(this);
         }
+        this.mdcAdapter = anAdapter;
     }
 }

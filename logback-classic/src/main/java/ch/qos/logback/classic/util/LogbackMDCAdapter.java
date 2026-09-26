@@ -17,6 +17,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 import ch.qos.logback.core.util.BatchedFixedIntervalInvocationGate;
 import ch.qos.logback.core.util.Duration;
+import ch.qos.logback.core.util.InvocationGate;
+import org.slf4j.MDC;
 import org.slf4j.helpers.ThreadLocalMapOfStacks;
 import org.slf4j.spi.MDCAdapter;
 
@@ -51,29 +53,49 @@ public class LogbackMDCAdapter implements MDCAdapter  {
     static final int DEFAULT_LULL_IN_HOURS = 12;
     static final int DEFAULT_BATCH_SIZE = 10;
     static final int NULL_VALUE_CALLER_DATA_DEPTH = 8;
+    // Frames of these classes are removed from the top of the caller data. MDC
+    // forwards to this adapter, so its frames would otherwise hide the caller.
+    static final String[] CALLER_DATA_FQNS_TO_SHAVE = { LogbackMDCAdapter.class.getName(), MDC.class.getName() };
+    static final int MAX_NULL_VALUE_KEYS_IN_MSG = 16;
+
+    static final String NULL_VALUE_ON_PUT_MSG = "Null value for MDC key [%1$s] is stored. "
+            + "Null values are deprecated; use MDC.remove(\"%1$s\") instead.";
+    static final String NULL_VALUES_ON_SET_CONTEXT_MAP_MSG = "Null values for MDC keys %s are stored. "
+            + "Null values are deprecated; remove such entries instead.";
+    static final String MORE_NULL_VALUE_KEYS_SUFFIX = " (and %d more)";
+    static final String NULL_KEY_ON_SET_CONTEXT_MAP_MSG = "Null key in MDC context map is stored.";
+    static final String NULL_KEY_AND_VALUES_ON_SET_CONTEXT_MAP_MSG = "Null key in MDC context map is stored. "
+            + "Null values for MDC keys %s are also stored. Null values are deprecated; remove such entries instead.";
 
     private Context context;
     private volatile ContextAwareImpl contextAware;
     // Negative means the system clock. See getCurrentTime().
     long artificialTime = -1;
-    private final BatchedFixedIntervalInvocationGate nullValueWarningGate = new BatchedFixedIntervalInvocationGate(
+    private final BatchedFixedIntervalInvocationGate nullValueOnPutWarningGate = new BatchedFixedIntervalInvocationGate(
             DEFAULT_BATCH_SIZE, Duration.buildByHours(DEFAULT_LULL_IN_HOURS));
 
-    public void setContext(Context context) {
-        if(this.context != null) {
-            throw new IllegalStateException("Context has been already set");
+    private final BatchedFixedIntervalInvocationGate nullKeyOrValueOnSetContextMapGate = new BatchedFixedIntervalInvocationGate(
+            DEFAULT_BATCH_SIZE, Duration.buildByHours(DEFAULT_LULL_IN_HOURS));
+
+
+    public void setContext(Context aContext) {
+        if(aContext == null)
+            throw new IllegalArgumentException("Context argument cannot be null");
+
+        boolean contextChanged = (this.context != null && this.context != aContext);
+
+        this.context = aContext;
+        contextAware = new ContextAwareImpl(aContext, this);
+        if(contextChanged) {
+            contextAware.addWarn("The context has been already set. Re-setting the context may have unexpected results.");
         }
-
-        this.context = context;
-        contextAware = new ContextAwareImpl(context, this);
-
     }
 
     void setCurrentTime(long time) {
         artificialTime = time;
     }
 
-    public long getCurrentTime() {
+    long getCurrentTime() {
         // if time is forced return the time set by user
         if (artificialTime >= 0) {
             return artificialTime;
@@ -84,8 +106,12 @@ public class LogbackMDCAdapter implements MDCAdapter  {
 
     /**
      * Put a context value (the <code>val</code> parameter) as identified with the
-     * <code>key</code> parameter into the current thread's context map. Note that
-     * contrary to log4j, the <code>val</code> parameter can be null.
+     * <code>key</code> parameter into the current thread's context map.
+     * <p/>
+     * <p/>
+     * A null <code>val</code> is still stored but is deprecated. Use
+     * {@link #remove(String)} instead. When a context is set, a null
+     * <code>val</code> causes a rate-limited warning status to be emitted.
      * <p/>
      * <p/>
      * If the current thread does not have a context map it is created as a side
@@ -104,7 +130,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
             throw new IllegalArgumentException("key cannot be null");
         }
         if (val == null) {
-            warnOfNullValue(key);
+            warnOfNullValue(nullValueOnPutWarningGate, key);
         }
         Map<String, String> current = readWriteThreadLocalMap.get();
         if (current == null) {
@@ -116,15 +142,15 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         nullifyReadOnlyThreadLocalMap();
     }
 
-    private void warnOfNullValue(String key) {
+    private void warnOfNullValue(InvocationGate invocationGate, String key) {
         if(contextAware == null) return;
 
-        if (nullValueWarningGate.isTooSoon(getCurrentTime())) {
+        if (invocationGate.isTooSoon(getCurrentTime())) {
             return;
         }
 
-        contextAware.addWarn("Null value for MDC key [" + key + "] is stored.",
-                new CallerDataThrowable(LogbackMDCAdapter.class.getName(), NULL_VALUE_CALLER_DATA_DEPTH));
+        contextAware.addWarn(String.format(NULL_VALUE_ON_PUT_MSG, key),
+                new CallerDataThrowable(CALLER_DATA_FQNS_TO_SHAVE, NULL_VALUE_CALLER_DATA_DEPTH));
     }
 
     /**
@@ -180,7 +206,6 @@ public class LogbackMDCAdapter implements MDCAdapter  {
      *
      * The returned map is unmodifiable (since version 1.3.2/1.4.2).
      */
-    @SuppressWarnings("unchecked")
     public Map<String, String> getPropertyMap() {
         Map<String, String> readOnlyMap = readOnlyThreadLocalMap.get();
         if (readOnlyMap == null) {
@@ -198,7 +223,8 @@ public class LogbackMDCAdapter implements MDCAdapter  {
      * Return a copy of the current thread's context map. Returned value may be
      * null.
      */
-    public Map getCopyOfContextMap() {
+    @Override
+    public Map<String, String> getCopyOfContextMap() {
         Map<String, String> readOnlyMap = getPropertyMap();
         if (readOnlyMap == null) {
             return null;
@@ -224,36 +250,77 @@ public class LogbackMDCAdapter implements MDCAdapter  {
     @Override
     public void setContextMap(Map<String, String> contextMap) {
         if (contextMap != null) {
-            reportNullKeysAndValues(contextMap);
-            readWriteThreadLocalMap.set(new HashMap<String, String>(contextMap));
+            Map<String, String> copy = copyAndReportNulls(contextMap);
+            readWriteThreadLocalMap.set(copy);
         } else {
             readWriteThreadLocalMap.set(null);
         }
         nullifyReadOnlyThreadLocalMap();
     }
 
-    private void reportNullKeysAndValues(Map<String, String> contextMap) {
+    /**
+     * Copies the map and records null keys and null values in the same pass.
+     */
+    private Map<String, String> copyAndReportNulls(Map<String, String> contextMap) {
+        // same sizing as the HashMap(Map) constructor
+        Map<String, String> copy = new HashMap<String, String>((int) (contextMap.size() / 0.75f) + 1);
+
+        boolean hasNullKey = false;
+        int nullValueCount = 0;
+        List<String> nullValueKeys = null;
         for (Map.Entry<String, String> entry : contextMap.entrySet()) {
-
             String k = entry.getKey();
-            if (k == null)
-                errorOnNullKey();
-
-            if (entry.getValue() == null) {
-                warnOfNullValue(k == null ? null : String.valueOf(k));
+            String v = entry.getValue();
+            copy.put(k, v);
+            if (k == null) {
+                hasNullKey = true;
+            } else if (v == null) {
+                if (nullValueKeys == null) {
+                    nullValueKeys = new ArrayList<String>();
+                }
+                if (nullValueCount < MAX_NULL_VALUE_KEYS_IN_MSG) {
+                    nullValueKeys.add(k);
+                }
+                nullValueCount++;
             }
         }
+
+        if (hasNullKey || nullValueCount > 0) {
+            reportNullKeysAndValues(hasNullKey, nullValueCount, nullValueKeys);
+        }
+        return copy;
     }
 
-    private void errorOnNullKey() {
-        if(contextAware == null)
+    /**
+     * Emits at most one status per call. A null key is
+     * reported as an error, which also lists any keys with null values. An entry
+     * with a null key is not reported as a null value.
+     */
+    private void reportNullKeysAndValues(boolean hasNullKey, int nullValueCount, List<String> nullValueKeys) {
+        if (contextAware == null)
             return;
 
-        if (nullValueWarningGate.isTooSoon(getCurrentTime())) {
+        if (nullKeyOrValueOnSetContextMapGate.isTooSoon(getCurrentTime())) {
             return;
         }
-        contextAware.addError("Null key in MDC context map is stored.",
-                new CallerDataThrowable(LogbackMDCAdapter.class.getName(), NULL_VALUE_CALLER_DATA_DEPTH));
+
+        String keysForDisplay = null;
+        if (nullValueKeys != null) {
+            keysForDisplay = nullValueKeys.toString();
+            if (nullValueCount > MAX_NULL_VALUE_KEYS_IN_MSG) {
+                keysForDisplay += String.format(MORE_NULL_VALUE_KEYS_SUFFIX, nullValueCount - MAX_NULL_VALUE_KEYS_IN_MSG);
+            }
+        }
+
+        CallerDataThrowable callerData = new CallerDataThrowable(CALLER_DATA_FQNS_TO_SHAVE,
+                NULL_VALUE_CALLER_DATA_DEPTH);
+        if (hasNullKey) {
+            String msg = (keysForDisplay == null) ? NULL_KEY_ON_SET_CONTEXT_MAP_MSG
+                    : String.format(NULL_KEY_AND_VALUES_ON_SET_CONTEXT_MAP_MSG, keysForDisplay);
+            contextAware.addError(msg, callerData);
+        } else {
+            contextAware.addWarn(String.format(NULL_VALUES_ON_SET_CONTEXT_MAP_MSG, keysForDisplay), callerData);
+        }
     }
 
 

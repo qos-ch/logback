@@ -14,29 +14,29 @@
 package ch.qos.logback.classic.util;
 
 /**
- * A throwable whose stack trace is caller data: leading frames of this class and of a
- * designated class are removed, and the remainder is capped at a fixed depth.
+ * A throwable whose stack trace is caller data: leading frames of this class and of the
+ * designated classes are removed, and the remainder is capped at a fixed depth.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class CallerDataThrowable extends Throwable {
+class CallerDataThrowable extends IllegalArgumentException {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param fqnToShave class name shaved from the top of the stack, together with this throwable
+     * @param fqnsToShave class names shaved from the top of the stack, together with this throwable
      * @param maxDepth maximum number of frames retained after shaving
      */
-    public CallerDataThrowable(String fqnToShave, int maxDepth) {
+    public CallerDataThrowable(String[] fqnsToShave, int maxDepth) {
         super();
-        if (fqnToShave == null) {
-            throw new IllegalArgumentException("fqnToShave cannot be null");
+        if (fqnsToShave == null) {
+            throw new IllegalArgumentException("fqnsToShave cannot be null");
         }
         if (maxDepth < 1) {
             throw new IllegalArgumentException("maxDepth must be at least 1, was " + maxDepth);
         }
         StackTraceElement[] steArray = getStackTrace();
-        int start = indexPastShavedPrefix(steArray, fqnToShave);
+        int start = indexPastShavedPrefix(steArray, fqnsToShave);
         int available = steArray.length - start;
         int depth = Math.min(maxDepth, available);
         StackTraceElement[] trimmed = new StackTraceElement[depth];
@@ -45,20 +45,29 @@ public class CallerDataThrowable extends Throwable {
     }
 
     /**
-     * Index of the first frame that is neither this throwable nor {@code fqnToShave},
-     * after a prefix of those frames. Frames of those classes that appear later are kept.
+     * Index of the first frame that is neither this throwable nor one of {@code fqnsToShave}.
+     * Only the leading run of such frames is shaved. Frames of those classes that appear
+     * later are kept.
      */
-    private int indexPastShavedPrefix(StackTraceElement[] steArray, String fqnToShave) {
+    private int indexPastShavedPrefix(StackTraceElement[] steArray, String[] fqnsToShave) {
         String ownName = getClass().getName();
         int start = 0;
-        for (int i = 0; i < steArray.length; i++) {
-            String className = steArray[i].getClassName();
-            if (ownName.equals(className) || fqnToShave.equals(className)) {
-                start = i + 1;
-            } else if (start > 0) {
+        while (start < steArray.length) {
+            String className = steArray[start].getClassName();
+            if (!ownName.equals(className) && !contains(fqnsToShave, className)) {
                 break;
             }
+            start++;
         }
         return start;
+    }
+
+    private static boolean contains(String[] names, String className) {
+        for (String name : names) {
+            if (name.equals(className)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

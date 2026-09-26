@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -74,7 +75,8 @@ public class LogbackMDCAdapterTest {
         mdcAdapter.put("k", null);
         Assertions.assertTrue(mdcAdapter.getPropertyMap().containsKey("k"));
         Assertions.assertNull(mdcAdapter.get("k"));
-        checker.assertContainsMatch(Status.WARN, "Null value for MDC key \\[k\\] is stored.");
+        checker.assertContainsMatch(Status.WARN,
+                "Null value for MDC key \\[k\\] is stored. Null values are deprecated; use MDC.remove\\(\"k\"\\) instead.");
 
         Status status = statusWithCallerData(context);
         StackTraceElement[] stack = status.getThrowable().getStackTrace();
@@ -145,9 +147,11 @@ public class LogbackMDCAdapterTest {
         map.put(null, null);
         adapter.setContextMap(map);
 
-        checker.assertContainsMatch(Status.WARN, "Null value for MDC key \\[n\\] is stored.");
-        checker.assertContainsMatch(Status.WARN, "Null value for MDC key \\[null\\] is stored.");
-        checker.assertContainsMatch(Status.ERROR, "Null key in MDC context map is stored.");
+        Assertions.assertEquals(1, context.getStatusManager().getCount());
+        checker.assertContainsMatch(Status.ERROR,
+                "Null key in MDC context map is stored. Null values for MDC keys \\[n\\] are also stored. "
+                        + "Null values are deprecated; remove such entries instead.");
+        checker.assertNoMatch("\\[null\\]");
 
         Map<String, String> stored = adapter.getPropertyMap();
         Assertions.assertEquals("v", stored.get("ok"));
@@ -155,6 +159,83 @@ public class LogbackMDCAdapterTest {
         Assertions.assertNull(stored.get("n"));
         Assertions.assertTrue(stored.containsKey(null));
         Assertions.assertNull(stored.get(null));
+    }
+
+    @Test
+    public void setContextMapReportsAllNullValuesInOneWarning() {
+        LoggerContext context = new LoggerContext();
+        LogbackMDCAdapter adapter = new LogbackMDCAdapter();
+        adapter.setContext(context);
+
+        Map<String, String> map = new HashMap<>();
+        map.put("ok", "v");
+        map.put("a", null);
+        map.put("b", null);
+        adapter.setContextMap(map);
+
+        Assertions.assertEquals(1, context.getStatusManager().getCount());
+        StatusChecker checker = new StatusChecker(context);
+        checker.assertContainsMatch(Status.WARN, "Null values for MDC keys \\[(a, b|b, a)\\] are stored. "
+                + "Null values are deprecated; remove such entries instead.");
+        checker.assertNoMatch("Null key");
+    }
+
+    @Test
+    public void setContextMapWithManyNullValuesConsumesOneGateToken() {
+        LoggerContext context = new LoggerContext();
+        LogbackMDCAdapter adapter = new LogbackMDCAdapter();
+        adapter.setContext(context);
+        adapter.setCurrentTime(1_000L);
+
+        Map<String, String> map = new HashMap<>();
+        for (int i = 0; i < 2 * LogbackMDCAdapter.DEFAULT_BATCH_SIZE; i++) {
+            map.put("k" + i, null);
+        }
+        adapter.setContextMap(map);
+        StatusChecker checker = new StatusChecker(context);
+        checker.assertMatchCount("Null values for MDC keys", 1);
+
+        map.put(null, "v");
+        adapter.setContextMap(map);
+        Assertions.assertEquals(2, context.getStatusManager().getCount());
+        checker.assertContainsMatch(Status.ERROR, "Null key in MDC context map is stored.");
+    }
+
+    @Test
+    public void setContextMapCapsNullValueKeysInMessage() {
+        LoggerContext context = new LoggerContext();
+        LogbackMDCAdapter adapter = new LogbackMDCAdapter();
+        adapter.setContext(context);
+
+        int cap = LogbackMDCAdapter.MAX_NULL_VALUE_KEYS_IN_MSG;
+        Map<String, String> atCap = new HashMap<>();
+        for (int i = 0; i < cap; i++) {
+            atCap.put("k" + i, null);
+        }
+        adapter.setContextMap(atCap);
+
+        Map<String, String> overCap = new HashMap<>();
+        for (int i = 0; i < cap + 5; i++) {
+            overCap.put("k" + i, null);
+        }
+        adapter.setContextMap(overCap);
+
+        List<Status> statusList = context.getStatusManager().getCopyOfStatusList();
+        Assertions.assertEquals(2, statusList.size());
+
+        String atCapMsg = statusList.get(0).getMessage();
+        Assertions.assertEquals(cap, countListedKeys(atCapMsg));
+        Assertions.assertFalse(atCapMsg.contains("more)"));
+
+        String overCapMsg = statusList.get(1).getMessage();
+        Assertions.assertEquals(cap, countListedKeys(overCapMsg));
+        Assertions.assertTrue(overCapMsg.startsWith("Null values for MDC keys ["));
+        Assertions.assertTrue(overCapMsg.contains("] (and 5 more) are stored."), overCapMsg);
+    }
+
+    private static int countListedKeys(String msg) {
+        String list = msg.substring(msg.indexOf('[') + 1, msg.indexOf(']'));
+        return list.split(", ").length;
     }
 
     private void putNullAtDepth(int depth) {
