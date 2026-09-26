@@ -28,11 +28,11 @@
 Follow these rules at all times.
 
 - Maven can be located via the value of the $MAVEN_HOME environment variable. 
-- Java can ve located via the value of the $JAVA_HOME environment variable.
-- jdtls can ve located via the value of $JDTLS_HOME environment variable as $JDTLS_HOME/bin/jdtls
+- Java can be located via the value of the $JAVA_HOME environment variable.
+- jdtls can be located via the value of $JDTLS_HOME environment variable as $JDTLS_HOME/bin/jdtls
 
 Indicate whether these values are accessible or not.
 
 If valid, always use the values of these environment variables to
-locate Maven and Java.
+locate Maven, Java and jdtls.
 
