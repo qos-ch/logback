@@ -18,7 +18,7 @@ import ch.qos.logback.core.spi.ContextAware;
 
 /**
  * This interface lists the set of methods that need to be implemented by
- * triggering policies which are nested within a {@link TimeBasedRollingPolicy}.
+ * triggering policies which are <b>nested</b> within a {@link TimeBasedRollingPolicy}.
  *
  * <p>This interface should be considered as an extension of  {@link TimeBasedRollingPolicy} with file naming
  * support methods.

@@ -43,7 +43,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
 
     static private String COLLIDING_DATE_FORMAT_URL = CODES_URL + "#rfa_collision_in_dateFormat";
 
-    protected TimeBasedRollingPolicy<E> tbrp;
+    protected TimeBasedRollingPolicy<E> enclosingTBRP;
 
     protected ArchiveRemover archiveRemover = null;
     protected String elapsedPeriodsFileName;
@@ -64,10 +64,10 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     }
 
     public void start() {
-        DateTokenConverter<Object> dtc = tbrp.fileNamePattern.getPrimaryDateTokenConverter();
+        DateTokenConverter<Object> dtc = enclosingTBRP.fileNamePattern.getPrimaryDateTokenConverter();
         if (dtc == null) {
             throw new IllegalStateException(
-                    "FileNamePattern [" + tbrp.fileNamePattern.getPattern() + "] does not contain a valid DateToken");
+                    "FileNamePattern [" + enclosingTBRP.fileNamePattern.getPattern() + "] does not contain a valid DateToken");
         }
 
         if (dtc.getZoneId() != null) {
@@ -78,7 +78,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
             rc = new RollingCalendar(dtc.getDatePattern());
         }
         addInfo("The date pattern is '" + dtc.getDatePattern() + "' from file name pattern '"
-                + tbrp.fileNamePattern.getPattern() + "'.");
+                + enclosingTBRP.fileNamePattern.getPattern() + "'.");
         rc.printPeriodicity(this);
 
         if (!rc.isCollisionFree()) {
@@ -92,10 +92,15 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
         long timestamp = getCurrentTime();
         setDateInCurrentPeriod(timestamp);
 
-        if (tbrp.getParentsRawFileProperty() != null) {
-            File currentFile = new File(tbrp.getParentsRawFileProperty());
+        if (enclosingTBRP.getParentsRawFileProperty() != null) {
+            File currentFile = new File(enclosingTBRP.getParentsRawFileProperty());
             if (currentFile.canRead()) {
-                timestamp = currentFile.lastModified();
+                long lastModified = currentFile.lastModified();
+                if(lastModified < timestamp) {
+                    timestamp = lastModified;
+                } else {
+                    addWarn("Current time is earlier than last modified of file [" + currentFile.getAbsolutePath() + "]. Ignoring last modified and using current time.");
+                }
                 setDateInCurrentPeriod(timestamp);
             }
         }
@@ -117,7 +122,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     }
 
     public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
-        return tbrp.fileNamePatternWithoutCompSuffix.convert(dateInCurrentPeriod);
+        return enclosingTBRP.fileNamePatternWithoutCompSuffix.convert(dateInCurrentPeriod);
     }
 
     protected void setDateInCurrentPeriod(long timestamp) {
@@ -138,7 +143,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     }
 
     public void setTimeBasedRollingPolicy(TimeBasedRollingPolicy<E> _tbrp) {
-        this.tbrp = _tbrp;
+        this.enclosingTBRP = _tbrp;
 
     }
 
