@@ -129,7 +129,8 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
     }
 
     protected ArchiveRemover createArchiveRemover() {
-        return new SizeAndTimeBasedArchiveRemover(enclosingTBRP.fileNamePattern, rc);
+        return new SizeAndTimeBasedArchiveRemover(enclosingTBRP.fileNamePattern,
+                enclosingTBRP.fileNamePatternWithoutCompSuffix, rc);
     }
 
     void computeCurrentPeriodsHighestCounterValue(final String stemRegex) {

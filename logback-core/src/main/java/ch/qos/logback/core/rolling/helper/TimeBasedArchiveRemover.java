@@ -33,6 +33,9 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     static final int MAX_VALUE_FOR_INACTIVITY_PERIODS = 14 * 24; // 14 days in case of hourly rollover
 
     final FileNamePattern fileNamePattern;
+    // Pattern of archives before compression. Null if there is no compression. Used
+    // to find files left uncompressed, e.g. when the application was down at rollover.
+    final FileNamePattern fileNamePatternWithoutCompSuffix;
     final RollingCalendar rc;
     private int maxHistory = CoreConstants.UNBOUNDED_HISTORY;
     private long totalSizeCap = CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
@@ -40,9 +43,35 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     long lastHeartBeat = UNINITIALIZED;
 
     public TimeBasedArchiveRemover(FileNamePattern fileNamePattern, RollingCalendar rc) {
+        this(fileNamePattern, null, rc);
+    }
+
+    /**
+     * @param fileNamePattern                  the pattern of archived files
+     * @param fileNamePatternWithoutCompSuffix the same pattern without the compression suffix, may be null.
+     *                                         Uncompressed files matching this pattern are removed
+     *                                         along with archived files.
+     * @param rc                               the rolling calendar
+     * @since 1.7.0
+     */
+    public TimeBasedArchiveRemover(FileNamePattern fileNamePattern, FileNamePattern fileNamePatternWithoutCompSuffix,
+            RollingCalendar rc) {
         this.fileNamePattern = fileNamePattern;
+        this.fileNamePatternWithoutCompSuffix = differentOrNull(fileNamePattern, fileNamePatternWithoutCompSuffix);
         this.rc = rc;
         this.parentClean = computeParentCleaningFlag(fileNamePattern);
+    }
+
+    // Without compression both patterns are the same. Keeping only one avoids finding the same file twice.
+    private static FileNamePattern differentOrNull(FileNamePattern fileNamePattern,
+            FileNamePattern fileNamePatternWithoutCompSuffix) {
+        if (fileNamePatternWithoutCompSuffix == null) {
+            return null;
+        }
+        if (fileNamePatternWithoutCompSuffix.getPattern().equals(fileNamePattern.getPattern())) {
+            return null;
+        }
+        return fileNamePatternWithoutCompSuffix;
     }
 
     int callCount = 0;
@@ -88,6 +117,28 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         }
     }
 
+    /**
+     * Returns files of the given period which were not compressed, e.g. because the
+     * application was down at rollover time. Returns an empty array if there is no
+     * compression.
+     *
+     * <p>Only called for periods older than maxHistory. Such files are neither the active
+     * file nor being compressed.</p>
+     *
+     * @since 1.7.0
+     */
+    protected File[] getUncompressedFilesInPeriod(Instant instantOfPeriodToClean) {
+        if (fileNamePatternWithoutCompSuffix == null) {
+            return new File[0];
+        }
+        File file2Delete = new File(fileNamePatternWithoutCompSuffix.convert(instantOfPeriodToClean));
+        if (fileExistsAndIsFile(file2Delete)) {
+            return new File[] { file2Delete };
+        } else {
+            return new File[0];
+        }
+    }
+
     private boolean fileExistsAndIsFile(File file2Delete) {
         return file2Delete.exists() && file2Delete.isFile();
     }
@@ -95,14 +146,23 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     public void cleanPeriod(Instant instantOfPeriodToClean) {
         File[] matchingFileArray = getFilesInPeriod(instantOfPeriodToClean);
 
+        File[] uncompressedFileArray = getUncompressedFilesInPeriod(instantOfPeriodToClean);
+
         for (File f : matchingFileArray) {
             addInfo("deleting historically stale " + f);
             checkAndDeleteFile(f);
         }
+        for (File f : uncompressedFileArray) {
+            addInfo("deleting historically stale uncompressed file " + f);
+            checkAndDeleteFile(f);
+        }
 
-        if (parentClean && matchingFileArray.length > 0) {
-            File parentDir = getParentDir(matchingFileArray[0]);
-            removeFolderIfEmpty(parentDir);
+        if (parentClean) {
+            File anyFile = matchingFileArray.length > 0 ? matchingFileArray[0]
+                    : (uncompressedFileArray.length > 0 ? uncompressedFileArray[0] : null);
+            if (anyFile != null) {
+                removeFolderIfEmpty(getParentDir(anyFile));
+            }
         }
     }
 

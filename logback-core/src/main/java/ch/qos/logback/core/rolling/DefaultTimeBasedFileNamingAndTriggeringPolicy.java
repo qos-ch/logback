@@ -44,7 +44,8 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
             return;
         }
 
-        archiveRemover = new TimeBasedArchiveRemover(enclosingTBRP.fileNamePattern, rc);
+        archiveRemover = new TimeBasedArchiveRemover(enclosingTBRP.fileNamePattern,
+                enclosingTBRP.fileNamePatternWithoutCompSuffix, rc);
         archiveRemover.setContext(context);
         started = true;
     }
