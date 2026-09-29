@@ -37,7 +37,8 @@ public class SocketAppenderMessageLossTest {
 
     static final int TIMEOUT = 3000;
 
-    @Test // (timeout = TIMEOUT)
+    @Test
+    @Timeout(value = TIMEOUT, unit= TimeUnit.MILLISECONDS)
     public void synchronousSocketAppender() throws Exception {
 
         SocketAppender socketAppender = new SocketAppender();
@@ -113,8 +114,8 @@ public class SocketAppenderMessageLossTest {
         SimpleSocketServer simpleSocketServer = new SimpleSocketServer(serverLoggerContext, port);
         simpleSocketServer.addAllowedClientAddress("127.0.0.1");
         simpleSocketServer.addAllowedClientAddress("::1");
-        simpleSocketServer.start();
         simpleSocketServer.setLatch(latch);
+        simpleSocketServer.start();
 
         latch.await();
 
