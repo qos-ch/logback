@@ -38,13 +38,13 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
         super.start();
         if (!super.isErrorFree())
             return;
-        if (tbrp.fileNamePattern.hasIntegerTokenCOnverter()) {
-            addError("Filename pattern [" + tbrp.fileNamePattern
+        if (enclosingTBRP.fileNamePattern.hasIntegerTokenCOnverter()) {
+            addError("Filename pattern [" + enclosingTBRP.fileNamePattern
                     + "] contains an integer token converter, i.e. %i, INCOMPATIBLE with this configuration. Please remove it.");
             return;
         }
 
-        archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+        archiveRemover = new TimeBasedArchiveRemover(enclosingTBRP.fileNamePattern, rc);
         archiveRemover.setContext(context);
         started = true;
     }
@@ -58,7 +58,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
             Instant instantOfElapsedPeriod = dateInCurrentPeriod;
             ZonedDateTime ztd = instantOfElapsedPeriod.atZone(zoneId);
             addInfo("Elapsed period: " + ztd.toString());
-            this.elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convert(instantOfElapsedPeriod);
+            this.elapsedPeriodsFileName = enclosingTBRP.fileNamePatternWithoutCompSuffix.convert(instantOfElapsedPeriod);
             setDateInCurrentPeriod(currentTime);
             return true;
         } else {

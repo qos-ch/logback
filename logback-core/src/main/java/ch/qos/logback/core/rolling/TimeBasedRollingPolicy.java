@@ -35,11 +35,11 @@ import ch.qos.logback.core.util.FileSize;
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
  * powerful. It allows the rollover to be made based on time. It is possible to
  * specify that the rollover occur once per day, per week or per month.
- * 
+ *
  * <p>
  * For more information, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#TimeBasedRollingPolicy
- * 
+ * <a href="https://logback.qos.ch/manual/appenders-rolling.html#TimeBasedRollingPolicy">appenders-rolling.html#TimeBasedRollingPolicy</a>
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements TriggeringPolicy<E> {
@@ -48,7 +48,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     FileNamePattern fileNamePatternWithoutCompSuffix;
 
     private Compressor compressor;
-    private RenameUtil renameUtil = new RenameUtil();
+    private final RenameUtil renameUtil = new RenameUtil();
     Future<?> compressionFuture;
     Future<?> cleanUpFuture;
 

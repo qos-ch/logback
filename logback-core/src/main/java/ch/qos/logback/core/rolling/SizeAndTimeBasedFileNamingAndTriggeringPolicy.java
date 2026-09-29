@@ -103,7 +103,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
         // we need to get the correct value of currentPeriodsCounter.
         // usually the value is 0, unless the appender or the application
         // is stopped and restarted within the same period
-        String regex = tbrp.fileNamePattern.toRegexForFixedDate(dateInCurrentPeriod);
+        String regex = enclosingTBRP.fileNamePattern.toRegexForFixedDate(dateInCurrentPeriod);
         String stemRegex = FileFilterUtil.afterLastSlash(regex);
 
         computeCurrentPeriodsHighestCounterValue(stemRegex);
@@ -115,21 +115,21 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
 
     private boolean validateDateAndIntegerTokens() {
         boolean inError = false;
-        if (tbrp.fileNamePattern.getIntegerTokenConverter() == null) {
+        if (enclosingTBRP.fileNamePattern.getIntegerTokenConverter() == null) {
             inError = true;
-            addError(MISSING_INT_TOKEN + tbrp.fileNamePatternStr + "]");
+            addError(MISSING_INT_TOKEN + enclosingTBRP.fileNamePatternStr + "]");
             addError(CoreConstants.SEE_MISSING_INTEGER_TOKEN);
         }
-        if (tbrp.fileNamePattern.getPrimaryDateTokenConverter() == null) {
+        if (enclosingTBRP.fileNamePattern.getPrimaryDateTokenConverter() == null) {
             inError = true;
-            addError(MISSING_DATE_TOKEN + tbrp.fileNamePatternStr + "]");
+            addError(MISSING_DATE_TOKEN + enclosingTBRP.fileNamePatternStr + "]");
         }
 
         return !inError;
     }
 
     protected ArchiveRemover createArchiveRemover() {
-        return new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+        return new SizeAndTimeBasedArchiveRemover(enclosingTBRP.fileNamePattern, rc);
     }
 
     void computeCurrentPeriodsHighestCounterValue(final String stemRegex) {
@@ -146,7 +146,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
 
         // if parent raw file property is not null, then the next
         // counter is max found counter+1
-        if (tbrp.getParentsRawFileProperty() != null || (tbrp.compressionMode != CompressionMode.NONE)) {
+        if (enclosingTBRP.getParentsRawFileProperty() != null || (enclosingTBRP.compressionMode != CompressionMode.NONE)) {
             // TODO test me
             currentPeriodsCounter++;
         }
@@ -163,7 +163,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
             long nextCheckCandidate = computeNextCheck(currentTime);
             atomicNextCheck.set(nextCheckCandidate);
             Instant instantInElapsedPeriod = dateInCurrentPeriod;
-            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(
+            elapsedPeriodsFileName = enclosingTBRP.fileNamePatternWithoutCompSuffix.convertMultipleArguments(
                     instantInElapsedPeriod, currentPeriodsCounter);
             currentPeriodsCounter = 0;
             setDateInCurrentPeriod(currentTime);
@@ -196,7 +196,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
 
         if (lengthCounter.getLength() >= maxFileSize.getSize()) {
 
-            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod,
+            elapsedPeriodsFileName = enclosingTBRP.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod,
                     currentPeriodsCounter);
             currentPeriodsCounter++;
 
@@ -216,7 +216,7 @@ public class SizeAndTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
 
     @Override
     public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
-        return tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod,
+        return enclosingTBRP.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod,
                 currentPeriodsCounter);
     }
 
