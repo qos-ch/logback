@@ -29,6 +29,14 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
         super(fileNamePattern, rc);
     }
 
+    /**
+     * @since 1.7.0
+     */
+    public SizeAndTimeBasedArchiveRemover(FileNamePattern fileNamePattern,
+            FileNamePattern fileNamePatternWithoutCompSuffix, RollingCalendar rc) {
+        super(fileNamePattern, fileNamePatternWithoutCompSuffix, rc);
+    }
+
     @Override
     protected File[] getFilesInPeriod(Instant instantOfPeriodToClean) {
         File archive0 = new File(fileNamePattern.convertMultipleArguments(instantOfPeriodToClean, 0));
@@ -36,6 +44,18 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
         String stemRegex = createStemRegex(instantOfPeriodToClean);
         File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(parentDir, stemRegex);
         return matchingFileArray;
+    }
+
+    @Override
+    protected File[] getUncompressedFilesInPeriod(Instant instantOfPeriodToClean) {
+        if (fileNamePatternWithoutCompSuffix == null) {
+            return new File[0];
+        }
+        File archive0 = new File(fileNamePatternWithoutCompSuffix.convertMultipleArguments(instantOfPeriodToClean, 0));
+        File parentDir = getParentDir(archive0);
+        // matching is on the whole file name, so compressed files do not match
+        String stemRegex = FileFilterUtil.afterLastSlash(fileNamePatternWithoutCompSuffix.toRegexForFixedDate(instantOfPeriodToClean));
+        return FileFilterUtil.filesInFolderMatchingStemRegex(parentDir, stemRegex);
     }
 
     @Override
