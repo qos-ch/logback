@@ -135,6 +135,7 @@
                 <configuration>
                     <argLine>
                         --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
+                        --add-opens ch.qos.logback.core/ch.qos.logback.core.rolling.helper=org.junit.platform.commons
                         --add-reads ch.qos.logback.core=ALL-UNNAMED,org.junit.jupiter.api
                     </argLine>
                 </configuration>
