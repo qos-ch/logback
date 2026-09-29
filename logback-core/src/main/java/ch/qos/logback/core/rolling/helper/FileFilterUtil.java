@@ -73,7 +73,7 @@ public class FileFilterUtil {
      * 
      * @param file
      * @param stemRegex
-     * @return
+     * @return the matching files, never null
      */
     public static File[] filesInFolderMatchingStemRegex(File file, final String stemRegex) {
 
@@ -86,7 +86,9 @@ public class FileFilterUtil {
 
         // better compile the regex. See also LOGBACK-1409
         Pattern pattern = Pattern.compile(stemRegex);
-        return file.listFiles((dir, name) -> pattern.matcher(name).matches());
+        File[] matchingFileArray = file.listFiles((dir, name) -> pattern.matcher(name).matches());
+        // listFiles returns null on I/O errors
+        return matchingFileArray == null ? EMPTY_FILE_ARRAY : matchingFileArray;
     }
 
     static public int findHighestCounter(File[] matchingFileArray, final String stemRegex) {
