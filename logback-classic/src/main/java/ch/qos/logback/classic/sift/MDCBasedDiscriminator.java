@@ -29,20 +29,37 @@ import java.util.Map;
  * Both Key and the DefaultValue are user specified properties.
  * </p>
  * <p>
- * Path characters ({@code /} and {@code \}) are removed from the discriminating
- * value so that it is safe to use in file names or similar path segments.
+ * MDC values containing any of the characters {@code /}, {@code \}, {@code $},
+ * <code>{</code>, <code>}</code>, <code>[</code>, <code>]</code>, <code>(</code>,
+ * <code>)</code> , <code>|</code>, <code>?</code>, <code>*</code>, <code>+</code>,
+ * <code>%</code>, <code>,</code>, <code>@</code> or the sequence {@code ..} are rejected,
+ * in which case the default value is returned. This prevents path separators, relative path components,
+ * variable substitutions such as <code>${file.separator}</code>, regex
+ * special characters as well as the anchor character '%' or the ',' and '@' characters from
+ * leaking into file names or email addresses.
  * </p>
+ *
+ * <p>Moreover, the maximum length of an MDC value is limited to 64 characters.</p>
  *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
-    private static final char FORWARD_SLASH = '/';
-    private static final char BACKWARD_SLASH = '\\';
-    static final String REQUIRED_SANITIZING_WARNING = "Required sanitizing of path characters from MDC value [%s]";
+    static final String FORBIDDEN_CHARACTERS = "/\\${}[]()|?*+%@,";
+    private static final int MAX_MDC_VALUE = 64;
+
+    private static final char DOT = '.';
+
+    static final String EMPTY_VALUE_WARNING = "MDC value [%s] is empty, using default value [%s] instead";
+    static final String REJECTED_VALUE_WARNING = "MDC value [%s] contains forbidden characters, using default value [%s] instead";
+    static final String REJECTED_VALUE_LENGTH_WARNING = "MDC value of length %s is longer than the maximum allowed length of " + MAX_MDC_VALUE + " characters, using default value [%s] instead";
+
+
     private String key;
     private String defaultValue;
-    /** Limits how often path-sanitization warnings are emitted on the hot path. */
+    /**
+     * Limits how often rejected-value warnings are emitted on the hot path.
+     */
     private final BatchedFixedIntervalInvocationGate invocationGate =
             new BatchedFixedIntervalInvocationGate(4, Duration.buildByMinutes(10));
 
@@ -67,7 +84,9 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
      * If that value is null, then return the value assigned to the DefaultValue
      * property.
      * <p>
-     * Path characters ({@code /} and {@code \}) are stripped from the result.
+     * If the MDC value contains any of the characters {@code /}, {@code \},
+     * {@code $}, <code>{</code> or <code>}</code>, or the sequence {@code ..}, then
+     * the value assigned to the DefaultValue property is returned.
      * </p>
      */
     public String getDiscriminatingValue(ILoggingEvent event) {
@@ -80,49 +99,59 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
         if (mdcValue == null) {
             return defaultValue;
         } else {
-            return sanitizePathCharacters(mdcValue, event.getTimeStamp());
+            String sanitized = sanitizePathCharacters(mdcValue, event.getTimeStamp());
+            return sanitized == null ? defaultValue : sanitized;
         }
     }
 
+
     /**
-     * Removes every {@code /} and {@code \} (any number of occurrences) so the
-     * value is safe as a file-name segment.
+     * Returns the value unchanged if it is safe as a file-name segment, and
+     * {@code null} otherwise.
      * <p>
-     * Optimized for the common case where neither character is present: a single
-     * scan and no allocation. When sanitization is needed, the prefix is kept and
-     * the remainder is copied while skipping all path separators.
+     * A value is rejected if it contains any of the characters {@code /},
+     * {@code \}, {@code $}, <code>{</code> or <code>}</code>, or the sequence
+     * {@code ..}. A (rate limited) warning is emitted for each rejected value.
+     * </p>
+     * <p>
+     * Performs a single scan and no allocation.
      * </p>
      */
-     String sanitizePathCharacters(String value, long timestamp) {
+    String sanitizePathCharacters(String value, long timestamp) {
         if (value == null) {
             return null;
         }
         final int len = value.length();
-        int i = 0;
-        for (; i < len; i++) {
-            char c = value.charAt(i);
-            if (c == FORWARD_SLASH || c == BACKWARD_SLASH) {
-                break;
+        if(len == 0) {
+            if (!invocationGate.isTooSoon(timestamp)) {
+                addWarn(String.format(EMPTY_VALUE_WARNING, value, defaultValue));
             }
-        }
-        // no path separators → return original (fast path, zero allocation)
-        if (i == len) {
-            return value;
+            return null;
         }
 
-        if(!invocationGate.isTooSoon(timestamp)) {
-            addWarn(String.format(REQUIRED_SANITIZING_WARNING, value));
+        if  (len > MAX_MDC_VALUE) {
+            if (!invocationGate.isTooSoon(timestamp)) {
+                addWarn(String.format(REJECTED_VALUE_LENGTH_WARNING, len, defaultValue));
+            }
+            return null;
         }
 
-        StringBuilder sb = new StringBuilder(len - 1);
-        sb.append(value, 0, i);
-        for (i++; i < len; i++) {
+        char previous = 0;
+        for (int i = 0; i < len; i++) {
             char c = value.charAt(i);
-            if (c != FORWARD_SLASH && c != BACKWARD_SLASH) {
-                sb.append(c);
+            if (isForbiddenCharacter(c) || (c == DOT && previous == DOT)) {
+                if (!invocationGate.isTooSoon(timestamp)) {
+                    addWarn(String.format(REJECTED_VALUE_WARNING, value, defaultValue));
+                }
+                return null;
             }
+            previous = c;
         }
-        return sb.toString();
+        return value;
+    }
+
+    private static boolean isForbiddenCharacter(char c) {
+        return FORBIDDEN_CHARACTERS.indexOf(c) != -1;
     }
 
 
