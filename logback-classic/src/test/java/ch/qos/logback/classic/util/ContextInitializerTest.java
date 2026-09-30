@@ -123,6 +123,13 @@ public class ContextInitializerTest {
     }
 
     @Test
+    public void autoConfigFromBootstrapClassLoader() throws Exception {
+        assertNull(MockConfigurator.context);
+        new ContextInitializer(loggerContext).autoConfig(null);
+        assertNull(MockConfigurator.context);
+    }
+
+    @Test
     public void autoConfigFromServiceLoaderJDK5() throws Exception {
         assumeTrue(isJDK5());
         ClassLoader mockClassLoader = buildMockServiceLoader(this.getClass().getClassLoader());
