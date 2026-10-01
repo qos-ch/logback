@@ -189,6 +189,15 @@ public class IfThenElseTest {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "if0_NoJoran.xml");
         verifyConfig(new String[] { "BEGIN", "b", "END" });
     }
+
+    @Test
+    public void conditionNestedWithinIfProducesWarning() throws JoranException {
+        simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "conditionInsideIf.xml");
+        assertTrue(checker.containsMatch(Status.WARN,
+                "The <condition> element must be placed before the <if> element, not inside it."));
+        verifyConfig(new String[] { "BEGIN", "END" });
+    }
+
     // ----------------------------------------------------------------------------------------------------
 
     @Test
