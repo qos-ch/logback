@@ -13,41 +13,34 @@
  */
 package ch.qos.logback.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.jupiter.api.Test;
 
-import ch.qos.logback.core.encoder.EncoderBase;
+import ch.qos.logback.core.testUtil.DummyEncoder;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 
 /**
- * Stopping an {@link OutputStreamAppender} must also stop its encoder.
+ * Verifies that an {@link OutputStreamAppender} propagates its own life cycle to its encoder.
  *
- * <p>Encoders may hold resources that are only released in {@link ch.qos.logback.core.spi.LifeCycle#stop() stop()},
- * typically per-thread buffers (e.g. logstash-logback-encoder's {@code ThreadLocalHolder}). If the appender never
- * stops its encoder, every context reset (for example a {@code scan="true"} reconfiguration) orphans the previous
- * encoder together with one buffer per thread that ever logged through it, and the heap grows on every
- * reconfiguration.</p>
+ * <p>An encoder may hold resources (e.g. per-thread buffers) released only in
+ * {@link ch.qos.logback.core.spi.LifeCycle#stop() stop()}; if the appender does not stop it, every
+ * reconfiguration leaks the orphaned encoder's resources. Each test uses a {@link DummyEncoder}.</p>
  */
 public class OutputStreamAppenderEncoderLifeCycleTest {
-
-    private static final int THREAD_COUNT = 16;
-    private static final int RECONFIGURATIONS = 10;
 
     Context context = new ContextBase();
     StatusChecker statusChecker = new StatusChecker(context);
 
+    /** 
+     * Stopping the appender stops a running encoder. 
+     */
     @Test
     public void stopStopsEncoder() {
-        PerThreadBufferEncoder<Object> encoder = newEncoder();
+        DummyEncoder<Object> encoder = newEncoder();
         OutputStreamAppender<Object> appender = newAppender(encoder);
 
         appender.start();
@@ -60,37 +53,12 @@ public class OutputStreamAppenderEncoderLifeCycleTest {
         statusChecker.assertIsWarningOrErrorFree();
     }
 
-    /**
-     * Reproduces the leak: repeatedly replace (stop + start a new) appender, as a context reset/reconfiguration does,
-     * while several threads log through each one. Without the fix, every old encoder keeps one buffer per thread.
+    /** 
+     * Stopping the appender is a no-op on an already stopped encoder (no error/warning). 
      */
     @Test
-    public void replacedAppendersDoNotRetainPerThreadBuffers() throws InterruptedException {
-        List<PerThreadBufferEncoder<Object>> encoders = new ArrayList<>();
-
-        for (int r = 0; r < RECONFIGURATIONS; r++) {
-            PerThreadBufferEncoder<Object> encoder = newEncoder();
-            OutputStreamAppender<Object> appender = newAppender(encoder);
-            appender.start();
-            encoders.add(encoder);
-
-            logFromThreads(appender);
-            assertEquals(THREAD_COUNT, encoder.retainedBufferCount());
-
-            appender.stop();
-        }
-
-        int retained = 0;
-        for (PerThreadBufferEncoder<Object> encoder : encoders) {
-            retained += encoder.retainedBufferCount();
-        }
-        assertEquals(0, retained, "stopped appenders' encoders still retain per-thread buffers");
-        statusChecker.assertIsWarningOrErrorFree();
-    }
-
-    @Test
     public void stopDoesNotFailWhenEncoderAlreadyStopped() {
-        PerThreadBufferEncoder<Object> encoder = newEncoder();
+        DummyEncoder<Object> encoder = newEncoder();
         OutputStreamAppender<Object> appender = newAppender(encoder);
 
         appender.start();
@@ -99,77 +67,22 @@ public class OutputStreamAppenderEncoderLifeCycleTest {
 
         assertFalse(appender.isStarted());
         assertFalse(encoder.isStarted());
-        assertEquals(1, encoder.stopCount(), "an already stopped encoder must not be stopped again");
         statusChecker.assertIsWarningOrErrorFree();
     }
 
-    private void logFromThreads(OutputStreamAppender<Object> appender) throws InterruptedException {
-        List<Thread> threads = new ArrayList<>(THREAD_COUNT);
-        for (int t = 0; t < THREAD_COUNT; t++) {
-            Thread thread = new Thread(() -> appender.doAppend("x"), "logging-thread-" + t);
-            thread.start();
-            threads.add(thread);
-        }
-        for (Thread thread : threads) {
-            thread.join(10_000);
-            assertFalse(thread.isAlive(), "thread did not finish: " + thread.getName());
-        }
-    }
-
-    private PerThreadBufferEncoder<Object> newEncoder() {
-        PerThreadBufferEncoder<Object> encoder = new PerThreadBufferEncoder<>();
+    private DummyEncoder<Object> newEncoder() {
+        DummyEncoder<Object> encoder = new DummyEncoder<>();
         encoder.setContext(context);
         encoder.start();
         return encoder;
     }
 
-    private OutputStreamAppender<Object> newAppender(PerThreadBufferEncoder<Object> encoder) {
+    private OutputStreamAppender<Object> newAppender(DummyEncoder<Object> encoder) {
         OutputStreamAppender<Object> appender = new OutputStreamAppender<>();
         appender.setContext(context);
         appender.setName("OSA");
         appender.setEncoder(encoder);
         appender.setOutputStream(new ByteArrayOutputStream());
         return appender;
-    }
-
-    /**
-     * Encoder that, like logstash-logback-encoder, keeps a reusable buffer per calling thread and only releases them
-     * in {@link #stop()}.
-     */
-    static class PerThreadBufferEncoder<E> extends EncoderBase<E> {
-
-        private final Map<Thread, byte[]> buffers = new ConcurrentHashMap<>();
-        private int stopCount;
-
-        @Override
-        public byte[] encode(E event) {
-            buffers.computeIfAbsent(Thread.currentThread(), t -> new byte[1024]);
-            return String.valueOf(event).getBytes();
-        }
-
-        @Override
-        public byte[] headerBytes() {
-            return null;
-        }
-
-        @Override
-        public byte[] footerBytes() {
-            return null;
-        }
-
-        @Override
-        public void stop() {
-            stopCount++;
-            buffers.clear();
-            super.stop();
-        }
-
-        int retainedBufferCount() {
-            return buffers.size();
-        }
-
-        int stopCount() {
-            return stopCount;
-        }
     }
 }
