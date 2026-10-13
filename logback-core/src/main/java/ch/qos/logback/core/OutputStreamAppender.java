@@ -119,7 +119,11 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     /**
      * Stop this appender instance. The underlying stream or writer is also closed.
-     * 
+     *
+     * <p>The encoder is stopped as well, after the footer has been written and the stream closed, so that any
+     * resources it holds (for instance per-thread buffers) are released. Otherwise, each context reset or
+     * reconfiguration would leave the previous encoder and its resources behind.</p>
+     *
      * <p>Stopped appenders cannot be reused.</p>
      */
     public void stop() {
@@ -130,8 +134,20 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         try {
             closeOutputStream();
             super.stop();
+            stopEncoder();
         } finally {
             streamWriteLock.unlock();
+        }
+    }
+
+    /**
+     * Stop the encoder, if it is started.
+     *
+     * <p>It is assumed that the caller has acquired the streamWriteLock.</p>
+     */
+    private void stopEncoder() {
+        if (encoder != null && encoder.isStarted()) {
+            encoder.stop();
         }
     }
 
