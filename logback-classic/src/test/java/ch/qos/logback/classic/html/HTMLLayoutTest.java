@@ -124,6 +124,20 @@ public class HTMLLayoutTest {
     }
 
     @Test
+    public void testAppendThrowableEscapesClassName() throws Exception {
+        StringBuilder buf = new StringBuilder();
+        PubThrowableProxy tp = new PubThrowableProxy();
+        tp.setClassName("<script>x</script>");
+        tp.setMessage("msg1");
+        tp.setStackTraceElementProxyArray(new StackTraceElementProxy[0]);
+        DefaultThrowableRenderer renderer = (DefaultThrowableRenderer) layout.getThrowableRenderer();
+
+        renderer.render(buf, tp);
+        String[] result = buf.toString().split(CoreConstants.LINE_SEPARATOR);
+        assertEquals("&lt;script&gt;x&lt;/script&gt;: msg1", result[0]);
+    }
+
+    @Test
     public void testDoLayout() throws Exception {
         ILoggingEvent le = createLoggingEvent();
 
