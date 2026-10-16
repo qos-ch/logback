@@ -14,11 +14,13 @@
 package ch.qos.logback.core.util;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -40,6 +42,7 @@ public final class MinimalUnmodifiableMap extends AbstractMap<String, String> im
     private static final long serialVersionUID = 1L;
 
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
+    private static final int INITIAL_READ_CAPACITY = 16;
     private static final MinimalUnmodifiableMap EMPTY = new MinimalUnmodifiableMap();
 
     private transient String[] keys;
@@ -151,12 +154,24 @@ public final class MinimalUnmodifiableMap extends AbstractMap<String, String> im
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         int n = in.readInt();
-        keys = new String[n];
-        values = new String[n];
-        for (int i = 0; i < n; i++) {
-            keys[i] = (String) in.readObject();
-            values[i] = (String) in.readObject();
+        if (n < 0) {
+            throw new InvalidObjectException("Invalid map size: " + n);
         }
+        // n comes from the stream and is not covered by any ObjectInputFilter
+        // array limit, so do not pre-allocate from it. Grow as entries arrive.
+        String[] k = new String[Math.min(n, INITIAL_READ_CAPACITY)];
+        String[] v = new String[k.length];
+        for (int i = 0; i < n; i++) {
+            if (i == k.length) {
+                int newLength = (int) Math.min(n, 2L * k.length);
+                k = Arrays.copyOf(k, newLength);
+                v = Arrays.copyOf(v, newLength);
+            }
+            k[i] = (String) in.readObject();
+            v[i] = (String) in.readObject();
+        }
+        keys = k;
+        values = v;
     }
 
     private Object readResolve() {
