@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -45,6 +46,11 @@ public class SyslogOutputStream extends OutputStream {
         this.address = InetAddress.getByName(syslogHost);
         this.port = port;
         this.ds = new DatagramSocket();
+        // This stream only sends datagrams to the syslog host. Connecting the socket removes it from
+        // the list of unconnected (wildcard) UDP listeners reported by tools like `ss -ulnp`, which
+        // hardened environments treat as an exposure. The OS still selects the source address per
+        // routing table, so remote syslog targets keep working. See https://github.com/qos-ch/logback/issues/939
+        this.ds.connect(new InetSocketAddress(address, port));
     }
 
     boolean isInvalidState() {
@@ -52,6 +58,10 @@ public class SyslogOutputStream extends OutputStream {
             return true;
         }
         return false;
+    }
+
+    boolean isConnected() {
+        return ds != null && ds.isConnected();
     }
 
     public void write(byte[] byteArray, int offset, int len) throws IOException {
