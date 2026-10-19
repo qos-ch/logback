@@ -22,6 +22,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.PortUnreachableException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -41,36 +42,50 @@ public class SyslogOutputStream extends OutputStream {
     private DatagramSocket ds;
     private ByteArrayOutputStream baos = new ByteArrayOutputStream();
     final private int port;
+    private SocketException connectException;
 
     public SyslogOutputStream(String syslogHost, int port) throws UnknownHostException, SocketException {
         this.address = InetAddress.getByName(syslogHost);
         this.port = port;
         this.ds = new DatagramSocket();
         // This stream only sends datagrams to the syslog host. Connecting the socket removes it from
-        // the list of unconnected (wildcard) UDP listeners reported by tools like `ss -ulnp`, which
-        // hardened environments treat as an exposure. The OS still selects the source address per
-        // routing table, so remote syslog targets keep working. See https://github.com/qos-ch/logback/issues/939
-        this.ds.connect(new InetSocketAddress(address, port));
+        // the list of unconnected (wildcard) UDP listeners reported by tools like `ss -ulnp`.
+        // See https://github.com/qos-ch/logback/issues/939
+        try {
+            this.ds.connect(new InetSocketAddress(address, port));
+        } catch (SocketException e) {
+            // connecting may fail, e.g. if the network is not yet available. In that case
+            // fall back to an unconnected socket, i.e. the behavior prior to issue 939.
+            this.connectException = e;
+        }
     }
 
-    boolean isInvalidState() {
+    boolean isValidState() {
         if(ds == null || baos == null || address == null) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     boolean isConnected() {
         return ds != null && ds.isConnected();
     }
 
+    /**
+     * Returns the exception thrown when connecting the underlying socket to the
+     * syslog host, or null if the connection succeeded.
+     */
+    SocketException getConnectException() {
+        return connectException;
+    }
+
     public void write(byte[] byteArray, int offset, int len) throws IOException {
-        if(isInvalidState()) return;
+        if(!isValidState()) return;
         baos.write(byteArray, offset, len);
     }
 
     public void flush() throws IOException {
-        if(isInvalidState()) return;
+        if(!isValidState()) return;
         byte[] bytes = baos.toByteArray();
         DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, port);
 
@@ -87,7 +102,16 @@ public class SyslogOutputStream extends OutputStream {
             return;
         }
         if (this.ds != null) {
-            ds.send(packet);
+            try {
+                ds.send(packet);
+            } catch (PortUnreachableException e) {
+                // On a connected socket, an ICMP port unreachable message triggered by a
+                // previously sent datagram is reported on the next send, in which case the
+                // current packet is not sent. Retry once so that the current packet is not lost,
+                // as was the case with unconnected sockets. Should the retry fail as well, the
+                // exception propagates to the caller.
+                ds.send(packet);
+            }
         }
 
     }
