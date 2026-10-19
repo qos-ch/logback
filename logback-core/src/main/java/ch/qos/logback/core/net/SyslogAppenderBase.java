@@ -15,6 +15,7 @@ package ch.qos.logback.core.net;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.PortUnreachableException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
@@ -43,9 +44,11 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     int port = SyslogConstants.SYSLOG_PORT;
     int maxMessageSize;
     Charset charset;
+    boolean portUnreachableReported = false;
 
     public void start() {
         int errorCount = 0;
+        portUnreachableReported = false;
         if (facilityStr == null) {
             addError("The Facility option is mandatory");
             errorCount++;
@@ -60,6 +63,10 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
         try {
             sos = createOutputStream();
+            if (sos.getConnectException() != null) {
+                addWarn("Failed to connect datagram socket to [" + syslogHost + ":" + port
+                        + "]. Falling back to an unconnected socket.", sos.getConnectException());
+            }
 
             final int systemDatagramSize = sos.getSendBufferSize();
             if (maxMessageSize == 0) {
@@ -109,6 +116,13 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
             sos.write(msg.getBytes(charset));
             sos.flush();
             postProcess(eventObject, sos);
+        } catch (PortUnreachableException pue) {
+            // the syslog host may be temporarily down, report only once to avoid flooding
+            if (!portUnreachableReported) {
+                portUnreachableReported = true;
+                addWarn("Syslog host [" + syslogHost + ":" + port
+                        + "] appears unreachable. Further such warnings will be suppressed.", pue);
+            }
         } catch (IOException ioe) {
             addError("Failed to send diagram to " + syslogHost, ioe);
         }
