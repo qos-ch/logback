@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 public class SyslogOutputStreamTest {
 
     @Test
-    void connectsToTheSyslogHost() throws Exception {
+    public void connectsToTheSyslogHost() throws Exception { 
         try (SyslogOutputStream stream = new SyslogOutputStream("localhost", 1514)) {
             // See #939: the underlying DatagramSocket must be connected to the syslog host so that it
             // does not appear as an unconnected listener on the wildcard address.
@@ -26,7 +26,7 @@ public class SyslogOutputStreamTest {
     }
 
     @Test
-    void flushDeliversDatagramToTheSyslogHost() throws Exception {
+    public void flushDeliversDatagramToTheSyslogHost() throws Exception {
         try (DatagramSocket receiver = new DatagramSocket(new InetSocketAddress("localhost", 0))) {
             receiver.setSoTimeout(5000);
             int port = receiver.getLocalPort();
