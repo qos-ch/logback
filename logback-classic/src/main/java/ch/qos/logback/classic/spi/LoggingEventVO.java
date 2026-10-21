@@ -19,8 +19,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
@@ -221,6 +226,36 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
                 }
             }
         }
+
+        // ThrowableProxyVO.build() always yields a tree. A crafted stream can make a cause or
+        // suppressed entry refer back to another proxy, which would send renderers into an endless loop
+        if (throwableProxy != null && !isTree(throwableProxy)) {
+            throw new InvalidObjectException("Throwable proxy contains a cycle or a shared reference");
+        }
+    }
+
+    private static boolean isTree(IThrowableProxy root) {
+        Set<IThrowableProxy> seen = Collections.newSetFromMap(new IdentityHashMap<>());
+        Deque<IThrowableProxy> pending = new ArrayDeque<>();
+        pending.push(root);
+        while (!pending.isEmpty()) {
+            IThrowableProxy tp = pending.pop();
+            if (!seen.add(tp)) {
+                return false;
+            }
+            if (tp.getCause() != null) {
+                pending.push(tp.getCause());
+            }
+            IThrowableProxy[] suppressed = tp.getSuppressed();
+            if (suppressed != null) {
+                for (IThrowableProxy s : suppressed) {
+                    if (s != null) {
+                        pending.push(s);
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     @Override

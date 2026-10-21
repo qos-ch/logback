@@ -30,15 +30,18 @@ import org.slf4j.MarkerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LoggingEventSerializationTest {
 
@@ -224,6 +227,39 @@ public class LoggingEventSerializationTest {
         assertEquals(2, aa.length);
         String stringBack = (String) aa[1];
         assertEquals(largeString, stringBack);
+    }
+
+    @Test
+    public void cyclicThrowableProxyIsRejected() throws Exception {
+        ThrowableProxyVO tp = new ThrowableProxyVO();
+        tp.setClassName("java.lang.Exception");
+        tp.setStackTraceElementProxyArray(new StackTraceElementProxy[0]);
+        tp.setCause(tp);
+        assertThrows(InvalidObjectException.class, () -> writeAndReadWithThrowableProxy(tp));
+    }
+
+    @Test
+    public void sharedSuppressedThrowableProxyIsRejected() throws Exception {
+        ThrowableProxyVO shared = new ThrowableProxyVO();
+        shared.setClassName("java.lang.Exception");
+        shared.setStackTraceElementProxyArray(new StackTraceElementProxy[0]);
+        ThrowableProxyVO tp = new ThrowableProxyVO();
+        tp.setClassName("java.lang.Exception");
+        tp.setStackTraceElementProxyArray(new StackTraceElementProxy[0]);
+        tp.setCause(shared);
+        tp.setSuppressed(new IThrowableProxy[] { shared });
+        assertThrows(InvalidObjectException.class, () -> writeAndReadWithThrowableProxy(tp));
+    }
+
+    private void writeAndReadWithThrowableProxy(ThrowableProxyVO tp) throws Exception {
+        LoggingEventVO vo = LoggingEventVO.build(createLoggingEvent());
+        Field field = LoggingEventVO.class.getDeclaredField("throwableProxy");
+        field.setAccessible(true);
+        field.set(vo, tp);
+        oos.writeObject(vo);
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        inputStream = new HardenedLoggingEventInputStream(loggerContext, bis);
+        inputStream.readObject();
     }
 
     private LoggingEvent createLoggingEvent() {
