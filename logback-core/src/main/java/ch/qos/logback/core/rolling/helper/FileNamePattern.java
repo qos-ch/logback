@@ -46,6 +46,9 @@ public class FileNamePattern extends ContextAwareBase {
         CONVERTER_MAP.put(DateTokenConverter.CONVERTER_KEY, DateTokenConverter::new);
     }
 
+    // characters with a special meaning in regular expressions outside of character classes
+    static final String REGEX_META_CHARACTERS = "\\.[]{}()*+?^$|";
+
     String pattern;
     Converter<Object> headTokenConverter;
 
@@ -201,11 +204,11 @@ public class FileNamePattern extends ContextAwareBase {
         Converter<Object> p = headTokenConverter;
         while (p != null) {
             if (p instanceof LiteralConverter) {
-                buf.append(p.convert(null));
+                buf.append(escapeRegexMetaCharacters(p.convert(null)));
             } else if (p instanceof IntegerTokenConverter) {
                 buf.append("(\\d+)");
             } else if (p instanceof DateTokenConverter) {
-                buf.append(p.convert(date));
+                buf.append(escapeRegexMetaCharacters(p.convert(date)));
             }
             p = p.getNext();
         }
@@ -226,11 +229,11 @@ public class FileNamePattern extends ContextAwareBase {
         Converter<Object> p = headTokenConverter;
         while (p != null) {
             if (p instanceof LiteralConverter) {
-                buf.append(p.convert(null));
+                buf.append(escapeRegexMetaCharacters(p.convert(null)));
             } else if (p instanceof IntegerTokenConverter) {
                 buf.append("(\\d+)");
             } else if (p instanceof DateTokenConverter) {
-                buf.append(p.convert(instant));
+                buf.append(escapeRegexMetaCharacters(p.convert(instant)));
             }
             p = p.getNext();
         }
@@ -246,7 +249,7 @@ public class FileNamePattern extends ContextAwareBase {
         Converter<Object> p = headTokenConverter;
         while (p != null) {
             if (p instanceof LiteralConverter) {
-                buf.append(p.convert(null));
+                buf.append(escapeRegexMetaCharacters(p.convert(null)));
             } else if (p instanceof IntegerTokenConverter) {
                 buf.append("\\d+");
             } else if (p instanceof DateTokenConverter) {
@@ -254,6 +257,26 @@ public class FileNamePattern extends ContextAwareBase {
                 buf.append(dtc.toRegex());
             }
             p = p.getNext();
+        }
+        return buf.toString();
+    }
+
+    /**
+     * Escapes the characters of a literal part of this pattern which have a special
+     * meaning in regular expressions, e.g. '(' in "C:/Users/John(Doe)/app.log".
+     *
+     * <p>Characters are escaped one by one instead of using {@link java.util.regex.Pattern#quote(String)}
+     * because callers keep only the part of the regex after the last '/', see
+     * {@link FileFilterUtil#afterLastSlash(String)}.</p>
+     */
+    static String escapeRegexMetaCharacters(String literal) {
+        StringBuilder buf = new StringBuilder(literal.length());
+        for (int i = 0; i < literal.length(); i++) {
+            char c = literal.charAt(i);
+            if (REGEX_META_CHARACTERS.indexOf(c) != -1) {
+                buf.append('\\');
+            }
+            buf.append(c);
         }
         return buf.toString();
     }

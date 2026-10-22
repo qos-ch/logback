@@ -151,6 +151,19 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         rfa.doAppend("hello");
     }
 
+    // https://github.com/qos-ch/logback/issues/914
+    @Test
+    public void testFileNameWithUnbalancedParenthesis() {
+        rfa.setContext(context);
+        rfa.setFile(randomOutputDir + "user(trunc/toto.log");
+        tbrp.setFileNamePattern(randomOutputDir + "user(trunc/toto-%d.log");
+        tbrp.start();
+        rfa.setRollingPolicy(tbrp);
+        rfa.start();
+        Assertions.assertTrue(rfa.isStarted());
+        rfa.doAppend("hello");
+    }
+
     @Test
     public void stopTimeBasedRollingPolicy() {
         rfa.setContext(context);

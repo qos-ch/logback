@@ -16,6 +16,8 @@ package ch.qos.logback.core.rolling.helper;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +27,7 @@ import ch.qos.logback.core.ContextBase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Ceki
@@ -154,12 +157,12 @@ public class FileNamePatternTest {
         {
             FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt", context);
             String regex = fnp.toRegexForFixedDate(cal.getTime());
-            assertEquals("foo-2003.05.20-(\\d+).txt", regex);
+            assertEquals("foo-2003\\.05\\.20-(\\d+)\\.txt", regex);
         }
         {
             FileNamePattern fnp = new FileNamePattern("\\toto\\foo-%d{yyyy\\MM\\dd}-%i.txt", context);
             String regex = fnp.toRegexForFixedDate(cal.getTime());
-            assertEquals("/toto/foo-2003/05/20-(\\d+).txt", regex);
+            assertEquals("/toto/foo-2003/05/20-(\\d+)\\.txt", regex);
         }
     }
 
@@ -168,13 +171,29 @@ public class FileNamePatternTest {
         {
             FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd}-%i.txt", context);
             String regex = fnp.toRegex();
-            assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}-\\d+.txt", regex);
+            assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}-\\d+\\.txt", regex);
         }
         {
             FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM.dd'T'}-%i.txt", context);
             String regex = fnp.toRegex();
-            assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}T-\\d+.txt", regex);
+            assertEquals("foo-\\d{4}\\.\\d{2}\\.\\d{2}T-\\d+\\.txt", regex);
         }
+    }
+
+    // https://github.com/qos-ch/logback/issues/914
+    // https://github.com/qos-ch/logback/issues/933
+    @Test
+    public void regexMatchesLiteralRegexMetaCharacters() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(2003, 4, 20, 17, 55);
+        FileNamePattern fnp = new FileNamePattern("dir(x/foo+[%d{yyyy.MM.dd}].(%i).txt", context);
+        String fileName = "dir(x/foo+[2003.05.20].(7).txt";
+
+        Matcher matcher = Pattern.compile(fnp.toRegexForFixedDate(cal.getTime())).matcher(fileName);
+        assertTrue(matcher.matches());
+        assertEquals("7", matcher.group(1));
+
+        assertTrue(Pattern.compile(fnp.toRegex()).matcher(fileName).matches());
     }
 
     @Test

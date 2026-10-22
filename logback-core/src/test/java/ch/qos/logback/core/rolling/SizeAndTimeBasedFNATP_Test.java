@@ -37,6 +37,7 @@ import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -296,6 +297,31 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         StatusPrinter.print(context);
 
         assertEquals(fixedContentBytes.length, tbrp1.getLengthCounter().getLength());
+    }
+
+    // https://github.com/qos-ch/logback/issues/933
+    @Test
+    public void restartDoesNotOverwriteArchiveWithParenthesesInPattern() throws IOException {
+        String testId = "restartDoesNotOverwriteArchiveWithParenthesesInPattern";
+        byte[] previousRunBytes = "previous run".getBytes();
+
+        CachingDateFormatter cdf = new CachingDateFormatter(CoreConstants.DAILY_DATE_PATTERN);
+        String nowString = cdf.format(currentTime);
+        String pathToArchive0 = randomOutputDir + testId + "-" + nowString + "-(0).txt";
+
+        Files.createDirectories(Paths.get(randomOutputDir));
+        Files.write(Paths.get(pathToArchive0), previousRunBytes);
+
+        initRollingFileAppender(rfa1, randomOutputDir + "foo.log");
+        sizeThreshold = 300;
+        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d-(%i).txt", sizeThreshold, currentTime, 0);
+
+        rfa1.doAppend("x".repeat(sizeThreshold + 1));
+        // triggers a size based rollover
+        rfa1.doAppend("y");
+        rfa1.stop();
+
+        assertArrayEquals(previousRunBytes, Files.readAllBytes(Paths.get(pathToArchive0)));
     }
 
     // @Test
