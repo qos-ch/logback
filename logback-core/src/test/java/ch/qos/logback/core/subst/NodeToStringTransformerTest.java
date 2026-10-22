@@ -176,6 +176,33 @@ public class NodeToStringTransformerTest {
         Assertions.assertEquals("a: {y}", nodeToStringTransformer.transform());
     }
 
+    // https://github.com/qos-ch/logback/issues/836
+    @Test
+    public void unmatchedRightAccoladeIsKept() throws ScanException {
+        checkInputEqualsOutput("a}b");
+        checkInputEqualsOutput("}a");
+        checkInputEqualsOutput("%m}tail%n");
+        checkInputEqualsOutput("%logger{36}}x");
+        checkInputEqualsOutput("(password)=(.*?(, |$|}]\"))?");
+        Assertions.assertEquals("v0}x", transform("${k0}}x"));
+        Assertions.assertEquals("b}c", transform("${k67:-b}}c"));
+    }
+
+    @Test
+    public void defaultSeparatorOutsideOfVariableIsKept() throws ScanException {
+        checkInputEqualsOutput("a:-b");
+        checkInputEqualsOutput(":-a");
+        checkInputEqualsOutput("-XX:-OmitStackTraceInFastThrow");
+        checkInputEqualsOutput("a:-b}c");
+        Assertions.assertEquals("v0:-x", transform("${k0}:-x"));
+    }
+
+    @Test
+    public void variableValueWithUnmatchedRightAccolade() throws ScanException {
+        propertyContainer0.putProperty("withAccolade", "a}b");
+        Assertions.assertEquals("xa}by", transform("x${withAccolade}y"));
+    }
+
     @Test
     public void definedAsEmpty() throws ScanException {
         propertyContainer0.putProperty("empty", "");
