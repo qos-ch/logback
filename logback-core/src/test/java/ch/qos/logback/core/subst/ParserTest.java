@@ -196,6 +196,27 @@ public class ParserTest {
         assertEquals(witness, node);
     }
 
+    // https://github.com/qos-ch/logback/issues/836
+    @Test
+    public void unmatchedRightAccoladeAndDefaultSeparator() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("a}b:-c");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+
+        Node witness = new Node(Node.Type.LITERAL, "a");
+        Node t = witness.next = new Node(Node.Type.LITERAL, "}");
+
+        t.next = new Node(Node.Type.LITERAL, "b");
+        t = t.next;
+
+        t.next = new Node(Node.Type.LITERAL, ":-");
+        t = t.next;
+
+        t.next = new Node(Node.Type.LITERAL, "c");
+
+        assertEquals(witness, node);
+    }
+
     @Test
     public void emptyTokenListDoesNotThrowNullPointerException() throws ScanException {
         // An empty token list would be returned from Tokenizer.tokenize()

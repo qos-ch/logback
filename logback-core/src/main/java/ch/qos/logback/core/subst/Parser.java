@@ -51,7 +51,34 @@ public class Parser {
     public Node parse() throws ScanException {
         if (tokenList == null || tokenList.isEmpty())
             return null;
-        return E();
+        Node head = E();
+        Node tail = head;
+        // E() stops at a '}' or ':-' which is not part of a '${...}' or '{...}' construct.
+        // Keep such tokens as literal text instead of dropping the rest of the input.
+        Token t;
+        while ((t = peekAtCurentToken()) != null) {
+            advanceTokenPointer();
+            Node literal = makeNewLiteralNode(unmatchedTokenAsLiteral(t));
+            if (head == null) {
+                head = literal;
+            } else {
+                tail.append(literal);
+            }
+            literal.append(E());
+            tail = literal;
+        }
+        return head;
+    }
+
+    private String unmatchedTokenAsLiteral(Token t) {
+        switch (t.type) {
+        case CURLY_RIGHT:
+            return CoreConstants.RIGHT_ACCOLADE;
+        case DEFAULT:
+            return CoreConstants.DEFAULT_VALUE_SEPARATOR;
+        default:
+            throw new IllegalStateException("Unexpected token " + t);
+        }
     }
 
     private Node E() throws ScanException {
