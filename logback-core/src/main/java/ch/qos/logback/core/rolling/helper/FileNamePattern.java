@@ -194,27 +194,16 @@ public class FileNamePattern extends ContextAwareBase {
     /**
      * Given date, convert this instance to a regular expression.
      *
-     * Used to compute sub-regex when the pattern has both %d and %i, and the date
-     * is known.
-     * 
+     * <p>Used to compute sub-regex when the pattern has both %d and %i, and the date
+     * is known.</p>
+     *
+     * <p>Implemented by delegating to {@link #toRegexForFixedDate(Instant)}.</p>
+     *
      * @param date - known date
      */
     public String toRegexForFixedDate(Date date) {
-        StringBuilder buf = new StringBuilder();
-        Converter<Object> p = headTokenConverter;
-        while (p != null) {
-            if (p instanceof LiteralConverter) {
-                buf.append(escapeRegexMetaCharacters(p.convert(null)));
-            } else if (p instanceof IntegerTokenConverter) {
-                buf.append("(\\d+)");
-            } else if (p instanceof DateTokenConverter) {
-                buf.append(escapeRegexMetaCharacters(p.convert(date)));
-            }
-            p = p.getNext();
-        }
-        return buf.toString();
+        return toRegexForFixedDate(date.toInstant());
     }
-
 
     /**
      * Given date, convert this instance to a regular expression.

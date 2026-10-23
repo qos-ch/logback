@@ -24,8 +24,9 @@ import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.DatePatternToRegexUtil;
 
 /**
- * Returns a date formatted by SimpleDateFormatter.
- * 
+ * Returns a date formatted by {@link CachingDateFormatter}, which relies on
+ * {@link java.time.format.DateTimeFormatter}.
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTypedConverter {

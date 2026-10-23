@@ -13,7 +13,8 @@
  */
 package ch.qos.logback.core.util;
 
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -115,9 +116,10 @@ public class DatePatternToRegexTest {
         }
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+            // as in CachingDateFormatter
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern(datePattern).withZone(ZoneId.systemDefault());
             DateTokenConverter<?> dtc = makeDTC(datePattern);
-            verify(sdf, calendar, dtc);
+            verify(dtf, calendar, dtc);
         } finally {
             if (locale != null)
                 Locale.setDefault(oldDefaultLocale);
@@ -131,8 +133,8 @@ public class DatePatternToRegexTest {
     // doTest(datePattern, calendar, false);
     // }
 
-    void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter<?> dtc) {
-        String expected = sdf.format(calendar.getTime());
+    void verify(DateTimeFormatter dtf, Calendar calendar, DateTokenConverter<?> dtc) {
+        String expected = dtf.format(calendar.toInstant());
         // if (slashified) {
         // expected = expected.replace('\\', '/');
         // }
