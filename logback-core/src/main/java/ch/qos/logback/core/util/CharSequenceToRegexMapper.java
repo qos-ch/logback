@@ -14,16 +14,37 @@
 package ch.qos.logback.core.util;
 
 import java.text.DateFormatSymbols;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * This class supports mapping character sequences to regular expressions as
- * appropriate for SimpleDateFormatter.
+ * appropriate for DateTimeFormatter.
  *
  * @author Ceki
  */
 class CharSequenceToRegexMapper {
 
-    DateFormatSymbols symbols = DateFormatSymbols.getInstance();
+    final Locale locale;
+    final DateFormatSymbols symbols;
+
+    /**
+     * Create a mapper using the symbols of the default locale.
+     */
+    CharSequenceToRegexMapper() {
+        this(Locale.getDefault(Locale.Category.FORMAT));
+    }
+
+    /**
+     * Create a mapper using the symbols of the given locale.
+     *
+     * @param locale the locale whose month, weekday and am/pm symbols are used
+     */
+    CharSequenceToRegexMapper(Locale locale) {
+        this.locale = locale;
+        this.symbols = DateFormatSymbols.getInstance(locale);
+    }
 
     String toRegex(CharSequenceState css) {
         final int occurrences = css.occurrences;
@@ -39,6 +60,11 @@ class CharSequenceToRegexMapper {
                 return getRegexForShortMonths();
             else
                 return getRegexForLongMonths();
+        case 'L':
+            if (occurrences <= 2)
+                return number(occurrences);
+            else
+                return getRegexForStandaloneMonths(occurrences);
         case 'y':
         case 'w':
         case 'W':
@@ -103,6 +129,18 @@ class CharSequenceToRegexMapper {
 
     String getRegexForShortMonths() {
         return symbolArrayToRegex(symbols.getShortMonths());
+    }
+
+    // DateFormatSymbols does not provide stand-alone month names. They are obtained
+    // by formatting each month with the stand-alone pattern itself.
+    private String getRegexForStandaloneMonths(int occurrences) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("L".repeat(occurrences), locale);
+        Month[] months = Month.values();
+        String[] monthNames = new String[months.length];
+        for (int i = 0; i < months.length; i++) {
+            monthNames[i] = dtf.format(months[i]);
+        }
+        return symbolArrayToRegex(monthNames);
     }
 
     private String symbolArrayToRegex(String[] symbolArray) {

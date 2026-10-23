@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.util;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -25,12 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CharSequenceToRegexMapperTest {
     static Locale KO_LOCALE = new Locale("ko", "KR");
-    Locale oldLocale = Locale.getDefault();
-
-    @AfterEach
-    public void tearDown() {
-        Locale.setDefault(oldLocale);
-    }
 
     @Test
     public void findMinMaxLengthsInSymbolsWithTrivialInputs() {
@@ -49,21 +42,46 @@ public class CharSequenceToRegexMapperTest {
     }
 
     @Test
+    public void localeArgumentIsHonored() {
+        CharSequenceToRegexMapper usMapper = new CharSequenceToRegexMapper(Locale.US);
+        // "Monday" is the shortest US weekday, "Wednesday" the longest
+        assertEquals(".{6,9}", usMapper.toRegex(makeState('E', 4)));
+
+        CharSequenceToRegexMapper germanMapper = new CharSequenceToRegexMapper(Locale.GERMANY);
+        // "Montag" is the shortest German weekday, "Donnerstag" the longest
+        assertEquals(".{6,10}", germanMapper.toRegex(makeState('E', 4)));
+    }
+
+    @Test
+    public void defaultConstructorUsesDefaultLocale() {
+        CharSequenceToRegexMapper defaultMapper = new CharSequenceToRegexMapper();
+        CharSequenceToRegexMapper explicitMapper = new CharSequenceToRegexMapper(
+                Locale.getDefault(Locale.Category.FORMAT));
+        assertEquals(explicitMapper.symbols, defaultMapper.symbols);
+    }
+
+    private CharSequenceState makeState(char c, int occurrences) {
+        CharSequenceState state = new CharSequenceState(c);
+        for (int i = 1; i < occurrences; i++) {
+            state.incrementOccurrences();
+        }
+        return state;
+    }
+
+    @Test
     @Disabled
     public void noneOfTheSymbolsAreOfZeroLengthForKorean() {
-        Locale.setDefault(KO_LOCALE);
-        noneOfTheSymbolsAreOfZeroLength();
+        noneOfTheSymbolsAreOfZeroLength(KO_LOCALE);
     }
 
     @Test
     @Disabled
     public void noneOfTheSymbolsAreOfZeroLengthForSwiss() {
-        Locale.setDefault(new Locale("fr", "CH"));
-        noneOfTheSymbolsAreOfZeroLength();
+        noneOfTheSymbolsAreOfZeroLength(new Locale("fr", "CH"));
     }
 
-    private void noneOfTheSymbolsAreOfZeroLength() {
-        DateFormatSymbols dateFormatSymbols = DateFormatSymbols.getInstance();
+    private void noneOfTheSymbolsAreOfZeroLength(Locale locale) {
+        DateFormatSymbols dateFormatSymbols = new CharSequenceToRegexMapper(locale).symbols;
         // checkEmptyString(dateFormatSymbols.getShortMonths(), "ShortMonths");
         // checkEmptyString(dateFormatSymbols.getMonths(), "Months");
         checkEmptyString(dateFormatSymbols.getShortWeekdays(), "ShortWeekdays");

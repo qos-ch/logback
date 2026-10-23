@@ -13,13 +13,14 @@
  */
 package ch.qos.logback.core.util;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This class is concerned with computing a regex corresponding to a date
- * pattern (in {@link SimpleDateFormat} format).
+ * pattern (in {@link DateTimeFormatter} format).
  *
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -27,11 +28,28 @@ public class DatePatternToRegexUtil {
 
     final String datePattern;
     final int datePatternLength;
-    final CharSequenceToRegexMapper regexMapper = new CharSequenceToRegexMapper();
+    final CharSequenceToRegexMapper regexMapper;
 
+    /**
+     * Create an instance using the symbols of the default locale.
+     *
+     * @param datePattern date pattern in {@link DateTimeFormatter} format
+     */
     public DatePatternToRegexUtil(String datePattern) {
+        this(datePattern, Locale.getDefault(Locale.Category.FORMAT));
+    }
+
+    /**
+     * Create an instance using the symbols of the given locale.
+     *
+     * @param datePattern date pattern in {@link DateTimeFormatter} format
+     * @param locale      the locale whose month, weekday and am/pm symbols are used
+     * @since 1.7.0
+     */
+    public DatePatternToRegexUtil(String datePattern, Locale locale) {
         this.datePattern = datePattern;
         datePatternLength = datePattern.length();
+        regexMapper = new CharSequenceToRegexMapper(locale);
     }
 
     public String toRegex() {
