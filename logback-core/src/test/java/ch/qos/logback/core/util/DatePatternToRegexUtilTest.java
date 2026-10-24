@@ -42,7 +42,7 @@ public class DatePatternToRegexUtilTest {
             "EEEE", "EEE yyyy-MM-dd", "EEEE yyyy-MM-dd", "LL", "LLL", "LLLL", "LLLLL", "yyyy-LLLL", "yyyy/LLL/dd", "yyyy-MM-dd hh a", "yyyy-MM-dd HH:mm:ss Z",
             "yyyy-MM-dd HH:mm:ss z", "yyyy-ww", "yyyy-DDD" };
 
-    static Stream<Locale> locales() {
+    public static Stream<Locale> locales() {
         return Stream.of("en-US", "de-DE", "fr-FR", "cs-CZ", "pl-PL", "fi-FI", "ru-RU", "tr-TR", "el-GR", "he-IL",
                 "ar-EG", "hi-IN", "th-TH", "ja-JP", "ko-KR", "zh-CN").map(Locale::forLanguageTag);
     }
@@ -108,6 +108,30 @@ public class DatePatternToRegexUtilTest {
         assertEquals("\\d{4}-{2}\\d{2}", regex);
         assertTrue("2009--09".matches(regex));
         assertFalse("2009-09".matches(regex));
+    }
+
+    @Test
+    public void repeatedDot() {
+        String regex = toRegex("yyyy..MM", Locale.US);
+        assertEquals("\\d{4}\\.{2}\\d{2}", regex);
+        assertTrue("2009..09".matches(regex));
+        assertFalse("2009.09".matches(regex));
+    }
+
+    @ParameterizedTest(name = "{0} -> {1}")
+    @CsvSource(delimiter = ';', value = {
+            "yyyy-MM-dd_(HH       ; \\d{4}-\\d{2}-\\d{2}_\\(\\d{2}        ; 2009-09-03_(21",
+            "yyyy-MM-dd_(HH)      ; \\d{4}-\\d{2}-\\d{2}_\\(\\d{2}\\)     ; 2009-09-03_(21)",
+            "yyyy+MM              ; \\d{4}\\+\\d{2}                        ; 2009+09",
+            "yyyy++MM             ; \\d{4}\\+{2}\\d{2}                     ; 2009++09",
+            "yyyy-MM-dd'['HH']'   ; \\d{4}-\\d{2}-\\d{2}\\[\\d{2}\\]        ; 2009-09-03[21]",
+            "yyyy$MM^dd           ; \\d{4}\\$\\d{2}\\^\\d{2}                ; 2009$09^03",
+            "yyyy*MM?dd           ; \\d{4}\\*\\d{2}\\?\\d{2}                ; 2009*09?03",
+            "yyyy|MM              ; \\d{4}\\|\\d{2}                        ; 2009|09" })
+    public void regexMetaCharactersAreEscaped(String datePattern, String expectedRegex, String formatted) {
+        String regex = toRegex(datePattern, Locale.US);
+        assertEquals(expectedRegex, regex);
+        assertTrue(formatted.matches(regex));
     }
 
     @ParameterizedTest(name = "{0}")

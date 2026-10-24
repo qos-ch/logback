@@ -26,6 +26,9 @@ import java.util.Locale;
  */
 class CharSequenceToRegexMapper {
 
+    // characters with a special meaning in regular expressions outside of character classes
+    static final String REGEX_META_CHARACTERS = "\\.[]{}()*+?^$|";
+
     final Locale locale;
     final DateFormatSymbols symbols;
 
@@ -89,8 +92,6 @@ class CharSequenceToRegexMapper {
             return getRegexForAmPms();
         case 'Z':
             return "(\\+|-)\\d{4}";
-        case '.':
-            return "\\.";
         case '\\':
             throw new IllegalStateException("Forward slashes are not allowed");
         case '\'':
@@ -99,11 +100,24 @@ class CharSequenceToRegexMapper {
             }
             throw new IllegalStateException("Too many single quotes");
         default:
+            String literal = escapeRegexMetaCharacter(c);
             if (occurrences == 1) {
-                return "" + c;
+                return literal;
             } else {
-                return c + "{" + occurrences + "}";
+                return literal + "{" + occurrences + "}";
             }
+        }
+    }
+
+    /**
+     * Escapes a literal character of the date pattern if it has a special meaning in
+     * regular expressions, e.g. '(' in "yyyy-MM-dd_(HH)".
+     */
+    static String escapeRegexMetaCharacter(char c) {
+        if (REGEX_META_CHARACTERS.indexOf(c) != -1) {
+            return "\\" + c;
+        } else {
+            return String.valueOf(c);
         }
     }
 

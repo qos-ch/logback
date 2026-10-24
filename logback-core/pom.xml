@@ -120,7 +120,8 @@
                     <argLine>
                         --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
                         --add-opens ch.qos.logback.core/ch.qos.logback.core.rolling.helper=org.junit.platform.commons
-                        --add-reads ch.qos.logback.core=ALL-UNNAMED,org.junit.jupiter.api
+                        --add-reads ch.qos.logback.core=ALL-UNNAMED,org.junit.jupiter.api,org.junit.jupiter.params
+                        --add-exports org.junit.platform.commons/org.junit.platform.commons.util=ALL-UNNAMED
                     </argLine>
                 </configuration>
 
@@ -128,8 +129,6 @@
                     <execution>
                         <id>default-test</id>
                         <configuration>
-                            <parallel>classes</parallel>
-                            <threadCount>20</threadCount>
                             <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->
                             <forkCount>5</forkCount>
                             <reuseForks>true</reuseForks>
