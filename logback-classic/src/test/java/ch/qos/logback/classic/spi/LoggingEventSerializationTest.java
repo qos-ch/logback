@@ -23,7 +23,6 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -34,7 +33,6 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -42,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoggingEventSerializationTest {
 
@@ -251,11 +250,47 @@ public class LoggingEventSerializationTest {
         assertThrows(InvalidObjectException.class, () -> writeAndReadWithThrowableProxy(tp));
     }
 
+    // ThrowableProxy replaces the repeated occurrence of a throwable by a distinct proxy
+    // marked as cyclic, so genuinely circular exceptions must survive the round trip
+    @Test
+    public void circularExceptionRoundTrip() throws Exception {
+        Exception root = new Exception("root");
+        Exception cause = new Exception("cause");
+        root.initCause(cause);
+        // root -> cause -> suppressed root
+        cause.addSuppressed(root);
+
+        LoggingEvent event = createLoggingEventWithThrowable(root);
+        ILoggingEvent remoteEvent = writeAndRead(event);
+        checkForEquality(event, remoteEvent);
+
+        IThrowableProxy remoteCause = remoteEvent.getThrowableProxy().getCause();
+        assertTrue(remoteCause.getSuppressed()[0].isCyclic());
+        String rendered = ThrowableProxyUtil.asString(remoteEvent.getThrowableProxy());
+        assertTrue(rendered.contains("[CIRCULAR REFERENCE: java.lang.Exception: root]"), rendered);
+    }
+
+    // the same throwable reachable twice without forming a cycle
+    @Test
+    public void exceptionWithSameCauseAndSuppressedRoundTrip() throws Exception {
+        Exception root = new Exception("root");
+        Exception other = new Exception("other");
+        root.initCause(other);
+        root.addSuppressed(other);
+
+        LoggingEvent event = createLoggingEventWithThrowable(root);
+        ILoggingEvent remoteEvent = writeAndRead(event);
+        checkForEquality(event, remoteEvent);
+
+        IThrowableProxy remoteProxy = remoteEvent.getThrowableProxy();
+        assertTrue(remoteProxy.getSuppressed()[0].isCyclic());
+        String rendered = ThrowableProxyUtil.asString(remoteProxy);
+        assertTrue(rendered.contains("[CIRCULAR REFERENCE: java.lang.Exception: other]"), rendered);
+    }
+
     private void writeAndReadWithThrowableProxy(ThrowableProxyVO tp) throws Exception {
         LoggingEventVO vo = LoggingEventVO.build(createLoggingEvent());
-        Field field = LoggingEventVO.class.getDeclaredField("throwableProxy");
-        field.setAccessible(true);
-        field.set(vo, tp);
+        vo.setThrowableProxyVO(tp);
         oos.writeObject(vo);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
         inputStream = new HardenedLoggingEventInputStream(loggerContext, bis);
