@@ -40,6 +40,7 @@ import java.util.List;
 public class Parser {
     
     static final public String EXPECTING_DATA_AFTER_LEFT_ACCOLADE = "Expecting at least a literal between left accolade and ':-'";
+    static final public String UNMATCHED_RIGHT_ACCOLADE = "Unmatched right accolade '}'";
     
     final List<Token> tokenList;
     int pointer = 0;
@@ -51,7 +52,15 @@ public class Parser {
     public Node parse() throws ScanException {
         if (tokenList == null || tokenList.isEmpty())
             return null;
-        return E();
+        Node node = E();
+        // an unmatched '}' stops E() before the end of input. Signal the problem
+        // instead of silently dropping the remaining tokens.
+        // See also https://github.com/qos-ch/logback/issues/836
+        Token t = peekAtCurentToken();
+        if (t != null && t.type == Token.Type.CURLY_RIGHT) {
+            throw new ScanException(UNMATCHED_RIGHT_ACCOLADE);
+        }
+        return node;
     }
 
     private Node E() throws ScanException {

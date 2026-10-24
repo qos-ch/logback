@@ -205,6 +205,28 @@ public class ParserTest {
         parser.parse();
     }
 
+    // https://github.com/qos-ch/logback/issues/836
+    @Test
+    public void unmatchedRightAccoladeThrowsScanException() throws ScanException {
+        assertUnmatchedRightAccolade("%m}This will not appear in the pattern");
+        assertUnmatchedRightAccolade("}abc");
+        assertUnmatchedRightAccolade("abc}");
+        assertUnmatchedRightAccolade("%logger{36}} x");
+        assertUnmatchedRightAccolade("${a}}b");
+    }
+
+    private void assertUnmatchedRightAccolade(String input) throws ScanException {
+        Tokenizer tokenizer = new Tokenizer(input);
+        Parser parser = new Parser(tokenizer.tokenize());
+        try {
+            parser.parse();
+        } catch (ScanException e) {
+            assertEquals(Parser.UNMATCHED_RIGHT_ACCOLADE, e.getMessage());
+            return;
+        }
+        fail("expected ScanException for input [" + input + "]");
+    }
+
     private void dump(Node node) {
         while (node != null) {
             System.out.println(node.toString());

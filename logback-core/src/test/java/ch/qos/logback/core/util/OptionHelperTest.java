@@ -74,6 +74,19 @@ public class OptionHelperTest {
         }
     }
 
+    // https://github.com/qos-ch/logback/issues/836
+    @Test
+    public void testSubstVarsUnmatchedRightAccolade() {
+        String input = "%m}This will not appear in the pattern";
+        try {
+            @SuppressWarnings("unused")
+            String result = OptionHelper.substVars(input, context);
+            fail();
+        } catch (ScanException e) {
+            // ok
+        }
+    }
+
     @Test
     public void testSubstVarsContextOnly() throws ScanException {
         context.putProperty("v1", "if");
@@ -208,7 +221,7 @@ public class OptionHelperTest {
     public void recursionErrorWithNullLiteralPayload() throws ScanException {
 
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-           OptionHelper.substVars("abc${AA$AA${}}}xyz", context);
+           OptionHelper.substVars("abc${AA$AA${}}xyz", context);
         });
         String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${AA} --> ${}]";
         assertEquals(expectedMessage, e.getMessage());
