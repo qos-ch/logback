@@ -58,7 +58,9 @@ public class HardenedObjectInputStream extends ObjectInputStream {
             "java.util.Collections$EmptyMap",
             "java.util.Collections$UnmodifiableMap",
             "java.util.concurrent.CopyOnWriteArrayList",
-            "java.util.HashMap"
+            "java.util.HashMap",
+            "java.util.LinkedHashMap"
+
             //"java.util.HashSet",
             //"java.util.Hashtable",
 
