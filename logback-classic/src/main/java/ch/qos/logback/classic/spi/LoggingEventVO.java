@@ -140,6 +140,11 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         return throwableProxy;
     }
 
+    // for tests only
+    void setThrowableProxyVO(ThrowableProxyVO tpVO) {
+        this.throwableProxy = tpVO;
+    }
+
     public StackTraceElement[] getCallerData() {
         return callerDataArray;
     }
