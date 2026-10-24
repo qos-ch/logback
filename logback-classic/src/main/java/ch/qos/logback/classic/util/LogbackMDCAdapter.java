@@ -18,7 +18,7 @@ import org.slf4j.spi.MDCAdapter;
 
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,7 +71,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         }
         Map<String, String> current = readWriteThreadLocalMap.get();
         if (current == null) {
-            current = new HashMap<String, String>();
+            current = new LinkedHashMap<String, String>();
             readWriteThreadLocalMap.set(current);
         }
 
@@ -138,7 +138,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         if (readOnlyMap == null) {
             Map<String, String> current = readWriteThreadLocalMap.get();
             if (current != null) {
-                readOnlyMap = Collections.unmodifiableMap(new HashMap<>(current));
+                readOnlyMap = Collections.unmodifiableMap(new LinkedHashMap<>(current));
                 readOnlyThreadLocalMap.set(readOnlyMap);
             }
         }
@@ -154,7 +154,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         if (readOnlyMap == null) {
             return null;
         } else {
-            return new HashMap<String, String>(readOnlyMap);
+            return new LinkedHashMap<String, String>(readOnlyMap);
         }
     }
 
@@ -175,7 +175,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
     @SuppressWarnings("unchecked")
     public void setContextMap(Map contextMap) {
         if (contextMap != null) {
-            readWriteThreadLocalMap.set(new HashMap<String, String>(contextMap));
+            readWriteThreadLocalMap.set(new LinkedHashMap<String, String>(contextMap));
         } else {
             readWriteThreadLocalMap.set(null);
         }
