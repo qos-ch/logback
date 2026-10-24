@@ -211,7 +211,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ParentScaffoldingFo
         checkFileCount(sizeInUnitsOfBytesPerPeriod + 1);
     }
 
-    static Stream<Long> checkCleanupForBasicDailyRolloverWithSizeCap() {
+    public static Stream<Long> checkCleanupForBasicDailyRolloverWithSizeCap() {
         // currentTime = 1760822446333
         // Sat Oct 18 2025 21:20:46.333 UTC
         return Stream.of(1760822446333L, System.currentTimeMillis());
@@ -339,6 +339,44 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ParentScaffoldingFo
         System.out.println("Sum: "+la.sum());
 
         // adding fileSize to sizeCap may make sense
+        assertTrue(la.sum() < sizeCap);
+
+        checkFileCount(expectedFileCount + 1);
+    }
+
+    // https://github.com/qos-ch/logback/issues/933
+    @Test
+    public void dailySizeBasedRolloverWithParenthesesWithoutCap() {
+        SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
+        sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(10000));
+        tbfnatp = sizeAndTimeBasedFNATP;
+        this.slashCount = computeSlashCount(DAILY_DATE_PATTERN);
+        String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.(%i).zip";
+        cp.maxHistory(5).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(5 * 4);
+        logOverMultiplePeriods(cp);
+        checkPatternCompliance(5 + 1 + slashCount, "\\d{4}-\\d{2}-\\d{2}-clean(\\.\\(\\d+\\))(.zip)?");
+    }
+
+    // https://github.com/qos-ch/logback/issues/933
+    @Test
+    public void dailySizeBasedRolloverWithParenthesesWithSizeCap() {
+        SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFileNamingAndTriggeringPolicy<Object>();
+
+        long fileSize = 3400;
+        int expectedFileCount = 10;
+        long sizeCap = expectedFileCount * fileSize;
+        sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(fileSize));
+        tbfnatp = sizeAndTimeBasedFNATP;
+
+        long simulatedTime = getSimulatedTimeFromString("2016-03-05T00:14:39,186");
+        ConfigParameters params = new ConfigParameters(simulatedTime);
+        String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.(%i)";
+        params.maxHistory(60).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(10).sizeCap(sizeCap);
+        logOverMultiplePeriods(params);
+
+        List<File> foundFiles = findFilesByPattern("\\d{4}-\\d{2}-\\d{2}-clean\\.\\(\\d+\\)");
+        LongAdder la = new LongAdder();
+        foundFiles.forEach(f -> la.add(f.length()));
         assertTrue(la.sum() < sizeCap);
 
         checkFileCount(expectedFileCount + 1);
@@ -528,12 +566,6 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ParentScaffoldingFo
             waitForJobsToComplete();
         }
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         rfa.stop();
 
         // System.out.println("Current time at end of loop: "+new

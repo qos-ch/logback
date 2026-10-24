@@ -26,6 +26,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.appender.AbstractAppenderTest;
+import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.testUtil.DummyEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
@@ -161,6 +162,28 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         rfa.setRollingPolicy(tbrp);
         rfa.start();
         Assertions.assertTrue(rfa.isStarted());
+        rfa.doAppend("hello");
+    }
+
+    @Test
+    public void invalidCollisionRegexDoesNotPreventStart() {
+        rfa.setContext(context);
+        rfa.setFile(randomOutputDir + "toto.log");
+        tbrp.setFileNamePattern(randomOutputDir + "toto-%d.log");
+        tbrp.start();
+        // simulate a regex which escaping failed to anticipate
+        tbrp.fileNamePattern = new FileNamePattern(randomOutputDir + "toto-%d.log", context) {
+            @Override
+            public String toRegex() {
+                return "toto(";
+            }
+        };
+        rfa.setRollingPolicy(tbrp);
+        rfa.start();
+
+        Assertions.assertTrue(rfa.isStarted());
+        StatusChecker checker = new StatusChecker(context);
+        checker.assertContainsMatch(Status.WARN, "Could not check for collisions");
         rfa.doAppend("hello");
     }
 

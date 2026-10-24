@@ -197,6 +197,21 @@ public class FileNamePatternTest {
     }
 
     @Test
+    public void regexMatchesRegexMetaCharactersInDatePattern() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(2003, 4, 20, 17, 55);
+        FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy+MM-dd_(HH}.%i.txt", context);
+        String fileName = "foo-2003+05-20_(17.7.txt";
+
+        assertEquals("foo-\\d{4}\\+\\d{2}-\\d{2}_\\(\\d{2}\\.\\d+\\.txt", fnp.toRegex());
+        assertTrue(Pattern.compile(fnp.toRegex()).matcher(fileName).matches());
+
+        Matcher matcher = Pattern.compile(fnp.toRegexForFixedDate(cal.getTime())).matcher(fileName);
+        assertTrue(matcher.matches());
+        assertEquals("7", matcher.group(1));
+    }
+
+    @Test
     public void convertMultipleDates() {
         Calendar cal = Calendar.getInstance();
         cal.set(2003, 4, 20, 17, 55);

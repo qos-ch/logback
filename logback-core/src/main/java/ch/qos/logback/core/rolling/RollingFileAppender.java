@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.PatternSyntaxException;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.FileAppender;
@@ -113,7 +114,14 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             // no use checking if either fileName or fileNamePattern are null
             if (fileNamePattern != null && fileName != null) {
                 String regex = fileNamePattern.toRegex();
-                return fileName.matches(regex);
+                try {
+                    return fileName.matches(regex);
+                } catch (PatternSyntaxException e) {
+                    // the check is a safeguard and should not prevent the appender from starting
+                    addWarn("Could not check for collisions between file property [" + fileName
+                            + "] and fileNamePattern [" + fileNamePattern + "] using regex [" + regex + "]", e);
+                    return false;
+                }
             }
         }
         return false;

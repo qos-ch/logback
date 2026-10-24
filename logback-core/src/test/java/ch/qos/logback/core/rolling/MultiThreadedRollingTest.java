@@ -13,17 +13,16 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static ch.qos.logback.core.testUtil.CoreTestConstants.FAILURE_EXIT_CODE;
-import static ch.qos.logback.core.testUtil.CoreTestConstants.SUCCESSFUL_EXIT_CODE;
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.testUtil.EnvUtilForTests;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -38,6 +37,7 @@ import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
+import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -50,15 +50,10 @@ public class MultiThreadedRollingTest {
     Encoder<Object> encoder;
     Context context = new ContextBase();
 
-    static String VERIFY_SH = "verify.sh";
-
     int diff = RandomUtil.getPositiveInt();
     String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "multi-" + diff + "/";
 
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
-
-    String pathToBash = EnvUtilForTests.getPathToBash();
-    OutputStream scriptOS;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -70,22 +65,11 @@ public class MultiThreadedRollingTest {
         }
         System.out.println("Output dir [" + outputDirStr + "]");
 
-        scriptOS = openScript();
-
         rfa.setName("rolling");
         rfa.setEncoder(encoder);
         rfa.setContext(context);
         rfa.setFile(outputDirStr + "output.log");
 
-    }
-
-    void close(OutputStream os) {
-        if (os != null) {
-            try {
-                os.close();
-            } catch (IOException e) {
-            }
-        }
     }
 
     @AfterEach
@@ -109,6 +93,8 @@ public class MultiThreadedRollingTest {
         SizeBasedTriggeringPolicy<Object> zbtp = new SizeBasedTriggeringPolicy<>();
         zbtp.setContext(context);
         zbtp.setMaxFileSize(FileSize.valueOf("100KB"));
+        // the default check increment of 60 seconds would prevent any rollover during the test
+        zbtp.setCheckIncrement(Duration.buildByMilliseconds(10));
 
         zbtp.start();
         rfa.setTriggeringPolicy(zbtp);
@@ -132,16 +118,11 @@ public class MultiThreadedRollingTest {
         return runnableArray;
     }
 
-    OutputStream openScript() throws IOException {
-        return new FileOutputStream(outputDirStr + VERIFY_SH);
-    }
-
     @Test
     public void multiThreadedTimedBased() throws InterruptedException, IOException {
         setUpTimeBasedTriggeringPolicy(rfa);
         executeHarness(TOTAL_DURATION, false);
-        printScriptForTimeBased();
-        verify();
+        verify(timeBasedFilesInOrder());
     }
 
     int testFileCount() {
@@ -158,21 +139,41 @@ public class MultiThreadedRollingTest {
         return files.length;
     }
 
-    void verify() throws IOException, InterruptedException {
-        close(scriptOS);
-        // no point in this test if we don't have bash
-        if (pathToBash == null) {
-            return;
-        }
-        ProcessBuilder pb = new ProcessBuilder();
-        pb.command(pathToBash, VERIFY_SH);
-        pb.directory(new File(outputDirStr));
-        Process process = pb.start();
-        process.waitFor();
-        int exitCode = process.exitValue();
+    // archives are named after their date, so sorting by name gives the order of writing
+    List<File> timeBasedFilesInOrder() {
+        File[] archives = new File(outputDirStr).listFiles((dir, name) -> name.startsWith("test-"));
+        Arrays.sort(archives, Comparator.comparing(File::getName));
+        List<File> result = new ArrayList<>(Arrays.asList(archives));
+        result.add(new File(outputDirStr + "output.log"));
+        return result;
+    }
 
-        Assertions.assertEquals(SUCCESSFUL_EXIT_CODE, exitCode);
-        System.out.println("External script based verification returned with exit code " + exitCode);
+    // the highest index is the oldest archive
+    List<File> sizeBasedFilesInOrder(int numFiles) {
+        List<File> result = new ArrayList<>();
+        for (int i = numFiles - 1; i >= 0; i--) {
+            result.add(new File(outputDirStr + "test-" + i + ".log"));
+        }
+        result.add(new File(outputDirStr + "output.log"));
+        return result;
+    }
+
+    // each line is "<threadId> <counter>"; the counters of each thread must appear
+    // in order, without gaps, up to the final value of the thread's counter
+    void verify(List<File> filesInOrder) throws IOException {
+        long[] lastCounter = new long[NUM_THREADS];
+        for (File file : filesInOrder) {
+            for (String line : Files.readAllLines(file.toPath())) {
+                int space = line.indexOf(' ');
+                int id = Integer.parseInt(line.substring(0, space));
+                long counter = Long.parseLong(line.substring(space + 1));
+                Assertions.assertEquals(lastCounter[id] + 1, counter, "thread " + id + " in " + file.getName());
+                lastCounter[id] = counter;
+            }
+        }
+        for (int i = 0; i < NUM_THREADS; i++) {
+            Assertions.assertEquals(runnableArray[i].getCounter(), lastCounter[i], "final counter of thread " + i);
+        }
     }
 
     @Test
@@ -182,66 +183,7 @@ public class MultiThreadedRollingTest {
         // long the MAX_WINDOW_SIZE is reached, resulting in data loss which
         // we cannot test for.
         executeHarness(TOTAL_DURATION, true);
-        int numFiles = testFileCount();
-        printScriptForSizeBased(numFiles);
-        verify();
-    }
-
-    private void printScriptHeader(String type) throws IOException {
-        out("# ====================================================");
-        out("# A script to check the exactness of the output ");
-        out("# produced by " + type + " test");
-        out("# ====================================================");
-        out("# ");
-    }
-
-    private void printCommonScriptCore() throws IOException {
-        out("");
-        out("for t in $(seq 0 1 " + (NUM_THREADS - 1) + ")");
-        out("do");
-        out("  echo \"Testing results of thread $t\"");
-        out("  grep \"$t \" aggregated | cut -d ' ' -f 2 > ${t}-sample");
-        out("  for j in $(seq 1 1 ${end[$t]}); do echo $j; done > ${t}-witness");
-        out("  diff -q -w ${t}-sample ${t}-witness;");
-        out("  res=$?");
-        out("  if [ $res != \"0\" ]; then");
-        out("    echo \"FAILED for $t\"");
-        out("    exit " + FAILURE_EXIT_CODE);
-        out("  fi");
-        out("done");
-        out("");
-        out("exit " + SUCCESSFUL_EXIT_CODE);
-    }
-
-    private void printScriptForTimeBased() throws IOException {
-        printScriptHeader("TimeBased");
-        for (int i = 0; i < NUM_THREADS; i++) {
-            out("end[" + i + "]=" + this.runnableArray[i].getCounter());
-        }
-        out("");
-        out("rm aggregated");
-        out("cat test* output.log >> aggregated");
-        printCommonScriptCore();
-
-    }
-
-    private void printScriptForSizeBased(int numfiles) throws IOException {
-        printScriptHeader("SizeBased");
-
-        for (int i = 0; i < NUM_THREADS; i++) {
-            out("end[" + i + "]=" + this.runnableArray[i].getCounter());
-        }
-        out("");
-        out("rm aggregated");
-        out("for i in $(seq " + (numfiles - 1) + " -1 0); do cat test-$i.log >> aggregated; done");
-        out("cat output.log >> aggregated");
-        out("");
-        printCommonScriptCore();
-    }
-
-    private void out(String msg) throws IOException {
-        scriptOS.write(msg.getBytes());
-        scriptOS.write("\n".getBytes());
+        verify(sizeBasedFilesInOrder(testFileCount()));
     }
 
     private void executeHarness(int duration, boolean withDelay) throws InterruptedException {
