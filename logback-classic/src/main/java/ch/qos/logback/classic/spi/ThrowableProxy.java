@@ -58,7 +58,7 @@ public class ThrowableProxy implements IThrowableProxy {
         this.className = circular.getClass().getName();
         this.message = circular.getMessage();
         this.stackTraceElementProxyArray = EMPTY_STEP;
-        this.cyclic = true;
+        this.cyclic = isCyclic;
     }
 
     public ThrowableProxy(Throwable throwable, Set<Throwable> alreadyProcessedSet) {
