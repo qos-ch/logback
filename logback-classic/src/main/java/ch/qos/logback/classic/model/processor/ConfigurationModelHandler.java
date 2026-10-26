@@ -138,32 +138,10 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
         if(model instanceof ConfigurationModel) {
             ConfigurationModel configurationModel = (ConfigurationModel) model;
             String scanStr = mic.subst(configurationModel.getScanStr());
-            return scanStringToBoolean(scanStr);
+            return OptionHelper.toLopsidedBooleanObject(scanStr, Boolean.TRUE);
         } else {
             return null;
         }
-
     }
 
-    /**
-     * Interprets a scan attribute after variable substitution.
-     *
-     * <p>Unset or blank values yield {@code null}. {@code "false"} (case-insensitive)
-     * yields {@link Boolean#FALSE}. Any other non-empty value, including unrecognized
-     * strings, yields {@link Boolean#TRUE}. This matches the pre-1.5.27 behavior where
-     * scanning was enabled unless the attribute was empty or explicitly {@code false}.</p>
-     *
-     * @param scanStr the scan attribute value, possibly already substituted; may be {@code null}
-     * @return {@code true}, {@code false}, or {@code null} if the attribute is unset
-     */
-    static Boolean scanStringToBoolean(String scanStr) {
-        if (OptionHelper.isNullOrEmptyOrAllSpaces(scanStr)) {
-            return null;
-        }
-        Boolean parsed = OptionHelper.toBooleanObject(scanStr);
-        if (parsed != null) {
-            return parsed;
-        }
-        return Boolean.TRUE;
-    }
 }
