@@ -36,6 +36,18 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
 
     static final boolean CREATE_CWL_IF_NOT_ALREADY_CREATED = true;
 
+    /**
+     * Key under which a {@link Boolean#TRUE} value is placed in the object map of the
+     * {@link ModelInterpretationContext} when a &lt;propertiesConfigurator&gt; element requests scanning
+     * while the top-level &lt;configuration&gt; element does not.
+     *
+     * <p>Read by {@link ConfigurationModelHandlerFull#postHandle(ModelInterpretationContext, Model)} which is the
+     * only place where a ReconfigureOnChangeTask is scheduled.</p>
+     *
+     * @since 1.6.7
+     */
+    public static final String LOCAL_SCAN_REQUESTED_KEY = "PROPERTIES_CONFIGURATOR_LOCAL_SCAN_REQUESTED";
+
     public PropertiesConfiguratorModelHandler(Context context) {
         super(context);
     }
@@ -81,13 +93,22 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
         String substitutedScanStr = capc.subst(propertyConfiguratorModel.getScanStr());
         Boolean localScan = OptionHelper.toLopsidedBooleanObject(substitutedScanStr, Boolean.TRUE);
 
-        if(localScan == Boolean.TRUE || topScanBoolean == Boolean.TRUE) {
-            if(topScanBoolean != Boolean.TRUE) {
-                // if topScanBoolean is not TRUE, then a ConfigurationWatchList has not been created and registered yet.
-                // We need to do so now
-                ConfigurationWatchListUtil.registerNewConfigurationWatchListWithContext(context);
+        // a local scan attribute, if set, overrides the scan attribute of the top-level <configuration> element
+        boolean watch = (localScan != null) ? localScan : (topScanBoolean == Boolean.TRUE);
+
+        if (watch) {
+            if (topScanBoolean != Boolean.TRUE) {
+                // if topScanBoolean is not TRUE, then a ConfigurationWatchList has not been created and registered
+                // for this configuration run. We need to do so now, but only once per run so that previous
+                // <propertiesConfigurator> elements are not dropped from the watch list.
+                if (!isLocalScanAlreadyRequested(capc)) {
+                    ConfigurationWatchListUtil.registerNewConfigurationWatchListWithContext(context);
+                    markLocalScanRequested(capc);
+                }
             }
             ConfigurationWatchListUtil.addToWatchList(context, inputURL, CREATE_CWL_IF_NOT_ALREADY_CREATED);
+        } else if (localScan == Boolean.FALSE && topScanBoolean == Boolean.TRUE) {
+            addInfo("Scan attribute set to false for [" + inputURL + "]. Will not add it to configuration watch list.");
         }
 
         InputStream in = openURL(inputURL);
@@ -107,6 +128,21 @@ public class PropertiesConfiguratorModelHandler extends ResourceHandlerBase {
             throw new ModelHandlerException(e);
         }
 
+    }
+
+    private boolean isLocalScanAlreadyRequested(ContextAwarePropertyContainer capc) {
+        if (capc instanceof ModelInterpretationContext) {
+            ModelInterpretationContext mic = (ModelInterpretationContext) capc;
+            return mic.getObjectMap().get(LOCAL_SCAN_REQUESTED_KEY) == Boolean.TRUE;
+        }
+        return false;
+    }
+
+    private void markLocalScanRequested(ContextAwarePropertyContainer capc) {
+        if (capc instanceof ModelInterpretationContext) {
+            ModelInterpretationContext mic = (ModelInterpretationContext) capc;
+            mic.getObjectMap().put(LOCAL_SCAN_REQUESTED_KEY, Boolean.TRUE);
+        }
     }
 
     protected InputStream getInputStream(ContextAwarePropertyContainer capc, ResourceModel resourceModel) {
