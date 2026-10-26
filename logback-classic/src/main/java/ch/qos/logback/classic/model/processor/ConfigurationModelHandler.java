@@ -134,7 +134,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
      *
      * @since 1.5.27
      */
-    private Boolean scanAttrToBoolean(ModelInterpretationContext mic, Model model) {
+    Boolean scanAttrToBoolean(ModelInterpretationContext mic, Model model) {
         if(model instanceof ConfigurationModel) {
             ConfigurationModel configurationModel = (ConfigurationModel) model;
             String scanStr = mic.subst(configurationModel.getScanStr());

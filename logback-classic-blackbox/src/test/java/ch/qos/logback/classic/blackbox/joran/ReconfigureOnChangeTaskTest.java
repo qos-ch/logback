@@ -517,6 +517,112 @@ public class ReconfigureOnChangeTaskTest extends ReconfigureTaskTestSupport {
         statusChecker.assertContainsMatch("value \"true\" substituted for \"\\$\\{logback.scan.enabled:-true\\}\"");
     }
 
+    // local scan="true" on <propertiesConfigurator> without a top-level scan attribute
+    @Test
+    @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
+    public void propertiesConfiguratorLocalScanTrueWithoutTopLevelScan() throws Exception {
+        String loggerName = "localScanTrue";
+        String propertiesFileStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "localScanTrue-" + diff + ".properties";
+        File propertiesFile = new File(propertiesFileStr);
+        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=INFO");
+        String configurationStr = "<configuration scanPeriod=\"10 millisecond\"><propertiesConfigurator scan=\"true\" file=\""
+                + propertiesFileStr + "\"/></configuration>";
+        configure(asBAIS(configurationStr));
+
+        statusChecker.assertContainsMatch("Scan attribute not set.");
+        statusChecker.assertContainsMatch("Scan requested by <propertiesConfigurator>");
+        statusChecker.assertContainsMatch("Registering a new ReconfigureOnChangeTask");
+        assertFalse(loggerContext.getCopyOfScheduledFutures().isEmpty());
+        assertThatListContainsFile(getConfigurationWatchList(loggerContext), propertiesFile);
+
+        Logger aLogger = loggerContext.getLogger(loggerName);
+        assertEquals(Level.INFO, aLogger.getLevel());
+
+        awaitChangeAndConfiguration(ConfigurationDoneType.PARTIAL, () ->
+            writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=WARN")
+        );
+        assertEquals(Level.WARN, aLogger.getLevel());
+    }
+
+    // local scan="true" on <propertiesConfigurator> overrides top-level scan="false"
+    @Test
+    @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
+    public void propertiesConfiguratorLocalScanTrueOverridesTopLevelScanFalse() throws Exception {
+        String loggerName = "localScanTrueTopFalse";
+        String propertiesFileStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "localScanTrueTopFalse-" + diff + ".properties";
+        File propertiesFile = new File(propertiesFileStr);
+        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=INFO");
+        String configurationStr = "<configuration scan=\"false\" scanPeriod=\"10 millisecond\"><propertiesConfigurator scan=\"true\" file=\""
+                + propertiesFileStr + "\"/></configuration>";
+        configure(asBAIS(configurationStr));
+
+        statusChecker.assertContainsMatch("Scan attribute set to false.");
+        statusChecker.assertContainsMatch("Scan requested by <propertiesConfigurator>");
+        assertFalse(loggerContext.getCopyOfScheduledFutures().isEmpty());
+
+        Logger aLogger = loggerContext.getLogger(loggerName);
+        assertEquals(Level.INFO, aLogger.getLevel());
+
+        awaitChangeAndConfiguration(ConfigurationDoneType.PARTIAL, () ->
+            writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=ERROR")
+        );
+        assertEquals(Level.ERROR, aLogger.getLevel());
+    }
+
+    // several <propertiesConfigurator> elements with local scan="true" must all be watched
+    @Test
+    public void multiplePropertiesConfiguratorsWithLocalScanTrueAreAllWatched() throws Exception {
+        File propertiesFile0 = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "localScan0-" + diff + ".properties");
+        File propertiesFile1 = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "localScan1-" + diff + ".properties");
+        writeToFile(propertiesFile0, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + "a0=INFO");
+        writeToFile(propertiesFile1, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + "a1=INFO");
+        String configurationStr = "<configuration>"
+                + "<propertiesConfigurator scan=\"true\" file=\"" + propertiesFile0.getPath() + "\"/>"
+                + "<propertiesConfigurator scan=\"true\" file=\"" + propertiesFile1.getPath() + "\"/>"
+                + "</configuration>";
+        configure(asBAIS(configurationStr));
+
+        List<File> fileList = getConfigurationWatchList(loggerContext);
+        assertThatListContainsFile(fileList, propertiesFile0);
+        assertThatListContainsFile(fileList, propertiesFile1);
+        assertEquals(1, loggerContext.getCopyOfScheduledFutures().size());
+    }
+
+    // local scan="false" on <propertiesConfigurator> overrides top-level scan="true"
+    @Test
+    @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
+    public void propertiesConfiguratorLocalScanFalseOverridesTopLevelScanTrue() throws Exception {
+        String loggerName = "localScanFalse";
+        File propertiesFile = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "localScanFalse-" + diff + ".properties");
+        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=INFO");
+        File topFile = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "localScanFalse-" + diff + ".xml");
+        writeToFile(topFile, "<configuration scan=\"true\" scanPeriod=\"10 millisecond\"><propertiesConfigurator scan=\"false\" file=\""
+                + propertiesFile.getPath() + "\"/></configuration>");
+        configure(topFile);
+
+        statusChecker.assertContainsMatch("Scan attribute set to true.");
+        statusChecker.assertContainsMatch("Scan attribute set to false for \\[.*localScanFalse-" + diff + ".properties\\]");
+        statusChecker.assertNoMatch("Will add \\[.*localScanFalse-" + diff + ".properties\\] to configuration watch list");
+
+        // the top-level file is still watched, the properties file is not
+        List<File> fileList = getConfigurationWatchList(loggerContext);
+        assertThatListContainsFile(fileList, topFile);
+        assertFalse(fileList.contains(propertiesFile.getAbsoluteFile()));
+        assertFalse(loggerContext.getCopyOfScheduledFutures().isEmpty());
+
+        Logger aLogger = loggerContext.getLogger(loggerName);
+        assertEquals(Level.INFO, aLogger.getLevel());
+
+        writeToFile(propertiesFile, PropertiesConfigurator.LOGBACK_LOGGER_PREFIX + loggerName + "=WARN");
+        // let the ReconfigureOnChangeTask run a few times
+        waitForReconfigureOnChangeTaskToRun();
+        waitForReconfigureOnChangeTaskToRun();
+        waitForReconfigureOnChangeTaskToRun();
+
+        assertEquals(Level.INFO, aLogger.getLevel());
+        statusChecker.assertNoMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
+    }
+
     // check for deadlocks
     @Test
     @Timeout(value = 4, unit = TimeUnit.SECONDS)

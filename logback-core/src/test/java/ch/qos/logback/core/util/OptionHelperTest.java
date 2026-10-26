@@ -410,6 +410,29 @@ public class OptionHelperTest {
 
         assertTrue(OptionHelper.containsUnicodeEscape("hello \\u0077orld"));
         assertTrue(OptionHelper.containsUnicodeEscape("hello \\\\U0001F600"));
+    }
 
+
+    @Test
+    public void scanStringToBooleanTreatsBlankAsUnset() {
+        assertNull(OptionHelper.toLopsidedBooleanObject(null, Boolean.TRUE));
+        assertNull(OptionHelper.toLopsidedBooleanObject("", Boolean.TRUE));
+        assertNull(OptionHelper.toLopsidedBooleanObject("   ", Boolean.TRUE));
+    }
+
+    @Test
+    public void scanStringToBooleanHonorsTrueAndFalse() {
+        assertEquals(Boolean.TRUE, OptionHelper.toLopsidedBooleanObject("true", Boolean.TRUE));
+        assertEquals(Boolean.TRUE, OptionHelper.toLopsidedBooleanObject("TRUE", Boolean.TRUE));
+        assertEquals(Boolean.FALSE, OptionHelper.toLopsidedBooleanObject("false", Boolean.TRUE));
+        assertEquals(Boolean.FALSE, OptionHelper.toLopsidedBooleanObject("FALSE", Boolean.TRUE));
+        assertEquals(Boolean.FALSE, OptionHelper.toLopsidedBooleanObject("  false  ", Boolean.TRUE));
+    }
+
+    @Test
+    public void scanStringToBooleanDefaultsUnrecognizedValuesToTrue() {
+        assertEquals(Boolean.TRUE, OptionHelper.toLopsidedBooleanObject("yes", Boolean.TRUE));
+        assertEquals(Boolean.TRUE, OptionHelper.toLopsidedBooleanObject("1", Boolean.TRUE));
+        assertEquals(Boolean.TRUE, OptionHelper.toLopsidedBooleanObject("${logback.scan.enabled:-true}", Boolean.TRUE));
     }
 }

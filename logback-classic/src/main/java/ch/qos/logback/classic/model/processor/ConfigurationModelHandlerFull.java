@@ -54,9 +54,12 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         ConfigurationModel configurationModel = (ConfigurationModel) model;
 
-        // scanning is disabled
+        // scanning is disabled at the top-level and no <propertiesConfigurator> element requested it locally
         if (scanning != Boolean.TRUE) {
-            return;
+            if (!isLocalScanRequested(mic)) {
+                return;
+            }
+            addInfo("Scan requested by <propertiesConfigurator>. Will scan for changes in watched .properties files.");
         }
 
         String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
@@ -75,6 +78,9 @@ public class ConfigurationModelHandlerFull extends ConfigurationModelHandler {
         }
     }
 
+    private boolean isLocalScanRequested(ModelInterpretationContext mic) {
+        return mic.getObjectMap().get(PropertiesConfiguratorModelHandler.LOCAL_SCAN_REQUESTED_KEY) == Boolean.TRUE;
+    }
 
     /**
      * This method is called from logback-tyler version 1.0.4 and earlier.
