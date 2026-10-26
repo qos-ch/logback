@@ -15,13 +15,18 @@ package ch.qos.logback.core.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.Properties;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.subst.NodeToStringTransformer;
+
+import static ch.qos.logback.core.CoreConstants.FALSE_STR;
+import static ch.qos.logback.core.CoreConstants.TRUE_STR;
 
 /**
  * @author Ceki Gulcu
@@ -261,34 +266,63 @@ public class OptionHelper {
 
 
     /**
-     * Converts a string representation of a boolean value to a {@link Boolean} object.
-     * If the input string is "true" (case-insensitive), returns {@code Boolean.TRUE}.
-     * If the input string is "false" (case-insensitive), returns {@code Boolean.FALSE}.
-     * Returns {@code null} if the input string is null, empty, or does not match "true" or "false".
-     *
-     * @param value the string representation of a boolean value, may be null or empty
-     * @return a {@link Boolean} object corresponding to the input string, or {@code null} if the input is invalid
+     * Delegates to {@link #toBooleanObject(String, Boolean)} with a default value of null.
      */
     public static Boolean toBooleanObject(String value) {
-        if (OptionHelper.isNullOrEmptyOrAllSpaces(value)) {
-            return null;
-        }
-
-        String trimmedVal = value.trim();
-
-        if ("true".equalsIgnoreCase(trimmedVal)) {
-            return true;
-        }
-
-        if ("false".equalsIgnoreCase(trimmedVal)) {
-            return false;
-        }
-        return null;
+        return toBooleanObject(value, null);
     }
 
     /**
      * <p>If <code>value</code> is "true", then <code>true</code> is returned. If
-     * <code>value</code> is "false", then <code>true</code> is returned. Otherwise,
+     * <code>value</code> is "false", then <code>false</code> is returned. Otherwise,
+     * <code>defaultVal</code> is returned.</p>
+     *
+     * <p>Comparisons are case-insensitive.</p>
+     *
+     * @param value a string representation of a boolean value
+     * @param defaultVal the default value to return if <code>value</code> is null, empty or not a valid boolean value
+     * @return a {@link Boolean} object corresponding to the input string, or {@code defaultVal} if the input is invalid
+     * @since 1.6.7
+     */
+    public static Boolean toBooleanObject(String value, Boolean defaultVal) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(value)) {
+            return defaultVal;
+        }
+
+        String trimmedVal = value.trim();
+
+        if (TRUE_STR.equalsIgnoreCase(trimmedVal)) {
+            return Boolean.TRUE;
+        }
+
+        if (FALSE_STR.equalsIgnoreCase(trimmedVal)) {
+            return Boolean.FALSE;
+        }
+        return defaultVal;
+    }
+
+    /**
+     * <p>If <code>value</code> is "true", then <code>true</code> is returned. If
+     * <code>value</code> is "false", then <code>false</code> is returned. If <code>value</code> is null or empty,
+     * then null is returned. Otherwise, <code>defaultVal</code> is returned.</p>
+     *
+     * <p>Comparisons are case-insensitive.</p>
+     *
+     * @param value a string representation of a boolean value
+     * @param defaultVal the default value to return if <code>value</code> is not null, not empty or not "true" or "false"
+     * @return a {@link Boolean} object as described above
+     * @since 1.6.7
+     */
+    static public Boolean toLopsidedBooleanObject(String value, Boolean defaultVal) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(value))
+            return null;
+
+        return OptionHelper.toBooleanObject(value, defaultVal);
+    }
+
+    /**
+     * <p>If <code>value</code> is "true", then <code>true</code> is returned. If
+     * <code>value</code> is "false", then <code>false</code> is returned. Otherwise,
      * <code>defaultVal</code> is returned.
      * </p>
      *
@@ -304,11 +338,11 @@ public class OptionHelper {
 
         String trimmedVal = value.trim();
 
-        if ("true".equalsIgnoreCase(trimmedVal)) {
+        if (TRUE_STR.equalsIgnoreCase(trimmedVal)) {
             return true;
         }
 
-        if ("false".equalsIgnoreCase(trimmedVal)) {
+        if (FALSE_STR.equalsIgnoreCase(trimmedVal)) {
             return false;
         }
 
