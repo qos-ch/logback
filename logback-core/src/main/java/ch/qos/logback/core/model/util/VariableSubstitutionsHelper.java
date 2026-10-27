@@ -21,7 +21,9 @@ import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Helper methods to deal with properties.
@@ -42,6 +44,7 @@ public class VariableSubstitutionsHelper extends ContextAwareBase implements Con
     static final String BLURRED_STR = "******";
 
     protected Map<String, String> propertiesMap;
+    protected Set<String> literalKeys = new HashSet<>();
 
     /**
      * Create a helper backed by an empty property map.
@@ -132,6 +135,31 @@ public class VariableSubstitutionsHelper extends ContextAwareBase implements Con
         // values with leading or trailing spaces are bad. We remove them now.
         value = value.trim();
         propertiesMap.put(key, value);
+        literalKeys.remove(key);
+    }
+
+    /**
+     * Add a property whose value is data rather than a variable expression.
+     *
+     * <p>When such a property is referenced, its value is copied as is instead
+     * of being subjected to variable substitution. Null keys or values are
+     * ignored.</p>
+     *
+     * @param key the property name; ignored if {@code null}
+     * @param value the property value; ignored if {@code null}
+     * @since 1.7.0
+     */
+    public void addLiteralSubstitutionProperty(String key, String value) {
+        if (key == null || value == null) {
+            return;
+        }
+        addSubstitutionProperty(key, value);
+        literalKeys.add(key);
+    }
+
+    @Override
+    public boolean isLiteralProperty(String key) {
+        return literalKeys.contains(key);
     }
 
     /**

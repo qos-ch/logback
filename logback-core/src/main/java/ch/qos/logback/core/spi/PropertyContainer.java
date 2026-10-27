@@ -25,6 +25,21 @@ public interface PropertyContainer {
 
     Map<String, String> getCopyOfPropertyMap();
 
+    /**
+     * Returns true if the value of the property named <code>key</code> is to be
+     * used verbatim, i.e. without being subjected to variable substitution
+     * itself. Properties holding data obtained at runtime, such as the
+     * discriminating value of a sifting appender, are literal. By default, no
+     * property is literal.
+     *
+     * @param key the property name
+     * @return true if the value of the property is literal
+     * @since 1.7.0
+     */
+    default boolean isLiteralProperty(String key) {
+        return false;
+    }
+
     default void addSubstitutionProperties(Properties props) {
         if (props == null) {
             return;
