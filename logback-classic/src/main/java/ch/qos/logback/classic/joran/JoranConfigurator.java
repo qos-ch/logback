@@ -91,15 +91,5 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         m.setConfigurationModelHandlerFactoryMethod(ConfigurationModelHandlerFull::makeInstance);
         m.link(defaultProcessor);
     }
-
-
-    // The final filters in the two filter chain are rather crucial.
-    // They ensure that only Models attached to the firstPhaseFilter will
-    // be handled in the first phase and all models not previously handled
-    // in the second phase will be handled in a catch-all fallback case.
-    private void sealModelFilters(DefaultProcessor defaultProcessor) {
-        defaultProcessor.getPhaseOneFilter().denyAll();
-        defaultProcessor.getPhaseTwoFilter().allowAll();
-    }
-
+    
 }
