@@ -95,7 +95,11 @@ public class ConfigurationWatchListUtil {
             if(createCWL && ConfigurationWatchList.isWatchableProtocol(url)) {
                 cwl = registerNewConfigurationWatchListWithContext(context);
             } else {
-                addInfo(context, "ConfigurationWatchList not initialized due to absence of scan directive. Will not add " + url);
+                // Only log if explicitly trying to create a watch list and it's a non-watchable protocol
+                // Otherwise, silently return when watching is not enabled (scan=false)
+                if(createCWL) {
+                    addInfo(context, "ConfigurationWatchList not initialized due to absence of scan directive. Will not add " + url);
+                }
                 return;
             }
         }
