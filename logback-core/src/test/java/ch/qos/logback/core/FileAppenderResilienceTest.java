@@ -101,8 +101,8 @@ public class FileAppenderResilienceTest implements RecoveryListener {
         double lossinessFactor = 0.35;
         double resilianceFactor = (1 - lossinessFactor);
 
-        Assertions.assertTrue(recoveryCounter > 0, "at least one recovery should have occured");
-        Assertions.assertTrue(failureCounter > 0, "at least one failure should have occured");
+        Assertions.assertTrue(recoveryCounter > 0, "at least one recovery should have occurred");
+        Assertions.assertTrue(failureCounter > 0, "at least one failure should have occurred");
 
         System.out.println("recoveryCounter=" + recoveryCounter);
         System.out.println("failureCounter=" + failureCounter);
