@@ -41,19 +41,19 @@ public class RegularEscapeUtil implements IEscapeUtil {
                 buf.append('\n');
                 break;
             default:
-                String commaSeperatedEscapeChars = formatEscapeCharsForListing(escapeChars);
+                String commaSeparatedEscapeChars = formatEscapeCharsForListing(escapeChars);
                 throw new IllegalArgumentException("Illegal char '" + next + " at column " + pointer
-                        + ". Only \\\\, \\_" + commaSeperatedEscapeChars
+                        + ". Only \\\\, \\_" + commaSeparatedEscapeChars
                         + ", \\t, \\n, \\r combinations are allowed as escape characters.");
             }
     }
 
     String formatEscapeCharsForListing(String escapeChars) {
-        StringBuilder commaSeperatedEscapeChars = new StringBuilder();
+        StringBuilder commaSeparatedEscapeChars = new StringBuilder();
         for (int i = 0; i < escapeChars.length(); i++) {
-            commaSeperatedEscapeChars.append(", \\").append(escapeChars.charAt(i));
+            commaSeparatedEscapeChars.append(", \\").append(escapeChars.charAt(i));
         }
-        return commaSeperatedEscapeChars.toString();
+        return commaSeparatedEscapeChars.toString();
     }
 
     // s might be path such as c:\\toto\\file.log
