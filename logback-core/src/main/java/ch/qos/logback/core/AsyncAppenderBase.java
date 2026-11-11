@@ -304,6 +304,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                 } catch (InterruptedException e1) {
                     // exit if interrupted
                     break;
+                } catch (Throwable t) {
+                    addError("Unknown exception ignored, keep worker running: " + t.getMessage());
                 }
             }
 
