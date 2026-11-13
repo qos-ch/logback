@@ -46,7 +46,9 @@
   <modules>
     <module>logback-core</module>
     <module>logback-core-blackbox</module>
+    <module>logback-core-kryo</module>
     <module>logback-classic</module>
+    <module>logback-classic-kryo</module>
       <module>logback-classic-misc</module>
     <module>logback-classic-blackbox</module>
     <module>logback-access</module>
@@ -87,6 +89,7 @@
     <consolePlugin.version>1.1.0</consolePlugin.version>
     <jackson.version>2.15.0</jackson.version>
     <xz.version>1.10</xz.version>
+    <kryo5.version>5.6.2</kryo5.version>
 
     <!--<jansi.version>1.18</jansi.version>-->
     <jansi.version>2.4.0</jansi.version>
@@ -208,6 +211,22 @@
         <type>test-jar</type>
       </dependency>
       <!-- end of dependencies duplicated from logback-bom/pom.xml -->
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core-kryo</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic-kryo</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.esotericsoftware.kryo</groupId>
+        <artifactId>kryo5</artifactId>
+        <version>${kryo5.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.tukaani</groupId>
