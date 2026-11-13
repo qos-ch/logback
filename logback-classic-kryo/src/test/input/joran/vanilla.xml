@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+    <import class="ch.qos.logback.classic.encoder.JsonEncoder"/>
+    <import class="ch.qos.logback.core.FileAppender"/>
+    <import class="ch.qos.logback.classic.kryo.KryoEncoder"/>
+    <import class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+    <statusListener class="OnConsoleStatusListener"/>
+
+    <appender name="FILE" class="FileAppender">
+        <file>${destdir}/vanilla.kryo</file>
+        <encoder class="KryoEncoder">
+            <serializerType>Vanilla</serializerType>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
