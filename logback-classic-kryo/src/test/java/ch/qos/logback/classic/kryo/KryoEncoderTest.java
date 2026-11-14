@@ -21,6 +21,8 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import com.esotericsoftware.kryo.kryo5.Serializer;
@@ -198,5 +200,44 @@ public class KryoEncoderTest {
                 KryoClassicConstants.STREAM_VERSION_5);
     }
 
+    static final String VANILLA_VERSION_WARNING = "Stream version 5 is not applicable to the Vanilla serializer type";
 
+    private KryoEncoder startVanillaEncoder(Integer explicitStreamVersion) {
+        KryoEncoder encoder = new KryoEncoder();
+        encoder.setContext(loggerContext);
+        encoder.setSerializerType(KryoEncoder.SerializerType.Vanilla);
+        if (explicitStreamVersion != null) {
+            encoder.setStreamVersion(explicitStreamVersion);
+        }
+        encoder.start();
+        assertTrue(encoder.isStarted());
+        return encoder;
+    }
+
+    @Test
+    public void vanillaWithExplicitStreamVersionIsSanitizedWithWarning() {
+        KryoEncoder encoder = startVanillaEncoder((int) KryoClassicConstants.STREAM_VERSION_5);
+
+        assertEquals(KryoClassicConstants.STREAM_VERSION_0, encoder.getStreamVersion());
+        assertEquals(KryoClassicConstants.STREAM_VERSION_0, encoder.headerBytes()[4]);
+        StatusChecker checker = new StatusChecker(loggerContext);
+        checker.assertContainsMatch(Status.WARN, VANILLA_VERSION_WARNING);
+    }
+
+    @Test
+    public void vanillaWithDefaultStreamVersionIsSanitizedWithoutWarning() {
+        KryoEncoder encoder = startVanillaEncoder(null);
+
+        assertEquals(KryoClassicConstants.STREAM_VERSION_0, encoder.getStreamVersion());
+        assertEquals(KryoClassicConstants.STREAM_VERSION_0, encoder.headerBytes()[4]);
+        new StatusChecker(loggerContext).assertIsWarningOrErrorFree();
+    }
+
+    @Test
+    public void vanillaWithExplicitStreamVersion0HasNoWarning() {
+        KryoEncoder encoder = startVanillaEncoder((int) KryoClassicConstants.STREAM_VERSION_0);
+
+        assertEquals(KryoClassicConstants.STREAM_VERSION_0, encoder.getStreamVersion());
+        new StatusChecker(loggerContext).assertIsWarningOrErrorFree();
+    }
 }
