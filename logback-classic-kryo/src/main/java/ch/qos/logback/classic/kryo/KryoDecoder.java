@@ -73,11 +73,15 @@ public class KryoDecoder {
                     + STREAM_HEADER_SIZE + " bytes)");
         }
         byte[] rec = input.readBytes(STREAM_HEADER_SIZE);
-        if (!StreamFrame.isStreamHeader(rec)) {
+        if (!StreamFrameV5.isStreamHeader(rec)) {
             throw new IOException("Invalid stream magic: expected STWD, got "
                     + formatBytes(Arrays.copyOf(rec, STREAM_MAGIC.length)));
         }
-        applyHeaderBytes(rec);
+        try {
+            applyHeaderBytes(rec);
+        } catch (IllegalArgumentException e) {
+            throw new IOException(e.getMessage(), e);
+        }
     }
 
     void applyHeaderBytes(byte[] rec) {
@@ -269,9 +273,7 @@ public class KryoDecoder {
         try {
             while (true) {
                 int before = count;
-                boolean more = streamVersion == STREAM_VERSION_5
-                        ? decodeOneV5(consumer, statsHolder)
-                        : decodeOneV4(consumer, statsHolder);
+                boolean more = decodeOneV5(consumer, statsHolder);
                 if (!more) {
                     break;
                 }
@@ -282,7 +284,8 @@ public class KryoDecoder {
                 }
             }
             return stats(count, decodeNanos, consumeNanos);
-        } catch (KryoException e) {
+        } catch (KryoException | IllegalArgumentException e) {
+            // IllegalArgumentException: a later header announces an unsupported stream version
             Log.error("KryoDecoder#decodeFramed: Failed to decode kryo stream count="+count, e);
             resyncCount++;
             return stats(count, decodeNanos, consumeNanos);
@@ -295,30 +298,6 @@ public class KryoDecoder {
         int count;
         long decodeNanos;
         long consumeNanos;
-    }
-
-    private boolean decodeOneV4(Consumer<LoggingEventKryoVO> consumer, FrameLoopStats stats) {
-        byte[] rec = readFrameHeader();
-        if (rec == null) {
-            return false;
-        }
-        if (StreamFrame.isStreamHeader(rec)) {
-            applyHeaderBytes(rec);
-            bytesConsumed += rec.length;
-            return true;
-        }
-        if (StreamFrame.isClose(rec)) {
-            rebuildKryo();
-            bytesConsumed += rec.length;
-            return true;
-        }
-        if (!StreamFrame.isEvent(rec)) {
-            Log.error("KryoDecoder: unknown frame type 0x"
-                    + Integer.toHexString(rec[0] & 0xFF));
-            return resyncToHeader(rec);
-        }
-        int len = StreamFrame.lengthOf(rec);
-        return finishEvent(consumer, stats, rec, len, rec, StreamFrame::crcMatches);
     }
 
     private boolean decodeOneV5(Consumer<LoggingEventKryoVO> consumer, FrameLoopStats stats) {
@@ -334,7 +313,7 @@ public class KryoDecoder {
                 endedMidEvent = true;
                 return false;
             }
-            if (StreamFrame.isStreamHeader(rec)) {
+            if (StreamFrameV5.isStreamHeader(rec)) {
                 applyHeaderBytes(rec);
                 bytesConsumed += rec.length;
                 return true;
@@ -381,7 +360,7 @@ public class KryoDecoder {
                     + " got=" + got + " expected=" + len);
             return resyncToHeader(got <= 0 ? prefix : concat(prefix, payload, got));
         }
-        if (StreamFrame.indexOfMagic(payload, 0, payload.length) >= 0) {
+        if (StreamFrameV5.indexOfMagic(payload, 0, payload.length) >= 0) {
             Log.error("KryoDecoder: STWD inside V5 EVENT payload at count=" + stats.count
                     + ", treating as torn write");
             return resyncToHeader(concat(prefix, payload, payload.length));
@@ -394,41 +373,6 @@ public class KryoDecoder {
             return true;
         }
         return acceptEvent(consumer, stats, payload, concat(prefix, payload, payload.length));
-    }
-
-    @FunctionalInterface
-    private interface CrcCheck {
-        boolean test(byte[] rec, byte[] payload);
-    }
-
-    private boolean finishEvent(Consumer<LoggingEventKryoVO> consumer, FrameLoopStats stats,
-                                byte[] rec, int len, byte[] seed, CrcCheck crc) {
-        if (len > KryoEncoder.MAX_BUFFER_SIZE) {
-            Log.error("KryoDecoder: EVENT length " + len + " exceeds max");
-            return resyncToHeader(seed);
-        }
-        byte[] payload = new byte[len];
-        int got = readRaw(payload, 0, len);
-        if (got < len) {
-            // the input ran out inside the payload
-            endedMidEvent = true;
-            Log.error("KryoDecoder: truncated EVENT payload count=" + stats.count
-                    + " got=" + got + " expected=" + len);
-            return resyncToHeader(got <= 0 ? seed : concat(seed, payload, got));
-        }
-        if (StreamFrame.indexOfMagic(payload, 0, payload.length) >= 0) {
-            Log.error("KryoDecoder: STWD inside EVENT payload at count=" + stats.count
-                    + ", treating as torn write");
-            return resyncToHeader(concat(seed, payload, payload.length));
-        }
-        if (!crc.test(rec, payload)) {
-            Log.error("KryoDecoder: EVENT CRC mismatch at count=" + stats.count);
-            if (!resyncToHeader(concat(seed, payload, payload.length))) {
-                rebuildKryo();
-            }
-            return true;
-        }
-        return acceptEvent(consumer, stats, payload, concat(seed, payload, payload.length));
     }
 
     private boolean acceptEvent(Consumer<LoggingEventKryoVO> consumer, FrameLoopStats stats,
@@ -474,18 +418,6 @@ public class KryoDecoder {
         return -1;
     }
 
-    private byte[] readFrameHeader() {
-        byte[] rec = new byte[STREAM_HEADER_SIZE];
-        int got = readRaw(rec, 0, STREAM_HEADER_SIZE);
-        if (got == STREAM_HEADER_SIZE) {
-            return rec;
-        }
-        if (got > 0) {
-            endedMidEvent = true;
-        }
-        return null;
-    }
-
     /**
      * Scan {@code seed} then the remaining input for the next {@code STWD} header.
      * Bytes after that header in {@code seed} are pushed back so the next frame
@@ -496,7 +428,7 @@ public class KryoDecoder {
     boolean resyncToHeader(byte[] seed) {
         resyncCount++;
         byte[] window = seed != null ? seed : new byte[0];
-        int idx = StreamFrame.indexOfMagic(window, 0, window.length);
+        int idx = StreamFrameV5.indexOfMagic(window, 0, window.length);
         try {
             while (idx < 0) {
                 int b = readRawByte();
@@ -508,7 +440,7 @@ public class KryoDecoder {
                 if (window.length > keep) {
                     window = Arrays.copyOfRange(window, window.length - keep, window.length);
                 }
-                idx = StreamFrame.indexOfMagic(window, 0, window.length);
+                idx = StreamFrameV5.indexOfMagic(window, 0, window.length);
             }
             int have = window.length - idx;
             byte[] header = new byte[STREAM_HEADER_SIZE];
@@ -522,7 +454,7 @@ public class KryoDecoder {
             } else if (have > STREAM_HEADER_SIZE) {
                 prependUnread(Arrays.copyOfRange(window, idx + STREAM_HEADER_SIZE, window.length));
             }
-            if (!StreamFrame.isStreamHeader(header)) {
+            if (!StreamFrameV5.isStreamHeader(header)) {
                 return false;
             }
             applyHeaderBytes(header);
@@ -594,7 +526,7 @@ public class KryoDecoder {
             return;
         }
         byte[] left = Arrays.copyOfRange(unread, unreadPos, unread.length);
-        unread = StreamFrame.concat(extra, left);
+        unread = concat(extra, left, left.length);
         unreadPos = 0;
     }
 

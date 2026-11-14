@@ -98,7 +98,7 @@ public class FieldByteAccumulator {
 
     /**
      * Adds {@code other}'s field totals into this instance. Used when Kryo is rebuilt
-     * on a V4 CLOSE/HEADER so accounting survives a codec-epoch reset.
+     * on a CLOSE/HEADER so accounting survives a codec-epoch reset.
      */
     public void merge(FieldByteAccumulator other) {
         if (other == null || other == this) {

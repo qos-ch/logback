@@ -55,28 +55,18 @@ public final class EncoderVersionTag {
 
 
     static EncoderVersionTag PATTERN_VANILLA = new EncoderVersionTag(null, (byte) 0);
-    static EncoderVersionTag PATTERN_V3 = new EncoderVersionTag(null, (byte) 0);
-    static EncoderVersionTag PATTERN_V4 = new EncoderVersionTag(null, (byte) 0);
     static EncoderVersionTag PATTERN_V5 = new EncoderVersionTag(null, (byte) 0);
 
     static EncoderVersionTag VANILLA = new EncoderVersionTag(KryoEncoder.SerializerType.Vanilla, KryoClassicConstants.STREAM_VERSION_0);
-    static EncoderVersionTag CUSTOM_V3 = new EncoderVersionTag(KryoEncoder.SerializerType.Custom, KryoClassicConstants.STREAM_VERSION_3);
-    static EncoderVersionTag CUSTOM_V4 = new EncoderVersionTag(KryoEncoder.SerializerType.Custom, KryoClassicConstants.STREAM_VERSION_4);
     static EncoderVersionTag CUSTOM_V5 = new EncoderVersionTag(KryoEncoder.SerializerType.Custom, KryoClassicConstants.STREAM_VERSION_5);
 
 
-    static final String CUSTOM_KRYO_SUFFIX_V1 = "-custom-v1.kryo";
-    static final String CUSTOM_KRYO_SUFFIX_V2 = "-custom-v2.kryo";
-    static final String CUSTOM_KRYO_SUFFIX_V3 = "-custom-v3.kryo";
-    static final String CUSTOM_KRYO_SUFFIX_V4 = "-custom-v4.kryo";
     static final String CUSTOM_KRYO_SUFFIX_V5 = "-custom-v5.kryo";
     static final String VANILLA_KRYO_SUFFIX = "-vanilla.kryo";
 
 
     static final String DIRECT_LOG_SUFFIX = ".log";
     static final String LOG_SUFFIX_VANILLA = ".log-vanilla";
-    static final String LOG_SUFFIX_V3 = ".log-v3";
-    static final String LOG_SUFFIX_V4 = ".log-v4";
     static final String LOG_SUFFIX_V5 = ".log-v5";
 
     public String toSuffix() {
@@ -84,10 +74,6 @@ public final class EncoderVersionTag {
         if (serializerType == null) {
             if (this == PATTERN_VANILLA)
                 return LOG_SUFFIX_VANILLA;
-            if (this == PATTERN_V3)
-                return LOG_SUFFIX_V3;
-            if (this == PATTERN_V4)
-                return LOG_SUFFIX_V4;
             if (this == PATTERN_V5)
                 return LOG_SUFFIX_V5;
         }
@@ -98,10 +84,6 @@ public final class EncoderVersionTag {
         }
 
         if (serializerType == KryoEncoder.SerializerType.Custom) {
-            if (streamVersion == KryoClassicConstants.STREAM_VERSION_3)
-                return CUSTOM_KRYO_SUFFIX_V3;
-            if (streamVersion == KryoClassicConstants.STREAM_VERSION_4)
-                return CUSTOM_KRYO_SUFFIX_V4;
             if (streamVersion == KryoClassicConstants.STREAM_VERSION_5)
                 return CUSTOM_KRYO_SUFFIX_V5;
         }

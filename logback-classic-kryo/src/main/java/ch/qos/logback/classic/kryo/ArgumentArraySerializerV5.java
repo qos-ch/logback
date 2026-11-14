@@ -19,13 +19,13 @@ import com.esotericsoftware.kryo.kryo5.io.Input;
 import com.esotericsoftware.kryo.kryo5.io.Output;
 
 /**
- * V3 serializer for message argument arrays ({@code Object[]}).
+ * V5 serializer for message argument arrays ({@code Object[]}).
  *
  * <p>Does not use Kryo's default polymorphic array encoding. Each element is reduced by
  * {@link SafeObjectTransformer} and written via {@link SafeObjectCodec} (1-byte type tag +
- * compact payload). String arguments share a stream-scoped string serializer
- * ({@link SingleItemCompressingStringSerializer} on V3,
- * {@link MultiEventCompressedStringSerializer} on V4).
+ * compact payload). String arguments share a stream-scoped string serializer:
+ * {@link LoggingEventKryoVOSerializerV5} passes its {@link MultiEventCompressedStringSerializer},
+ * the {@code int} constructor uses a {@link SingleItemCompressingStringSerializer}.
  *
  * <p>Wire format:
  * <pre>
@@ -39,25 +39,25 @@ import com.esotericsoftware.kryo.kryo5.io.Output;
  * @see SafeObjectCodec
  * @see LoggingEventKryoVO#safeObjectArray(Object[])
  */
-public class ArgumentArraySerializerV3 extends Serializer<Object[]> {
+public class ArgumentArraySerializerV5 extends Serializer<Object[]> {
 
     private final Serializer<String> stringSerializer;
 
-    public ArgumentArraySerializerV3() {
+    public ArgumentArraySerializerV5() {
         this(1024);
     }
 
     /**
      * @param stringCapacity capacity of the string cache for string arguments
      */
-    public ArgumentArraySerializerV3(int stringCapacity) {
+    public ArgumentArraySerializerV5(int stringCapacity) {
         this(new SingleItemCompressingStringSerializer(stringCapacity));
     }
 
     /**
      * @param stringSerializer shared cache for string arguments (must not be null)
      */
-    public ArgumentArraySerializerV3(Serializer<String> stringSerializer) {
+    public ArgumentArraySerializerV5(Serializer<String> stringSerializer) {
         if (stringSerializer == null) {
             throw new IllegalArgumentException("stringSerializer cannot be null");
         }

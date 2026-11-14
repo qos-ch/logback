@@ -98,7 +98,7 @@ public class StreamFrameV5Test {
         assertThat(StreamFrameV5.typeOf(close[0] & 0xFF)).isEqualTo(StreamFrameV5.TYPE_CLOSE);
         assertThat(close[0] & 0xFF).isBetween(0x10, 0x17);
         assertThat(close[0]).isNotEqualTo((byte) 'S');
-        assertThat(StreamFrame.isStreamHeader(close)).isFalse();
+        assertThat(StreamFrameV5.isStreamHeader(close)).isFalse();
         assertThat(StreamFrameV5.crcMatches(close[0] & 0xFF, new byte[] {close[1]}, new byte[0], 0, 0))
                 .isTrue();
     }
@@ -119,5 +119,27 @@ public class StreamFrameV5Test {
     public void wrapEventRejectsNull() {
         assertThatThrownBy(() -> StreamFrameV5.wrapEvent(null))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void streamHeaderDetection() {
+        byte[] header = { 'S', 'T', 'W', 'D', 5, 1 };
+        assertThat(StreamFrameV5.isStreamHeader(header)).isTrue();
+        assertThat(StreamFrameV5.isStreamHeader(new byte[] { 'S', 'T', 'W', 'D', 5 })).isFalse();
+        assertThat(StreamFrameV5.isStreamHeader(null)).isFalse();
+    }
+
+    @Test
+    public void indexOfMagic() {
+        byte[] buf = { 0, 1, 'S', 'T', 'W', 'D', 5, 1 };
+        assertThat(StreamFrameV5.indexOfMagic(buf, 0, buf.length)).isEqualTo(2);
+        assertThat(StreamFrameV5.indexOfMagic(buf, 3, buf.length)).isEqualTo(-1);
+    }
+
+    @Test
+    public void countOccurrences() {
+        byte[] buf = { 'S', 'T', 'W', 'D', 0, 'S', 'T', 'W', 'D' };
+        assertThat(StreamFrameV5.countOccurrences(buf, KryoClassicConstants.STREAM_MAGIC)).isEqualTo(2);
+        assertThat(StreamFrameV5.countOccurrences(new byte[0], KryoClassicConstants.STREAM_MAGIC)).isEqualTo(0);
     }
 }

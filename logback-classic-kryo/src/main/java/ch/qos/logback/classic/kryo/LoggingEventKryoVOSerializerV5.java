@@ -21,6 +21,7 @@ import com.esotericsoftware.kryo.kryo5.Kryo;
 import com.esotericsoftware.kryo.kryo5.Serializer;
 import com.esotericsoftware.kryo.kryo5.io.Input;
 import com.esotericsoftware.kryo.kryo5.io.Output;
+import com.esotericsoftware.kryo.kryo5.serializers.CollectionSerializer;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 
@@ -31,25 +32,25 @@ import java.util.Map;
 /**
  * Stream version 5 event serializer.
  *
- * <p>Same nested codecs as {@link LoggingEventKryoVOSerializerV4}, except MDC values
- * use {@link MDCPropertyMapSerializerV5} so they share {@link #longUniqueStrings()} with
- * message, string arguments, and KVP string values (MDC keys stay on
- * {@link BasicStringSerializer}). After {@code threadName}, a 1-byte presence bitmap
- * replaces the six {@code writeObjectOrNull} flags used by V3/V4 for message, arguments,
- * markers, key-value pairs, MDC, and throwable, and adds a seventh bit for
- * {@code callerData} (usually absent). Message may be null (fluent {@code .log()}
- * with no message). Present fields are written with {@code writeObject} (no per-field
- * null byte). Timestamp and nanoseconds are one {@link LongDeltaSerializer} field:
- * {@code (epochSecond << 30) | nanos} (E3). Caller data follows throwable when present.
+ * <p>Logger name, level and thread name are followed by a 1-byte presence bitmap for
+ * message, arguments, markers, key-value pairs, MDC, throwable and {@code callerData}
+ * (usually absent). Message may be null (fluent {@code .log()} with no message).
+ * Present fields are written with {@code writeObject} (no per-field null byte).
+ * Timestamp and nanoseconds are one {@link LongDeltaSerializer} field:
+ * {@code (epochSecond << 30) | nanos}. Caller data follows throwable when present.
+ *
+ * <p>Long unique strings (message, string arguments, KVP string values and MDC values)
+ * share one {@link MultiEventCompressedStringSerializer} so there is a single deflate
+ * stream. Short repeating strings (thread name, MDC keys, KVP keys) use
+ * {@link BasicStringSerializer} and the id cache.
  *
  * <p>Logger names and stack-frame class names (caller data and throwable frames) use
- * {@link BasicStringSerializer} instead of {@link ClassNameSerializer}. Each of the three
- * has its own instance.
+ * {@link BasicStringSerializer}. Each of the three has its own instance.
  *
  * <p>Selected when the stream header version is
  * {@link KryoClassicConstants#STREAM_VERSION_5}.
  */
-public class LoggingEventKryoVOSerializerV5 extends LoggingEventKryoVOSerializerV4 {
+public class LoggingEventKryoVOSerializerV5 extends Serializer<LoggingEventKryoVO> implements FieldByteAccumulatorAware {
 
     static final int PRESENT_MESSAGE = 1 << 0;
     static final int PRESENT_ARGUMENTS = 1 << 1;
@@ -63,36 +64,30 @@ public class LoggingEventKryoVOSerializerV5 extends LoggingEventKryoVOSerializer
     static final int NANO_BITS = 30;
     static final int NANO_MASK = 0x3FFFFFFF;
 
-    @Override
-    protected MDCPropertyMapSerializer newMdcPropertyMapSerializer() {
-        return new MDCPropertyMapSerializerV5(1024, longUniqueStrings());
-    }
+    protected final FieldByteAccumulator fieldByteAccumulator = new FieldByteAccumulator();
 
     /**
-     * Logger names are cached whole; no package-prefix table.
+     * Shared by message, string arguments, KVP string values and MDC values.
      */
-    @Override
-    protected SerializerBase<String> newClassNameSerializer() {
-        return new BasicStringSerializer(BiMapType.DIRECT_MAP, 2048);
-    }
+    protected final MultiEventCompressedStringSerializer longUniqueStrings = new MultiEventCompressedStringSerializer(1024);
 
-    /**
-     * Caller-data frames. Class names have their own {@link BasicStringSerializer},
-     * separate from logger names and throwable frames.
-     */
-    @Override
-    protected Serializer<StackTraceElement> newStackTraceElementSerializer() {
-        return new StackTraceElementSerializer(1024, new BasicStringSerializer(BiMapType.DIRECT_MAP, 1024));
-    }
-
-    /**
-     * Same as V4, except frame class names use their own {@link BasicStringSerializer}.
-     */
-    @Override
-    protected Serializer<ThrowableProxyVO> newThrowableProxyVOSerializer() {
-        return new ThrowableProxyVOSerializerV4(1024,
-                new StackTraceElementProxySerializerV3(1024, new BasicStringSerializer(BiMapType.DIRECT_MAP, 1024)));
-    }
+    protected final LoggerContextVOSerializer loggerContextVOSerializer = new LoggerContextVOSerializer(1024);
+    /** Logger names are cached whole; no package-prefix table. */
+    protected final SerializerBase<String> classNameSerializer = new BasicStringSerializer(BiMapType.DIRECT_MAP, 2048);
+    protected final Serializer<String> threadNameSerializer = new BasicStringSerializer(1024);
+    protected final SerializerBase<String> messageSerializer = longUniqueStrings;
+    protected final MDCPropertyMapSerializer mdcPropertyMapSerializer = new MDCPropertyMapSerializerV5(1024, longUniqueStrings);
+    /** Frame class names use their own {@link BasicStringSerializer}. */
+    protected final Serializer<ThrowableProxyVO> throwableProxyVOSerializer = new ThrowableProxyVOSerializerV5(1024,
+            new StackTraceElementProxySerializerV5(1024, new BasicStringSerializer(BiMapType.DIRECT_MAP, 1024)));
+    protected final LongDeltaSerializer timestampDeltaSerializer = new LongDeltaSerializer();
+    protected final LongDeltaSerializer sequenceNumberDeltaSerializer = new LongDeltaSerializer();
+    protected final ArgumentArraySerializerV5 argumentArraySerializerV5 = new ArgumentArraySerializerV5(longUniqueStrings);
+    protected final CollectionSerializer<ArrayList<KeyValuePair>> kvpCollectionSerializer = new KeyValuePairCollectionSerializerV5(
+            new KeyValuePairSerializerV5(new BasicStringSerializer(1024), longUniqueStrings));
+    /** Caller-data frames. Class names have their own {@link BasicStringSerializer}. */
+    protected final Serializer<StackTraceElement> stackTraceElementSerializer =
+            new StackTraceElementSerializer(1024, new BasicStringSerializer(BiMapType.DIRECT_MAP, 1024));
 
     @Override
     public void write(Kryo kryo, Output output, LoggingEventKryoVO event) {
@@ -138,7 +133,7 @@ public class LoggingEventKryoVOSerializerV5 extends LoggingEventKryoVOSerializer
             kryo.writeObject(output, message, messageSerializer);
         }
         if ((presence & PRESENT_ARGUMENTS) != 0) {
-            kryo.writeObject(output, argumentArray, argumentArraySerializerV3);
+            kryo.writeObject(output, argumentArray, argumentArraySerializerV5);
         }
         if ((presence & PRESENT_MARKERS) != 0) {
             kryo.writeObject(output, markerList, kryo.getSerializer(ArrayList.class));
@@ -181,7 +176,7 @@ public class LoggingEventKryoVOSerializerV5 extends LoggingEventKryoVOSerializer
                 : null;
         Object[] argArray = ((presence & PRESENT_ARGUMENTS) != 0)
                 ? fieldByteAccumulator.read(input, "argumentArray",
-                () -> kryo.readObject(input, Object[].class, argumentArraySerializerV3))
+                () -> kryo.readObject(input, Object[].class, argumentArraySerializerV5))
                 : null;
         List<Marker> markerList = ((presence & PRESENT_MARKERS) != 0)
                 ? fieldByteAccumulator.read(input, "markers",
@@ -263,5 +258,10 @@ public class LoggingEventKryoVOSerializerV5 extends LoggingEventKryoVOSerializer
 
     static int unpackNanoseconds(long packed) {
         return (int) (packed & NANO_MASK);
+    }
+
+    @Override
+    public FieldByteAccumulator getFieldByteAccumulator() {
+        return fieldByteAccumulator;
     }
 }

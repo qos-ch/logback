@@ -88,8 +88,6 @@ public class LoggingEventKryoVOSerializerTest {
     static Stream<Arguments> customKryoFactories() {
         return Stream.of(
                 Arguments.of("Vanilla", (Supplier<Kryo>) KryoBuilder::buildLoggerEventKryoVO_Vanilla),
-                Arguments.of("V3", (Supplier<Kryo>) KryoBuilder::buildLoggerEventKryoVO_CustomV3),
-                Arguments.of("V4", (Supplier<Kryo>) KryoBuilder::buildLoggerEventKryoVO_CustomV4),
                 Arguments.of("V5", (Supplier<Kryo>) KryoBuilder::buildLoggerEventKryoVO_CustomV5)
         );
     }
@@ -267,13 +265,13 @@ public class LoggingEventKryoVOSerializerTest {
     }
 
     /**
-     * JDK stack frames typically have a null module name. V4 must not reject those
+     * JDK stack frames typically have a null module name. V5 must not reject those
      * or encode() aborts after stateful codecs (e.g. MultiEventStringSerializer)
      * have already advanced, desynchronizing the rest of the stream.
      */
     @Test
-    public void v4RoundTrip_throwableWithNullModuleNames() throws IOException {
-        Kryo kryo = KryoBuilder.buildLoggerEventKryoVO_CustomV4();
+    public void v5RoundTrip_throwableWithNullModuleNames() throws IOException {
+        Kryo kryo = KryoBuilder.buildLoggerEventKryoVO_CustomV5();
         serializeSingleEventAndCompare(kryo, new FullEventSupplier(loggerContextVO, markerFactory));
     }
 
@@ -286,36 +284,6 @@ public class LoggingEventKryoVOSerializerTest {
     public void nullMessageWithKeyValuePairs(String versionLabel, Supplier<Kryo> kryoFactory) throws IOException {
         serializeSingleEventAndCompare(kryoFactory.get(),
                 new NullMessageWithKvpSupplier(loggerContextVO));
-    }
-
-    /**
-     * V5 packs optional-field presence into one byte and E3-packs timestamp/nanos.
-     * V5 payloads are therefore strictly smaller than V4 for the same event.
-     *
-     * <p>Events with a throwable are compared over a stream: V5 writes frame class names
-     * with {@link BasicStringSerializer}, so the first sighting of a stack trace can be
-     * larger than V4's package-prefix encoding. Cached frames make V5 smaller again.
-     */
-    @Test
-    public void v5PayloadIsSmallerThanV4() {
-        LoggingEventKryoVO sparse = new BasicEventSupplier(loggerContextVO).get();
-        LoggingEventKryoVO nullMessage = new NullMessageEventSupplier(loggerContextVO).get();
-        assertTrue(encode(KryoBuilder.buildLoggerEventKryoVO_CustomV4(), sparse).length
-                > encode(KryoBuilder.buildLoggerEventKryoVO_CustomV5(), sparse).length);
-        assertTrue(encode(KryoBuilder.buildLoggerEventKryoVO_CustomV4(), nullMessage).length
-                > encode(KryoBuilder.buildLoggerEventKryoVO_CustomV5(), nullMessage).length);
-
-        Kryo kryoV4 = KryoBuilder.buildLoggerEventKryoVO_CustomV4();
-        Kryo kryoV5 = KryoBuilder.buildLoggerEventKryoVO_CustomV5();
-        FullEventSupplier fullEventSupplier = new FullEventSupplier(loggerContextVO, markerFactory);
-        int v4Total = 0;
-        int v5Total = 0;
-        for (int i = 0; i < LOOP_COUNT; i++) {
-            LoggingEventKryoVO full = fullEventSupplier.get();
-            v4Total += encode(kryoV4, full).length;
-            v5Total += encode(kryoV5, full).length;
-        }
-        assertTrue(v4Total > v5Total, "V4=" + v4Total + " V5=" + v5Total);
     }
 
     @ParameterizedTest(name = "Custom {0}")

@@ -23,27 +23,27 @@ import com.esotericsoftware.kryo.kryo5.io.Input;
 import com.esotericsoftware.kryo.kryo5.io.Output;
 import com.esotericsoftware.kryo.kryo5.minlog.Log;
 
-public class ThrowableProxyVOSerializerV4 extends Serializer<ThrowableProxyVO> {
+public class ThrowableProxyVOSerializerV5 extends Serializer<ThrowableProxyVO> {
     private final BasicStringSerializer classNameSerializer;
     private final BasicStringSerializer messageSerializer;
-    private final Serializer<StackTraceElementProxy> stackTraceElementProxySerializerV4;
+    private final Serializer<StackTraceElementProxy> stackTraceElementProxySerializerV5;
 
-    public ThrowableProxyVOSerializerV4(int capacity) {
-        this(capacity, new StackTraceElementProxySerializerV3(capacity));
+    public ThrowableProxyVOSerializerV5(int capacity) {
+        this(capacity, new StackTraceElementProxySerializerV5(capacity));
     }
 
     /**
      * @param stackTraceElementProxySerializer frame codec; V5 passes one whose class names
      *                                         use {@link BasicStringSerializer}
      */
-    public ThrowableProxyVOSerializerV4(int capacity, Serializer<StackTraceElementProxy> stackTraceElementProxySerializer) {
+    public ThrowableProxyVOSerializerV5(int capacity, Serializer<StackTraceElementProxy> stackTraceElementProxySerializer) {
         setAcceptsNull(false);
         this.classNameSerializer = new BasicStringSerializer(SerializerBase.BiMapType.DIRECT_MAP, capacity);
         // acceptsNull stays false: Kryo writeObjectOrNull/readObjectOrNull emit NULL/NOT_NULL
         // flags. StringSerializer must not receive null (it rejects them).
         this.messageSerializer = new BasicStringSerializer(SerializerBase.BiMapType.DIRECT_MAP, capacity);
         // Stack frames dominate size and repeat heavily across exceptions
-        this.stackTraceElementProxySerializerV4 = stackTraceElementProxySerializer;
+        this.stackTraceElementProxySerializerV5 = stackTraceElementProxySerializer;
 
     }
 
@@ -126,7 +126,7 @@ public class ThrowableProxyVOSerializerV4 extends Serializer<ThrowableProxyVO> {
         }
         output.writeVarInt(steps.length, true);
         for (StackTraceElementProxy step : steps) {
-            kryo.writeObject(output, step, stackTraceElementProxySerializerV4);
+            kryo.writeObject(output, step, stackTraceElementProxySerializerV5);
         }
     }
 
@@ -137,7 +137,7 @@ public class ThrowableProxyVOSerializerV4 extends Serializer<ThrowableProxyVO> {
         }
         StackTraceElementProxy[] steps = new StackTraceElementProxy[length];
         for (int i = 0; i < length; i++) {
-            steps[i] = kryo.readObject(input, StackTraceElementProxy.class, stackTraceElementProxySerializerV4);
+            steps[i] = kryo.readObject(input, StackTraceElementProxy.class, stackTraceElementProxySerializerV5);
         }
         return steps;
     }

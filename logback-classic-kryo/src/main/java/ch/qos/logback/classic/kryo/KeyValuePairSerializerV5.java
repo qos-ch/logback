@@ -20,22 +20,22 @@ import com.esotericsoftware.kryo.kryo5.io.Output;
 import org.slf4j.event.KeyValuePair;
 
 /**
- * V4 serializer for a single {@link KeyValuePair}.
+ * V5 serializer for a single {@link KeyValuePair}.
  *
  * <p>Keys use {@link BasicStringSerializer} (short repeating names, id cache).
  * String values use the caller-supplied codec, typically the same
  * {@link MultiEventCompressedStringSerializer} as the event message so there is one deflate stream.
  */
-public class KeyValuePairSerializerV4 extends Serializer<KeyValuePair> {
+public class KeyValuePairSerializerV5 extends Serializer<KeyValuePair> {
 
     private final Serializer<String> keySerializer;
     private final Serializer<String> valueStringSerializer;
 
-    public KeyValuePairSerializerV4(int stringCapacity) {
+    public KeyValuePairSerializerV5(int stringCapacity) {
         this(new BasicStringSerializer(stringCapacity), new MultiEventCompressedStringSerializer(stringCapacity));
     }
 
-    public KeyValuePairSerializerV4(Serializer<String> keySerializer,
+    public KeyValuePairSerializerV5(Serializer<String> keySerializer,
                                     Serializer<String> valueStringSerializer) {
         if (keySerializer == null || valueStringSerializer == null) {
             throw new IllegalArgumentException("key and value string serializers cannot be null");

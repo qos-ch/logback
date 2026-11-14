@@ -41,12 +41,9 @@ import java.util.stream.Stream;
 import static ch.qos.logback.core.kryo.KryoCoreConstants.KRYO_UNSAFE_PROPERTY_KEY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class KryoEncoderTest {
 
-
-    static String EXISTING_V4_FILENAME = "2026-09-26-custom-v4.kryo";
 
     ///KryoEncoder.SerializerType serializerType = KryoEncoder.SerializerType.Vanilla;
     //byte streamVersion = KryoClassicConstants.STREAM_VERSION;
@@ -58,8 +55,6 @@ public class KryoEncoderTest {
     static Stream<Arguments> kryoFactories() {
         return Stream.of(
                 Arguments.of("Vanilla",  KryoEncoder.SerializerType.Vanilla, KryoClassicConstants.STREAM_VERSION_0),
-                Arguments.of("V3", KryoEncoder.SerializerType.Custom, KryoClassicConstants.STREAM_VERSION_3),
-                Arguments.of("V4", KryoEncoder.SerializerType.Custom, KryoClassicConstants.STREAM_VERSION_4),
                 Arguments.of("V5", KryoEncoder.SerializerType.Custom, KryoClassicConstants.STREAM_VERSION_5)
         );
     }
@@ -165,46 +160,6 @@ public class KryoEncoderTest {
     }
 
     @Test
-    public void v4FramesEventsAndResetsEpoch() throws IOException {
-        Logger logger = loggerContext.getLogger(KryoEncoderTest.class);
-        String filename = KryoClassicTestConstants.TEST_OUTPUT_DIR_PREFIX + diff + "/V4-framed.kryo";
-        java.nio.file.Files.createDirectories(java.nio.file.Path.of(filename).getParent());
-
-        FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
-        fileAppender.setContext(loggerContext);
-        fileAppender.setName("FILE");
-        fileAppender.setFile(filename);
-
-        KryoEncoder encoder = new KryoEncoder();
-        encoder.setSerializerType(KryoEncoder.SerializerType.Custom);
-        encoder.setStreamVersion(KryoClassicConstants.STREAM_VERSION_4);
-        encoder.setMaxEventsBeforeReset(4);
-        encoder.setContext(loggerContext);
-        encoder.start();
-
-        fileAppender.setEncoder(encoder);
-        fileAppender.start();
-
-        List<LoggingEventKryoVO> witnessList = new ArrayList<>();
-        final int n = 9;
-        for (int i = 0; i < n; i++) {
-            LoggingEvent loggingEvent = new LoggingEvent("x", logger, Level.INFO,
-                    "TEST MESSAGE {}", null, new Object[]{i});
-            fileAppender.doAppend(loggingEvent);
-            witnessList.add(new LoggingEventKryoVO(loggingEvent));
-        }
-        fileAppender.stop();
-
-        byte[] fileBytes = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(filename));
-        // 4 + 4 + 1 events → two mid-stream CLOSE+HEADER plus footer CLOSE
-        assertEquals(3, StreamFrame.countOccurrences(fileBytes, StreamFrame.CLOSE_CODE));
-        assertEquals(3, StreamFrame.countOccurrences(fileBytes, KryoClassicConstants.STREAM_MAGIC));
-
-        verify(filename, witnessList, KryoEncoder.SerializerType.Custom,
-                KryoClassicConstants.STREAM_VERSION_4);
-    }
-
-    @Test
     public void v5FramesEventsAndResetsEpoch() throws IOException {
         Logger logger = loggerContext.getLogger(KryoEncoderTest.class);
         String filename = KryoClassicTestConstants.TEST_OUTPUT_DIR_PREFIX + diff + "/V5-framed.kryo";
@@ -236,22 +191,12 @@ public class KryoEncoderTest {
         fileAppender.stop();
 
         byte[] fileBytes = java.nio.file.Files.readAllBytes(java.nio.file.Path.of(filename));
-        assertEquals(3, StreamFrame.countOccurrences(fileBytes, StreamFrameV5.closeCode()));
-        assertEquals(3, StreamFrame.countOccurrences(fileBytes, KryoClassicConstants.STREAM_MAGIC));
+        assertEquals(3, StreamFrameV5.countOccurrences(fileBytes, StreamFrameV5.closeCode()));
+        assertEquals(3, StreamFrameV5.countOccurrences(fileBytes, KryoClassicConstants.STREAM_MAGIC));
 
         verify(filename, witnessList, KryoEncoder.SerializerType.Custom,
                 KryoClassicConstants.STREAM_VERSION_5);
     }
 
-    @Test
-    public void decoderReadsExistingV4Fixture() throws IOException {
-        File v4 = new File(KryoClassicTestConstants.TRANSLATOR_INPUT_PREFIX + EXISTING_V4_FILENAME);
-        // the fixture is a real application log, kept out of the repository
-        assumeTrue(v4.isFile(), v4.getAbsolutePath());
-        KryoDecoder decoder = new KryoDecoder(v4);
-        assertEquals(KryoClassicConstants.STREAM_VERSION_4, decoder.getStreamVersion());
-        List<LoggingEventKryoVO> events = decoder.decodeAsList();
-        assertTrue(events.size() > 0);
-    }
 
 }

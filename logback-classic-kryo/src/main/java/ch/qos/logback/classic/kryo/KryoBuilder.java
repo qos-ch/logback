@@ -49,10 +49,6 @@ public class KryoBuilder {
 
     static Kryo buildCustomForVersion(byte streamVersion) {
         switch (streamVersion) {
-            case KryoClassicConstants.STREAM_VERSION_3:
-                return buildLoggerEventKryoVO_CustomV3();
-            case KryoClassicConstants.STREAM_VERSION_4:
-                return buildLoggerEventKryoVO_CustomV4();
             case KryoClassicConstants.STREAM_VERSION_5:
                 return buildLoggerEventKryoVO_CustomV5();
             default:
@@ -98,20 +94,6 @@ public class KryoBuilder {
 
 
     /**
-     * Custom codec for stream version 3 ({@link LoggingEventKryoVOSerializerV3}).
-     */
-    static public Kryo buildLoggerEventKryoVO_CustomV3() {
-        return buildCustomKryo(new LoggingEventKryoVOSerializerV3());
-    }
-
-    /**
-     * Custom codec for stream version 4 ({@link LoggingEventKryoVOSerializerV4}).
-     */
-    static public Kryo buildLoggerEventKryoVO_CustomV4() {
-        return buildCustomKryo(new LoggingEventKryoVOSerializerV4());
-    }
-
-    /**
      * Custom codec for stream version 5 ({@link LoggingEventKryoVOSerializerV5}).
      */
     static public Kryo buildLoggerEventKryoVO_CustomV5() {
@@ -122,9 +104,7 @@ public class KryoBuilder {
     static Kryo buildCustomKryo(Serializer<LoggingEventKryoVO> eventSerializer) {
         Kryo kryo = new Kryo();
 
-        if (eventSerializer instanceof LoggingEventKryoVOSerializerV4) {
-            kryo.setReferences(false);
-        }
+        kryo.setReferences(false);
 
         kryo.register(LoggingEventKryoVO.class, eventSerializer);
         kryo.register(Object[].class);

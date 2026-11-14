@@ -15,6 +15,9 @@ package ch.qos.logback.classic.kryo;
 
 import ch.qos.logback.core.kryo.Crc3;
 
+import static ch.qos.logback.classic.kryo.KryoClassicConstants.STREAM_HEADER_SIZE;
+import static ch.qos.logback.classic.kryo.KryoClassicConstants.STREAM_MAGIC;
+
 /**
  * V5 record framing. EVENT/CLOSE prefixes are 1 type/crc byte plus an unsigned Kryo
  * varint length (typically 2 bytes total). Epoch {@code STWD} headers stay 6 bytes.
@@ -25,9 +28,10 @@ import ch.qos.logback.core.kryo.Crc3;
  *   then:   payload[length]
  * </pre>
  *
- * CRC-3 covers type (5 bits), the length varint bytes, and the same payload window as
- * {@link StreamFrame}: all bytes if {@code length <= 8}, otherwise first and last
- * {@link StreamFrame#CRC_WINDOW} bytes.
+ * CRC-3 covers type (5 bits), the length varint bytes, and a small payload window:
+ * all bytes if {@code length <= 8}, otherwise first and last {@link #CRC_WINDOW} bytes.
+ * The middle is not covered; the check is for torn writes (process exit / power fail)
+ * where a later session is appended after a truncated EVENT.
  */
 public final class StreamFrameV5 {
 
@@ -42,7 +46,49 @@ public final class StreamFrameV5 {
     /** 1 type/crc byte + at most 3 varint bytes (covers {@link KryoEncoder#MAX_BUFFER_SIZE}). */
     public static final int MAX_PREFIX = 4;
 
+    /** Bytes hashed at each end of a payload longer than {@code 2 * CRC_WINDOW}. */
+    public static final int CRC_WINDOW = 4;
+
     private StreamFrameV5() {
+    }
+
+    public static boolean isStreamHeader(byte[] rec) {
+        return rec != null
+                && rec.length >= STREAM_HEADER_SIZE
+                && rec[0] == STREAM_MAGIC[0]
+                && rec[1] == STREAM_MAGIC[1]
+                && rec[2] == STREAM_MAGIC[2]
+                && rec[3] == STREAM_MAGIC[3];
+    }
+
+    public static int indexOfMagic(byte[] buf, int from, int to) {
+        int last = to - STREAM_MAGIC.length;
+        for (int i = from; i <= last; i++) {
+            if (buf[i] == STREAM_MAGIC[0]
+                    && buf[i + 1] == STREAM_MAGIC[1]
+                    && buf[i + 2] == STREAM_MAGIC[2]
+                    && buf[i + 3] == STREAM_MAGIC[3]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static int countOccurrences(byte[] haystack, byte[] needle) {
+        if (needle.length == 0 || haystack.length < needle.length) {
+            return 0;
+        }
+        int count = 0;
+        outer:
+        for (int i = 0; i <= haystack.length - needle.length; i++) {
+            for (int j = 0; j < needle.length; j++) {
+                if (haystack[i + j] != needle[j]) {
+                    continue outer;
+                }
+            }
+            count++;
+        }
+        return count;
     }
 
     public static int pack(int type, int crc3) {
@@ -149,7 +195,7 @@ public final class StreamFrameV5 {
         if (len <= 0) {
             return crc.getValue();
         }
-        int window = StreamFrame.CRC_WINDOW;
+        int window = CRC_WINDOW;
         if (len <= window * 2) {
             crc.update(payload, off, len);
         } else {
