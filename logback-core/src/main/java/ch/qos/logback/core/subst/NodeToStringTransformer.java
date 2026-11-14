@@ -99,8 +99,13 @@ public class NodeToStringTransformer {
 
         // empty values are considered valid
         if (value != null) {
-            Node innerNode = tokenizeAndParseString(value);
-            compileNode(innerNode, stringBuilder, cycleCheckStack);
+            if (isLiteralKey(key)) {
+                // the value is data, not an expression to be substituted
+                stringBuilder.append(value);
+            } else {
+                Node innerNode = tokenizeAndParseString(value);
+                compileNode(innerNode, stringBuilder, cycleCheckStack);
+            }
             cycleCheckStack.pop();
             return;
         }
@@ -141,6 +146,21 @@ public class NodeToStringTransformer {
         }
 
         return null;
+    }
+
+    /**
+     * Returns true if the value found by {@link #lookupKey(String)} for the given
+     * key is to be used verbatim. Only property containers can hold literal
+     * properties; system properties and environment variables never do.
+     */
+    private boolean isLiteralKey(String key) {
+        if (propertyContainer0.getProperty(key) != null) {
+            return propertyContainer0.isLiteralProperty(key);
+        }
+        if (propertyContainer1 != null && propertyContainer1.getProperty(key) != null) {
+            return propertyContainer1.isLiteralProperty(key);
+        }
+        return false;
     }
 
     private void handleLiteral(Node n, StringBuilder stringBuilder) {

@@ -79,7 +79,9 @@ public class AppenderFactoryUsingSiftModel<E> implements AppenderFactory<E> {
         ModelInterpretationContext mic = sp.getModelInterpretationContext();
         sp.setContext(context);
         Model duplicate = Model.duplicate(siftModel);
-        mic.addSubstitutionProperty(discriminatingKey, discriminatingValue);
+        // the discriminating value is data obtained at runtime, it must not be
+        // interpreted as a variable expression
+        mic.addLiteralSubstitutionProperty(discriminatingKey, discriminatingValue);
         sp.process(duplicate);
         @SuppressWarnings("unchecked")
         Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) mic.getObjectMap()
