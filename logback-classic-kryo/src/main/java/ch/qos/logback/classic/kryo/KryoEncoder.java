@@ -36,12 +36,23 @@ public class KryoEncoder extends EncoderBase<ILoggingEvent> {
 
     SerializerType serializerType = SerializerType.Custom;
     byte streamVersion = STREAM_VERSION_5;
+    /** True once {@link #setStreamVersion(int)} was called, e.g. from configuration. */
+    boolean streamVersionExplicitlySet = false;
 
     int eventsInEpoch;
     int maxEventsBeforeReset = DEFAULT_MAX_EVENTS_BEFORE_RESET;
 
     @Override
     public void start() {
+        // Vanilla streams are unframed and always carry version 0
+        if (serializerType == SerializerType.Vanilla && streamVersion != STREAM_VERSION_0) {
+            // the default stream version applies to Custom; warn only about an explicit setting
+            if (streamVersionExplicitlySet) {
+                addWarn("Stream version " + streamVersion + " is not applicable to the Vanilla serializer type. Using stream version "
+                        + STREAM_VERSION_0 + " instead.");
+            }
+            this.streamVersion = STREAM_VERSION_0;
+        }
         this.kryo = makeFreshKryo();
         if(kryo == null) {
             addError("Kryo serializer is null");
@@ -90,6 +101,7 @@ public class KryoEncoder extends EncoderBase<ILoggingEvent> {
      */
     public void setStreamVersion(int streamVersion) {
         this.streamVersion = (byte) streamVersion;
+        this.streamVersionExplicitlySet = true;
     }
 
     public byte getStreamVersion() {
