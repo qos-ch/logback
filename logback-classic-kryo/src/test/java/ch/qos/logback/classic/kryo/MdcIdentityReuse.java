@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Decode a V4 Kryo stream and report how often the same MDC map instance
+ * Decode a V5 Kryo stream and report how often the same MDC map instance
  * (identity, as returned by the identity-cached serializer) is reused.
  *
  * A cache hit on write is decoded as the same Java object, so identity reuse

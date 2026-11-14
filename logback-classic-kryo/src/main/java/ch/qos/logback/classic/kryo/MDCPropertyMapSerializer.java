@@ -32,7 +32,7 @@ import java.util.Map;
  * </ol>
  *
  * <p>The default constructor caches whole maps with {@link BiMapType#DIRECT_MAP}
- * ({@code equals}/{@code hashCode}). {@link MDCPropertyMapSerializerV4} uses
+ * ({@code equals}/{@code hashCode}). {@link MDCPropertyMapSerializerV5} uses
  * {@link BiMapType#IDENTITY}. Decode returns {@link Map#copyOf}. An older stream
  * may still contain a null value; that entry is read and dropped.
  *

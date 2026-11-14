@@ -29,11 +29,11 @@ import static ch.qos.logback.core.kryo.KryoCoreConstants.KRYO_UNSAFE_PROPERTY_KE
 
 /**
  * Decode a Kryo stream and report redundancy in {@code argumentArray} <em>values</em>
- * (not array identity) to inform V5 encoding.
+ * (not array identity) to inform the encoding.
  *
- * <p>Current V4/V5 payload for a present array is {@code varInt(length)} then per
+ * <p>The V5 payload for a present array is {@code varInt(length)} then per
  * element {@code SafeObjectCodec} (1-byte type tag + nested string/number encoding).
- * V5 only folds the null flag into the presence bitmap; the payload is unchanged.
+ * Absence is recorded in the presence bitmap.
  */
 public class ArgumentArrayValueAnalysis {
 

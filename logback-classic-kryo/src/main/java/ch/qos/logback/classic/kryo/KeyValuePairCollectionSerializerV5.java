@@ -18,15 +18,15 @@ import org.slf4j.event.KeyValuePair;
 
 import java.util.ArrayList;
 
-public class KeyValuePairCollectionSerializerV4 extends CollectionSerializer<ArrayList<KeyValuePair>> {
+public class KeyValuePairCollectionSerializerV5 extends CollectionSerializer<ArrayList<KeyValuePair>> {
 
-    private final KeyValuePairSerializerV4 keyValuePairSerializer;
+    private final KeyValuePairSerializerV5 keyValuePairSerializer;
 
-    public KeyValuePairCollectionSerializerV4(int stringCapacity) {
-        this(new KeyValuePairSerializerV4(stringCapacity));
+    public KeyValuePairCollectionSerializerV5(int stringCapacity) {
+        this(new KeyValuePairSerializerV5(stringCapacity));
     }
 
-    public KeyValuePairCollectionSerializerV4(KeyValuePairSerializerV4 keyValuePairSerializer) {
+    public KeyValuePairCollectionSerializerV5(KeyValuePairSerializerV5 keyValuePairSerializer) {
         super();
         if (keyValuePairSerializer == null) {
             throw new IllegalArgumentException("KeyValuePairSerializer cannot be null");
@@ -36,7 +36,7 @@ public class KeyValuePairCollectionSerializerV4 extends CollectionSerializer<Arr
         setElementsCanBeNull(true);
     }
 
-    public KeyValuePairSerializerV4 getElementSerializerV4() {
+    public KeyValuePairSerializerV5 getElementSerializerV5() {
         return keyValuePairSerializer;
     }
 }

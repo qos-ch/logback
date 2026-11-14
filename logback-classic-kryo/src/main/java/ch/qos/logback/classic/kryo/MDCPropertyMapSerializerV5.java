@@ -16,8 +16,7 @@ package ch.qos.logback.classic.kryo;
 import com.esotericsoftware.kryo.kryo5.Serializer;
 
 /**
- * V5 MDC map: whole-map cache is {@link BiMapType#IDENTITY} like
- * {@link MDCPropertyMapSerializerV4}. Keys stay on {@link BasicStringSerializer}.
+ * V5 MDC map: whole-map cache is {@link BiMapType#IDENTITY}. Keys stay on {@link BasicStringSerializer}.
  * Values use the caller-supplied codec, the same
  * {@link MultiEventCompressedStringSerializer} as message, string arguments, and
  * KVP string values.

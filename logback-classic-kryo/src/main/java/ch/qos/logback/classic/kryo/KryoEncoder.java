@@ -35,10 +35,10 @@ public class KryoEncoder extends EncoderBase<ILoggingEvent> {
     Output output = new Output(buffer);
 
     SerializerType serializerType = SerializerType.Custom;
-    byte streamVersion = STREAM_VERSION_3;
+    byte streamVersion = STREAM_VERSION_5;
 
     int eventsInEpoch;
-    int maxEventsBeforeReset = MAX_EVENTS_BEFORE_RESET;
+    int maxEventsBeforeReset = DEFAULT_MAX_EVENTS_BEFORE_RESET;
 
     @Override
     public void start() {
@@ -58,6 +58,10 @@ public class KryoEncoder extends EncoderBase<ILoggingEvent> {
 
     boolean isFramed() {
         return KryoClassicConstants.isFramed(streamVersion);
+    }
+
+    public int getMaxEventsBeforeReset() {
+        return maxEventsBeforeReset;
     }
 
     public void setMaxEventsBeforeReset(int maxEventsBeforeReset) {
@@ -80,9 +84,9 @@ public class KryoEncoder extends EncoderBase<ILoggingEvent> {
     }
 
     /**
-     * Stream format version written into the header (1, 2, or 3).
-     * For Custom, version selects {@link LoggingEventKryoVOSerializerV1} …
-     * {@link LoggingEventKryoVOSerializerV5}. V5 uses compact frames.
+     * Stream format version written into the header: {@link KryoClassicConstants#STREAM_VERSION_0}
+     * for Vanilla, {@link KryoClassicConstants#STREAM_VERSION_5} for Custom
+     * ({@link LoggingEventKryoVOSerializerV5}, framed with {@link StreamFrameV5}).
      */
     public void setStreamVersion(int streamVersion) {
         this.streamVersion = (byte) streamVersion;
@@ -116,27 +120,19 @@ public class KryoEncoder extends EncoderBase<ILoggingEvent> {
             return copyOf(buffer, 0, output.position());
         }
 
-        int reserved = framePrefixReserve();
+        int reserved = StreamFrameV5.MAX_PREFIX;
         output.setPosition(reserved);
         kryo.writeObject(output, loggerEventKryoVO);
         output.flush();
         int payloadLen = output.position() - reserved;
-        int prefixLen;
-        int start;
-        if (streamVersion == STREAM_VERSION_5) {
-            prefixLen = StreamFrameV5.writeEventPrefix(buffer, reserved, payloadLen);
-            start = reserved - prefixLen;
-        } else {
-            StreamFrame.writeEventPrefix(buffer, 0, payloadLen);
-            prefixLen = StreamFrame.FRAME_HEADER_SIZE;
-            start = 0;
-        }
+        int prefixLen = StreamFrameV5.writeEventPrefix(buffer, reserved, payloadLen);
+        int start = reserved - prefixLen;
         int framedLen = prefixLen + payloadLen;
         eventsInEpoch++;
         if (eventsInEpoch < maxEventsBeforeReset) {
             return copyOf(buffer, start, framedLen);
         }
-        byte[] close = closeCode();
+        byte[] close = StreamFrameV5.closeCode();
         byte[] header = headerBytes();
         byte[] out = new byte[framedLen + close.length + header.length];
         System.arraycopy(buffer, start, out, 0, framedLen);
@@ -144,18 +140,6 @@ public class KryoEncoder extends EncoderBase<ILoggingEvent> {
         System.arraycopy(header, 0, out, framedLen + close.length, header.length);
         resetEpoch();
         return out;
-    }
-
-    private int framePrefixReserve() {
-        return streamVersion == STREAM_VERSION_5
-                ? StreamFrameV5.MAX_PREFIX
-                : StreamFrame.FRAME_HEADER_SIZE;
-    }
-
-    private byte[] closeCode() {
-        return streamVersion == STREAM_VERSION_5
-                ? StreamFrameV5.closeCode()
-                : StreamFrame.closeCode();
     }
 
     private static byte[] copyOf(byte[] src, int off, int len) {
@@ -168,7 +152,7 @@ public class KryoEncoder extends EncoderBase<ILoggingEvent> {
     synchronized public byte[] footerBytes() {
         if (isFramed() && eventsInEpoch > 0) {
             resetEpoch();
-            return closeCode();
+            return StreamFrameV5.closeCode();
         }
         resetEpoch();
         return new byte[0];

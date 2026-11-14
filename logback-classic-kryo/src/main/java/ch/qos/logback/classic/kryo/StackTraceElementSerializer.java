@@ -42,7 +42,7 @@ public class StackTraceElementSerializer extends SerializerBase<StackTraceElemen
     }
 
     /**
-     * Class names use {@link ClassNameSerializer} (V3, V4 and Vanilla streams).
+     * Class names use {@link ClassNameSerializer} (Vanilla streams).
      */
     public StackTraceElementSerializer(int capacity) {
         this(capacity, new ClassNameSerializer(capacity));

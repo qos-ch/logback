@@ -21,14 +21,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ArgumentArraySerializerV3Test {
+public class ArgumentArraySerializerV5Test {
 
     private Kryo kryo;
-    private ArgumentArraySerializerV3 serializer;
+    private ArgumentArraySerializerV5 serializer;
 
     @BeforeEach
     public void setUp() {
-        serializer = new ArgumentArraySerializerV3(256);
+        serializer = new ArgumentArraySerializerV5(256);
         kryo = new Kryo();
         kryo.register(Object[].class, serializer);
     }
@@ -73,7 +73,7 @@ public class ArgumentArraySerializerV3Test {
     @Test
     public void longStringArgsRoundTripWithMultiEventStringSerializer() {
         MultiEventCompressedStringSerializer strings = new MultiEventCompressedStringSerializer(256);
-        ArgumentArraySerializerV3 ser = new ArgumentArraySerializerV3(strings);
+        ArgumentArraySerializerV5 ser = new ArgumentArraySerializerV5(strings);
         String longArg = "y".repeat(300);
         Object[] original = new Object[] { "short", longArg, longArg };
         Kryo k = new Kryo();
@@ -89,8 +89,8 @@ public class ArgumentArraySerializerV3Test {
         Object[] thrice = new Object[] { "x", "x", "x" };
         Object[] once = new Object[] { "x" };
 
-        int thriceLen = write(new ArgumentArraySerializerV3(256), thrice).length;
-        int onceLen = write(new ArgumentArraySerializerV3(256), once).length;
+        int thriceLen = write(new ArgumentArraySerializerV5(256), thrice).length;
+        int onceLen = write(new ArgumentArraySerializerV5(256), once).length;
 
         assertThat(thriceLen).isLessThan(onceLen * 3);
     }
@@ -100,7 +100,7 @@ public class ArgumentArraySerializerV3Test {
         return kryo.readObject(new Input(bytes), Object[].class, serializer);
     }
 
-    private static byte[] write(ArgumentArraySerializerV3 ser, Object[] array) {
+    private static byte[] write(ArgumentArraySerializerV5 ser, Object[] array) {
         Kryo k = new Kryo();
         Output out = new Output(512, -1);
         k.writeObject(out, array, ser);

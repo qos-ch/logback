@@ -51,8 +51,7 @@ public class GoldenStreamTest {
     }
 
     static Stream<EncoderVersionTag> tags() {
-        return Stream.of(EncoderVersionTag.VANILLA, EncoderVersionTag.CUSTOM_V3,
-                EncoderVersionTag.CUSTOM_V4, EncoderVersionTag.CUSTOM_V5);
+        return Stream.of(EncoderVersionTag.VANILLA, EncoderVersionTag.CUSTOM_V5);
     }
 
     static byte[] encode(EncoderVersionTag tag) throws IOException {

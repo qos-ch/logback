@@ -32,7 +32,7 @@ import com.esotericsoftware.kryo.kryo5.minlog.Log;
  *   <li>Caches method and file names with {@link SingleItemCompressingStringSerializer}</li>
  * </ul>
  */
-public class StackTraceElementProxySerializerV3 extends SerializerBase<StackTraceElementProxy> {
+public class StackTraceElementProxySerializerV5 extends SerializerBase<StackTraceElementProxy> {
 
     private static final int DEFAULT_CAPACITY = 4096;
 
@@ -40,21 +40,21 @@ public class StackTraceElementProxySerializerV3 extends SerializerBase<StackTrac
     private final SingleItemCompressingStringSerializer methodNameSerializer;
     private final SingleItemCompressingStringSerializer fileNameSerializer;
 
-    public StackTraceElementProxySerializerV3() {
+    public StackTraceElementProxySerializerV5() {
         this(DEFAULT_CAPACITY);
     }
 
     /**
-     * Class names use {@link ClassNameSerializer} (V3 and V4 streams).
+     * Class names use {@link ClassNameSerializer}.
      */
-    public StackTraceElementProxySerializerV3(int capacity) {
+    public StackTraceElementProxySerializerV5(int capacity) {
         this(capacity, new ClassNameSerializer(capacity));
     }
 
     /**
      * @param classNameSerializer class-name codec; V5 passes a {@link BasicStringSerializer}
      */
-    public StackTraceElementProxySerializerV3(int capacity, SerializerBase<String> classNameSerializer) {
+    public StackTraceElementProxySerializerV5(int capacity, SerializerBase<String> classNameSerializer) {
         super(BiMapType.DIRECT_MAP, capacity);
         setAcceptsNull(false);
         this.classNameSerializer = classNameSerializer;

@@ -71,10 +71,6 @@ public class VersionConversionTest {
         return Stream.of(
                 Arguments.of("Vanilla-to-log", DATE_0, EncoderVersionTag.VANILLA,  EncoderVersionTag.PATTERN_VANILLA),
 
-                Arguments.of("V3-to-log", DATE_0, EncoderVersionTag.CUSTOM_V3,  EncoderVersionTag.PATTERN_V3),
-                //Arguments.of("V3-to-V4", DATE_0, EncoderVersionTag.CUSTOM_V3,  EncoderVersionTag.CUSTOM_V4),
-                Arguments.of("V4-to-log", DATE_0, EncoderVersionTag.CUSTOM_V4,  EncoderVersionTag.PATTERN_V4),
-                //Arguments.of("V4-to-V5", DATE_0, EncoderVersionTag.CUSTOM_V4,  EncoderVersionTag.CUSTOM_V5),
                 Arguments.of("V5-to-log", DATE_0, EncoderVersionTag.CUSTOM_V5,  EncoderVersionTag.PATTERN_V5)
 
         );
