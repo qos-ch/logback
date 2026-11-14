@@ -194,7 +194,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         if (withLoggerName) {
             appendValueSeparator(sb, withThreadName, withLevel, withNanoseconds, withSequenceNumber, withTimestamp);
-            appenderMember(sb, LOGGER_ATTR_NAME, event.getLoggerName());
+            appenderMember(sb, LOGGER_ATTR_NAME, jsonEscape(event.getLoggerName()));
         }
 
         if (withContext) {
@@ -278,7 +278,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         }
 
         sb.append(OPEN_OBJ);
-        appenderMember(sb, NAME_ATTR_NAME, nullSafeStr(loggerContextVO.getName()));
+        appenderMember(sb, NAME_ATTR_NAME, jsonEscape(loggerContextVO.getName()));
         sb.append(VALUE_SEPARATOR);
         appenderMemberWithLongValue(sb, BIRTHDATE_ATTR_NAME, loggerContextVO.getBirthTime());
         sb.append(VALUE_SEPARATOR);
@@ -331,7 +331,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         sb.append(OPEN_OBJ);
 
-        appenderMember(sb, CLASS_NAME_ATTR_NAME, nullSafeStr(itp.getClassName()));
+        appenderMember(sb, CLASS_NAME_ATTR_NAME, jsonEscape(itp.getClassName()));
 
         sb.append(VALUE_SEPARATOR);
         appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(itp.getMessage()));
@@ -397,13 +397,13 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
             sb.append(OPEN_OBJ);
             StackTraceElement ste = step.getStackTraceElement();
 
-            appenderMember(sb, CLASS_NAME_ATTR_NAME, nullSafeStr(ste.getClassName()));
+            appenderMember(sb, CLASS_NAME_ATTR_NAME, jsonEscape(ste.getClassName()));
             sb.append(VALUE_SEPARATOR);
 
-            appenderMember(sb, METHOD_NAME_ATTR_NAME, nullSafeStr(ste.getMethodName()));
+            appenderMember(sb, METHOD_NAME_ATTR_NAME, jsonEscape(ste.getMethodName()));
             sb.append(VALUE_SEPARATOR);
 
-            appenderMember(sb, FILE_NAME_ATTR_NAME, nullSafeStr(ste.getFileName()));
+            appenderMember(sb, FILE_NAME_ATTR_NAME, jsonEscape(ste.getFileName()));
             sb.append(VALUE_SEPARATOR);
 
             appenderMemberWithIntValue(sb, LINE_NUMBER_ATTR_NAME, ste.getLineNumber());
@@ -500,12 +500,6 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         if (o == null)
             return NULL_STR;
         return jsonEscapeString(o.toString());
-    }
-
-    private String nullSafeStr(String s) {
-        if (s == null)
-            return NULL_STR;
-        return s;
     }
 
     private String jsonEscape(String s) {

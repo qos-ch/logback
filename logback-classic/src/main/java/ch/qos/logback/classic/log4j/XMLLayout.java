@@ -125,7 +125,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
             buf.append("  <log4j:throwable><![CDATA[");
             for (StackTraceElementProxy step : stepArray) {
                 buf.append(CoreConstants.TAB);
-                buf.append(step.toString());
+                Transform.appendEscapingCDATA(buf, step.toString());
                 buf.append("\r\n");
             }
             buf.append("]]></log4j:throwable>\r\n");
@@ -136,7 +136,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
             if (callerDataArray != null && callerDataArray.length > 0) {
                 StackTraceElement immediateCallerData = callerDataArray[0];
                 buf.append("  <log4j:locationInfo class=\"");
-                buf.append(immediateCallerData.getClassName());
+                buf.append(Transform.escapeTags(immediateCallerData.getClassName()));
                 buf.append("\"\r\n");
                 buf.append("                      method=\"");
                 buf.append(Transform.escapeTags(immediateCallerData.getMethodName()));

@@ -24,6 +24,8 @@ import ch.qos.logback.classic.jsonTest.JsonStringToLoggingEventMapper;
 import ch.qos.logback.classic.jsonTest.ThrowableProxyComparator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.spi.PubThrowableProxy;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
@@ -31,6 +33,8 @@ import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -385,5 +389,38 @@ class JsonEncoderTest {
                 + "\"kvpList\": [{\"ek1\":\"v1\"}],\"formattedMessage\":\"this is arg1\",\"throwable\":null}";
 
         assertEquals(withness, lines.get(0));
+    }
+
+    @Test
+    void loggerNameIsEscaped() throws JsonProcessingException {
+        LoggingEvent event = new LoggingEvent("x", logger, Level.WARN, "hello", null, null);
+        event.setLoggerName("a\",\"level\":\"ERROR\n{\"b");
+
+        byte[] resultBytes = jsonEncoder.encode(event);
+        String resultString = new String(resultBytes, StandardCharsets.UTF_8);
+
+        assertEquals(1, resultString.split("\n").length);
+        JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
+        compareEvents(event, resultEvent);
+    }
+
+    @Test
+    void throwableFieldsAreEscaped() throws JsonProcessingException {
+        PubThrowableProxy tp = new PubThrowableProxy();
+        tp.setClassName("c\"0");
+        tp.setMessage("msg");
+        StackTraceElement ste = new StackTraceElement("c\"1", "m\"1", "f\"1", 1);
+        tp.setStackTraceElementProxyArray(new StackTraceElementProxy[] { new StackTraceElementProxy(ste) });
+
+        StringBuilder sb = new StringBuilder("{");
+        jsonEncoder.appendThrowableProxy(sb, JsonEncoder.THROWABLE_ATTR_NAME, tp, false);
+        sb.append("}");
+
+        JsonNode throwableNode = new ObjectMapper().readTree(sb.toString()).get(JsonEncoder.THROWABLE_ATTR_NAME);
+        assertEquals("c\"0", throwableNode.get(JsonEncoder.CLASS_NAME_ATTR_NAME).asText());
+        JsonNode stepNode = throwableNode.get(JsonEncoder.STEP_ARRAY_NAME_ATTRIBUTE).get(0);
+        assertEquals("c\"1", stepNode.get(JsonEncoder.CLASS_NAME_ATTR_NAME).asText());
+        assertEquals("m\"1", stepNode.get(JsonEncoder.METHOD_NAME_ATTR_NAME).asText());
+        assertEquals("f\"1", stepNode.get("fileName").asText());
     }
 }
