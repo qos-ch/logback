@@ -23,6 +23,7 @@ public class KryoClassicConstants {
 
     /**
      * Version 0: Vanilla, i.e. Kryo's default serializers. Event payloads are not framed.
+     * For internal use only; see {@link KryoEncoder.SerializerType#Vanilla}.
      */
     public static final byte STREAM_VERSION_0 = 0;
 

@@ -57,6 +57,14 @@ public class KryoBuilder {
         }
     }
 
+    /**
+     * Kryo instance for the Vanilla format, which is for internal use only; see
+     * {@link KryoEncoder.SerializerType#Vanilla}.
+     *
+     * <p>Only the registered classes can be written. For MDC maps, these are {@link HashMap}
+     * and the unmodifiable snapshot produced by logback's MDC adapter, not, for example,
+     * {@link java.util.LinkedHashMap}.
+     */
     static public Kryo buildLoggerEventKryoVO_Vanilla() {
 
         MapReferenceResolver mapReferenceResolver = new MapReferenceResolver();

@@ -23,8 +23,18 @@ import static ch.qos.logback.classic.kryo.KryoClassicConstants.*;
 public class KryoEncoder extends EncoderBase<ILoggingEvent> {
 
 
+    /**
+     * Serializer families. {@link #Custom} is the supported format.
+     */
     public enum SerializerType {
+        /**
+         * Kryo's default serializers, stream version 0, unframed. For internal use only, for
+         * example as a baseline in tests and size comparisons. This format is not advertised or
+         * documented for users, offers no resynchronisation after damage and no decoding from
+         * an epoch, and may change or be removed without notice.
+         */
         Vanilla,
+        /** Logback's own serializers, stream version 5, framed. The supported format. */
         Custom
     };
 
