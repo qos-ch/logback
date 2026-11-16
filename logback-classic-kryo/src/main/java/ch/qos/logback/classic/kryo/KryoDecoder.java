@@ -43,6 +43,13 @@ public class KryoDecoder {
     byte[] unread;
     int unreadPos;
 
+    /**
+     * Set once {@link #input} reports end of stream. After an underflow, Kryo's {@link Input}
+     * resets its position without resetting its limit, so reading on would replay stale
+     * buffer contents.
+     */
+    boolean eof;
+
     KryoEncoder.SerializerType serializerType;
     byte streamVersion;
 
@@ -436,11 +443,12 @@ public class KryoDecoder {
                     return false;
                 }
                 window = appendByte(window, (byte) b);
+                idx = StreamFrameV5.indexOfMagic(window, 0, window.length);
+                // keep only a possible magic prefix for the next byte
                 int keep = STREAM_MAGIC.length - 1;
-                if (window.length > keep) {
+                if (idx < 0 && window.length > keep) {
                     window = Arrays.copyOfRange(window, window.length - keep, window.length);
                 }
-                idx = StreamFrameV5.indexOfMagic(window, 0, window.length);
             }
             int have = window.length - idx;
             byte[] header = new byte[STREAM_HEADER_SIZE];
@@ -486,16 +494,21 @@ public class KryoDecoder {
                 return n;
             }
         }
+        if (eof) {
+            return n;
+        }
         try {
             while (n < len) {
                 int r = input.read(dest, off + n, len - n);
                 if (r <= 0) {
+                    eof = true;
                     break;
                 }
                 n += r;
             }
         } catch (KryoException e) {
             // return bytes already copied
+            eof = true;
         }
         return n;
     }
@@ -509,9 +522,13 @@ public class KryoDecoder {
             }
             return b;
         }
+        if (eof) {
+            return -1;
+        }
         try {
             return input.readByte() & 0xFF;
         } catch (KryoException e) {
+            eof = true;
             return -1;
         }
     }

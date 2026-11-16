@@ -28,16 +28,14 @@ import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_DATA_MASK;
 import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_ID_MASK;
 import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_NEW_FLAG;
 import static ch.qos.logback.core.kryo.KryoCoreConstants.MAX_SERIALIZER_ID;
-import static ch.qos.logback.core.kryo.KryoCoreConstants.UNREGISTERED_ID;
 
 /**
  * Base Kryo serializer with optional value↔id caching.
  *
  * <p>When a bimap is configured, each value is introduced with a 2-byte header packing
  * a 13-bit data word (NEW/CACHED flag + 12-bit id) and a 3-bit CRC over those data bits.
- * Ids must be in {@code 1..MAX_SERIALIZER_ID}, or {@link KryoCoreConstants#UNREGISTERED_ID}
- * for frequency-gated non-registrations. Cached hits write only that header; new values also
- * write the payload via {@link #writeNewEntry}.
+ * Ids must be in {@code 1..MAX_SERIALIZER_ID}. Cached hits write only that header; new values
+ * also write the payload via {@link #writeNewEntry}.
  *
  * @see KryoCoreConstants#ENTRY_HEADER_NEW_FLAG
  */
@@ -46,7 +44,6 @@ public abstract class SerializerBase<V> extends Serializer<V> {
     public enum BiMapType {
         NONE,
         DIRECT_MAP,
-        FREQUENCY_GATED,
         /** Cache hits use {@code ==}, not {@code equals}/{@code hashCode}. */
         IDENTITY
     }
@@ -58,9 +55,6 @@ public abstract class SerializerBase<V> extends Serializer<V> {
     public SerializerBase(int capacity) {
 
         this(BiMapType.DIRECT_MAP, capacity);
-        if(capacity < 1024) {
-            System.out.println("WARNING: capacity less than 1024");
-        }
     }
 
     public SerializerBase(BiMapType biMapType, int capacity) {
@@ -73,16 +67,13 @@ public abstract class SerializerBase<V> extends Serializer<V> {
             case DIRECT_MAP:
                 this.bimap = new BidirectionalObjectToIdMapDefault<>(capacity);
                 break;
-            case FREQUENCY_GATED:
-                this.bimap = new BidirectionalObjectToIdMapDefault(capacity); //FrequencyGatedBidirectionalObjectToIdMap<>(capacity);
-                break;
             case IDENTITY:
                 this.bimap = new BidirectionalObjectToIdMapIdentity<>(capacity);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported BiMapType: " + biMapType);
         }
-        Log.debug(this.getClass().getSimpleName() + " bimap:"+biMapType+" capacity: " + capacity);
+        //ThLog.debug(this.getClass().getSimpleName() + " bimap:"+biMapType+" capacity: " + capacity);
     }
 
 
@@ -131,17 +122,12 @@ public abstract class SerializerBase<V> extends Serializer<V> {
 
         if (isNewEntry) {
             V deserialized = readNewEntry(kryo, input);
-            if (id != UNREGISTERED_ID) {
-                V existingVal = bimap.insertNewEntryOnRead(id, deserialized);
-                if (existingVal != null) {
-                    Log.warn("SerializerBase.read returned non-null existingVal for value id: " + id);
-                }
-            }
-            Log.debug("NEW entry for id: " + id + ", value: " + deserialized);
+            bimap.insertNewEntryOnRead(id, deserialized);
+            //Log.debug("NEW entry for id: " + id + ", value: " + deserialized);
             return deserialized;
         } else {
             V value = bimap.getValueById(id);
-            Log.debug("Cached entry for id: " + id + ", value: " + value);
+            //Log.debug("Cached entry for id: " + id + ", value: " + value);
             return value;
         }
     }
@@ -150,23 +136,14 @@ public abstract class SerializerBase<V> extends Serializer<V> {
 
     /**
      * Writes a 2-byte entry header: 13-bit data (NEW flag + id) and a 3-bit CRC over that data.
-     * {@link KryoCoreConstants#UNREGISTERED_ID} is stored as id 0 (valid only with NEW).
+     * The id must be in {@code 1..MAX_SERIALIZER_ID}.
      */
     static void writeEntryHeader(Output output, boolean newEntry, int id) {
-        int idBits;
-        if (id == UNREGISTERED_ID) {
-            if (!newEntry) {
-                throw new IllegalArgumentException("UNREGISTERED_ID is only valid for NEW_ENTRY");
-            }
-            idBits = 0;
-        } else {
-            if (id < 1 || id > MAX_SERIALIZER_ID) {
-                throw new IllegalStateException(
-                        "Serializer id out of range: " + id + " (allowed 1.." + MAX_SERIALIZER_ID + ")");
-            }
-            idBits = id;
+        if (id < 1 || id > MAX_SERIALIZER_ID) {
+            throw new IllegalStateException(
+                    "Serializer id out of range: " + id + " (allowed 1.." + MAX_SERIALIZER_ID + ")");
         }
-        int data13 = (newEntry ? ENTRY_HEADER_NEW_FLAG : 0) | (idBits & ENTRY_HEADER_ID_MASK);
+        int data13 = (newEntry ? ENTRY_HEADER_NEW_FLAG : 0) | (id & ENTRY_HEADER_ID_MASK);
         int crc = crc3(data13);
         int packed = (data13 << ENTRY_HEADER_CRC_BITS) | crc;
         output.writeShort(packed);
@@ -192,15 +169,16 @@ public abstract class SerializerBase<V> extends Serializer<V> {
 
     /**
      * Decodes the id from a verified 13-bit data word.
-     * Id bits {@code 0} on a NEW entry mean {@link KryoCoreConstants#UNREGISTERED_ID}.
+     *
+     * @throws KryoException if the id is 0, which no writer emits
      */
     static int decodeHeaderId(int data13) {
-        int idBits = data13 & ENTRY_HEADER_ID_MASK;
-        boolean isNew = (data13 & ENTRY_HEADER_NEW_FLAG) != 0;
-        if (isNew && idBits == 0) {
-            return UNREGISTERED_ID;
+        int id = data13 & ENTRY_HEADER_ID_MASK;
+        if (id == 0) {
+            throw new KryoException("SerializerBase entry header has invalid id 0 (data=0x"
+                    + Integer.toHexString(data13) + ")");
         }
-        return idBits;
+        return id;
     }
 
     /**

@@ -19,14 +19,8 @@ public class KryoCoreConstants {
     static public boolean CACHED_ENTRY = false;
 
     /**
-     * Sentinel id written on the wire (as 0 in the id field) when a value is not
-     * registered in the id map (e.g. frequency-gated first sightings).
-     */
-    static public int UNREGISTERED_ID = -1;
-
-    /**
      * Maximum id that may appear in a {@link SerializerBase} entry header (12-bit field).
-     * Ids are assigned starting at 1; {@link #UNREGISTERED_ID} is encoded as 0.
+     * Ids are assigned starting at 1; id 0 is invalid.
      */
     static public final int MAX_SERIALIZER_ID = 0xFFF; // 4095
 
@@ -46,7 +40,7 @@ public class KryoCoreConstants {
      * <pre>
      *   bits 15-3: 13-bit data
      *     bit 12 of data (bit 15 of short): 1 = NEW_ENTRY, 0 = CACHED_ENTRY
-     *     bits 0-11 of data (bits 14-3 of short): id; 0 means UNREGISTERED_ID on NEW only
+     *     bits 0-11 of data (bits 14-3 of short): id in 1..MAX_SERIALIZER_ID (0 is invalid)
      *   bits 2-0:  3-bit CRC over the 13 data bits (poly x^3+x+1)
      * </pre>
      */

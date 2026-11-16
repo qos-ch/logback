@@ -19,10 +19,12 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import com.esotericsoftware.kryo.kryo5.io.Output;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,6 +36,12 @@ import java.util.List;
 
 import static ch.qos.logback.classic.kryo.KryoClassicConstants.STREAM_MAGIC;
 import static ch.qos.logback.classic.kryo.KryoClassicConstants.STREAM_VERSION_5;
+import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_CRC3_POLY;
+import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_CRC_BITS;
+import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_CRC_MASK;
+import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_DATA_BITS;
+import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_DATA_MASK;
+import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_NEW_FLAG;
 import static ch.qos.logback.core.kryo.KryoCoreConstants.KRYO_UNSAFE_PROPERTY_KEY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -247,6 +255,103 @@ public class ResilienceTest {
         assertTrue(stats.resyncCount() > 0);
         assertTrue(stats.truncated());
         assertEquals(false, stats.endedMidEvent());
+    }
+
+    /**
+     * An EVENT whose frame CRC is valid but whose payload carries a SerializerBase entry header
+     * with id 0, which no writer emits. Decoding the event fails, the decoder counts a resync,
+     * skips the rest of the epoch and resumes at the next HEADER.
+     */
+    @Test
+    public void entryHeaderWithIdZero_resyncsToNextHeader() throws IOException {
+        Logger logger = loggerContext.getLogger(ResilienceTest.class);
+        KryoEncoder first = newEncoder(STREAM_VERSION_5);
+        KryoEncoder second = newEncoder(STREAM_VERSION_5);
+        List<LoggingEventKryoVO> expected = new ArrayList<>();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        out.write(first.headerBytes());
+        appendEvents(first, logger, 0, 2, expected, out);
+
+        LoggingEvent event = new LoggingEvent("x", logger, Level.INFO, "resilience {}", null, new Object[]{2});
+        out.write(withIdZeroEntryHeader(first.encode(event)));
+        // the rest of the first epoch is lost
+        appendEvents(first, logger, 3, 2, new ArrayList<>(), out);
+
+        out.write(second.headerBytes());
+        appendEvents(second, logger, 5, 4, expected, out);
+
+        Path path = Path.of(KryoClassicTestConstants.TEST_OUTPUT_DIR_PREFIX + diff + "/id-zero.kryo");
+        Files.createDirectories(path.getParent());
+        Files.write(path, out.toByteArray());
+        List<LoggingEventKryoVO> actual = new ArrayList<>();
+        KryoDecoder.DecodeStats stats = new KryoDecoder(new File(path.toString())).decodeWithConsumer(actual::add);
+
+        assertEquals(expected, actual);
+        assertTrue(stats.resyncCount() > 0);
+        assertEquals(false, stats.endedMidEvent());
+    }
+
+    /**
+     * Same corruption, but no HEADER follows: the resync reaches end of stream and decoding
+     * must stop there instead of replaying earlier bytes.
+     */
+    @Test
+    @Timeout(10)
+    public void entryHeaderWithIdZero_noLaterHeader_stopsAtEndOfStream() throws IOException {
+        Logger logger = loggerContext.getLogger(ResilienceTest.class);
+        KryoEncoder encoder = newEncoder(STREAM_VERSION_5);
+        List<LoggingEventKryoVO> expected = new ArrayList<>();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        out.write(encoder.headerBytes());
+        appendEvents(encoder, logger, 0, 2, expected, out);
+        LoggingEvent event = new LoggingEvent("x", logger, Level.INFO, "resilience {}", null, new Object[]{2});
+        out.write(withIdZeroEntryHeader(encoder.encode(event)));
+        appendEvents(encoder, logger, 3, 2, new ArrayList<>(), out);
+
+        Path path = Path.of(KryoClassicTestConstants.TEST_OUTPUT_DIR_PREFIX + diff + "/id-zero-eof.kryo");
+        Files.createDirectories(path.getParent());
+        Files.write(path, out.toByteArray());
+        List<LoggingEventKryoVO> actual = new ArrayList<>();
+        KryoDecoder.DecodeStats stats = new KryoDecoder(new File(path.toString())).decodeWithConsumer(actual::add);
+
+        assertEquals(expected, actual);
+        assertTrue(stats.resyncCount() > 0);
+    }
+
+    /**
+     * Replaces the first SerializerBase entry header of a framed EVENT's payload (the one
+     * for LoggerContextVO) by a well-formed NEW header with id 0, and re-frames the payload
+     * so that the frame CRC stays valid.
+     */
+    private static byte[] withIdZeroEntryHeader(byte[] framedEvent) {
+        int payloadLen = -1;
+        for (int prefixLen = 2; prefixLen <= StreamFrameV5.MAX_PREFIX; prefixLen++) {
+            int candidate = framedEvent.length - prefixLen;
+            if (1 + StreamFrameV5.unsignedVarIntSize(candidate) == prefixLen) {
+                payloadLen = candidate;
+                break;
+            }
+        }
+        assertTrue(payloadLen > 0, "not a single framed EVENT");
+        byte[] payload = java.util.Arrays.copyOfRange(framedEvent, framedEvent.length - payloadLen, framedEvent.length);
+
+        int data13 = ENTRY_HEADER_NEW_FLAG; // NEW entry, id bits 0
+        int packed = (data13 << ENTRY_HEADER_CRC_BITS) | entryHeaderCrc3(data13);
+        Output header = new Output(2);
+        header.writeShort(packed);
+        System.arraycopy(header.toBytes(), 0, payload, 0, 2);
+        return StreamFrameV5.wrapEvent(payload);
+    }
+
+    /** Same CRC-3 as SerializerBase#crc3, which is not visible from this package. */
+    private static int entryHeaderCrc3(int data13) {
+        int v = (data13 & ENTRY_HEADER_DATA_MASK) << ENTRY_HEADER_CRC_BITS;
+        for (int i = ENTRY_HEADER_DATA_BITS + ENTRY_HEADER_CRC_BITS - 1; i >= ENTRY_HEADER_CRC_BITS; i--) {
+            if (((v >> i) & 1) != 0) {
+                v ^= ENTRY_HEADER_CRC3_POLY << (i - ENTRY_HEADER_CRC_BITS);
+            }
+        }
+        return v & ENTRY_HEADER_CRC_MASK;
     }
 
     /** Streams of the removed versions 3 and 4 are rejected with a clear message. */
