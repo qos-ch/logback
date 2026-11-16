@@ -26,18 +26,39 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static ch.qos.logback.classic.kryo.KryoClassicConstants.*;
 
 public class KryoDecoder {
 
+    /**
+     * Notified of each stream header the decoder applies, that is, of the start of each epoch.
+     * Every epoch of a framed stream starts with a header that resets all decoding state, so a
+     * decoder opened at a reported offset with {@link KryoDecoder#KryoDecoder(File, long)}
+     * decodes that epoch on its own.
+     */
+    public interface EpochListener {
+        /**
+         * @param offset       position of the header's first byte, from the start of the file
+         *                     (including the offset the decoder was opened at)
+         * @param firstOrdinal number of events handed to the consumer before this header
+         */
+        void onEpoch(long offset, long firstOrdinal);
+    }
 
     Kryo kryo;
     Input input;
+
+    /** Position in the file of the first byte read through {@link #input}. */
+    final long startOffset;
+
+    EpochListener epochListener;
 
     /** Bytes pushed back after a resync found a HEADER inside a previously consumed buffer. */
     byte[] unread;
@@ -57,8 +78,59 @@ public class KryoDecoder {
      * Open a Kryo stream and configure the decoder from its header.
      */
     public KryoDecoder(File file) throws IOException {
-        this.input = new Input(new BufferedInputStream(new FileInputStream(file)));
-        readAndApplyHeader();
+        this(file, 0L);
+    }
+
+    /**
+     * Open a Kryo stream at {@code offset}, which must be the position of a stream header: the
+     * start of the file, or an offset reported by an {@link EpochListener}. Decoding then starts
+     * with that header's epoch.
+     *
+     * @throws IOException if there is no stream header at {@code offset}, or if
+     *                     {@code offset > 0} and the stream is not framed: an unframed stream
+     *                     has no epoch that can be decoded on its own
+     */
+    public KryoDecoder(File file, long offset) throws IOException {
+        this(openAt(file, offset), offset);
+        if (offset > 0 && !isFramed(streamVersion)) {
+            input.close();
+            throw new IOException("Stream version " + streamVersion
+                    + " is not framed and cannot be decoded from offset " + offset);
+        }
+    }
+
+    /**
+     * Decodes from {@code in}, whose next bytes must be a stream header. Offsets reported to an
+     * {@link EpochListener} are relative to the current position of {@code in}.
+     * The stream is closed when decoding ends.
+     */
+    public KryoDecoder(InputStream in) throws IOException {
+        this(in, 0L);
+    }
+
+    private KryoDecoder(InputStream in, long startOffset) throws IOException {
+        this.startOffset = startOffset;
+        this.input = new Input(new BufferedInputStream(in));
+        try {
+            readAndApplyHeader();
+        } catch (IOException | RuntimeException e) {
+            input.close();
+            throw e;
+        }
+    }
+
+    private static InputStream openAt(File file, long offset) throws IOException {
+        if (offset < 0) {
+            throw new IllegalArgumentException("offset must be >= 0, got " + offset);
+        }
+        FileInputStream fis = new FileInputStream(file);
+        try {
+            fis.getChannel().position(offset);
+        } catch (IOException e) {
+            fis.close();
+            throw e;
+        }
+        return fis;
     }
 
     /**
@@ -75,11 +147,12 @@ public class KryoDecoder {
     }
 
     void readAndApplyHeader() throws IOException {
-        if (input.available() < STREAM_HEADER_SIZE) {
+        // read rather than check available(), which may be 0 on a stream whose data is yet to come
+        byte[] rec = new byte[STREAM_HEADER_SIZE];
+        if (readRaw(rec, 0, STREAM_HEADER_SIZE) < STREAM_HEADER_SIZE) {
             throw new IOException("Stream too short for stream header (need "
                     + STREAM_HEADER_SIZE + " bytes)");
         }
-        byte[] rec = input.readBytes(STREAM_HEADER_SIZE);
         if (!StreamFrameV5.isStreamHeader(rec)) {
             throw new IOException("Invalid stream magic: expected STWD, got "
                     + formatBytes(Arrays.copyOf(rec, STREAM_MAGIC.length)));
@@ -127,6 +200,28 @@ public class KryoDecoder {
 
     public byte getStreamVersion() {
         return streamVersion;
+    }
+
+    /**
+     * Sets the listener told of each epoch, the first one included, during the next decode.
+     */
+    public void setEpochListener(EpochListener epochListener) {
+        this.epochListener = epochListener;
+    }
+
+    /**
+     * Position in the file of the next raw byte to be read. Bytes pushed back into
+     * {@link #unread} were already counted by {@link Input#total()}, hence the subtraction.
+     */
+    long position() {
+        int pending = (unread == null) ? 0 : unread.length - unreadPos;
+        return startOffset + input.total() - pending;
+    }
+
+    private void reportEpoch(long offset) {
+        if (epochListener != null) {
+            epochListener.onEpoch(offset, statsHolder.count);
+        }
     }
 
     private static String formatBytes(byte[] bytes) {
@@ -231,22 +326,74 @@ public class KryoDecoder {
         return new DecodeStats(count, decodeNanos, consumeNanos, resyncCount, endedMidEvent, bytesConsumed);
     }
 
+    /**
+     * Decodes every event of the stream, handing each to {@code consumer}. The input is closed
+     * when decoding ends. An exception thrown by {@code consumer} ends decoding and propagates.
+     */
     public DecodeStats decodeWithConsumer(Consumer<LoggingEventKryoVO> consumer) throws IOException {
-        Log.trace("Decoding Kryo called with consumer");
+        return decodeWhile(event -> {
+            consumer.accept(event);
+            return true;
+        });
+    }
+
+    /**
+     * Decodes events, handing each to {@code predicate}, until the stream ends or
+     * {@code predicate} returns false. The predicate both receives the event and decides
+     * whether to go on: returning false stops decoding after that event.
+     *
+     * <p>Stopping this way is not damage: the returned stats count the events handed to the
+     * predicate, and {@link DecodeStats#truncated()} is false unless damage was met before.
+     * The input is closed when decoding ends, so a decoder cannot resume; open a new one at an
+     * epoch's offset instead. An exception thrown by {@code predicate} ends decoding and
+     * propagates unchanged.
+     */
+    public DecodeStats decodeWhile(Predicate<LoggingEventKryoVO> predicate) throws IOException {
+        Log.trace("Decoding Kryo called with predicate");
         resyncCount = 0;
         endedMidEvent = false;
+        stopRequested = false;
         bytesConsumed = STREAM_HEADER_SIZE;
+        statsHolder.count = 0;
         try {
+            // the header read by the constructor opens the first epoch
+            reportEpoch(startOffset);
             if (isFramed(streamVersion)) {
-                return decodeFramed(consumer);
+                return decodeFramed(predicate);
             }
-            return decodeUnframed(consumer);
+            return decodeUnframed(predicate);
+        } catch (PredicateFailure f) {
+            throw (RuntimeException) f.getCause();
         } finally {
             input.close();
         }
     }
 
-    private DecodeStats decodeUnframed(Consumer<LoggingEventKryoVO> consumer) throws IOException {
+    /**
+     * Carries an exception thrown by the caller's predicate past the decoder's own handling of
+     * {@link KryoException} and {@link IllegalArgumentException}, which would otherwise count it
+     * as damage.
+     */
+    private static final class PredicateFailure extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        PredicateFailure(RuntimeException cause) {
+            super(cause);
+        }
+    }
+
+    private static boolean test(Predicate<LoggingEventKryoVO> predicate, LoggingEventKryoVO event) {
+        try {
+            return predicate.test(event);
+        } catch (RuntimeException e) {
+            throw new PredicateFailure(e);
+        }
+    }
+
+    /** Set when the predicate returned false. */
+    private boolean stopRequested;
+
+    private DecodeStats decodeUnframed(Predicate<LoggingEventKryoVO> predicate) throws IOException {
         int count = 0;
         long decodeNanos = 0L;
         long consumeNanos = 0L;
@@ -255,12 +402,15 @@ public class KryoDecoder {
                 long decodeStart = System.nanoTime();
                 LoggingEventKryoVO event = kryo.readObject(input, LoggingEventKryoVO.class);
                 long consumeStart = System.nanoTime();
-                consumer.accept(event);
+                boolean more = test(predicate, event);
                 long consumeEnd = System.nanoTime();
                 decodeNanos += consumeStart - decodeStart;
                 consumeNanos += consumeEnd - consumeStart;
                 count++;
                 bytesConsumed = input.total();
+                if (!more) {
+                    break;
+                }
             }
             return stats(count, decodeNanos, consumeNanos);
         } catch (EOFException | KryoException e) {
@@ -272,15 +422,14 @@ public class KryoDecoder {
         }
     }
 
-    private DecodeStats decodeFramed(Consumer<LoggingEventKryoVO> consumer) throws IOException {
+    private DecodeStats decodeFramed(Predicate<LoggingEventKryoVO> predicate) throws IOException {
         int count = 0;
         long decodeNanos = 0L;
         long consumeNanos = 0L;
-        statsHolder.count = 0;
         try {
             while (true) {
                 int before = count;
-                boolean more = decodeOneV5(consumer, statsHolder);
+                boolean more = decodeOneV5(predicate, statsHolder);
                 if (!more) {
                     break;
                 }
@@ -288,6 +437,9 @@ public class KryoDecoder {
                     decodeNanos += statsHolder.decodeNanos;
                     consumeNanos += statsHolder.consumeNanos;
                     count = statsHolder.count;
+                }
+                if (stopRequested) {
+                    break;
                 }
             }
             return stats(count, decodeNanos, consumeNanos);
@@ -307,7 +459,8 @@ public class KryoDecoder {
         long consumeNanos;
     }
 
-    private boolean decodeOneV5(Consumer<LoggingEventKryoVO> consumer, FrameLoopStats stats) {
+    private boolean decodeOneV5(Predicate<LoggingEventKryoVO> predicate, FrameLoopStats stats) {
+        long frameStart = position();
         int b0 = readRawByte();
         if (b0 < 0) {
             return false;
@@ -323,6 +476,7 @@ public class KryoDecoder {
             if (StreamFrameV5.isStreamHeader(rec)) {
                 applyHeaderBytes(rec);
                 bytesConsumed += rec.length;
+                reportEpoch(frameStart);
                 return true;
             }
             return resyncToHeader(rec);
@@ -349,10 +503,10 @@ public class KryoDecoder {
             Log.error("KryoDecoder: unknown V5 frame type " + type);
             return resyncToHeader(prefix);
         }
-        return finishEventV5(consumer, stats, prefix, b0, lenBytes, len);
+        return finishEventV5(predicate, stats, prefix, b0, lenBytes, len);
     }
 
-    private boolean finishEventV5(Consumer<LoggingEventKryoVO> consumer, FrameLoopStats stats,
+    private boolean finishEventV5(Predicate<LoggingEventKryoVO> predicate, FrameLoopStats stats,
                                   byte[] prefix, int packedByte, byte[] lenBytes, int len) {
         if (len > KryoEncoder.MAX_BUFFER_SIZE) {
             Log.error("KryoDecoder: EVENT length " + len + " exceeds max");
@@ -379,10 +533,10 @@ public class KryoDecoder {
             }
             return true;
         }
-        return acceptEvent(consumer, stats, payload, concat(prefix, payload, payload.length));
+        return acceptEvent(predicate, stats, payload, concat(prefix, payload, payload.length));
     }
 
-    private boolean acceptEvent(Consumer<LoggingEventKryoVO> consumer, FrameLoopStats stats,
+    private boolean acceptEvent(Predicate<LoggingEventKryoVO> predicate, FrameLoopStats stats,
                                 byte[] payload, byte[] seedOnFail) {
         LoggingEventKryoVO event;
         long decodeStart = System.nanoTime();
@@ -396,12 +550,15 @@ public class KryoDecoder {
             return true;
         }
         long consumeStart = System.nanoTime();
-        consumer.accept(event);
+        boolean more = test(predicate, event);
         long consumeEnd = System.nanoTime();
         stats.decodeNanos = consumeStart - decodeStart;
         stats.consumeNanos = consumeEnd - consumeStart;
         stats.count++;
         bytesConsumed += seedOnFail.length;
+        if (!more) {
+            stopRequested = true;
+        }
         return true;
     }
 
@@ -428,7 +585,8 @@ public class KryoDecoder {
     /**
      * Scan {@code seed} then the remaining input for the next {@code STWD} header.
      * Bytes after that header in {@code seed} are pushed back so the next frame
-     * read sees them.
+     * read sees them. {@code seed} must hold the bytes read just before the current
+     * {@link #position()}, so that the header's position in the file can be computed.
      *
      * @return true if a header was found and applied
      */
@@ -451,6 +609,8 @@ public class KryoDecoder {
                 }
             }
             int have = window.length - idx;
+            // the window ends with the last byte read
+            long headerOffset = position() - have;
             byte[] header = new byte[STREAM_HEADER_SIZE];
             int copy = Math.min(have, STREAM_HEADER_SIZE);
             System.arraycopy(window, idx, header, 0, copy);
@@ -467,6 +627,7 @@ public class KryoDecoder {
             }
             applyHeaderBytes(header);
             bytesConsumed += header.length;
+            reportEpoch(headerOffset);
             return true;
         } catch (KryoException e) {
             return false;
