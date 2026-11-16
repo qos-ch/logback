@@ -219,8 +219,6 @@ public class ArgumentArrayValueAnalysis {
         System.out.println("DIRECT_MAP string-id hits (first sighting is a miss): "
                 + hitsIfDirectMap + " / " + h.stringSlots
                 + " (" + pct(hitsIfDirectMap, h.stringSlots) + ")");
-        System.out.println("FREQUENCY_GATED: first sighting unregistered; "
-                + singletons + " values would never occupy an LRU slot");
         System.out.println("max frequency: " + max + (maxVs == null ? "" : "  sample=" + truncate(maxVs.sample, 80)));
         System.out.println("frequency percentiles:"
                 + " p50=" + percentile(counts, 50)

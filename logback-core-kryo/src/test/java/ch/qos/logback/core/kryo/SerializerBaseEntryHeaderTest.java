@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_CRC_BITS;
 import static ch.qos.logback.core.kryo.KryoCoreConstants.ENTRY_HEADER_NEW_FLAG;
 import static ch.qos.logback.core.kryo.KryoCoreConstants.MAX_SERIALIZER_ID;
-import static ch.qos.logback.core.kryo.KryoCoreConstants.UNREGISTERED_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,7 +33,6 @@ public class SerializerBaseEntryHeaderTest {
 
         SerializerBase.writeEntryHeader(out, true, 1);
         SerializerBase.writeEntryHeader(out, false, 42);
-        SerializerBase.writeEntryHeader(out, true, UNREGISTERED_ID);
         SerializerBase.writeEntryHeader(out, true, MAX_SERIALIZER_ID);
         out.flush();
 
@@ -49,11 +47,33 @@ public class SerializerBaseEntryHeaderTest {
         assertThat(SerializerBase.decodeHeaderId(d1)).isEqualTo(42);
 
         int d2 = SerializerBase.readEntryHeaderData(in);
-        assertThat(d2 & ENTRY_HEADER_NEW_FLAG).isNotZero();
-        assertThat(SerializerBase.decodeHeaderId(d2)).isEqualTo(UNREGISTERED_ID);
+        assertThat(SerializerBase.decodeHeaderId(d2)).isEqualTo(MAX_SERIALIZER_ID);
+    }
 
-        int d3 = SerializerBase.readEntryHeaderData(in);
-        assertThat(SerializerBase.decodeHeaderId(d3)).isEqualTo(MAX_SERIALIZER_ID);
+    @Test
+    public void idZeroIsRejectedOnWrite() {
+        Output out = new Output(new byte[4]);
+        assertThatThrownBy(() -> SerializerBase.writeEntryHeader(out, true, 0))
+                .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> SerializerBase.writeEntryHeader(out, false, 0))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    public void idZeroIsRejectedOnRead() {
+        // well-formed header (valid CRC) carrying id 0
+        int data13 = ENTRY_HEADER_NEW_FLAG;
+        int packed = (data13 << ENTRY_HEADER_CRC_BITS) | SerializerBase.crc3(data13);
+        byte[] buf = new byte[2];
+        Output out = new Output(buf);
+        out.writeShort(packed);
+        out.flush();
+
+        Input in = new Input(buf);
+        int d = SerializerBase.readEntryHeaderData(in);
+        assertThatThrownBy(() -> SerializerBase.decodeHeaderId(d))
+                .isInstanceOf(KryoException.class)
+                .hasMessageContaining("invalid id 0");
     }
 
     @Test

@@ -41,6 +41,17 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- argLine is declared at plugin level so that IDEs such as IntelliJ IDEA pick it up -->
+                <configuration>
+                    <argLine>
+                        --add-reads ch.qos.logback.core.kryo=ALL-UNNAMED,org.junit.jupiter.api
+                    </argLine>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
