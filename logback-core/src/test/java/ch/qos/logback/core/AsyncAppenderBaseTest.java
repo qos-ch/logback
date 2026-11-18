@@ -39,6 +39,8 @@ public class AsyncAppenderBaseTest {
     AsyncAppenderBase<Integer> asyncAppenderBase = new AsyncAppenderBase<Integer>();
     LossyAsyncAppender lossyAsyncAppender = new LossyAsyncAppender();
     DelayingListAppender<Integer> delayingListAppender = new DelayingListAppender<Integer>();
+    BlockingListAppender<Integer> blockingListAppender = new BlockingListAppender<Integer>();
+    DiscardingAsyncAppender<Integer> discardingAsyncAppender = new DiscardingAsyncAppender<Integer>();
     ListAppender<Integer> listAppender = new ListAppender<Integer>();
     OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
     StatusChecker statusChecker = new StatusChecker(context);
@@ -51,6 +53,7 @@ public class AsyncAppenderBaseTest {
 
         asyncAppenderBase.setContext(context);
         lossyAsyncAppender.setContext(context);
+        discardingAsyncAppender.setContext(context);
 
         listAppender.setContext(context);
         listAppender.setName("list");
@@ -59,6 +62,10 @@ public class AsyncAppenderBaseTest {
         delayingListAppender.setContext(context);
         delayingListAppender.setName("list");
         delayingListAppender.start();
+
+        blockingListAppender.setContext(context);
+        blockingListAppender.setName("blocking list");
+        blockingListAppender.start();
     }
 
     @Test
@@ -301,12 +308,89 @@ public class AsyncAppenderBaseTest {
         Assertions.assertFalse(asyncAppenderBase.worker.isInterrupted());
     }
 
+    @Test
+    public void verifyDiscardedEventsCounter() throws InterruptedException {
+        int bufferSize = 5;
+        int discardingThreshold = 3;
+        // One event will have been removed by the consuming thread.
+        int expectedDiscardedEvents = bufferSize - 1 - discardingThreshold;
+        discardingAsyncAppender.addAppender(blockingListAppender);
+        discardingAsyncAppender.setQueueSize(bufferSize);
+        discardingAsyncAppender.setDiscardingThreshold(discardingThreshold);
+        discardingAsyncAppender.start();
+
+        for (int i = 0; i < bufferSize; i++) {
+            discardingAsyncAppender.doAppend(i);
+            // Make sure the consuming thread is in a blocked state.
+            blockingListAppender.waitForAppend();
+        }
+        blockingListAppender.unblock();
+        discardingAsyncAppender.stop();
+
+        Assertions.assertEquals(expectedDiscardedEvents, discardingAsyncAppender.getDiscardedEvents());
+    }
+
+    @Test
+    public void verifyDroppedEventsCounter() throws InterruptedException {
+        int bufferSize = 5;
+        int loopLen = bufferSize * 2;
+        // One event will have been removed by the consuming thread.
+        int expectedDroppedEvents = bufferSize - 1;
+        asyncAppenderBase.setMaxFlushTime(1);
+        asyncAppenderBase.addAppender(blockingListAppender);
+        asyncAppenderBase.setQueueSize(bufferSize);
+        asyncAppenderBase.setNeverBlock(true);
+        asyncAppenderBase.start();
+
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+            // Make sure the consuming thread is in a blocked state.
+            blockingListAppender.waitForAppend();
+        }
+        blockingListAppender.unblock();
+        asyncAppenderBase.stop();
+
+        Assertions.assertEquals(expectedDroppedEvents, asyncAppenderBase.getDroppedEvents());
+    }
+
     private void verify(ListAppender<Integer> la, int atLeast) {
         // ListAppender passes as parameter should be stopped at this stage
         Assertions.assertFalse(la.isStarted());
         Assertions.assertTrue( atLeast <= la.list.size(), atLeast + " <= " + la.list.size());
         statusChecker.assertIsErrorFree();
         statusChecker.assertContainsMatch("Worker thread will flush remaining events before exiting.");
+    }
+
+    static class BlockingListAppender<E> extends ListAppender<E> {
+
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private final CountDownLatch firstAppend = new CountDownLatch(1);
+
+        public void unblock() {
+            latch.countDown();
+        }
+
+        public void waitForAppend() throws InterruptedException {
+            firstAppend.await();
+        }
+
+        @Override
+        protected void append(E e) {
+            try {
+                firstAppend.countDown();
+                latch.await();
+            } catch (InterruptedException ignored) {
+                Thread.currentThread().interrupt();
+            }
+            super.append(e);
+        }
+    }
+
+    static class DiscardingAsyncAppender<I extends Number> extends AsyncAppenderBase<Integer> {
+        @Override
+        protected boolean isDiscardable(Integer i) {
+            return true;
+        }
     }
 
     static class LossyAsyncAppender extends AsyncAppenderBase<Integer> {
