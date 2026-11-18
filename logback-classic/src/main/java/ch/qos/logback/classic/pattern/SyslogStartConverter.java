@@ -86,7 +86,7 @@ public class SyslogStartConverter extends ClassicConverter {
     public String getLocalHostname() {
         try {
             InetAddress addr = InetAddress.getLocalHost();
-            return addr.getHostName();
+            return addr.getCanonicalHostName();
         } catch (UnknownHostException uhe) {
             addError("Could not determine local host name", uhe);
             return "UNKNOWN_LOCALHOST";
