@@ -197,6 +197,34 @@ public class ResilienceTest {
         assertEquals(expected, actual);
     }
 
+    /**
+     * Logged strings are written verbatim, so an intact EVENT payload may contain the
+     * STWD magic. Such an event, and the events after it, must still be decoded.
+     */
+    @Test
+    public void v5_magicInsideLoggedString_isNotATornWrite() throws IOException {
+        Logger logger = loggerContext.getLogger(ResilienceTest.class);
+        for (String value : new String[]{"STWD51", "x STWD ok", "STWD\u0005\u0001"}) {
+            KryoEncoder encoder = newEncoder(STREAM_VERSION_5);
+            List<LoggingEventKryoVO> expected = new ArrayList<>();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            out.write(encoder.headerBytes());
+            appendEvents(encoder, logger, 0, 2, expected, out);
+            LoggingEvent event = new LoggingEvent("x", logger, Level.INFO, "user {}", null, new Object[]{value});
+            expected.add(new LoggingEventKryoVO(event));
+            out.write(encoder.encode(event));
+            appendEvents(encoder, logger, 3, 3, expected, out);
+
+            KryoDecoder.DecodeStats stats = decode(out.toByteArray(), "magic-in-string.kryo");
+            assertEquals(6, stats.count(), value);
+            assertEquals(0, stats.resyncCount(), value);
+
+            Path path = Path.of(KryoClassicTestConstants.TEST_OUTPUT_DIR_PREFIX + diff + "/magic-in-string.kryo");
+            List<LoggingEventKryoVO> actual = new KryoDecoder(new File(path.toString())).decodeAsList();
+            assertEquals(expected, actual, value);
+        }
+    }
+
     /** A clean file reports no damage and consumes every byte. */
     @Test
     public void decodeStats_cleanFile() throws IOException {

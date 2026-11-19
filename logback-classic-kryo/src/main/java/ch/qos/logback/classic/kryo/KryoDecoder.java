@@ -521,11 +521,10 @@ public class KryoDecoder {
                     + " got=" + got + " expected=" + len);
             return resyncToHeader(got <= 0 ? prefix : concat(prefix, payload, got));
         }
-        if (StreamFrameV5.indexOfMagic(payload, 0, payload.length) >= 0) {
-            Log.error("KryoDecoder: STWD inside V5 EVENT payload at count=" + stats.count
-                    + ", treating as torn write");
-            return resyncToHeader(concat(prefix, payload, payload.length));
-        }
+        // STWD inside the payload is not by itself a torn write: logged strings are
+        // written verbatim and may contain it. A torn write fails the CRC, the
+        // decode, or the full-length check in acceptEvent, and each of these
+        // resyncs to the header found in the payload.
         if (!StreamFrameV5.crcMatches(packedByte, lenBytes, payload, 0, len)) {
             Log.error("KryoDecoder: EVENT CRC mismatch at count=" + stats.count);
             if (!resyncToHeader(concat(prefix, payload, payload.length))) {
@@ -541,7 +540,12 @@ public class KryoDecoder {
         LoggingEventKryoVO event;
         long decodeStart = System.nanoTime();
         try {
-            event = kryo.readObject(new Input(payload), LoggingEventKryoVO.class);
+            Input payloadInput = new Input(payload);
+            event = kryo.readObject(payloadInput, LoggingEventKryoVO.class);
+            if (payloadInput.position() != payload.length) {
+                throw new KryoException("EVENT payload has " + (payload.length - payloadInput.position())
+                        + " trailing bytes");
+            }
         } catch (RuntimeException e) {
             Log.error("KryoDecoder: EVENT payload decode failed count=" + stats.count, e);
             if (!resyncToHeader(seedOnFail)) {
