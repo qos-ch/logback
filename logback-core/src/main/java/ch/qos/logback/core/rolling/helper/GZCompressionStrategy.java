@@ -66,6 +66,8 @@ public class GZCompressionStrategy extends CompressionStrategyBase {
             addInfo("Done GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         } catch (Exception e) {
             addStatus(new ErrorStatus("Error occurred while compressing [" + originalFileName + "] into [" + compressedFileName + "].", this, e));
+            discardPartialCompressedFile(gzedFile);
+            return;
         }
 
 

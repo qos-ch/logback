@@ -29,4 +29,10 @@ abstract public class CompressionStrategyBase extends ContextAwareBase implement
             addError("Failed to create parent directories for [" + file.getAbsolutePath() + "]");
         }
     }
+
+    void discardPartialCompressedFile(File file) {
+        if (file.exists() && !file.delete()) {
+            addWarn("Could not delete partially written compressed file [" + file.getAbsolutePath() + "]");
+        }
+    }
 }
