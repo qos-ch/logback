@@ -14,6 +14,7 @@
 
 package ch.qos.logback.classic.encoder;
 
+import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
@@ -23,16 +24,16 @@ import ch.qos.logback.core.encoder.EncoderBase;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static ch.qos.logback.core.CoreConstants.COLON_CHAR;
 import static ch.qos.logback.core.CoreConstants.COMMA_CHAR;
 import static ch.qos.logback.core.CoreConstants.DOUBLE_QUOTE_CHAR;
 import static ch.qos.logback.core.CoreConstants.UTF_8_CHARSET;
-import static ch.qos.logback.core.encoder.JsonEscapeUtil.jsonEscapeString;
-import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
+import static ch.qos.logback.core.encoder.JsonEscapeUtil.appendJsonEscapedString;
 
 /**
  * JSON encoder that produces one JSON object per line in JSON Lines format, suitable for structured logging.
@@ -42,16 +43,24 @@ import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
  * <p>This encoder supports extensive configuration through boolean flags to include or exclude specific fields
  * in the output, allowing customization for different logging needs. For example, you can enable/disable
  * sequence numbers, nanoseconds, thread names, logger context, markers, MDC, key-value pairs, arguments,
- * and throwable information.</p>
+ * caller data and throwable information.</p>
+ *
+ * <p>Every combination of flags gives a valid JSON object; with every flag off, the output is {@code {}}.
+ * A null value is written as a bare JSON {@code null}, never as the string {@code "null"}. Arguments and
+ * key-value values that are numbers or booleans are written as JSON numbers and booleans; any other value
+ * is written as the string returned by its {@code toString()} method.</p>
  *
  * <p>The encoder is designed for extensibility: subclasses can override protected methods (e.g.,
  * {@link #appendLoggerContext}, {@link #appendThrowableProxy}, {@link #appendMarkers}) to customize
  * how specific parts of the JSON are generated. Additionally, the {@link #appendCustomFields} hook
  * allows appending custom top-level fields to the JSON object.</p>
  *
+ * <p>{@link JsonEventReader} reads the output of this encoder back into logging events.</p>
+ *
  * <h3>Configuration</h3>
  * <p>Use the setter methods (e.g., {@link #setWithSequenceNumber}, {@link #setWithTimestamp}) to control
- * which fields are included. By default, most fields are enabled except {@code withFormattedMessage}.</p>
+ * which fields are included. By default, most fields are enabled except {@code withFormattedMessage} and
+ * {@code withCallerData}.</p>
  *
  * <h3>Example Usage</h3>
  * <pre>{@code
@@ -107,9 +116,17 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     public static final String ARGUMENT_ARRAY_ATTR_NAME = "arguments";
     public static final String KEY_VALUE_PAIRS_ATTR_NAME = "kvpList";
 
+    /**
+     * @since 1.6.8
+     */
+    public static final String CALLER_DATA_ATTR_NAME = "callerData";
+
     public static final String THROWABLE_ATTR_NAME = "throwable";
 
-    private static final String CYCLIC_THROWABLE_ATTR_NAME = "cyclic";
+    /**
+     * Public since 1.6.8.
+     */
+    public static final String CYCLIC_THROWABLE_ATTR_NAME = "cyclic";
 
     public static final String CAUSE_ATTR_NAME = "cause";
 
@@ -119,8 +136,14 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     public static final String CLASS_NAME_ATTR_NAME = "className";
     public static final String METHOD_NAME_ATTR_NAME = "methodName";
-    private static final String FILE_NAME_ATTR_NAME = "fileName";
-    private static final String LINE_NUMBER_ATTR_NAME = "lineNumber";
+    /**
+     * Public since 1.6.8.
+     */
+    public static final String FILE_NAME_ATTR_NAME = "fileName";
+    /**
+     * Public since 1.6.8.
+     */
+    public static final String LINE_NUMBER_ATTR_NAME = "lineNumber";
 
     public static final String STEP_ARRAY_NAME_ATTRIBUTE = "stepArray";
 
@@ -139,6 +162,19 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     protected static final char VALUE_SEPARATOR = COMMA_CHAR;
 
+    /**
+     * The JSON null literal.
+     *
+     * @since 1.6.8
+     */
+    protected static final String JSON_NULL = "null";
+
+    /**
+     * Written in place of a value whose {@code toString()} method throws, as SLF4J's
+     * {@code MessageFormatter} does.
+     */
+    static final String FAILED_TO_STRING = "[FAILED toString()]";
+
     private boolean withSequenceNumber = true;
 
     private boolean withTimestamp = true;
@@ -155,6 +191,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     private boolean withArguments = true;
     private boolean withThrowable = true;
     private boolean withFormattedMessage = false;
+    private boolean withCallerData = false;
 
     @Override
     public byte[] headerBytes() {
@@ -168,41 +205,42 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(OPEN_OBJ);
 
         if (withSequenceNumber) {
+            appendMemberSeparator(sb);
             appenderMemberWithLongValue(sb, SEQUENCE_NUMBER_ATTR_NAME, event.getSequenceNumber());
         }
 
         if (withTimestamp) {
-            appendValueSeparator(sb, withSequenceNumber);
+            appendMemberSeparator(sb);
             appenderMemberWithLongValue(sb, TIMESTAMP_ATTR_NAME, event.getTimeStamp());
         }
 
         if (withNanoseconds) {
-            appendValueSeparator(sb, withSequenceNumber, withTimestamp);
+            appendMemberSeparator(sb);
             appenderMemberWithLongValue(sb, NANOSECONDS_ATTR_NAME, event.getNanoseconds());
         }
 
         if (withLevel) {
-            appendValueSeparator(sb, withNanoseconds, withSequenceNumber, withTimestamp);
-            String levelStr = event.getLevel() != null ? event.getLevel().levelStr : NULL_STR;
-            appenderMember(sb, LEVEL_ATTR_NAME, levelStr);
+            appendMemberSeparator(sb);
+            Level level = event.getLevel();
+            appenderMember(sb, LEVEL_ATTR_NAME, level != null ? level.levelStr : null);
         }
 
         if (withThreadName) {
-            appendValueSeparator(sb, withLevel, withNanoseconds, withSequenceNumber, withTimestamp);
-            appenderMember(sb, THREAD_NAME_ATTR_NAME, jsonEscape(event.getThreadName()));
+            appendMemberSeparator(sb);
+            appenderMember(sb, THREAD_NAME_ATTR_NAME, event.getThreadName());
         }
 
         if (withLoggerName) {
-            appendValueSeparator(sb, withThreadName, withLevel, withNanoseconds, withSequenceNumber, withTimestamp);
+            appendMemberSeparator(sb);
             appenderMember(sb, LOGGER_ATTR_NAME, event.getLoggerName());
         }
 
         if (withContext) {
-            // at this stage we assume that at least one field was written
-            sb.append(VALUE_SEPARATOR);
+            appendMemberSeparator(sb);
             appendLoggerContext(sb, event.getLoggerContextVO());
         }
 
+        // the following methods write their own member separator
         if (withMarkers)
             appendMarkers(sb, event);
 
@@ -213,18 +251,20 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
             appendKeyValuePairs(sb, event);
 
         if (withMessage) {
-            sb.append(VALUE_SEPARATOR);
-            appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(event.getMessage()));
+            appendMemberSeparator(sb);
+            appenderMember(sb, MESSAGE_ATTR_NAME, event.getMessage());
         }
 
         if (withFormattedMessage) {
-            sb.append(VALUE_SEPARATOR);
-            appenderMember(sb, FORMATTED_MESSAGE_ATTR_NAME, jsonEscape(event.getFormattedMessage()));
+            appendMemberSeparator(sb);
+            appenderMember(sb, FORMATTED_MESSAGE_ATTR_NAME, event.getFormattedMessage());
         }
 
-        if (withArguments) {
+        if (withArguments)
             appendArgumentArray(sb, event);
-        }
+
+        if (withCallerData)
+            appendCallerData(sb, event);
 
         if (withThrowable)
             appendThrowableProxy(sb, THROWABLE_ATTR_NAME, event.getThrowableProxy());
@@ -238,6 +278,34 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     }
 
     /**
+     * Append a member separator (a comma) if a member or an element was written before in the
+     * object or array being written.
+     *
+     * <p>Whether a member came before is read from the end of the builder: no comma is written
+     * right after the opening brace of an object, the opening bracket of an array, or a comma.
+     * Every method of this class that writes a member, and {@link #appendCustomFields} in
+     * subclasses, call this method before writing it, so that every combination of members gives
+     * valid JSON.</p>
+     *
+     * @param sb the builder holding the JSON written so far; must not be {@code null}
+     * @since 1.6.8
+     */
+    protected void appendMemberSeparator(StringBuilder sb) {
+        int i = sb.length() - 1;
+        while (i >= 0 && sb.charAt(i) == SP) {
+            i--;
+        }
+        if (i < 0) {
+            return;
+        }
+        char last = sb.charAt(i);
+        if (last == OPEN_OBJ || last == OPEN_ARRAY || last == VALUE_SEPARATOR || last == ENTRY_SEPARATOR) {
+            return;
+        }
+        sb.append(VALUE_SEPARATOR);
+    }
+
+    /**
      * Append a JSON value separator (a comma) to the provided {@link StringBuilder}
      * when any of the supplied boolean flags indicate that a subsequent element
      * is present.
@@ -247,15 +315,14 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
      * {@code true}, this method appends a single comma (',') to separate JSON
      * fields.</p>
      *
-     * <p>This method is protected so subclasses that extend the encoder can
-     * reuse or override the logic for inserting separators between generated
-     * JSON members.</p>
-     *
      * @param sb the {@link StringBuilder} to append the separator to; must not be {@code null}
      * @param subsequentConditionals one or more booleans indicating whether
      *                               subsequent JSON elements will be written.
      *                               If any value is {@code true}, a comma is appended.
+     * @deprecated since 1.6.8, no longer used by this class; use {@link #appendMemberSeparator(StringBuilder)},
+     * which knows whether a member was written before.
      */
+    @Deprecated
     protected void appendValueSeparator(StringBuilder sb, boolean... subsequentConditionals) {
         boolean enabled = false;
         for (boolean subsequent : subsequentConditionals) {
@@ -271,14 +338,14 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     protected void appendLoggerContext(StringBuilder sb, LoggerContextVO loggerContextVO) {
 
-        sb.append(QUOTE).append(CONTEXT_ATTR_NAME).append(QUOTE_COL);
+        appendMemberName(sb, CONTEXT_ATTR_NAME);
         if (loggerContextVO == null) {
-            sb.append(NULL_STR);
+            sb.append(JSON_NULL);
             return;
         }
 
         sb.append(OPEN_OBJ);
-        appenderMember(sb, NAME_ATTR_NAME, nullSafeStr(loggerContextVO.getName()));
+        appenderMember(sb, NAME_ATTR_NAME, loggerContextVO.getName());
         sb.append(VALUE_SEPARATOR);
         appenderMemberWithLongValue(sb, BIRTHDATE_ATTR_NAME, loggerContextVO.getBirthTime());
         sb.append(VALUE_SEPARATOR);
@@ -289,24 +356,25 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     }
 
     protected void appendMap(StringBuilder sb, String attrName, Map<String, String> map) {
-        sb.append(QUOTE).append(attrName).append(QUOTE_COL);
+        appendMemberName(sb, attrName);
+        appendMapValue(sb, map);
+    }
+
+    private void appendMapValue(StringBuilder sb, Map<String, String> map) {
         if (map == null) {
-            sb.append(NULL_STR);
+            sb.append(JSON_NULL);
             return;
         }
 
         sb.append(OPEN_OBJ);
-
         boolean addComma = false;
-        Set<Map.Entry<String, String>> entries = map.entrySet();
-        for (Map.Entry<String, String> entry : entries) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
             if (addComma) {
                 sb.append(VALUE_SEPARATOR);
             }
             addComma = true;
-            appenderMember(sb, jsonEscapedToString(entry.getKey()), jsonEscapedToString(entry.getValue()));
+            appenderMember(sb, entry.getKey(), entry.getValue());
         }
-
         sb.append(CLOSE_OBJ);
     }
 
@@ -314,39 +382,55 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         appendThrowableProxy(sb, attributeName, itp, true);
     }
 
+    /**
+     * Write a throwable proxy, recursively with its cause and suppressed throwables.
+     *
+     * <p>The last {@code commonFramesCount} frames, the ones shared with the enclosing throwable, are
+     * left out of {@code stepArray}, even when every frame is shared; a reader rebuilds them from the
+     * frames of the enclosing throwable.</p>
+     *
+     * @param sb the builder to write to
+     * @param attributeName the member name, or {@code null} for an element of the suppressed array
+     * @param itp the throwable proxy, may be {@code null}
+     * @param appendValueSeparator whether to write a member separator first, if one is needed
+     */
     protected void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp, boolean appendValueSeparator) {
 
         if (appendValueSeparator)
-            sb.append(VALUE_SEPARATOR);
+            appendMemberSeparator(sb);
 
         // in the nominal case, attributeName != null. However, attributeName will be null for suppressed
         // IThrowableProxy array, in which case no attribute name is needed
         if (attributeName != null) {
-            sb.append(QUOTE).append(attributeName).append(QUOTE_COL);
-            if (itp == null) {
-                sb.append(NULL_STR);
-                return;
-            }
+            appendMemberName(sb, attributeName);
+        }
+        if (itp == null) {
+            sb.append(JSON_NULL);
+            return;
         }
 
         sb.append(OPEN_OBJ);
 
-        appenderMember(sb, CLASS_NAME_ATTR_NAME, nullSafeStr(itp.getClassName()));
+        appenderMember(sb, CLASS_NAME_ATTR_NAME, itp.getClassName());
 
         sb.append(VALUE_SEPARATOR);
-        appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(itp.getMessage()));
+        appenderMember(sb, MESSAGE_ATTR_NAME, itp.getMessage());
 
         if (itp.isCyclic()) {
             sb.append(VALUE_SEPARATOR);
-            appenderMember(sb, CYCLIC_THROWABLE_ATTR_NAME, jsonEscape("true"));
+            appendMemberName(sb, CYCLIC_THROWABLE_ATTR_NAME);
+            sb.append(true);
         }
 
-        sb.append(VALUE_SEPARATOR);
-        appendSTEPArray(sb, itp.getStackTraceElementProxyArray(), itp.getCommonFrames());
+        StackTraceElementProxy[] stepArray = itp.getStackTraceElementProxyArray();
+        int omittedFrames = omittedFrameCount(stepArray, itp.getCommonFrames());
 
-        if (itp.getCommonFrames() != 0) {
+        sb.append(VALUE_SEPARATOR);
+        appendSTEPArray(sb, stepArray, omittedFrames);
+
+        if (omittedFrames != 0) {
             sb.append(VALUE_SEPARATOR);
-            appenderMemberWithIntValue(sb, COMMON_FRAMES_COUNT_ATTR_NAME, itp.getCommonFrames());
+            appenderMemberWithIntValue(sb, COMMON_FRAMES_COUNT_ATTR_NAME, omittedFrames);
         }
 
         IThrowableProxy cause = itp.getCause();
@@ -357,14 +441,13 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         IThrowableProxy[] suppressedArray = itp.getSuppressed();
         if (suppressedArray != null && suppressedArray.length != 0) {
             sb.append(VALUE_SEPARATOR);
-            sb.append(QUOTE).append(SUPPRESSED_ATTR_NAME).append(QUOTE_COL);
+            appendMemberName(sb, SUPPRESSED_ATTR_NAME);
             sb.append(OPEN_ARRAY);
 
             boolean first = true;
             for (IThrowableProxy suppressedITP : suppressedArray) {
                 appendThrowableProxy(sb, null, suppressedITP, !first);
-                if (first)
-                    first = false;
+                first = false;
             }
             sb.append(CLOSE_ARRAY);
         }
@@ -373,8 +456,29 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     }
 
+    /**
+     * The number of trailing frames left out of {@code stepArray}: {@code commonFrames}, or 0 when it
+     * is out of range.
+     */
+    static int omittedFrameCount(StackTraceElementProxy[] stepArray, int commonFrames) {
+        int len = stepArray == null ? 0 : stepArray.length;
+        if (commonFrames < 0 || commonFrames > len) {
+            return 0;
+        }
+        return commonFrames;
+    }
+
+    /**
+     * Write the {@code stepArray} member, leaving out the last {@code commonFrames} frames.
+     *
+     * @param sb the builder to write to
+     * @param stepArray the frames, may be {@code null}
+     * @param commonFrames the number of trailing frames to leave out; a value below 0 or above the
+     *                     number of frames is taken as 0
+     */
     protected void appendSTEPArray(StringBuilder sb, StackTraceElementProxy[] stepArray, int commonFrames) {
-        sb.append(QUOTE).append(STEP_ARRAY_NAME_ATTRIBUTE).append(QUOTE_COL).append(OPEN_ARRAY);
+        appendMemberName(sb, STEP_ARRAY_NAME_ATTRIBUTE);
+        sb.append(OPEN_ARRAY);
 
         // If there are no stack trace elements, write an empty array and return early.
         if (stepArray == null || stepArray.length == 0) {
@@ -384,33 +488,67 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         int len = stepArray.length;
 
-        if (commonFrames >= len) {
+        if (commonFrames < 0 || commonFrames > len) {
             commonFrames = 0;
         }
 
         for (int i = 0; i < len - commonFrames; i++) {
             if (i != 0)
                 sb.append(VALUE_SEPARATOR);
-
-            StackTraceElementProxy step = stepArray[i];
-
-            sb.append(OPEN_OBJ);
-            StackTraceElement ste = step.getStackTraceElement();
-
-            appenderMember(sb, CLASS_NAME_ATTR_NAME, nullSafeStr(ste.getClassName()));
-            sb.append(VALUE_SEPARATOR);
-
-            appenderMember(sb, METHOD_NAME_ATTR_NAME, nullSafeStr(ste.getMethodName()));
-            sb.append(VALUE_SEPARATOR);
-
-            appenderMember(sb, FILE_NAME_ATTR_NAME, nullSafeStr(ste.getFileName()));
-            sb.append(VALUE_SEPARATOR);
-
-            appenderMemberWithIntValue(sb, LINE_NUMBER_ATTR_NAME, ste.getLineNumber());
-            sb.append(CLOSE_OBJ);
-
+            appendStackTraceElement(sb, stepArray[i].getStackTraceElement());
         }
 
+        sb.append(CLOSE_ARRAY);
+    }
+
+    /**
+     * Write a stack trace element as an object with the members {@code className},
+     * {@code methodName}, {@code fileName} and {@code lineNumber}. Used for {@code stepArray} and
+     * {@code callerData}.
+     *
+     * @param sb the builder to write to
+     * @param ste the stack trace element, may be {@code null}
+     * @since 1.6.8
+     */
+    protected void appendStackTraceElement(StringBuilder sb, StackTraceElement ste) {
+        if (ste == null) {
+            sb.append(JSON_NULL);
+            return;
+        }
+        sb.append(OPEN_OBJ);
+        appenderMember(sb, CLASS_NAME_ATTR_NAME, ste.getClassName());
+        sb.append(VALUE_SEPARATOR);
+        appenderMember(sb, METHOD_NAME_ATTR_NAME, ste.getMethodName());
+        sb.append(VALUE_SEPARATOR);
+        appenderMember(sb, FILE_NAME_ATTR_NAME, ste.getFileName());
+        sb.append(VALUE_SEPARATOR);
+        appenderMemberWithIntValue(sb, LINE_NUMBER_ATTR_NAME, ste.getLineNumber());
+        sb.append(CLOSE_OBJ);
+    }
+
+    /**
+     * Write the {@code callerData} member when the event already holds caller data. Caller data is
+     * never computed for the sake of writing it.
+     *
+     * @param sb the builder to write to
+     * @param event the logging event
+     * @since 1.6.8
+     */
+    protected void appendCallerData(StringBuilder sb, ILoggingEvent event) {
+        if (!event.hasCallerData())
+            return;
+        StackTraceElement[] callerData = event.getCallerData();
+        if (callerData == null)
+            return;
+
+        appendMemberSeparator(sb);
+        appendMemberName(sb, CALLER_DATA_ATTR_NAME);
+        sb.append(OPEN_ARRAY);
+        for (int i = 0; i < callerData.length; i++) {
+            if (i != 0)
+                sb.append(VALUE_SEPARATOR);
+            appendStackTraceElement(sb, callerData[i]);
+        }
         sb.append(CLOSE_ARRAY);
     }
 
@@ -418,45 +556,159 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
      * Hook allowing subclasses to append additional fields into the root JSON object.
      * Default implementation is a no-op.
      *
-     * <p>Subclasses may append additional top-level JSON members here. If a
-     * subclass writes additional members it should prepend them with
-     * {@link #VALUE_SEPARATOR} (a comma) if necessary to keep the JSON valid.
-     * Implementations must not close the root JSON object or write the final
+     * <p>Subclasses may append additional top-level JSON members here. Before each member, call
+     * {@link #appendMemberSeparator(StringBuilder)}, which writes a comma only if a member was
+     * written before, then write the member, for example with
+     * {@link #appenderMember(StringBuilder, String, String)}:</p>
+     *
+     * <pre>{@code
+     * protected void appendCustomFields(StringBuilder sb, ILoggingEvent event) {
+     *     appendMemberSeparator(sb);
+     *     appenderMember(sb, "host", hostName);
+     * }
+     * }</pre>
+     *
+     * <p>Implementations must not close the root JSON object or write the final
      * line separator; {@link JsonEncoder} handles those.</p>
      *
      * @param sb the StringBuilder that accumulates the JSON output; never null
      * @param event the logging event being encoded; never null
      */
     protected void appendCustomFields(StringBuilder sb, ILoggingEvent event) {
-        // no-op by default; subclasses may append VALUE_SEPARATOR then their fields
+        // no-op by default; subclasses may call appendMemberSeparator(sb) then write their fields
     }
 
+    /**
+     * Write a member name and the colon that follows it. The name is escaped; a {@code null} name
+     * is written as {@code "null"}, since a JSON member name cannot be null.
+     *
+     * @param sb the builder to write to
+     * @param name the member name, not escaped
+     * @since 1.6.8
+     */
+    protected void appendMemberName(StringBuilder sb, String name) {
+        sb.append(QUOTE);
+        appendJsonEscapedString(sb, name == null ? JSON_NULL : name);
+        sb.append(QUOTE_COL);
+    }
+
+    /**
+     * Write a string value: {@code null} for a {@code null}, an escaped and quoted string otherwise.
+     * Every string value of the output is written by this method.
+     *
+     * @param sb the builder to write to
+     * @param value the value, not escaped, may be {@code null}
+     * @since 1.6.8
+     */
+    protected void appendStringValue(StringBuilder sb, String value) {
+        if (value == null) {
+            sb.append(JSON_NULL);
+            return;
+        }
+        sb.append(QUOTE);
+        appendJsonEscapedString(sb, value);
+        sb.append(QUOTE);
+    }
+
+    /**
+     * Write a member whose value is a string.
+     *
+     * @param sb the builder to write to
+     * @param key the member name, not escaped
+     * @param value the value, not escaped, may be {@code null}
+     */
     protected void appenderMember(StringBuilder sb, String key, String value) {
-        sb.append(QUOTE).append(key).append(QUOTE_COL).append(QUOTE).append(value).append(QUOTE);
+        appendMemberName(sb, key);
+        appendStringValue(sb, value);
     }
 
     protected void appenderMemberWithIntValue(StringBuilder sb, String key, int value) {
-        sb.append(QUOTE).append(key).append(QUOTE_COL).append(value);
+        appendMemberName(sb, key);
+        sb.append(value);
     }
 
     protected void appenderMemberWithLongValue(StringBuilder sb, String key, long value) {
-        sb.append(QUOTE).append(key).append(QUOTE_COL).append(value);
+        appendMemberName(sb, key);
+        sb.append(value);
+    }
+
+    /**
+     * Write an argument or a key-value value:
+     *
+     * <ul>
+     * <li>{@code null} as {@code null};</li>
+     * <li>a {@link Boolean} as {@code true} or {@code false};</li>
+     * <li>a {@link Byte}, {@link Short}, {@link Integer}, {@link Long}, {@link BigInteger} or
+     * {@link BigDecimal}, and a finite {@link Float} or {@link Double}, as a JSON number;</li>
+     * <li>a {@link Float} or {@link Double} that is NaN or infinite as the string {@code "NaN"},
+     * {@code "Infinity"} or {@code "-Infinity"};</li>
+     * <li>anything else as the string returned by its {@code toString()} method, or
+     * {@code "[FAILED toString()]"} if that method throws.</li>
+     * </ul>
+     *
+     * @param sb the builder to write to
+     * @param value the value, may be {@code null}
+     * @since 1.6.8
+     */
+    protected void appendArgumentValue(StringBuilder sb, Object value) {
+        if (value == null) {
+            sb.append(JSON_NULL);
+            return;
+        }
+
+        Class<?> c = value.getClass();
+        if (c == Boolean.class) {
+            sb.append(((Boolean) value).booleanValue());
+        } else if (c == Integer.class || c == Long.class || c == Short.class || c == Byte.class
+                || c == BigInteger.class || c == BigDecimal.class) {
+            sb.append(value);
+        } else if (c == Double.class) {
+            double d = (Double) value;
+            if (Double.isFinite(d)) {
+                sb.append(Double.toString(d));
+            } else {
+                appendStringValue(sb, Double.toString(d));
+            }
+        } else if (c == Float.class) {
+            float f = (Float) value;
+            if (Float.isFinite(f)) {
+                sb.append(Float.toString(f));
+            } else {
+                appendStringValue(sb, Float.toString(f));
+            }
+        } else {
+            appendStringValue(sb, safeToString(value));
+        }
+    }
+
+    private static String safeToString(Object o) {
+        try {
+            return o.toString();
+        } catch (Throwable t) {
+            return FAILED_TO_STRING;
+        }
     }
 
     protected void appendKeyValuePairs(StringBuilder sb, ILoggingEvent event) {
         List<KeyValuePair> kvpList = event.getKeyValuePairs();
-        if (kvpList == null || kvpList.isEmpty())
+        if (kvpList == null)
             return;
 
-        sb.append(VALUE_SEPARATOR);
-        sb.append(QUOTE).append(KEY_VALUE_PAIRS_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_ARRAY);
+        appendMemberSeparator(sb);
+        appendMemberName(sb, KEY_VALUE_PAIRS_ATTR_NAME);
+        sb.append(SP).append(OPEN_ARRAY);
         final int len = kvpList.size();
         for (int i = 0; i < len; i++) {
             if (i != 0)
                 sb.append(VALUE_SEPARATOR);
             KeyValuePair kvp = kvpList.get(i);
+            if (kvp == null) {
+                sb.append(JSON_NULL);
+                continue;
+            }
             sb.append(OPEN_OBJ);
-            appenderMember(sb, jsonEscapedToString(kvp.key), jsonEscapedToString(kvp.value));
+            appendMemberName(sb, kvp.key);
+            appendArgumentValue(sb, kvp.value);
             sb.append(CLOSE_OBJ);
         }
         sb.append(CLOSE_ARRAY);
@@ -467,69 +719,56 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         if (argumentArray == null)
             return;
 
-        sb.append(VALUE_SEPARATOR);
-        sb.append(QUOTE).append(ARGUMENT_ARRAY_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_ARRAY);
+        appendMemberSeparator(sb);
+        appendMemberName(sb, ARGUMENT_ARRAY_ATTR_NAME);
+        sb.append(SP).append(OPEN_ARRAY);
         final int len = argumentArray.length;
         for (int i = 0; i < len; i++) {
             if (i != 0)
                 sb.append(VALUE_SEPARATOR);
-            sb.append(QUOTE).append(jsonEscapedToString(argumentArray[i])).append(QUOTE);
-
+            appendArgumentValue(sb, argumentArray[i]);
         }
         sb.append(CLOSE_ARRAY);
     }
 
+    /**
+     * Write the {@code markers} member, an array of marker names. The references of a marker are not
+     * written.
+     *
+     * @param sb the builder to write to
+     * @param event the logging event
+     */
     protected void appendMarkers(StringBuilder sb, ILoggingEvent event) {
         List<Marker> markerList = event.getMarkerList();
         if (markerList == null)
             return;
 
-        sb.append(VALUE_SEPARATOR);
-        sb.append(QUOTE).append(MARKERS_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_ARRAY);
+        appendMemberSeparator(sb);
+        appendMemberName(sb, MARKERS_ATTR_NAME);
+        sb.append(SP).append(OPEN_ARRAY);
         final int len = markerList.size();
         for (int i = 0; i < len; i++) {
             if (i != 0)
                 sb.append(VALUE_SEPARATOR);
-            sb.append(QUOTE).append(jsonEscapedToString(markerList.get(i))).append(QUOTE);
-
+            Marker marker = markerList.get(i);
+            appendStringValue(sb, marker == null ? null : marker.getName());
         }
         sb.append(CLOSE_ARRAY);
     }
 
-    private String jsonEscapedToString(Object o) {
-        if (o == null)
-            return NULL_STR;
-        return jsonEscapeString(o.toString());
-    }
-
-    private String nullSafeStr(String s) {
-        if (s == null)
-            return NULL_STR;
-        return s;
-    }
-
-    private String jsonEscape(String s) {
-        if (s == null)
-            return NULL_STR;
-        return jsonEscapeString(s);
-    }
-
+    /**
+     * Write the {@code mdc} member: {@code null} when the event's MDC property map is {@code null}, an
+     * object otherwise, empty or not.
+     *
+     * @param sb the builder to write to
+     * @param event the logging event
+     */
     protected void appendMDC(StringBuilder sb, ILoggingEvent event) {
         Map<String, String> map = event.getMDCPropertyMap();
-        sb.append(VALUE_SEPARATOR);
-        sb.append(QUOTE).append(MDC_ATTR_NAME).append(QUOTE_COL).append(SP).append(OPEN_OBJ);
-        if (isNotEmptyMap(map)) {
-            Set<Map.Entry<String, String>> entrySet = map.entrySet();
-            int i = 0;
-            for (Map.Entry<String, String> entry : entrySet) {
-                if (i != 0)
-                    sb.append(VALUE_SEPARATOR);
-                appenderMember(sb, jsonEscapedToString(entry.getKey()), jsonEscapedToString(entry.getValue()));
-                i++;
-            }
-
-        }
-        sb.append(CLOSE_OBJ);
+        appendMemberSeparator(sb);
+        appendMemberName(sb, MDC_ATTR_NAME);
+        sb.append(SP);
+        appendMapValue(sb, map);
     }
 
     /**
@@ -673,6 +912,17 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
       */
      public void setWithFormattedMessage(boolean withFormattedMessage) {
          this.withFormattedMessage = withFormattedMessage;
+     }
+
+     /**
+      * Enable or disable the inclusion of caller data in the encoded output. Caller data is written
+      * only when the event already holds it; it is never computed for the sake of writing it.
+      *
+      * @param withCallerData {@code true} to include caller data. Default is {@code false}.
+      * @since 1.6.8
+      */
+     public void setWithCallerData(boolean withCallerData) {
+         this.withCallerData = withCallerData;
      }
 
  }

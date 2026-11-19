@@ -94,22 +94,59 @@ public class JsonEscapeUtil {
         return null;
     }
 
+    /**
+     * Escape the input so that it can be placed between double quotes in a JSON document.
+     *
+     * <p>Besides the escapes required by RFC 8259, a lone surrogate, that is a high surrogate not
+     * followed by a low surrogate or a low surrogate not preceded by a high surrogate, is written
+     * as a <code>&#92;uXXXX</code> escape. Encoding it as UTF-8 would otherwise replace it with '?'.</p>
+     *
+     * @param input the string to escape, not null
+     * @return the escaped string
+     */
     static public String jsonEscapeString(String input) {
         int length = input.length();
         int lenthWithLeeway = (int) (length * 1.1);
 
         StringBuilder sb = new StringBuilder(lenthWithLeeway);
+        appendJsonEscapedString(sb, input);
+        return sb.toString();
+    }
+
+    /**
+     * Append the escaped form of the input to the given {@link StringBuilder}, as
+     * {@link #jsonEscapeString(String)} computes it, without the surrounding double quotes.
+     *
+     * @param sb the builder to append to, not null
+     * @param input the string to escape, not null
+     * @since 1.6.8
+     */
+    static public void appendJsonEscapedString(StringBuilder sb, String input) {
+        final int length = input.length();
         for (int i = 0; i < length; i++) {
             final char c = input.charAt(i);
             String escaped = getObligatoryEscapeCode(c);
-            if (escaped == null)
-                sb.append(c);
-            else {
+            if (escaped != null) {
                 sb.append(escaped);
+            } else if (Character.isSurrogate(c)) {
+                if (Character.isHighSurrogate(c) && i + 1 < length && Character.isLowSurrogate(input.charAt(i + 1))) {
+                    sb.append(c).append(input.charAt(i + 1));
+                    i++;
+                } else {
+                    appendUnicodeEscape(sb, c);
+                }
+            } else {
+                sb.append(c);
             }
         }
+    }
 
-        return sb.toString();
+    private static void appendUnicodeEscape(StringBuilder sb, char c) {
+        sb.append("\\u");
+        sb.append(HEXADECIMALS_TABLE[(c >> 12) & 0x0F]);
+        sb.append(HEXADECIMALS_TABLE[(c >> 8) & 0x0F]);
+        sb.append(HEXADECIMALS_TABLE[(c >> 4) & 0x0F]);
+        sb.append(HEXADECIMALS_TABLE[c & 0x0F]);
     }
 
 }

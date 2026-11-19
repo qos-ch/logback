@@ -47,7 +47,7 @@ public class KeyValuePairDeserializer  extends StdDeserializer<KeyValuePair>  {
             if(it.hasNext()) {
                 Map.Entry<String, JsonNode> entry = it.next();
                 String key = entry.getKey();
-                String value = entry.getValue().asText();
+                Object value = JsonStringToLoggingEventMapper.nodeToArgument(entry.getValue());
                 KeyValuePair kvp = new KeyValuePair(key, value);
                 return kvp;
             }

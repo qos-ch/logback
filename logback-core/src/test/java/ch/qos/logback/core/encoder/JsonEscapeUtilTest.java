@@ -71,4 +71,24 @@ class JsonEscapeUtilTest {
         System.out.println(input);
         assertEquals("{hello: "+'\\'+'"'+"\\tworld\\\"}", JsonEscapeUtil.jsonEscapeString(input));
     }
+
+    @Test
+    public void testSurrogates() {
+        String pair = new String(Character.toChars(0x1F600));
+        // a valid surrogate pair is kept as is
+        assertEquals("a" + pair + "b", JsonEscapeUtil.jsonEscapeString("a" + pair + "b"));
+        // lone surrogates are escaped
+        assertEquals("x\\uD800y", JsonEscapeUtil.jsonEscapeString("x" + (char) 0xD800 + "y"));
+        assertEquals("x\\uDC00", JsonEscapeUtil.jsonEscapeString("x" + (char) 0xDC00));
+        assertEquals("\\uDBFF", JsonEscapeUtil.jsonEscapeString(String.valueOf((char) 0xDBFF)));
+        // a low surrogate followed by a high surrogate is not a pair
+        assertEquals("\\uDC00\\uD800", JsonEscapeUtil.jsonEscapeString("" + (char) 0xDC00 + (char) 0xD800));
+    }
+
+    @Test
+    public void testAppendJsonEscapedString() {
+        StringBuilder sb = new StringBuilder("[");
+        JsonEscapeUtil.appendJsonEscapedString(sb, "a\"b");
+        assertEquals("[a\\\"b", sb.toString());
+    }
 }

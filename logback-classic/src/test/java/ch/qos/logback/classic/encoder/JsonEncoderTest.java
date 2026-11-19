@@ -19,7 +19,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.classic.jsonTest.JsonLoggingEvent;
 import ch.qos.logback.classic.jsonTest.JsonStringToLoggingEventMapper;
 import ch.qos.logback.classic.jsonTest.ThrowableProxyComparator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
