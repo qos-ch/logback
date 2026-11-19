@@ -23,6 +23,7 @@ import ch.qos.logback.classic.util.LevelUtil;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.GenericXMLConfigurator;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ModelConstants;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.util.PropertyModelHandlerHelper;
 import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
@@ -185,4 +186,26 @@ public class TylerConfiguratorBase extends ContextAwareBase implements ContextAw
         configurationModel.addSubModel(modelFromIncludedFile);
         genericXMLConfigurator.processModel(configurationModel);
     }
+    /**
+     * Interprets the logback.debug system property, or if not set, interprets the debugAttribute provided as
+     * parameter. The debugAttribute is the value of the debug attribute in the configuration file.
+     * If neither is set, returns false.
+     *
+     * @param debugAttribute the raw debug attribute from the configuration file, may be null or empty
+     * @return true if debug is enabled, false otherwise
+     *
+     */
+    protected boolean isInternalDebugEnabled(String debugAttribute) {
+        String debugStr = null;
+        String debugPropStr = OptionHelper.getSystemProperty(ModelConstants.DEBUG_SYSTEM_PROPERTY_KEY, null);
+        if (debugPropStr != null) {
+            debugStr = debugPropStr;
+        } else {
+            debugStr = debugAttribute;
+        }
+
+        Boolean result = OptionHelper.toLopsidedBooleanObject(debugStr, Boolean.TRUE);
+        return (result == null ? false : result);
+    }
+
 }
