@@ -45,18 +45,21 @@ public class LoggerContextVODeserializer  extends StdDeserializer<LoggerContextV
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
         if(node.isObject()) {
             JsonNode nameNode = node.get(JsonEncoder.NAME_ATTR_NAME);
-            String name = nameNode.asText();
+            String name = nameNode == null ? null : nameNode.textValue();
             JsonNode bdayNode = node.get(JsonEncoder.BIRTHDATE_ATTR_NAME);
             long birthday = bdayNode.asLong();
 
             JsonNode propertiesNode = node.get(JsonEncoder.CONTEXT_PROPERTIES_ATTR_NAME);
-            Map<String, String> propertiesMap = new HashMap<>();
-            Iterator<Map.Entry<String, JsonNode>> it = propertiesNode.fields();
-            while(it.hasNext()) {
-                Map.Entry<String, JsonNode> entry = it.next();
-                String key = entry.getKey();
-                String value = entry.getValue().asText();
-                propertiesMap.put(key, value);
+            Map<String, String> propertiesMap = null;
+            if(propertiesNode != null && propertiesNode.isObject()) {
+                propertiesMap = new HashMap<>();
+                Iterator<Map.Entry<String, JsonNode>> it = propertiesNode.fields();
+                while(it.hasNext()) {
+                    Map.Entry<String, JsonNode> entry = it.next();
+                    String key = entry.getKey();
+                    String value = entry.getValue().textValue();
+                    propertiesMap.put(key, value);
+                }
             }
             return  new LoggerContextVO(name, propertiesMap, birthday);
         }

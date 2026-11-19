@@ -60,6 +60,9 @@ public class PubThrowableProxyDeserializer  extends StdDeserializer<PubThrowable
         ptp.setClassName(classNameJN.textValue());
         ptp.setMessage(messageJN.textValue());
 
+        JsonNode cyclicJN = node.get(JsonEncoder.CYCLIC_THROWABLE_ATTR_NAME);
+        ptp.setCyclic(cyclicJN != null && cyclicJN.isBoolean() && cyclicJN.booleanValue());
+
         List<StackTraceElementProxy> stepList = stepNodeToList(stepArrayJN);
         ptp.setStackTraceElementProxyArray(stepList.toArray(EMPTY_STEP_ARRAY));
 
@@ -76,14 +79,9 @@ public class PubThrowableProxyDeserializer  extends StdDeserializer<PubThrowable
         if(suppressedJN != null) {
             //System.out.println("suppressedJN "+suppressedJN);
             List<PubThrowableProxy>  ptpList = suppressedNodeToList(suppressedJN);
-            System.out.println("iiiiiiiiiiii");
-            System.out.println("ptpList="+ptpList);
 
             ptp.setSuppressed(ptpList.toArray(EMPTY_PTP_ARRAY));
         }
-
-        System.out.println("xxxxxxxxxxxxx");
-        System.out.println(ptp.getSuppressed());
 
         return ptp;
     }

@@ -12,14 +12,16 @@
  * as published by the Free Software Foundation.
  */
 
+
 package ch.qos.logback.classic.jsonTest;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.encoder.JsonEncoder;
+import ch.qos.logback.classic.encoder.JsonLoggingEvent;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.PubThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -27,21 +29,23 @@ import org.slf4j.IMarkerFactory;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+/**
+ * Reads the output of {@link ch.qos.logback.classic.encoder.JsonEncoder} with Jackson, independently of
+ * {@link ch.qos.logback.classic.encoder.JsonEventReader}, as a check that the output is valid JSON.
+ *
+ * <p>Unlike {@code JsonEventReader}, it does not rebuild the common frames of nested throwables.</p>
+ */
 public class JsonStringToLoggingEventMapper {
     IMarkerFactory markerFactory;
-
+    ObjectMapper objectMapper;
 
     public JsonStringToLoggingEventMapper(IMarkerFactory markerFactory) {
         this.markerFactory = markerFactory;
-    }
 
-    public JsonLoggingEvent mapStringToLoggingEvent(String resultString) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.addMixIn(JsonLoggingEvent.class, JsonLoggingEventMixIn.class);
+
         SimpleModule module = new SimpleModule();
         module.addDeserializer(StackTraceElementProxy.class, new STEPDeserializer());
         module.addDeserializer(Level.class, new LevelDeserializer());
@@ -49,58 +53,40 @@ public class JsonStringToLoggingEventMapper {
         module.addDeserializer(KeyValuePair.class, new KeyValuePairDeserializer());
         module.addDeserializer(LoggerContextVO.class, new LoggerContextVODeserializer());
         module.addDeserializer(PubThrowableProxy.class, new PubThrowableProxyDeserializer());
-
         objectMapper.registerModule(module);
+    }
 
+    public JsonLoggingEvent mapStringToLoggingEvent(String resultString) throws JsonProcessingException {
         JsonNode jsonNode = objectMapper.readTree(resultString);
-        JsonLoggingEvent resultEvent = objectMapper.treeToValue(jsonNode, JsonLoggingEvent.class);
-        //buildLevel(jsonNode, resultEvent);
-
-        //xbuildMarkersList(jsonNode, resultEvent);
-        //xbuildKVPList(jsonNode, resultEvent);
-        //buildThrowableProxy(jsonNode, resultEvent);
-        return resultEvent;
+        return objectMapper.treeToValue(jsonNode, JsonLoggingEvent.class);
     }
 
-    private static void UNUSED_buildLevel(JsonNode jsonNode, JsonLoggingEvent resultEvent) {
-        String levelStr = jsonNode.at("/"+ JsonEncoder.LEVEL_ATTR_NAME).asText();
-        Level level = Level.toLevel(levelStr);
-        resultEvent.level = level;
+    /**
+     * Parse a line into a Jackson tree, failing on invalid JSON.
+     */
+    public JsonNode readTree(String line) throws JsonProcessingException {
+        return objectMapper.readTree(line);
     }
 
-    private void UNUSED_buildMarkersList(JsonNode jsonNode, JsonLoggingEvent resultEvent) {
-        JsonNode markersNode = jsonNode.at("/"+JsonEncoder.MARKERS_ATTR_NAME);
-        if(markersNode!=null && markersNode.isArray()) {
-            List<Marker> markerList = new ArrayList<>();
-            Iterator<JsonNode> itr = markersNode.iterator();
-            while (itr.hasNext()) {
-                JsonNode item=itr.next();
-                String markerStr = item.asText();
-                Marker marker = markerFactory.getMarker(markerStr);
-                markerList.add(marker);
-            }
-            resultEvent.markerList = markerList;
+    /**
+     * Convert an argument or key-value value as {@code JsonEventReader} does.
+     */
+    static Object nodeToArgument(JsonNode node) {
+        if (node == null || node.isNull())
+            return null;
+        if (node.isBoolean())
+            return node.booleanValue();
+        if (node.isIntegralNumber()) {
+            if (node.canConvertToInt())
+                return node.intValue();
+            if (node.canConvertToLong())
+                return node.longValue();
+            return node.bigIntegerValue();
         }
+        if (node.isNumber())
+            return node.doubleValue();
+        if (node.isTextual())
+            return node.textValue();
+        return node.toString();
     }
-
-
-    private void UNUSED_buildKVPList(JsonNode jsonNode, JsonLoggingEvent resultEvent) {
-        JsonNode kvpNode = jsonNode.at("/"+JsonEncoder.KEY_VALUE_PAIRS_ATTR_NAME);
-        if(kvpNode!=null && kvpNode.isArray()) {
-            System.out.println("in buildKVPList");
-            List<KeyValuePair> kvpList = new ArrayList<>();
-            Iterator<JsonNode> itr = kvpNode.iterator();
-            while (itr.hasNext()) {
-                JsonNode item=itr.next();
-
-                Map.Entry<String, JsonNode> entry = item.fields().next();
-                String key = entry.getKey();
-                String val = entry.getValue().asText();
-                kvpList.add(new KeyValuePair(key, val));
-
-             }
-            resultEvent.kvpList =kvpList;
-        }
-    }
-
 }
