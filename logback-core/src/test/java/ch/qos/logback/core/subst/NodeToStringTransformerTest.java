@@ -14,6 +14,7 @@
 package ch.qos.logback.core.subst;
 
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.ScanException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,6 +70,16 @@ public class NodeToStringTransformerTest {
         Node node = makeNode(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
         Assertions.assertEquals("v0", nodeToStringTransformer.transform());
+    }
+
+    @Test
+    public void literalPropertyIsNotSubstituted() throws ScanException {
+        VariableSubstitutionsHelper helper = new VariableSubstitutionsHelper(propertyContainer0);
+        helper.addLiteralSubstitutionProperty("data", "${k0}");
+        String input = "a-${data}-b";
+        Node node = makeNode(input);
+        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, helper, propertyContainer0);
+        Assertions.assertEquals("a-${k0}-b", nodeToStringTransformer.transform());
     }
 
     @Test

@@ -250,6 +250,22 @@ public class ModelInterpretationContext extends ContextAwareBase implements Cont
     }
 
     /**
+     * Add a property whose value is to be used as is, without variable
+     * substitution. See
+     * {@link VariableSubstitutionsHelper#addLiteralSubstitutionProperty(String, String)}.
+     *
+     * @since 1.7.0
+     */
+    public void addLiteralSubstitutionProperty(String key, String value) {
+        variableSubstitutionsHelper.addLiteralSubstitutionProperty(key, value);
+    }
+
+    @Override
+    public boolean isLiteralProperty(String key) {
+        return variableSubstitutionsHelper.isLiteralProperty(key);
+    }
+
+    /**
      * If a key is found in propertiesMap then return it. Otherwise, delegate to the
      * context.
      */
